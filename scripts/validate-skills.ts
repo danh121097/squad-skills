@@ -1,6 +1,6 @@
 import process from 'node:process';
 
-import { validateSkills } from '../src/skill-validator.ts';
+import { validateSkills } from '../src/catalog/skill-validator.ts';
 
 const result = await validateSkills(process.cwd());
 

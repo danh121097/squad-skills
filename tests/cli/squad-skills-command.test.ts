@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createCliAction } from '../src/squad-skills-command.ts';
+import { createCliAction } from '../../src/cli/squad-skills-command.ts';
 
 const packageRoot = '/package/squad-skills';
 

@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { validateSkills } from '../src/skill-validator.ts';
+import { validateSkills } from '../../src/catalog/skill-validator.ts';
 
 const temporaryProjects: string[] = [];
 

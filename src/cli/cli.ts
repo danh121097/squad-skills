@@ -11,7 +11,9 @@ interface PackageMetadata {
 }
 
 const require = createRequire(import.meta.url);
-const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+// This file sits two levels below the package root in both layouts: source
+// at src/cli/cli.ts, bundled at dist/cli/cli.mjs.
+const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const packageMetadata = require(resolve(packageRoot, 'package.json')) as PackageMetadata;
 const skillsPackagePath = require.resolve('skills/package.json');
 const skillsCliPath = resolve(dirname(skillsPackagePath), 'bin/cli.mjs');

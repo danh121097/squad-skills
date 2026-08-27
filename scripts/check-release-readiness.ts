@@ -1,5 +1,8 @@
+import { execFile } from 'node:child_process';
 import { access, readFile } from 'node:fs/promises';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
 interface PackageMetadata {
   bin?: Record<string, string>;
@@ -11,6 +14,7 @@ interface PackageMetadata {
   private?: boolean;
   publishConfig?: { access?: string };
   repository?: { type?: string; url?: string };
+  version?: string;
 }
 
 const expectedSource = 'danh121097/squad-skills';
@@ -71,12 +75,28 @@ if (!readme.includes(`https://skills.sh/b/${expectedSource}`)) {
   errors.push('README.md must include the skills.sh badge for the public source.');
 }
 
-for (const artifact of ['../bin/cli.mjs', '../dist/cli.mjs']) {
+for (const artifact of ['../bin/cli.mjs', '../dist/cli/cli.mjs']) {
   try {
     await access(new URL(artifact, import.meta.url));
   } catch {
     errors.push(`${artifact.replace('../', '')} must exist before packaging.`);
   }
+}
+
+// Existence is not enough: the bin entry resolves the package root by walking
+// up from its own location, so a moved bundle can exist and still fail to boot.
+const binPath = fileURLToPath(new URL('../bin/cli.mjs', import.meta.url));
+
+try {
+  const { stdout } = await promisify(execFile)(process.execPath, [binPath, '--version']);
+
+  if (stdout.trim() !== packageMetadata.version) {
+    errors.push(
+      `bin/cli.mjs reported version ${stdout.trim() || '(nothing)'} but package.json declares ${packageMetadata.version}.`
+    );
+  }
+} catch (error) {
+  errors.push(`bin/cli.mjs failed to run: ${(error as Error).message.split('\n')[0]}`);
 }
 
 if (errors.length > 0) {

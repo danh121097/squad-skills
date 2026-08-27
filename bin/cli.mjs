@@ -10,4 +10,4 @@ if (module.enableCompileCache && !process.env.NODE_DISABLE_COMPILE_CACHE) {
   }
 }
 
-await import('../dist/cli.mjs');
+await import('../dist/cli/cli.mjs');

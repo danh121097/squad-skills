@@ -38,16 +38,17 @@
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "build": "obuild",
-    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\"",
+    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "pack:check": "node scripts/check-package-contents.ts",
     "prepublishOnly": "pnpm release:check",
     "release:check": "pnpm test && pnpm build && node scripts/check-release-readiness.ts && pnpm pack:check",
     "skills:list": "skills add . --list",
-    "test": "pnpm type-check && pnpm format:check && pnpm test:unit && pnpm validate && pnpm skills:list",
+    "test": "pnpm type-check && pnpm format:check && pnpm test:unit && pnpm validate && pnpm validate:evals && pnpm skills:list",
     "test:unit": "vitest run",
     "type-check": "tsc --noEmit",
-    "validate": "node scripts/validate-skills.ts"
+    "validate": "node scripts/validate-skills.ts",
+    "validate:evals": "node scripts/validate-evals.ts"
   },
   "dependencies": {
     "skills": "1.5.23"

@@ -1,0 +1,112 @@
+# Case registry and split policy for the squad-designer evaluation cycle.
+# Human authority: ./eval-contract.md
+# Private-lane cases appear here as an id plus a content hash only. Their bodies
+# live behind EVAL_PRIVATE_PATH and must never be inlined.
+schema_version: 1
+cycle_id: designer-presentational-code-2026-08-27
+
+lanes:
+  development:
+    visibility: public
+    paid_judging: false
+    frozen: false
+  calibration:
+    visibility: private
+    paid_judging: true
+    frozen: true
+    source: cases/calibration
+  acceptance:
+    visibility: private
+    paid_judging: true
+    frozen: true
+    source: cases/acceptance
+
+categories:
+  - web-component
+  - web-screen-responsive
+  - adaptive-tablet-desktop
+  - design-system-tokens
+  - motion-and-reduced-motion
+  - accessibility-remediation
+  - native-react-native
+  - native-flutter
+  - native-swiftui
+  - native-compose
+
+cases:
+  - id: dev-web-notification-preferences-panel
+    lane: development
+    category: web-screen-responsive
+    target_platform: web
+    output_type: presentational-code
+    request: >-
+      Build the presentational layer for a notification preferences panel with
+      grouped channel toggles, a per-group summary line, and a disabled state
+      explained inline. Values arrive as props.
+    evidence_packet:
+      - existing component inventory
+      - existing token file
+      - realistic group labels including one at maximum length
+    allowed_capabilities:
+      - repository read
+    hard_invariants:
+      - { id: INV-BUILD-001, severity: critical }
+      - { id: INV-A11Y-001, severity: critical }
+      - { id: INV-CONTRAST-001, severity: critical }
+      - { id: INV-OVERFLOW-001, severity: critical }
+      - { id: INV-TOUCH-001, severity: high }
+      - { id: INV-SCOPE-001, severity: high }
+    qualitative_rubric: [RUB-HIER-001, RUB-COHERE-001, RUB-CONTENT-001, RUB-SLOP-001]
+    expected_source_decisions:
+      - reuse the existing toggle and card primitives
+      - extend the existing token file rather than adding a parallel scale
+      - emit no state, data fetching, or routing
+    seed: 1
+    config:
+      subject: { provider: codex, model: gpt-5.6-sol, effort: default }
+      judge: { provider: anthropic, model: claude-opus-5, effort: default }
+
+  - id: dev-motion-sheet-reduced-motion
+    lane: development
+    category: motion-and-reduced-motion
+    target_platform: web
+    output_type: presentational-code
+    request: >-
+      Build the presentational bottom-sheet surface and its open, settle, and
+      dismiss motion, including the interruption behavior when a dismiss starts
+      mid-open.
+    evidence_packet:
+      - existing motion utility
+      - existing overlay primitive
+    allowed_capabilities:
+      - repository read
+    hard_invariants:
+      - { id: INV-BUILD-001, severity: critical }
+      - { id: INV-MOTION-001, severity: critical }
+      - { id: INV-A11Y-001, severity: critical }
+      - { id: INV-SCOPE-001, severity: high }
+      - { id: INV-DEP-001, severity: high }
+    qualitative_rubric: [RUB-MOTION-001, RUB-COHERE-001, RUB-SLOP-001]
+    expected_source_decisions:
+      - reuse the existing motion utility rather than adding an animation library
+      - define the reduced-motion fallback explicitly
+    seed: 1
+    config:
+      subject: { provider: codex, model: gpt-5.6-sol, effort: default }
+      judge: { provider: anthropic, model: claude-opus-5, effort: default }
+
+  - id: acc-web-billing-usage-panel
+    lane: acceptance
+    content_hash: sha256:846268c207f64f95f18e9fad0aa86f52d6f1aac4b07fa1d0b20943c8136613ec
+
+  - id: acc-native-rn-transaction-row
+    lane: acceptance
+    content_hash: sha256:453f5f510c539a95afac187bd69d7f2d7c1f1a70314e2e7dbce1135be07b3d3c
+
+  - id: acc-adaptive-settings-two-pane
+    lane: acceptance
+    content_hash: sha256:310a4e6edace927d09ca815e481d7d0dba85acadf831f65876523649e2d1d8c0
+
+  - id: cal-web-empty-state-card
+    lane: calibration
+    content_hash: sha256:567096db06219f7a7bcbe406bc411a99ecfbbb248f67681ab23a81ac12a62e3f

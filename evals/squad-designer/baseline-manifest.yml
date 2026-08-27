@@ -1,0 +1,111 @@
+# Frozen baseline for the squad-designer presentational-code evaluation cycle.
+# Human authority: ./eval-contract.md
+# Recomputed and drift-checked by `pnpm validate:evals`. Never hand-edit a
+# measured value to make the gate pass.
+schema_version: 1
+cycle_id: designer-presentational-code-2026-08-27
+frozen_at: 2026-08-27
+
+runtime:
+  node: 22.20.0
+  pnpm: 10.17.1
+  gate_command: pnpm test
+  gate_status: green
+
+repository:
+  commit: 4577312121bf8aabdf28543daf5e672daceb2caa
+  note: >-
+    The npm CLI distribution migration is settled; the release gate and AGENTS.md
+    were rewritten together and are internally consistent.
+
+private_store:
+  env_var: EVAL_PRIVATE_PATH
+  repository: danh121097/squad-skills-eval-acceptance
+  visibility: private
+  branch: develop
+  commit: e1b18cb68f0c4106b9c97a570150b30aca5d359b
+
+# Word counts are whitespace-delimited tokens over the whole file, matching
+# `wc -w`. payload_hash covers SKILL.md plus every bundled reference.
+skills:
+  squad-designer:
+    version: 1.3.0
+    payload_hash: sha256:76adfef892fbfad5bc100360b77f53ba5f0a12cb796a0d8af9e2490ecffe7952
+    boundary_hash: sha256:beab7719fc65a52043cd7a60d738884b7a6f9945fac2d22347c427704b05e647
+    entrypoint_words: 1014
+    reference_count: 7
+    reference_words: 4041
+    total_payload_words: 5055
+  squad-frontend:
+    version: 1.4.0
+    payload_hash: sha256:d077aa556d7e1f820fad249dd3f10017740611296d4a711520093d0d9e838139
+    boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
+    entrypoint_words: 838
+    reference_count: 7
+    reference_words: 2768
+    total_payload_words: 3606
+  squad-mobile:
+    version: 1.4.0
+    payload_hash: sha256:ed59e1099040cee82ba97caa9d3e53aef3fc94561c362298c6c93c8a56538128
+    boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
+    entrypoint_words: 692
+    reference_count: 6
+    reference_words: 1848
+    total_payload_words: 2540
+
+# Transcribed from the conditional reference rules in
+# skills/squad-designer/SKILL.md. Each task type names the references a run of
+# that type loads; loaded_words is entrypoint_words plus those references.
+task_types:
+  - id: web-new-screen-greenfield
+    references:
+      - anti-slop-quality-review.md
+      - design-system-ux-accessibility-and-handoff.md
+      - task-specific-ui-ux-research.md
+      - ui-foundation-and-motion-selection.md
+    loaded_words: 3538
+  - id: web-redesign-existing-system
+    references:
+      - anti-slop-quality-review.md
+      - codebase-first-examples.md
+      - design-system-ux-accessibility-and-handoff.md
+      - task-specific-ui-ux-research.md
+      - ui-foundation-and-motion-selection.md
+    loaded_words: 4287
+  - id: figma-accepted-handoff
+    references:
+      - design-system-ux-accessibility-and-handoff.md
+    loaded_words: 1593
+  - id: design-system-tokens
+    references:
+      - design-system-ux-accessibility-and-handoff.md
+      - ui-foundation-and-motion-selection.md
+    loaded_words: 2254
+  - id: motion-direction
+    references:
+      - ui-foundation-and-motion-selection.md
+    loaded_words: 1675
+  - id: accessibility-audit
+    references:
+      - design-mindset-evaluation-and-official-sources.md
+      - design-system-ux-accessibility-and-handoff.md
+    loaded_words: 1964
+  - id: local-pattern-extension
+    references:
+      - codebase-first-examples.md
+    loaded_words: 1763
+  - id: degraded-runtime-fallback
+    references:
+      - runtime-capability-fallbacks.md
+      - ui-foundation-and-motion-selection.md
+    loaded_words: 2072
+
+# The governing budget for later phases (plan decision 5).
+budget:
+  skill: squad-designer
+  entrypoint_words: 1014
+  median_loaded_words: 2018
+  method: >-
+    entrypoint words plus the median across task types of the words loaded for
+    that task type; even-length medians are the mean of the two middle values,
+    rounded half-up
