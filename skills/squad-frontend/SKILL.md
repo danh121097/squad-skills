@@ -8,7 +8,7 @@ keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka,
 argument-hint: "[feature or screen]"
 metadata:
   author: danh
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # Squad — Frontend
@@ -40,8 +40,9 @@ duplicates on new ports.
 
 1. **Classify the design input** — accepted Figma/design, material UI/UX decision needed, or exact local
    pattern implementation.
-2. **Run the Designer stage when required** — use installed `squad-designer`; in team mode route through
-   the orchestrator; when unavailable, produce the bounded design contract inline.
+2. **Run the Designer stage when required** — use installed `squad-designer` and wire behavior into the
+   components it returns; in team mode route through the orchestrator; when unavailable, build the
+   presentational layer inline before wiring it.
 3. **Classify the project** — preserve an established component/token/style/motion system. Apply React or
    Vue/Nuxt greenfield defaults only when no UI foundation exists.
 4. **Model logic before markup** — map API responses, permissions, and mutations to navigation, form

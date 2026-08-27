@@ -8,7 +8,7 @@ keywords: [mobile, react-native, expo, flutter, swiftui, compose, api-integratio
 argument-hint: "[mobile feature or screen]"
 metadata:
   author: danh
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # Squad — Mobile
@@ -35,8 +35,8 @@ by the task. Reuse safe project processes, and stop only task-owned resources wh
 
 1. **Preserve the app** — match its framework, architecture, navigation, state, components, platform
    conventions, native modules, build configuration, accessibility and test patterns.
-2. **Resolve design first** — accepted Figma/design or Designer contract must define material UI/UX work;
-   use a bounded inline design fallback when the Designer capability is unavailable.
+2. **Resolve design first** — accepted Figma/design or Designer-authored components must define material
+   UI/UX work; build the presentational layer inline when the Designer capability is unavailable.
 3. **Model lifecycle and connectivity** — foreground/background, process death, offline, retries, stale
    cache, conflict resolution, permissions, deep links and interrupted flows are first-class states.
 4. **Keep secrets secure** — use platform secure storage and server-enforced authorization; never treat

@@ -27,31 +27,39 @@ private_store:
 
 # Word counts are whitespace-delimited tokens over the whole file, matching
 # `wc -w`. payload_hash covers SKILL.md plus every bundled reference.
+#
+# Re-measured in Phase 2, which moved squad-designer from spec-only to
+# presentational code and changed all three sides of the handoff in one cycle
+# (plan decision 7). The pinned subject model, judge model, and acceptance set
+# did not change, so this is the same cycle, not a new one. The figures these
+# replaced are recorded under `phase_1_reference` below and in ./eval-contract.md,
+# so the comparison Phase 3 owes is against a stated number, not a git archaeology
+# exercise.
 skills:
   squad-designer:
-    version: 1.3.0
-    payload_hash: sha256:76adfef892fbfad5bc100360b77f53ba5f0a12cb796a0d8af9e2490ecffe7952
-    boundary_hash: sha256:beab7719fc65a52043cd7a60d738884b7a6f9945fac2d22347c427704b05e647
-    entrypoint_words: 1014
+    version: 2.0.0
+    payload_hash: sha256:6390f5c7f8b4d40dce65e7cbd0af1714f1497dea8a3aae2e35828aaaf497f295
+    boundary_hash: sha256:45b6073147b38c14324e812994988632c2ecc03db853f8dde84e0d2c2382e176
+    entrypoint_words: 1126
     reference_count: 7
-    reference_words: 4041
-    total_payload_words: 5055
+    reference_words: 4159
+    total_payload_words: 5285
   squad-frontend:
-    version: 1.4.0
-    payload_hash: sha256:d077aa556d7e1f820fad249dd3f10017740611296d4a711520093d0d9e838139
+    version: 1.5.0
+    payload_hash: sha256:2e79ff34e6885b145ab36cbcab08e22511f262ccf64983d0c685961ffec6880d
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 838
+    entrypoint_words: 848
     reference_count: 7
-    reference_words: 2768
-    total_payload_words: 3606
+    reference_words: 2978
+    total_payload_words: 3826
   squad-mobile:
-    version: 1.4.0
-    payload_hash: sha256:ed59e1099040cee82ba97caa9d3e53aef3fc94561c362298c6c93c8a56538128
+    version: 1.5.0
+    payload_hash: sha256:993ef52b894878f9649a7a61502ed627f07a9d8427e60a95a5288b6d8457eac6
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 692
+    entrypoint_words: 691
     reference_count: 6
-    reference_words: 1848
-    total_payload_words: 2540
+    reference_words: 1985
+    total_payload_words: 2676
 
 # Transcribed from the conditional reference rules in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of
@@ -63,7 +71,7 @@ task_types:
       - design-system-ux-accessibility-and-handoff.md
       - task-specific-ui-ux-research.md
       - ui-foundation-and-motion-selection.md
-    loaded_words: 3538
+    loaded_words: 3757
   - id: web-redesign-existing-system
     references:
       - anti-slop-quality-review.md
@@ -71,41 +79,52 @@ task_types:
       - design-system-ux-accessibility-and-handoff.md
       - task-specific-ui-ux-research.md
       - ui-foundation-and-motion-selection.md
-    loaded_words: 4287
+    loaded_words: 4509
   - id: figma-accepted-handoff
     references:
       - design-system-ux-accessibility-and-handoff.md
-    loaded_words: 1593
+    loaded_words: 1773
   - id: design-system-tokens
     references:
       - design-system-ux-accessibility-and-handoff.md
       - ui-foundation-and-motion-selection.md
-    loaded_words: 2254
+    loaded_words: 2471
   - id: motion-direction
     references:
       - ui-foundation-and-motion-selection.md
-    loaded_words: 1675
+    loaded_words: 1824
   - id: accessibility-audit
     references:
       - design-mindset-evaluation-and-official-sources.md
       - design-system-ux-accessibility-and-handoff.md
-    loaded_words: 1964
+    loaded_words: 2144
   - id: local-pattern-extension
     references:
       - codebase-first-examples.md
-    loaded_words: 1763
+    loaded_words: 1878
   - id: degraded-runtime-fallback
     references:
       - runtime-capability-fallbacks.md
       - ui-foundation-and-motion-selection.md
-    loaded_words: 2072
+    loaded_words: 2229
 
 # The governing budget for later phases (plan decision 5).
 budget:
   skill: squad-designer
-  entrypoint_words: 1014
-  median_loaded_words: 2018
+  entrypoint_words: 1126
+  median_loaded_words: 2187
   method: >-
     entrypoint words plus the median across task types of the words loaded for
     that task type; even-length medians are the mean of the two middle values,
     rounded half-up
+
+# The Phase 1 figures this cycle is compared against. Not recomputed: these
+# describe the spec-only skill measured at repository.commit, which no longer
+# exists in the working tree. Phase 3 owns bringing the current numbers back to
+# or below them; Phase 2 exceeded them by rewriting the role, not by padding.
+phase_1_reference:
+  squad-designer:
+    version: 1.3.0
+    entrypoint_words: 1014
+    median_loaded_words: 2018
+    total_payload_words: 5055

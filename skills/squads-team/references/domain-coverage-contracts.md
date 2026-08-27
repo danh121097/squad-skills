@@ -7,8 +7,9 @@ minimum deep coverage; the role still inspects the repository and current primar
 
 Must cover user/job/context, IA/flow and recovery, accepted Figma/repository design authority, task-specific
 visual and real-product UX research, design system tokens/components, all data/interaction states,
-responsive/adaptive/i18n, WCAG/platform accessibility, motion/reduced motion, anti-slop critique and exact
-implementation handoff. Produces specs, never production code.
+responsive/adaptive/i18n, WCAG/platform accessibility, motion/reduced motion, and anti-slop critique.
+The designer hands over presentational component code, not a written spec; state, data fetching, API
+integration, routing, forms submission, and platform lifecycle stay with the build role.
 
 ## Frontend
 

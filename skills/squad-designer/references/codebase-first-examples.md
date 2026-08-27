@@ -31,7 +31,7 @@ scale, and a shared `motion-tokens.ts`. It lacks a compact animated filter switc
 - Extend the existing `Tabs` API with a compact variant instead of adding a second tab system.
 - Reference beUI's shared-layout tabs only for indicator continuity; map the behavior to the repository's
   existing motion tokens and DOM/accessibility contract.
-- Specify loading, empty, error, permission-disabled, keyboard, and reduced-motion states.
+- Build loading, empty, error, permission-disabled, keyboard, and reduced-motion states into the component.
 - Reject unrelated glass cards, gradients, and animated counters because they do not support the task.
 
 ## Example 2: No Figma; greenfield React/Next.js product

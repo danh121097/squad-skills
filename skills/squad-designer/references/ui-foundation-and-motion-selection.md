@@ -61,18 +61,21 @@ Choose the lightest tool that satisfies the behavior:
   ScrollTrigger pin/scrub/snap sequences, or advanced SVG/canvas work.
 
 Do not let Motion and GSAP control the same elements or interaction. Define ownership boundaries. For
-GSAP, require lifecycle-scoped selectors, teardown/revert of timelines, contexts and ScrollTriggers,
-responsive variants, a performance budget, and reduced-motion fallback.
+GSAP, ship lifecycle-scoped selectors, teardown/revert of timelines, contexts and ScrollTriggers,
+responsive variants, and a reduced-motion fallback in the component you write.
 
 Use CSS instead of installing a motion dependency for an effect CSS handles cleanly.
 
 ### Cross-role ownership
 
-Designer owns the interaction intent, spatial model, motion purpose, timing character, reduced-motion
-equivalent and visual acceptance criteria. Frontend owns framework lifecycle, selector/element ownership,
-cleanup, bundle/performance impact and implementation verification. The greenfield defaults appear in both
-skills so each can run alone; maintain them as one policy and resolve conflict in this order: accepted
-design, existing repository system, then these defaults.
+Motion ownership follows authorship: whoever writes the animation code owns its lifecycle scoping,
+teardown, and reduced-motion fallback. Designer therefore owns cleanup for motion inside the
+presentational components it ships, alongside interaction intent, spatial model, purpose and timing
+character. Frontend and mobile own motion they add while wiring behavior — route transitions, data-driven
+and platform-lifecycle animation — plus bundle/performance verification of the whole app.
+
+The greenfield defaults appear in both skills so each can run alone; maintain them as one policy and
+resolve conflict in this order: accepted design, existing repository system, then these defaults.
 
 ## 6. Generative UI terminology
 

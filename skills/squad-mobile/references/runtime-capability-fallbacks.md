@@ -15,7 +15,7 @@ Read when AgentKit, a mobile specialist, Designer, device/emulator, docs lookup,
 | Phase | Preferred when installed | Native fallback |
 |---|---|---|
 | Scout/plan | `ak:scout`, `ak:plan`, `ak:scenario` | Inspect app files/configs/tests and model edge cases directly |
-| Design | `squad-designer`, design skills | Use accepted source or run bounded inline design contract |
+| Design | `squad-designer`, design skills | Use accepted source or build the presentational layer inline before wiring behavior |
 | Build | Mobile specialist | Follow repository framework and platform-native APIs |
 | Contract | `squad-backend`, docs specialist | Inspect API schema/client and official docs; report mismatch |
 | Debug | Debug/fix skill | Reproduce on available target, logs and tests; isolate cause directly |

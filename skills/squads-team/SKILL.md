@@ -8,7 +8,7 @@ keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code
 argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--delegate] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
 metadata:
   author: danh
-  version: "2.3.0"
+  version: "2.4.0"
 ---
 
 # Squads Team

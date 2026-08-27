@@ -76,11 +76,15 @@ Use CSS instead of adding Motion or GSAP for an effect CSS already handles clean
 
 ### Cross-role ownership
 
-Designer owns the accepted interaction/motion intent and visual acceptance criteria. Frontend owns the
-framework-native implementation, lifecycle/cleanup, selector/element ownership, dependencies, performance
-and verification. The shared greenfield baseline is intentionally repeated for standalone operation; keep
-it aligned with Designer's `ui-foundation-and-motion-selection.md`, and resolve conflicts through accepted
-design first, then the repository's existing system.
+Motion ownership follows authorship: whoever writes the animation code owns its lifecycle scoping,
+teardown, and reduced-motion fallback. Motion arriving inside designer-authored presentational components
+is already scoped and cleaned up there — verify it, do not re-own it. Frontend owns the motion it writes
+while wiring behavior, such as route transitions and data-driven animation, plus dependency approval and
+bundle/performance verification of the whole app.
+
+The shared greenfield baseline is intentionally repeated for standalone operation; keep it aligned with
+Designer's `ui-foundation-and-motion-selection.md`, and resolve conflicts through accepted design first,
+then the repository's existing system.
 
 ## 7. Cross-framework port
 

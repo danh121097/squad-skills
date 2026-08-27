@@ -72,11 +72,15 @@ devices where the product risk requires it. Design confirmation, undo/recovery, 
 recovery, export/delete and support escalation. Security controls should explain the next safe action
 without leaking protected existence or internal details.
 
-## Handoff evidence
+## Code handoff
 
-Deliver source frame/research links, flow, responsive frames/rules, tokens, component mapping, all states,
-content examples, interaction/motion timing, accessibility contract, assets/export rules, open decisions and
-acceptance checklist. Distinguish existing component reuse, extension and approved new dependency.
+The handoff is the built presentational layer plus the reasoning behind it. Deliver the component files in
+the repository's stack and file layout, the props/slots surface a consumer binds, tokens added or reused,
+every applicable state reachable from props, responsive rules as implemented, motion and reduced-motion
+behavior as shipped, and the accessibility semantics as built. Add source frame/research links, open
+decisions, and an acceptance checklist. Distinguish existing component reuse, extension and approved new
+dependency.
 
-Handoff must let a build role implement without inventing design decisions; it is still a contract, not
-production code.
+Emitted components must be inert: no fetch, no client/store wiring, no router, no persistence, no
+analytics, no secrets. Leave those seams as props, slots, or callbacks the build role binds, and say which
+verification you ran versus which the build role must run in the real app.

@@ -1,13 +1,17 @@
 import process from 'node:process';
 
+import { validateCrossSkillContract } from '../src/catalog/cross-skill-contract-validator.ts';
 import { validateSkills } from '../src/catalog/skill-validator.ts';
 
-const result = await validateSkills(process.cwd());
+const catalog = await validateSkills(process.cwd());
+const contract = await validateCrossSkillContract(process.cwd());
+const errors = [...catalog.errors, ...contract.errors];
 
-if (result.errors.length > 0) {
+if (errors.length > 0) {
   console.error('Skill validation failed:\n');
-  for (const error of result.errors) console.error(`- ${error}`);
+  for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log(`Validated ${result.skillNames.length} skills: ${result.skillNames.join(', ')}`);
+console.log(`Validated ${catalog.skillNames.length} skills: ${catalog.skillNames.join(', ')}`);
+console.log(`Cross-skill role contract checked across ${contract.checkedFiles.length} files.`);

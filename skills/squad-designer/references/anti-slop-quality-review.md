@@ -69,7 +69,8 @@ Pass every applicable check honestly:
 
 - Responsive layouts and dark/light themes preserve hierarchy when both themes are in scope.
 - WCAG 2.2 checks, realistic states, and implementation mapping are complete.
-- The final design is specific enough that a build role will not fill gaps with generic AI defaults.
+- The emitted components are complete enough that a build role wires behavior without filling visual
+  gaps with generic AI defaults.
 
-Record failed checks and revise the design before handoff. Do not claim Taste Skill ran when only this
+Record failed checks and revise the components before handoff. Do not claim Taste Skill ran when only this
 manual fallback was used.

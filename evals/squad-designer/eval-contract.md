@@ -6,7 +6,8 @@ where they disagree, this document is wrong until it is updated deliberately.
 
 Scope: the evaluation cycle that moves `squad-designer` from a spec-only role to
 a presentational-code role. Phase 1 defines the contract and freezes the
-baseline. It runs no models and makes no paid calls.
+baseline. Phase 2 performs the role change itself and re-measures. Neither runs
+models nor makes paid calls.
 
 ## Cycle rules
 
@@ -147,15 +148,46 @@ Words are counted as whitespace-delimited tokens over the whole file, matching
 `wc -w`, so any recorded figure can be checked by hand. The median of an
 even-length set is the mean of the two middle values, rounded half-up.
 
+### Phase 2 re-measurement
+
+Phase 2 rewrote the skill the budget governs, so the recorded figures no longer
+describe the tree Phase 1 measured. They were recomputed rather than preserved,
+because a recorded number that does not reproduce from the working tree turns
+the gate off. What Phase 1 measured is kept as `phase_1_reference` in
+`baseline-manifest.yml` so the comparison target is a stated number rather than
+a git-history lookup:
+
+| Figure                       | Phase 1 | Phase 2 | Delta |
+| ---------------------------- | ------: | ------: | ----: |
+| `squad-designer` entrypoint  |   1,014 |   1,126 |  +112 |
+| median loaded words per task |   2,018 |   2,187 |  +169 |
+| total payload words          |   5,055 |   5,285 |  +230 |
+
+The overage is a Phase 3 input, not an accepted regression. Phase 3 owns the
+1,014-word entrypoint cap and the no-regression rule on median loaded words, and
+its planned work — merging two references away and turning the entrypoint into a
+platform/source router — is what pays the overage back. Phase 2 stayed inside
+the existing seven-reference structure on purpose: consolidating and changing
+the role contract in one step would make a routing regression and a boundary
+regression indistinguishable.
+
+The pinned subject model, judge model, and acceptance set did not change, so
+re-measurement stays inside this cycle rather than starting a new one.
+
 ## What the recorded commits mean
 
-`repository.commit` names the commit whose `skills/` tree the baseline was
-measured from. Phase 1 changed no skill content, so it stays at that commit and
-is **not** re-recorded when later phase work lands; re-recording it would point
-at a tree the measurement never ran against. It is a human-readable anchor, not
-the freeze proof. The freeze proof is `payload_hash` and the recorded word
-counts, which `pnpm validate:evals` recomputes from the working tree on every
-run — a drifted skill fails the gate whatever the commit line says.
+`repository.commit` names the commit whose `skills/` tree Phase 1 measured, so
+it anchors the `phase_1_reference` figures rather than the figures recorded
+above them — those Phase 2 recomputed from a later tree. Nothing validates it:
+`pnpm validate:evals` machine-checks `private_store.commit` and never reads this
+one. The freeze proof for the current figures is `payload_hash` and the recorded
+word counts, which the gate recomputes from the working tree on every run — a
+drifted skill fails whatever the commit line says.
+
+`phase_1_reference` is human-maintained on the same terms. No validator reads
+it, so it carries the comparison target by convention: a cycle that edits it is
+editing the number it is measured against, and only reviewing that diff catches
+it. This is the budget-metric limitation below applied to the baseline itself.
 
 `private_store.commit` is the opposite: it is machine-checked. When
 `EVAL_PRIVATE_PATH` is set, the gate reads the store's `.git` HEAD and fails if
@@ -168,12 +200,20 @@ their shared handoff contract in the same cycle (plan decision 7). The manifest
 records a hash of each skill's `## Scope and boundary` section; the statements
 themselves stay in the skills, which remain the single source.
 
-- `squad-designer` produces specs, not production code, and hands the accepted
-  contract to `squad-frontend` or `squad-mobile`. **Phase 2 changes this.**
+- `squad-designer` hands over presentational component code, not a written spec,
+  with props and slots left open for the consumer to bind. state, data fetching,
+  API integration, routing, forms submission, and platform lifecycle stay with
+  the build role. **Changed in Phase 2; `boundary_hash` moved with it.**
 - `squad-frontend` builds the client side and does not implement server APIs,
   schemas, server business logic, infrastructure, or deployment.
 - `squad-mobile` owns screens, navigation, client state, persistence, and
   platform integration, and does not implement shared server APIs or web UI.
+
+`squad-frontend` and `squad-mobile` keep their Phase 1 `boundary_hash`: what they
+deliver did not change, only what they receive, which is stated in their design
+intake references. Those references are held to the shared wording by
+`src/catalog/cross-skill-contract-validator.ts`, which fails `pnpm validate` when
+any one side of the handoff is edited alone.
 
 ## What Phase 1 deliberately does not do
 
@@ -181,3 +221,12 @@ themselves stay in the skills, which remain the single source.
 - No change to any skill's content or version.
 - No render harness; that is Phase 4.
 - No public `learn-skill` package (plan decision 4).
+
+## What Phase 2 deliberately does not do
+
+- No model runs, no judging, no scoring; the invariant and rubric registries stay
+  unexercised until Phase 4 builds the harness.
+- No reference consolidation and no platform expansion; that is Phase 3.
+- No enforcement of the forbidden-import rule `INV-SCOPE-001` names. Phase 2
+  states the boundary in prose and gates the wording; proving emitted code obeys
+  it needs the Phase 4 harness.

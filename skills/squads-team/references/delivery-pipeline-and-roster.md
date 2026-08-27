@@ -6,7 +6,7 @@ Read before routing roles or advancing any slice through Design, QA, Review, int
 
 | Role | Delivers | Must not absorb |
 |---|---|---|
-| Designer | UX flow, IA, hierarchy, tokens, states, responsive, motion, accessibility, implementation spec | Production code |
+| Designer | UX flow, IA, hierarchy, tokens, states, responsive, motion, accessibility, and the presentational components that render them | State, data, API, routing, platform lifecycle |
 | Frontend | Web UI, client state/forms/navigation, Backend API integration, a11y/performance | Server APIs, shared DB/business logic, infra |
 | Backend | Shared APIs/contracts, auth, DB/data access, server business logic, migrations | Web/mobile UI, deployment pipelines |
 | Mobile | App UI/navigation, client logic, API integration, persistence/offline/sync, device concerns | Shared server APIs/DB/business logic, web UI |
@@ -18,6 +18,13 @@ Named `squad-*` skills are preferred when installed. The role must load its `SKI
 deep references; merely naming the skill is not enough. When absent, the lead gives the role this matrix,
 the acceptance/ownership/evidence contract and the relevant section of `domain-coverage-contracts.md`;
 AgentKit is not required.
+
+### Designer-to-build handoff
+
+The designer hands over presentational component code, not a written spec, with props and slots left open
+for the consumer to bind. Behavior belongs downstream: state, data fetching, API integration, routing,
+forms submission, and platform lifecycle stay with the build role. Frontend and Mobile wire behavior into the components they receive; a
+visual or interaction gap returns to Designer instead of being redesigned inside the slice.
 
 ## 2. Automatic routing
 
@@ -64,8 +71,8 @@ In single-session mode, these are separate logical passes and the reduced indepe
 
 Use only when the named role skill is unavailable:
 
-- **Designer:** accepted Figma/codebase first; research only when needed; define complete states,
-  responsive, tokens, motion, accessibility and component mapping; no production code.
+- **Designer:** accepted Figma/codebase first; research only when needed; build presentational components
+  with complete states, responsive behavior, tokens, motion and accessibility; no behavior wiring.
 - **Frontend:** preserve repo stack; model API/permissions/states before UI; implement client only; verify
   type/lint/build/tests/browser/a11y/performance as applicable.
 - **Backend:** contract and data safety first; validate/authz at boundaries; reversible migrations; threat

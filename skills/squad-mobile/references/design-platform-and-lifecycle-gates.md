@@ -5,12 +5,24 @@ biometrics, IAP, accessibility, or performance is affected.
 
 ## Design gate
 
+The designer hands over presentational component code, not a written spec: screens and components that
+render in the app's framework, with props and slots left open for you to bind, plus the rationale behind
+them. Wire behavior into that code instead of rebuilding it: state, data fetching, API integration,
+routing, forms submission, and platform lifecycle stay with the build role, so navigation, offline, and
+lifecycle behavior are yours to add without altering the visual language.
+
+Motion ownership follows authorship: whoever writes the animation code owns its lifecycle scoping,
+teardown, and reduced-motion fallback. Verify designer-authored motion against real device behavior;
+re-own it only when you rewrite it.
+
 - Treat accepted Figma as design intent and map it to existing app components and platform conventions.
 - Trigger `squad-designer` for new/redesigned UX, missing responsive/adaptive behavior, interaction,
   accessibility, states, or cross-screen component language.
 - Skip Designer for logic-only work, narrow bugs, complete accepted designs, and exact local patterns.
 - If Designer is unavailable, inspect the codebase, research task-specific mobile flows when needed, then
-  define hierarchy, navigation, components, states, platform adaptation and accessibility inline.
+  build the presentational components inline — hierarchy, navigation surface, states, platform adaptation
+  and accessibility — before wiring behavior into them.
+- Report a visual or interaction gap back to the Designer stage; do not redesign inside the feature.
 
 ## Platform and lifecycle model
 
