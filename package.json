@@ -1,0 +1,63 @@
+{
+  "name": "squad-skills",
+  "version": "0.1.0",
+  "description": "Role-specialized engineering squad skills for AI coding agents.",
+  "type": "module",
+  "bin": {
+    "squad-skills": "./bin/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "skills",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "agent-skills",
+    "ai-agents",
+    "claude-code",
+    "codex",
+    "cursor",
+    "opencode",
+    "skills"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danh121097/squad-skills.git"
+  },
+  "homepage": "https://github.com/danh121097/squad-skills#readme",
+  "bugs": {
+    "url": "https://github.com/danh121097/squad-skills/issues"
+  },
+  "engines": {
+    "node": ">=22.20.0"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "scripts": {
+    "build": "obuild",
+    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\"",
+    "pack:check": "node scripts/check-package-contents.ts",
+    "prepublishOnly": "pnpm release:check",
+    "release:check": "pnpm test && pnpm build && node scripts/check-release-readiness.ts && pnpm pack:check",
+    "skills:list": "skills add . --list",
+    "test": "pnpm type-check && pnpm format:check && pnpm test:unit && pnpm validate && pnpm skills:list",
+    "test:unit": "vitest run",
+    "type-check": "tsc --noEmit",
+    "validate": "node scripts/validate-skills.ts"
+  },
+  "dependencies": {
+    "skills": "1.5.23"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "obuild": "^0.4.22",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17",
+    "yaml": "^2.8.3"
+  }
+}

@@ -1,0 +1,26 @@
+.DS_Store
+coverage/
+dist/
+*.tgz
+node_modules/
+*.log
+*.tsbuildinfo
+.env*
+!.env.example
+
+# Keep this pnpm-only repository free of other package-manager locks.
+bun.lock
+package-lock.json
+yarn.lock
+
+# Local Skills CLI installation outputs belong to consumers, not this catalog.
+.agents/
+.claude/
+.cursor/
+.opencode/
+skills-lock.json
+
+pnpm-debug.log*
+
+# Local AgentKit execution records are not repository documentation.
+plans/

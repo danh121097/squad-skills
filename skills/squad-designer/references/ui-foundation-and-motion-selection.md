@@ -1,0 +1,86 @@
+# UI foundation and motion selection
+
+Read this reference when classifying an existing versus greenfield project, selecting a framework UI
+foundation, porting an interaction across frameworks, choosing animation technology, or evaluating
+OpenUI. Do not use these defaults to replace a working local system.
+
+## 1. Existing codebase
+
+Treat the repository as the implementation authority. Inspect components, variants, tokens, CSS strategy,
+layout shells, content density, motion utilities, accessibility behavior, dependencies, routes, and tests.
+Reuse and extend them before proposing anything new.
+
+When accepted Figma also exists, preserve its design intent but map it onto repository primitives. Report
+material conflicts; do not silently fork the visual system.
+
+Do not introduce shadcn, Reka UI, Motion, GSAP, beUI, or another foundation merely because it is listed
+below. A new dependency requires a demonstrated gap and explicit approval.
+
+## 2. Greenfield React/Next.js
+
+- Establish semantic color, typography, spacing, radius, surface, focus, and motion tokens first.
+- Prefer shadcn/ui for accessible open-code components.
+- Use selected beUI source/components for purposeful animated patterns; inspect live source and dependencies
+  before adoption and keep the set coherent.
+- Use Motion for React for component-state, layout, gesture, enter/exit, and ordinary scroll-linked motion.
+- Reserve GSAP for requirements that need its timeline or plugin model.
+
+Use the [beUI Agent Guide](https://beui.dev/docs/ai-agents),
+[component catalog](https://beui.dev/components/motion), and
+[Motion Guide](https://beui.dev/docs/motion-patterns) as current references.
+beUI is a preferred optional source, not a dependency or authority over the repository/design contract.
+Verify live availability, source, license and dependencies before adopting a component; if a deep link moves,
+use the beUI root/catalog or implement the same accepted behavior with local primitives.
+
+## 3. Greenfield Vue/Nuxt
+
+- Establish the same semantic token foundation before composing screens.
+- Prefer Reka UI for accessible unstyled primitives, keyboard behavior, focus management, and composition.
+- Style with the project's chosen CSS/Tailwind token layer.
+- When a shadcn-like styled open-code layer is desired, use shadcn-vue, whose primitives are powered by
+  Reka UI. Raw Reka primitives are not themselves a complete styled component system.
+- Use Motion for Vue (`motion-v`) for component-state, layout, gesture, enter/exit, and ordinary
+  scroll-linked motion.
+- Reserve GSAP for requirements that need its timeline or plugin model.
+
+## 4. Cross-framework adaptation
+
+Port the design and behavior contract—not framework syntax. Translate component states, controlled state,
+slots/children, focus and keyboard behavior, layout continuity, timing, responsive behavior, and semantic
+tokens through the target framework's native composition model. Never paste React components into Vue or
+Vue components into React.
+
+## 5. Animation decision
+
+Choose the lightest tool that satisfies the behavior:
+
+- **CSS:** local hover, color, opacity, and small transform transitions.
+- **Motion React / Motion for Vue:** declarative component-state animation, enter/exit, layout continuity,
+  gestures, and ordinary scroll-linked UI behavior.
+- **GSAP:** precise multi-step timelines, tightly synchronized choreography across many targets,
+  ScrollTrigger pin/scrub/snap sequences, or advanced SVG/canvas work.
+
+Do not let Motion and GSAP control the same elements or interaction. Define ownership boundaries. For
+GSAP, require lifecycle-scoped selectors, teardown/revert of timelines, contexts and ScrollTriggers,
+responsive variants, a performance budget, and reduced-motion fallback.
+
+Use CSS instead of installing a motion dependency for an effect CSS handles cleanly.
+
+### Cross-role ownership
+
+Designer owns the interaction intent, spatial model, motion purpose, timing character, reduced-motion
+equivalent and visual acceptance criteria. Frontend owns framework lifecycle, selector/element ownership,
+cleanup, bundle/performance impact and implementation verification. The greenfield defaults appear in both
+skills so each can run alone; maintain them as one policy and resolve conflict in this order: accepted
+design, existing repository system, then these defaults.
+
+## 6. Generative UI terminology
+
+- **AI-assisted UI implementation:** an agent writes stable application components during development.
+  beUI, shadcn, Reka, and Motion may be used without OpenUI.
+- **Runtime Generative UI:** the shipped product asks a model to emit an abstract UI tree while running,
+  and a renderer maps it to registered allowed components.
+
+Use the [beUI OpenUI guide](https://beui.dev/docs/openui) only for the second behavior. OpenUI is not a
+default dependency for normal screens. Treat that guide as changing external documentation and verify it
+live before relying on exact APIs.
