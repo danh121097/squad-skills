@@ -1,10 +1,23 @@
-# Runtime capability fallbacks
+# Runtime capability pairing and fallbacks
 
-Read when AgentKit, a mobile specialist, Designer, device/emulator, docs lookup, QA, or Review is missing.
+Read before selecting tools for a phase, and whenever AgentKit, a mobile specialist, Designer,
+device/emulator, docs lookup, QA, or Review is in question.
+
+## AgentKit pairing
+
+Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
+`ak` CLI.
+
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
+  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
+  rules stay authoritative wherever the two disagree.
+- **Absent** — run the native fallback for the same phase at the same standard.
+
+Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
 
 ## Rules
 
-- AgentKit and named specialist skills are optional; inspect the live catalog before invocation.
+- Inspect the live catalog before invoking any named skill.
 - Preserve design, lifecycle, security, accessibility and verification outcomes through native tools.
 - Never auto-install a skill, SDK, package, native module, emulator image, plugin, or MCP server.
 - Follow repository and platform versions; use current official docs for unstable APIs.
@@ -12,10 +25,10 @@ Read when AgentKit, a mobile specialist, Designer, device/emulator, docs lookup,
 
 ## Capability mapping
 
-| Phase | Preferred when installed | Native fallback |
+| Phase | Pair when installed | Native fallback |
 |---|---|---|
 | Scout/plan | `ak:scout`, `ak:plan`, `ak:scenario` | Inspect app files/configs/tests and model edge cases directly |
-| Design | `squad-designer`, design skills | Use accepted source or build the presentational layer inline before wiring behavior |
+| Design | `squad-designer`; `ui-ux-pro-max` as reference data only | Use accepted source or build the presentational layer inline before wiring behavior |
 | Build | Mobile specialist | Follow repository framework and platform-native APIs |
 | Contract | `squad-backend`, docs specialist | Inspect API schema/client and official docs; report mismatch |
 | Debug | Debug/fix skill | Reproduce on available target, logs and tests; isolate cause directly |

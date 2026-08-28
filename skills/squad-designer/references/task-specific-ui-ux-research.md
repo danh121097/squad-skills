@@ -33,6 +33,13 @@ interaction and editorial craft; teardown libraries and live production products
 progressive disclosure, microcopy, navigation, states, and micro-interactions. Prefer direct
 product evidence over a gallery's interpretation.
 
+When `ui-ux-pro-max` is installed, query it before opening a gallery: its local style, palette,
+typography, UX-guideline, and stack data is structured, citable, and cheaper than crawling. Use it to
+name the current vocabulary and shortlist directions, then spend web research on what it does not
+cover — real-product flow sequence, domain conventions, and live state behavior. Read it as a source,
+the way a gallery or teardown is read; do not delegate the screen to it. It is design intelligence, not
+product authority: lane 1 and WCAG 2.2 still decide.
+
 Marketing and award sites are weak evidence for dense forms, admin tools, permissions, error recovery,
 or recurring workflows. Teardown libraries are reference material, not proof that a pattern is correct
 for the current audience. Some sources require an account or paid access; never bypass access controls.

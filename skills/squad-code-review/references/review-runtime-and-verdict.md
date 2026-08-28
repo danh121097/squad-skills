@@ -1,7 +1,19 @@
-# Review runtime and verdict
+# Review runtime pairing and verdict
 
-Read before review or when AgentKit, stack specialists, test environments, docs lookup, or QA evidence is
-unavailable.
+Read before review or tool selection, and whenever AgentKit, stack specialists, test environments, docs
+lookup, or QA evidence is in question.
+
+## AgentKit pairing
+
+Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
+`ak` CLI.
+
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
+  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
+  rules stay authoritative wherever the two disagree.
+- **Absent** — run the native fallback for the same phase at the same standard.
+
+Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
 
 ## Review dimensions
 
@@ -17,7 +29,7 @@ Select dimensions by change risk:
 
 ## Capability mapping
 
-| Need | Preferred when installed | Native fallback |
+| Need | Pair when installed | Native fallback |
 |---|---|---|
 | Scope/blast radius | `ak:scout` | Search callers, consumers, schemas, configs and tests directly |
 | Core review | `ak:code-review`, PR review skill | Inspect target diff and repository evidence manually |
@@ -25,8 +37,8 @@ Select dimensions by change risk:
 | Stack checks | Framework/provider specialists | Use repository patterns and current official docs |
 | Verify claim | Debug/test skill | Run focused repro/test/static command directly |
 
-AgentKit is optional. Never auto-install a skill, scanner, package, plugin, MCP server or CLI. If required
-QA evidence or runtime access is missing, state the limitation; do not convert uncertainty into approval.
+Never auto-install a skill, scanner, package, plugin, MCP server or CLI. If required QA evidence or
+runtime access is missing, state the limitation; do not convert uncertainty into approval.
 
 ## Severity
 

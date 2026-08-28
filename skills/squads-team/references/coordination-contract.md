@@ -6,7 +6,9 @@ falling back to a single-session role loop.
 ## 1. Runtime discovery
 
 Inspect live capabilities; do not assume AgentKit, Claude Agent Teams, Codex collaboration, subagents,
-worktrees, shared task boards or named squad skills exist.
+worktrees, shared task boards or named squad skills exist. Detect AgentKit once per run by inspecting the
+live skill catalog for `ak:*` entries or an available `ak` CLI, and record the result in the task contract
+so every role pairs or falls back consistently.
 
 Select the strongest safe mode:
 
@@ -18,8 +20,10 @@ Select the strongest safe mode:
 If the user forces an unavailable mode, report the missing capability and request direction rather than
 silently changing the execution contract. In `auto`, fall back transparently.
 
-AgentKit is optional in every mode. Role skills are preferred when installed; otherwise use the inline
-role contracts in `delivery-pipeline-and-roster.md`.
+When AgentKit is installed, each role reads its task-relevant references first, then pairs the
+phase-matched `ak:*` skill; role boundaries, gates and evidence rules stay authoritative wherever the two
+disagree. When it is absent, roles run the native fallback at the same standard. Role skills are preferred
+when installed; otherwise use the inline role contracts in `delivery-pipeline-and-roster.md`.
 
 `--devs N` is an upper bound on concurrent build slices, not a requirement to invent `N` tasks and not a
 count of Designer/QA/Review gates. Map at most one developer to each genuinely independent implementation

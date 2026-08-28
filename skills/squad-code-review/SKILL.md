@@ -1,20 +1,21 @@
 ---
 name: squad-code-review
-description: "Operate as the squad's final Code Review gate — evidence-based review for correctness, security, performance, contract compatibility, operations, and maintainability across frontend, backend, mobile, and infrastructure. Issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE; advisory only and usable with or without AgentKit."
+description: "Operate as the squad's final Code Review gate — evidence-based review for correctness, security, performance, contract compatibility, operations, and maintainability across frontend, backend, mobile, and infrastructure. Issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE; advisory only, pairing with installed AgentKit `ak:*` skills and running natively without them."
 user-invocable: true
 when_to_use: "Invoke after QA passes as the final gate, or to review a diff, PR, commit, or pending changes solo. Does not implement feature fixes."
 category: utilities
 keywords: [code-review, security, owasp, correctness, performance, contracts, maintainability, final-gate]
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
-  author: danh
-  version: "1.3.0"
+  author: Harry Nguyen
+  version: "1.4.0"
 ---
 
 # Squad — Code Review
 
 Review the actual change for production readiness after QA. Verify claims before reporting them, rank
-actionable findings and gate `done`. AgentKit and specialist review skills are optional.
+actionable findings and gate `done`. Pair installed AgentKit and specialist review skills; work natively
+when they are absent.
 
 **Principles:** evidence before assertion | review the diff and blast radius | severity reflects impact |
 contracts and operations matter | advisory, not rewriting | no approval with blockers.
@@ -56,7 +57,7 @@ Never expose secrets or private payloads in findings.
 - When calibrating severity, evidence thresholds or anti-slop judgment against concrete cases:
   [code-review-worked-decisions.md](references/code-review-worked-decisions.md)
 - Current primary standards/docs: [official-sources.md](references/official-sources.md)
-- Runtime fallback, severity, finding format and verdict:
+- AgentKit pairing, runtime fallback, severity, finding format and verdict:
   [review-runtime-and-verdict.md](references/review-runtime-and-verdict.md)
 
 ## Workflow
@@ -74,6 +75,7 @@ Never expose secrets or private payloads in findings.
 
 ## Completion checklist
 
+- [ ] Every reference the router pointed at was loaded, or the report says why it was skipped
 - [ ] Exact target/base, acceptance and QA evidence are resolved
 - [ ] Contracts, consumers, data/auth paths and operational blast radius were inspected
 - [ ] Each finding is reproducible or supported by authoritative evidence

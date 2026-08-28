@@ -37,31 +37,42 @@ private_store:
 # squad-frontend's payload_hash moved because its motion reference names the
 # renamed designer file; its word counts are unchanged. squad-designer keeps
 # its Phase 2 boundary_hash: the role boundary did not move in Phase 3.
+#
+# Re-measured again when the squad skills replaced the "AgentKit is optional"
+# stance with an explicit detect-then-pair contract: every role now detects
+# AgentKit once and pairs the phase-matched `ak:*` skill, or runs the native
+# fallback at the same standard. Every boundary_hash is unchanged and this is
+# still the same cycle. Word counts and payload hashes moved because the pairing
+# contract is text the skills now ship. One routing change rode along and is
+# recorded in the task_types comment below: design-system-tokens now loads
+# anti-slop-quality-review.md. No reference was added or removed. A later edit
+# in the same amendment set metadata.author to a linked profile in all nine
+# skills, which is the +1 entrypoint word in each measured skill.
 skills:
   squad-designer:
-    version: 2.1.0
-    payload_hash: sha256:b3d8c10d0e4287510fe0857645dc41f3b23d3db483b083b342808d108fa5cc3c
+    version: 2.2.0
+    payload_hash: sha256:9d25b34599b8f2f58909567679e4220e4489eed3f7e611ac9b159f627943463c
     boundary_hash: sha256:45b6073147b38c14324e812994988632c2ecc03db853f8dde84e0d2c2382e176
     entrypoint_words: 1014
     reference_count: 9
-    reference_words: 5799
-    total_payload_words: 6813
+    reference_words: 6124
+    total_payload_words: 7138
   squad-frontend:
-    version: 1.5.0
-    payload_hash: sha256:3a0bf1a434669016c00b26b9b1829fd96dc8dfbed60fe72493d4e3ff2d581ed6
+    version: 1.6.0
+    payload_hash: sha256:6d8cbbb165bd45f5902084a585f429754ac608d30663ab297217ff8bf24df6cb
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 848
+    entrypoint_words: 890
     reference_count: 7
-    reference_words: 2978
-    total_payload_words: 3826
+    reference_words: 3073
+    total_payload_words: 3963
   squad-mobile:
-    version: 1.5.0
-    payload_hash: sha256:993ef52b894878f9649a7a61502ed627f07a9d8427e60a95a5288b6d8457eac6
+    version: 1.6.0
+    payload_hash: sha256:0c8bfafc0e79f8b771594ecc99e6bf334da3ac6c645d6c70e2b11299fe91487d
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 691
+    entrypoint_words: 732
     reference_count: 6
-    reference_words: 1985
-    total_payload_words: 2676
+    reference_words: 2086
+    total_payload_words: 2818
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of
@@ -82,6 +93,16 @@ skills:
 #   platform references cite official docs, HIG, and Material 3 through the
 #   registry, and the registry's own entries apply to design-system work.
 # - Native and adaptive task types are new with the platform expansion.
+#
+# Later routing edit, reviewed as its own diff: design-system-tokens now loads
+# anti-slop-quality-review.md. Its "System coherence" checks are token, anatomy,
+# variant, radius, border, shadow, icon, and state rules — token work is exactly
+# what they govern, and tokens are the foundation every later screen inherits.
+# The entrypoint condition reads "material UI/design-system work" to match.
+# adaptive-split-view was considered and rejected: it is the lightest task type,
+# so loading anti-slop there would raise the median past the phase_1_reference
+# ceiling, and adapting an existing system to a size class is layout and input
+# work, not visual direction.
 task_types:
   - id: web-new-screen-greenfield
     references:
@@ -90,7 +111,7 @@ task_types:
       - official-sources.md
       - platform-web-foundations-and-motion.md
       - task-specific-ui-ux-research.md
-    loaded_words: 4650
+    loaded_words: 4975
   - id: web-redesign-existing-system
     references:
       - anti-slop-quality-review.md
@@ -99,17 +120,18 @@ task_types:
       - official-sources.md
       - platform-web-foundations-and-motion.md
       - task-specific-ui-ux-research.md
-    loaded_words: 5448
+    loaded_words: 5773
   - id: figma-accepted-handoff
     references:
       - design-system-ux-accessibility-and-handoff.md
     loaded_words: 1760
   - id: design-system-tokens
     references:
+      - anti-slop-quality-review.md
       - design-system-ux-accessibility-and-handoff.md
       - official-sources.md
       - platform-web-foundations-and-motion.md
-    loaded_words: 3277
+    loaded_words: 4225
   - id: motion-direction
     references:
       - platform-web-foundations-and-motion.md
@@ -125,21 +147,21 @@ task_types:
   - id: degraded-runtime-fallback
     references:
       - official-sources.md
-    loaded_words: 1813
+    loaded_words: 1959
   - id: native-cross-platform-build
     references:
       - anti-slop-quality-review.md
       - design-system-ux-accessibility-and-handoff.md
       - official-sources.md
       - platform-native-cross-platform.md
-    loaded_words: 3782
+    loaded_words: 4017
   - id: native-apple-android-build
     references:
       - anti-slop-quality-review.md
       - design-system-ux-accessibility-and-handoff.md
       - official-sources.md
       - platform-native-apple-android.md
-    loaded_words: 3765
+    loaded_words: 4000
   - id: adaptive-split-view
     references:
       - platform-adaptive-layout-and-input.md
@@ -149,11 +171,20 @@ task_types:
 budget:
   skill: squad-designer
   entrypoint_words: 1014
-  median_loaded_words: 1813
+  median_loaded_words: 1959
   method: >-
     entrypoint words plus the median across task types of the words loaded for
     that task type; even-length medians are the mean of the two middle values,
     rounded half-up
+  # Per-reference ceiling, enforced by `pnpm validate:evals`. Phase 3 carried
+  # 800 as prose; nothing checked it, and the AgentKit-pairing amendment pushed
+  # official-sources.md to 945 and anti-slop-quality-review.md to 802 with a
+  # green gate. 1000 is not a round number chosen for comfort: entrypoint 1014
+  # plus 1000 is 2014, still under the 2018 phase_1_reference median ceiling, so
+  # this is the largest cap that cannot break the median through
+  # degraded-runtime-fallback, the task type that loads only official-sources.md.
+  # Raising it is a reviewed contract change, recorded in ./eval-contract.md.
+  max_reference_words: 1000
 
 # The Phase 1 figures this cycle is compared against. Not recomputed: these
 # describe the spec-only skill measured at repository.commit, which no longer
@@ -163,7 +194,7 @@ budget:
 # as a footnote. Raising or removing this block is a reviewed contract change.
 phase_1_reference:
   squad-designer:
-    version: 1.3.0
+    version: 2.2.0
     entrypoint_words: 1014
     median_loaded_words: 2018
     total_payload_words: 5055

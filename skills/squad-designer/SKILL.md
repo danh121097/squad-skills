@@ -7,8 +7,8 @@ category: design
 keywords: [ui, ux, design, design-system, tokens, accessibility, motion, react-native, flutter, swiftui, compose, presentational-code]
 argument-hint: "[screen/flow to design]"
 metadata:
-  author: danh
-  version: "2.1.0"
+  author: Harry Nguyen
+  version: "2.2.0"
 ---
 
 # Squad — Designer
@@ -70,12 +70,13 @@ is never implied render-gated.
 
 ## Source router
 
-- When choosing, trusting, or fetching an external source, or when a named capability is
-  unavailable, read [references/official-sources.md](references/official-sources.md) — the
-  single registry; agent-ready sources are fetched, never bundled.
+- When choosing, trusting, or fetching an external source, or before pairing an installed
+  `ak:*` skill or consulting `ui-ux-pro-max`, read
+  [references/official-sources.md](references/official-sources.md) — the single registry;
+  agent-ready sources are fetched, never bundled.
 - When no accepted Figma exists and the task materially creates or redesigns UI/UX, read
   [references/task-specific-ui-ux-research.md](references/task-specific-ui-ux-research.md).
-- For material UI creation/redesign or an anti-slop pre-flight, read
+- For material UI/design-system work, current visual vocabulary, or an anti-slop pre-flight, read
   [references/anti-slop-quality-review.md](references/anti-slop-quality-review.md).
 - For flows, IA, design systems/tokens, component states, accessibility, evaluation passes, and
   the code handoff, read
@@ -87,8 +88,7 @@ is never implied render-gated.
 
 Derive the direction from product purpose, content, audience, brand, and existing UI—never a
 generic template; hierarchy through typography, spacing, grouping, and contrast before
-decoration; motion only with a spatial, feedback, state, or continuity purpose. The anti-slop
-reference carries the full checklist and vocabulary side.
+decoration; motion only with a spatial, feedback, state, or continuity purpose.
 
 ## Workflow
 
@@ -129,4 +129,5 @@ reference carries the full checklist and vocabulary side.
 - [ ] Motion ships its own teardown and reduced-motion behavior; accessibility and realistic
       content covered in the built output
 - [ ] No state, data fetching, API call, routing, or lifecycle code emitted
-- [ ] Verification tier stated; capability gaps and proposed dependencies explicit
+- [ ] Verification tier, loaded and skipped references, capability gaps, and proposed
+      dependencies stated

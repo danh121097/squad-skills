@@ -199,6 +199,78 @@ required by the budget-metric limitation above is how those edits were
 accepted. The same phase made `phase_1_reference` a machine-enforced ceiling,
 closing the open question Phase 2 left about an unenforced comparison.
 
+### In-cycle re-measurement: AgentKit pairing
+
+The squad skills replaced the "AgentKit is optional" stance with an explicit
+detect-then-pair contract: a role detects AgentKit once, reads its task-relevant
+references, then pairs the phase-matched `ak:*` skill, or runs the native
+fallback at the same standard. `ui-ux-pro-max` is named as consulted reference
+data rather than a skill a role delegates to, and every skill gained a checklist
+item requiring the report to name the references it loaded or say why one was
+skipped. The change spans all nine squad skills; this cycle measures the three
+it governs.
+
+| Figure                       | Phase 1 | Phase 3 |   Now |
+| ---------------------------- | ------: | ------: | ----: |
+| `squad-designer` entrypoint  |   1,014 |   1,014 | 1,013 |
+| median loaded words per task |   2,018 |   1,813 | 1,958 |
+| total payload words          |   5,055 |   6,813 | 7,137 |
+
+The entrypoint stayed under its cap without trimming knowledge: the intake
+requirement folded into an existing checklist item, and a pointer the source
+router already carried was removed. The median rose because the pairing contract
+and the `ui-ux-pro-max` registry entry live in `official-sources.md`, which the
+median-setting task type loads. It stays under the `phase_1_reference` ceiling,
+so the no-regression rule holds without raising the number it is measured
+against.
+
+One routing edit, reviewed as its own diff under the budget-metric limitation
+above: `design-system-tokens` now loads `anti-slop-quality-review.md`. The
+reference's "System coherence" checks govern tokens, anatomy, variants, radii,
+borders, shadows, icons, and state behavior — token work is what they are about,
+and tokens are the foundation later screens inherit. The edit raises that task
+type's load rather than lowering the budget, and the entrypoint condition reads
+"material UI/design-system work" to match. `adaptive-split-view` was considered
+and rejected: it is the lightest task type, so loading anti-slop there would make
+it the median and push past the ceiling, and adapting an existing system to a
+size class is layout and input work, not visual direction.
+
+No reference was added, removed, or renamed, and no `boundary_hash` moved: role
+boundaries did not change, only how each role sources knowledge and tools. The
+pinned subject model, judge model, and acceptance set are unchanged, so this is
+still the same cycle.
+
+### Per-reference cap: from prose to gate
+
+The same amendment broke a limit no code enforced. Phase 3 carried "no single
+reference exceeds 800 words" as plan text; the pairing contract, the
+`ui-ux-pro-max` registry row, and the widened fallback table pushed
+`official-sources.md` to 945 words and `anti-slop-quality-review.md` to 802,
+with `pnpm test` green from start to finish. That is the failure the Phase 3
+review predicted when it accepted the convention as-is.
+
+The limit is now `budget.max_reference_words` in the manifest, checked by
+`pnpm validate:evals` against every reference of the governing skill. The field
+is required rather than optional: an optional cap can be deleted to silence a
+breach, which is the same hole in a different shape.
+
+**The cap is raised from 800 to 1,000 as a reviewed contract change.** The number
+is derived, not chosen for comfort. Entrypoint 1,014 plus a 1,000-word reference
+is 2,014, still under the 2,018 `phase_1_reference` median ceiling, so 1,000 is
+the largest cap that cannot break the median through `degraded-runtime-fallback`
+— the task type that loads the entrypoint and `official-sources.md` and nothing
+else, and therefore sets the median. Above 1,000 the two limits would contradict
+each other; below it, the cap would bind earlier than the governing metric
+without a measured reason.
+
+Why raise rather than trim back to 800: the median metric only guards the one
+reference the median task type loads. The other eight are all routed above the
+median, so they can grow without moving any measured number — the per-reference
+cap is the only check they have. Trimming 145 words to restore a figure nothing
+verified would have cost real content and left the same hole open for the next
+edit. The governing metric itself is untouched: `phase_1_reference` still reads
+1,014 and 2,018, and the measured budget still has to fit under both.
+
 ## What the recorded commits mean
 
 `repository.commit` names the commit whose `skills/` tree Phase 1 measured, so

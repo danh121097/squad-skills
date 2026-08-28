@@ -339,6 +339,45 @@ describe('validateEvalManifests', () => {
     ).toBe(true);
   });
 
+  it('fails when a single reference is over budget.max_reference_words', async () => {
+    const project = await createProject({
+      mutateBaseline: (manifest) => {
+        manifest.budget.max_reference_words = 2;
+      },
+    });
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    // alpha.md is two words and stays inside the cap; beta.md is three.
+    expect(
+      result.errors.some(
+        (error) => error.includes('budget.max_reference_words') && error.includes('beta.md')
+      )
+    ).toBe(true);
+    expect(result.errors.some((error) => error.includes('alpha.md'))).toBe(false);
+  });
+
+  it('rejects a missing or malformed budget.max_reference_words', async () => {
+    for (const cap of [undefined, 0, -1, 1.5, '1000']) {
+      const project = await createProject({
+        mutateBaseline: (manifest) => {
+          if (cap === undefined) delete manifest.budget.max_reference_words;
+          else manifest.budget.max_reference_words = cap;
+        },
+      });
+
+      const result = await validateEvalManifests(project.root, {
+        privatePath: project.privateRoot,
+      });
+
+      expect(
+        result.errors.some((error) =>
+          error.includes('budget.max_reference_words must be a positive integer')
+        )
+      ).toBe(true);
+    }
+  });
+
   it('rejects a phase_1_reference block that omits the budget skill', async () => {
     const project = await createProject({
       mutateBaseline: (manifest) => {
@@ -532,6 +571,7 @@ async function createProject(
       skill: budgetSkillName,
       entrypoint_words: measurement.entrypointWords,
       median_loaded_words: measurement.medianLoadedWords,
+      max_reference_words: 100,
     };
   }
 

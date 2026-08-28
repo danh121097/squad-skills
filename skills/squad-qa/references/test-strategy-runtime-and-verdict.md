@@ -1,7 +1,19 @@
-# Test strategy, runtime fallbacks, and verdict
+# Test strategy, runtime pairing, and verdict
 
-Read before designing scenarios or when AgentKit, test runners, browsers/devices, services or observability
-are unavailable.
+Read before designing scenarios or selecting tools, and whenever AgentKit, test runners, browsers/devices,
+services or observability are in question.
+
+## AgentKit pairing
+
+Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
+`ak` CLI.
+
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
+  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
+  rules stay authoritative wherever the two disagree.
+- **Absent** — run the native fallback for the same phase at the same standard.
+
+Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
 
 ## Risk matrix
 
@@ -18,7 +30,7 @@ Select applicable dimensions; do not run every category mechanically:
 
 ## Capability mapping
 
-| Need | Preferred when installed | Native fallback |
+| Need | Pair when installed | Native fallback |
 |---|---|---|
 | Scout/scenarios | `ak:scout`, `ak:scenario` | Inspect diff/tests/contracts and derive matrix directly |
 | Unit/integration | `ak:test` | Run repository-native test commands and fixtures |
@@ -28,8 +40,8 @@ Select applicable dimensions; do not run every category mechanically:
 | Security smoke | Security scanner | Run existing scanners and targeted manual misuse cases |
 | Repro/debug | Debug skill | Trace the failing path and minimize it directly |
 
-AgentKit is optional. Never auto-install a runner, browser, SDK, skill, plugin, MCP server or service. Do
-not claim a browser/device/load/deploy check ran without that environment.
+Never auto-install a runner, browser, SDK, skill, plugin, MCP server or service. Do not claim a
+browser/device/load/deploy check ran without that environment.
 
 ## Evidence contract
 

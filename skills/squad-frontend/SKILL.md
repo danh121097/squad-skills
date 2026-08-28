@@ -1,14 +1,14 @@
 ---
 name: squad-frontend
-description: "Operate as the squad's Frontend Engineer — build web UI, client-side logic, and Backend API integrations in the repository's framework. Implement accepted Figma through MCP; otherwise route material UI/UX decisions through squad-designer or an inline fallback. Preserve existing codebase style; use framework-specific greenfield foundations only for empty projects. AgentKit is optional."
+description: "Operate as the squad's Frontend Engineer — build web UI, client-side logic, and Backend API integrations in the repository's framework. Implement accepted Figma through MCP; otherwise route material UI/UX decisions through squad-designer or an inline fallback. Preserve existing codebase style; use framework-specific greenfield foundations only for empty projects. Pairs with installed AgentKit `ak:*` skills and runs natively when they are absent."
 user-invocable: true
 when_to_use: "Invoke to build a web feature's UI, client-side behavior, and API integration, or to run the frontend role solo. UI/UX work without an accepted design source triggers the Designer stage first."
 category: frontend
 keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka, motion, gsap, api-integration, ux-flow]
 argument-hint: "[feature or screen]"
 metadata:
-  author: danh
-  version: "1.5.0"
+  author: Harry Nguyen
+  version: "1.6.0"
 ---
 
 # Squad — Frontend
@@ -47,8 +47,8 @@ duplicates on new ports.
    Vue/Nuxt greenfield defaults only when no UI foundation exists.
 4. **Model logic before markup** — map API responses, permissions, and mutations to navigation, form
    rules, and every loading/empty/error/success/disabled/optimistic state.
-5. **Verify actual capabilities** — AgentKit and named squad gates are optional; run native equivalents
-   and state only checks that truly ran.
+5. **Verify actual capabilities** — detect AgentKit and named squad gates; pair the installed ones, run
+   native equivalents otherwise, and state only checks that truly ran.
 
 ## Conditional references
 
@@ -67,8 +67,8 @@ Read only the reference required by the current decision:
 - For test strategy, browser diagnosis, hydration/render bugs, code quality and frontend mindset, read
   [references/frontend-testing-debugging-and-mindset.md](references/frontend-testing-debugging-and-mindset.md).
 - For current primary documentation, read [references/official-sources.md](references/official-sources.md).
-- When AgentKit, specialist skills, QA/Review squad gates, Figma, browser, or test capabilities are
-  unavailable, read
+- Before choosing tools for a phase, and when AgentKit, specialist skills, QA/Review squad gates, Figma,
+  browser, or test capabilities are in question, read
   [references/runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md).
 
 ## Workflow
@@ -90,6 +90,7 @@ Read only the reference required by the current decision:
 
 ## Completion checklist
 
+- [ ] Every reference the router pointed at was loaded, or the report says why it was skipped
 - [ ] Existing codebase style was preserved, or greenfield foundation was selected explicitly
 - [ ] Designer gate was classified and material UI/UX work has an accepted design contract
 - [ ] Accepted Figma was inspected through MCP when available

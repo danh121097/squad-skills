@@ -1,12 +1,23 @@
-# Runtime capability fallbacks
+# Runtime capability pairing and fallbacks
 
-Read when AgentKit, role skills, multi-agent execution, browser/device/test tooling, Git history, CI or
-provider access is unavailable.
+Read before selecting tools for a phase, and whenever AgentKit, role skills, multi-agent execution,
+browser/device/test tooling, Git history, CI or provider access is in question.
+
+## AgentKit pairing
+
+Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
+`ak` CLI.
+
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
+  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
+  rules stay authoritative wherever the two disagree.
+- **Absent** — run the native fallback for the same phase at the same standard.
+
+Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
 
 ## Rules
 
 - Inspect the live catalog and repository; invoke only capabilities that actually exist.
-- AgentKit, named debug/fix/test skills, MCPs, provider CLIs and multi-agent runtimes are optional.
 - Never auto-install a tool or claim it ran. Preserve the diagnosis, ownership, verification and gate
   outcomes with native file search, commands, logs, tests and official docs.
 - Missing an alias is not a blocker. Missing evidence required to prove cause or completion is.
@@ -14,7 +25,7 @@ provider access is unavailable.
 
 ## Capability mapping
 
-| Need | Preferred capability when available | Native fallback |
+| Need | Pair when installed | Native fallback |
 |---|---|---|
 | Scout | Repository search/navigation | Search project guidance, files, callers, contracts and tests directly |
 | Reproduce/debug | Debugger, browser/device, logs/traces | Run repository commands and inspect safe artifacts; state target gaps |

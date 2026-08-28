@@ -35,10 +35,16 @@ character, and emerging interaction patterns — including agent-native primitiv
 output, tool-call display, and approval surfaces. Use that vocabulary to recognize when a screen
 reads as dated, when a convention has genuinely shifted, and to name precisely what a trending
 reference is doing. Knowing the vocabulary is not adopting it: currency informs the critique below;
-product fit decides what ships.
+product fit decides what ships. When `ui-ux-pro-max` is installed it carries that vocabulary locally —
+style, palette, typography, and UX-guideline data — so name the direction against its data instead of
+recalling trends from memory.
 
-## Taste Skill routing
+## Critique-layer routing
 
+- Consult `ui-ux-pro-max` data for style selection, color and type systems, interaction states, and
+  UX-guideline checks; pair Taste Skill for generic-output critique. Read `ui-ux-pro-max` as reference
+  and keep the design decision here — do not hand it the screen. Both sit at authority level 5: they
+  sharpen the direction, they never override accepted Figma, the existing system, or WCAG 2.2.
 - Inspect the live skill catalog first. When a compatible Taste Skill capability is already installed,
   load only the variant relevant to the task—for example general frontend taste, a model-specific variant,
   or redesign audit.

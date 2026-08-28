@@ -1,21 +1,21 @@
 ---
 name: squads-team
-description: "Orchestrate a role-specialized Engineering Squad (Designer, Frontend, Backend, Mobile, DevOps, QA, Code Review) with frame-first scoping, non-overlapping ownership, and mandatory implement → QA → review → done gates. AgentKit and multi-agent engines are optional: use peer teams, subagents, or a single-session role loop while preserving role boundaries and high-quality evidence."
+description: "Orchestrate a role-specialized Engineering Squad (Designer, Frontend, Backend, Mobile, DevOps, QA, Code Review) with frame-first scoping, non-overlapping ownership, and mandatory implement → QA → review → done gates. Pairs with installed AgentKit `ak:*` skills; multi-agent engines are optional, so use peer teams, subagents, or a single-session role loop while preserving role boundaries and high-quality evidence."
 user-invocable: true
 when_to_use: "Invoke for features, bugs, refactors, releases, or audits spanning multiple engineering roles or requiring independent QA and Code Review gates."
 category: dev-tools
 keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code-review, worktree]
 argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--delegate] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
 metadata:
-  author: danh
-  version: "2.4.0"
+  author: Harry Nguyen
+  version: "2.5.0"
 ---
 
 # Squads Team
 
 Coordinate role-specialized delivery against one accepted goal. Select the strongest execution engine
-actually available; AgentKit, named squad skills and multi-agent tooling are optional. Quality gates and
-role boundaries are not optional.
+actually available. Detect AgentKit once and pair its `ak:*` skills with the roles that need them; named
+squad skills and multi-agent tooling stay optional. Quality gates and role boundaries are not optional.
 
 **Principles:** frame before spawn/edit | scout before split | one owner per file | capability-based
 routing | implement → QA → Review → done | explicit evidence | no hidden fallback.
@@ -92,9 +92,11 @@ PR, deploy, mutate data or change external services unless requested or required
 
 - [ ] Outcome, constraints, non-goals and acceptance criteria are explicit
 - [ ] Project was scouted before role split
+- [ ] Every role loaded its routed references, or reported why one was skipped
 - [ ] Every edited file has one owner and overlap was serialized
 - [ ] UI/UX work has accepted design input
-- [ ] AgentKit/multi-agent absence used documented native fallback without lowering standards
+- [ ] AgentKit was detected and paired where installed; its absence used a documented native fallback
+      without lowering standards
 - [ ] Every implementation slice has QA PASS then Code Review APPROVE
 - [ ] Any NEEDS_* gate was resolved and rerun, or the work is explicitly blocked rather than marked done
 - [ ] Integration and combined verification actually ran or exact gaps are stated

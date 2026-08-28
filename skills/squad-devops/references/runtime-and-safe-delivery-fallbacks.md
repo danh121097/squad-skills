@@ -1,11 +1,23 @@
-# Runtime and safe-delivery fallbacks
+# Runtime pairing and safe-delivery fallbacks
 
-Read when AgentKit, provider specialists/CLIs, cloud credentials, deployment access, observability, QA or
-Review capabilities are unavailable.
+Read before selecting tools for a phase, and whenever AgentKit, provider specialists/CLIs, cloud
+credentials, deployment access, observability, QA or Review capabilities are in question.
+
+## AgentKit pairing
+
+Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
+`ak` CLI.
+
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
+  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
+  rules stay authoritative wherever the two disagree.
+- **Absent** — run the native fallback for the same phase at the same standard.
+
+Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
 
 ## Rules
 
-- AgentKit and named provider skills are optional; use only live capabilities.
+- Use only live capabilities; invoke nothing that is not installed.
 - Never auto-install a CLI, skill, plugin, MCP server, operator, chart, provider or package.
 - Use current official provider docs for mutable syntax and behavior.
 - Missing apply/deploy access is not permission to work around controls. Complete static/plan work and
@@ -14,7 +26,7 @@ Review capabilities are unavailable.
 
 ## Capability mapping
 
-| Phase | Preferred when installed | Native fallback |
+| Phase | Pair when installed | Native fallback |
 |---|---|---|
 | Scout/plan | `ak:scout`, `ak:plan`, `ak:scenario` | Inspect repository/provider config and enumerate failures directly |
 | Containers/IaC | DevOps/provider skills | Use repository-native CLI if present and current official docs |

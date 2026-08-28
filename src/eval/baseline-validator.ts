@@ -85,7 +85,43 @@ export async function validateEvalBaseline(options: ValidateEvalBaselineOptions)
 
   if (budget && budgetMeasurement) {
     validateTaskLoads(budgetMeasurement, taskTypes, manifest, budget, manifestPath, errors);
+    validateReferenceCap(budgetMeasurement, budget, manifestPath, errors);
     validateAgainstReference(budgetMeasurement, manifest, budgetSkill, manifestPath, errors);
+  }
+}
+
+/**
+ * Caps how large any single reference of the governing skill may grow.
+ *
+ * The median metric only guards the reference loaded by the median task type;
+ * every reference routed above the median can grow without moving a measured
+ * number, so a per-file cap is the only check those files have. It was prose in
+ * the plan until an amendment pushed two references past it with a green gate,
+ * which is why the limit now lives in the manifest and fails here.
+ *
+ * The field is required: an optional cap could be deleted to silence a breach.
+ */
+function validateReferenceCap(
+  measurement: SkillPayloadMeasurement,
+  budget: Record<string, unknown>,
+  manifestPath: string,
+  errors: string[]
+): void {
+  const cap = budget.max_reference_words;
+
+  if (typeof cap !== 'number' || !Number.isInteger(cap) || cap <= 0) {
+    errors.push(
+      `${manifestPath}: budget.max_reference_words must be a positive integer capping any single reference.`
+    );
+    return;
+  }
+
+  for (const reference of measurement.references) {
+    if (reference.words > cap) {
+      errors.push(
+        `${manifestPath}: budget.max_reference_words: ${reference.file} is ${reference.words} words, over the cap ${cap}. Split it, trim it, or raise the cap as a reviewed contract change.`
+      );
+    }
   }
 }
 

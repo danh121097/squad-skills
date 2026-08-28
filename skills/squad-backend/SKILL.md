@@ -1,20 +1,21 @@
 ---
 name: squad-backend
-description: "Operate as the squad's Backend Engineer — design and implement APIs, shared contracts, auth, data models, migrations, caching, queues, and server business logic. Preserve existing architecture, verify security and data safety, and work with or without AgentKit by routing unavailable specialist skills to native repository tools and official docs."
+description: "Operate as the squad's Backend Engineer — design and implement APIs, shared contracts, auth, data models, migrations, caching, queues, and server business logic. Preserve existing architecture, verify security and data safety, and pair with installed AgentKit `ak:*` skills, routing unavailable ones to native repository tools and official docs."
 user-invocable: true
 when_to_use: "Invoke to design or implement APIs, data models, auth, server logic, or shared platform contracts, either solo or inside a squad."
 category: backend
 keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, migration, contracts]
 argument-hint: "[api or data task]"
 metadata:
-  author: danh
-  version: "1.4.0"
+  author: Harry Nguyen
+  version: "1.5.0"
 ---
 
 # Squad — Backend
 
 Own shared server contracts, data, auth/session platforms, and server-side business logic. Match the
-repository before selecting abstractions. AgentKit and specialist skills are optional accelerators.
+repository before selecting abstractions. Pair installed AgentKit and specialist skills; work natively
+when they are absent.
 
 **Principles:** contract first | correctness and security first | reversible data change | repo-native |
 evidence-based verification | KISS and DRY.
@@ -48,7 +49,8 @@ a pointless point-in-time backup. Never mutate production or external systems wi
 
 ## Deep domain references
 
-Read the references required by the task; these are the native knowledge layer when AgentKit is absent:
+Read the references required by the task before pairing any skill; they are also the native knowledge
+layer when AgentKit is absent:
 
 - Language/framework/runtime selection or unfamiliar backend stack:
   [backend-stack-and-runtime-matrix.md](references/backend-stack-and-runtime-matrix.md)
@@ -66,7 +68,7 @@ Read the references required by the task; these are the native knowledge layer w
   [backend-worked-decisions.md](references/backend-worked-decisions.md)
 - Current primary documentation:
   [official-sources.md](references/official-sources.md)
-- Missing AgentKit/provider/test/review capability:
+- AgentKit pairing, or a missing provider/test/review capability:
   [runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md)
 
 ## Workflow
@@ -86,6 +88,7 @@ Read the references required by the task; these are the native knowledge layer w
 
 ## Completion checklist
 
+- [ ] Every reference the router pointed at was loaded, or the report says why it was skipped
 - [ ] Contract, DTO/schema, errors, compatibility, auth and idempotency are explicit
 - [ ] Boundary validation and authorization are enforced server-side
 - [ ] Data changes have persistent-target backup/restore or disposable-target recreation evidence, plus
