@@ -39,6 +39,7 @@
   "scripts": {
     "build": "obuild",
     "eval:designer": "node scripts/run-squad-designer-eval.ts",
+    "evals:links": "node scripts/check-knowledge-source-liveness.ts",
     "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "pack:check": "node scripts/check-package-contents.ts",

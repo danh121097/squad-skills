@@ -61,6 +61,10 @@
   part of `pnpm test`. It writes only to `.eval-runs/`, and exits non-zero when a
   gate fails at `critical` or `high`, or when a gate could not run. A `medium`
   failure is reported in full and exits zero.
+- Knowledge source liveness: `pnpm evals:links`. Requests each card's
+  `source_url` and reads the status code only — the body is never consumed — so
+  a moved source is caught without ingesting any page. Needs network, so it is
+  not part of `pnpm test`.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
 

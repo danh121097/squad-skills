@@ -73,6 +73,16 @@ describe('validateKnowledgeCards', () => {
     expect(errors).toEqual([]);
   });
 
+  it('rejects a review dated in the future, which no one can have performed', async () => {
+    const { errors } = await validate([
+      card('valid-card', {
+        overrides: { freshness_expires_on: '2031-01-01', published_or_verified_on: '2030-01-01' },
+      }),
+    ]);
+
+    expect(errors.some((error) => error.includes('in the future'))).toBe(true);
+  });
+
   it('rejects an empty claim list, which cites nothing while looking complete', async () => {
     const { errors } = await validate([card('valid-card', { overrides: { claim_ids: '[]' } })]);
 

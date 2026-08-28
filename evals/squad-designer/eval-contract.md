@@ -397,6 +397,22 @@ Four boundaries keep what it proves narrower than what it runs.
   source is declared at review time through `source_status`, and an unreviewed
   card fails the gate rather than being read.
 
+What `review_status: reviewed` guarantees is bounded, and the bound is worth
+stating. It is an attestation: `reviewed_by` names a person, and nothing in this
+repository can confirm that person read the source. Two parts of it are
+checkable and are checked — `published_or_verified_on` may not be in the future,
+and freshness lapses on the declared date, after which the card blocks promotion
+until someone re-reviews it. The rest is trust, deliberately, because the
+alternative is the autonomous ingestion this cycle rules out.
+
+`pnpm evals:links` closes the one remaining unfalsifiable half of that trust. It
+requests each `source_url` and reads **the status code only** — the response body
+is cancelled, never consumed — so a moved or deleted page is caught without any
+source content reaching the model, the cards, or a report. It is outside
+`pnpm test` for the same reason the browser is: the repository gate does not
+depend on third-party hosts. Run it when reviewing cards, and before a promotion
+that consumes them.
+
 Two limits are worth stating because they look like coverage and are not.
 `INV-ANIMCOST-001` gates the deterministic half of animation cost — whether a
 transition or keyframe touches a layout property. It does not measure frame
@@ -405,3 +421,11 @@ gate flaky rather than strict, so the harness observes no timing and the gate
 claims none. And `INV-COMPILE-001` on SwiftUI and Compose proves the candidate
 compiles, not that it looks right; the second, `human-review` result stays
 `unverified` until a person records a verdict in `manual-review.yml`.
+
+One threshold deliberately exceeds the standard. `INV-TOUCH-001` holds web
+targets to 44px, which is Apple's minimum and roughly WCAG 2.2's 2.5.5 Target
+Size (Enhanced) at AAA — not the 24px of 2.5.8 at AA. This is house policy, not
+a transcription error: a control sized for the strictest platform the designer
+ships to is correct everywhere, and sizing to the AA floor would make the same
+component fail its own iOS case. Anything meeting 44px meets 24px, so the
+stricter number never produces a result the standard would call wrong.

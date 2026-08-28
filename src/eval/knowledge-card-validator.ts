@@ -253,6 +253,18 @@ function validateFreshness(
 
   if (!verified.value || !expires.value) return;
 
+  // A card cannot have been verified tomorrow. `review_status: reviewed` is an
+  // attestation nothing else can check, so the one part of it that *is*
+  // checkable — that the claimed verification already happened — is checked. A
+  // future date also postpones expiry indefinitely, which is the shape a stale
+  // card takes when nobody is watching.
+  if (verified.value > now) {
+    errors.push(
+      `${relativePath}: published_or_verified_on is ${card.published_or_verified_on}, in the future; a card records a review that happened.`
+    );
+    return;
+  }
+
   if (expires.value <= verified.value) {
     errors.push(`${relativePath}: freshness_expires_on must fall after published_or_verified_on.`);
     return;
