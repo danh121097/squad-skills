@@ -32,3 +32,32 @@ jobs:
 
       - name: Validate catalog and package release
         run: pnpm release:check
+
+  # Reports a knowledge card whose source has moved or gone. Kept out of the
+  # gate above because it depends on third-party hosts: a slow documentation
+  # site must not fail a contributor's pull request, and `pnpm test` stays
+  # offline and deterministic. It reads status codes only and never a body.
+  knowledge-sources:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Report knowledge-card source liveness
+        run: pnpm evals:links

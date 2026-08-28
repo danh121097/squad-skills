@@ -8,6 +8,7 @@ import {
   cardApplicabilityValues,
   cardEnumerations,
   cardRequiredSections,
+  cardTemplateFileName,
   embeddedInstructionPatterns,
   maxCardBodyWords,
   maxCardFieldWords,
@@ -59,11 +60,15 @@ export async function validateKnowledgeCards(
     return;
   }
 
-  const files = entries
+  const markdownFiles = entries
     .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
     .map((entry) => entry.name)
     .sort();
 
+  // The scaffold sits in this directory so a contributor finds it beside the
+  // cards, but its placeholder values are not a card and must not be graded as
+  // one. It gets its own, weaker check below.
+  const files = markdownFiles.filter((file) => file !== cardTemplateFileName);
   const sourceUrls = new Map<string, string>();
   const claimIds = new Map<string, string>();
 
@@ -74,7 +79,70 @@ export async function validateKnowledgeCards(
     validateCard({ claimIds, errors, file, invariantIds, now, relativePath, source, sourceUrls });
   }
 
+  if (markdownFiles.includes(cardTemplateFileName)) {
+    validateCardTemplate({
+      errors,
+      relativePath: path.posix.join(cardsDirectory, cardTemplateFileName),
+      source: await readFile(path.join(absolute, cardTemplateFileName), 'utf8'),
+    });
+  }
+
   notes.push(`${cardsDirectory}/: validated ${files.length} knowledge card(s).`);
+}
+
+/**
+ * Checks the contributor scaffold as a scaffold.
+ *
+ * A contributor copies this file and fills it in, so what matters is that it
+ * names every field the schema requires and no field the schema rejects. Adding
+ * a required field without teaching it here would leave contributors submitting
+ * cards that fail on a field they were never shown; removing one would leave the
+ * scaffold prescribing a key the allowlist now refuses.
+ */
+function validateCardTemplate(options: {
+  errors: string[];
+  relativePath: string;
+  source: string;
+}): void {
+  const { errors, relativePath, source } = options;
+  const frontmatterSource = source.match(frontmatterPattern)?.[1];
+
+  if (frontmatterSource === undefined) {
+    errors.push(`${relativePath}: template has no YAML frontmatter to copy.`);
+    return;
+  }
+
+  // Read by line prefix rather than by parsing: placeholder values are prose in
+  // angle brackets, which is not always valid YAML, and the template is a shape
+  // to copy rather than a document to load.
+  const keys = new Set(
+    frontmatterSource
+      .split('\n')
+      .map((line) => line.match(/^([A-Za-z0-9_]+):/)?.[1])
+      .filter((key): key is string => key !== undefined)
+  );
+
+  for (const field of requiredCardFields) {
+    if (!keys.has(field)) {
+      errors.push(
+        `${relativePath}: template omits required field "${field}"; a copy of it would fail validation.`
+      );
+    }
+  }
+
+  for (const key of keys) {
+    if (!allowedCardFields.has(key)) {
+      errors.push(`${relativePath}: template offers unknown frontmatter key "${key}".`);
+    }
+  }
+
+  const body = source.replace(frontmatterPattern, '');
+
+  for (const heading of cardRequiredSections) {
+    if (!body.split('\n').some((line) => line.trimEnd() === heading)) {
+      errors.push(`${relativePath}: template omits the required "${heading}" section.`);
+    }
+  }
 }
 
 function validateCard(options: {

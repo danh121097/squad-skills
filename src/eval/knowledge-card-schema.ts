@@ -91,3 +91,14 @@ export const cardRequiredSections = ['## Abstraction', '## Provenance'];
 
 /** Above this a card stops being an abstraction and starts being a copy of the page. */
 export const maxCardBodyWords = 400;
+
+/**
+ * The contributor-facing scaffold, kept beside the cards it scaffolds.
+ *
+ * It is not a card and is never validated as one: its values are placeholders,
+ * so the id, URL, date, and enumeration checks would all fail on text that is
+ * meant to be replaced. It is checked as a template instead — it has to carry
+ * every field a real card requires, so adding a field to the schema fails the
+ * gate until the scaffold teaches it.
+ */
+export const cardTemplateFileName = 'TEMPLATE.md';

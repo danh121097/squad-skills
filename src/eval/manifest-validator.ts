@@ -7,6 +7,7 @@ import { validateEvalBaseline } from './baseline-validator.ts';
 import { validateEvalCases } from './case-validator.ts';
 import { validateJudgingContract } from './judging-contract-validator.ts';
 import { validateKnowledgeCards } from './knowledge-card-validator.ts';
+import { validateWorkflowIsolation } from './workflow-isolation-check.ts';
 
 export interface EvalValidationResult {
   directories: string[];
@@ -46,6 +47,7 @@ export async function validateEvalManifests(
   // that must be reported even when a manifest fails to parse.
   const resolvedPrivatePath = await resolvePrivatePath(privatePath, projectRoot, errors, notes);
   const directories = await findEvalDirectories(projectRoot, notes);
+  const privateStoreEnvVars = new Set<string>();
 
   for (const directory of directories) {
     await validateEvalDirectory({
@@ -53,9 +55,16 @@ export async function validateEvalManifests(
       errors,
       notes,
       privatePath: resolvedPrivatePath,
+      privateStoreEnvVars,
       projectRoot,
     });
   }
+
+  // Repository-level, and run even when a manifest failed to parse: the
+  // contribution path is public, so "no CI job can reach the held-out set" has
+  // to be asserted rather than assumed. An unreadable manifest leaves the set
+  // empty, which still checks the trigger and secret rules.
+  await validateWorkflowIsolation({ errors, notes, privateStoreEnvVars, projectRoot });
 
   return { directories, errors, notes };
 }
@@ -75,9 +84,10 @@ async function validateEvalDirectory(options: {
   errors: string[];
   notes: string[];
   privatePath: string | null;
+  privateStoreEnvVars: Set<string>;
   projectRoot: string;
 }): Promise<void> {
-  const { directory, errors, notes, privatePath, projectRoot } = options;
+  const { directory, errors, notes, privatePath, privateStoreEnvVars, projectRoot } = options;
   const evalDirectory = path.join(evalsRoot, directory);
 
   const contract = await readText(
@@ -95,6 +105,10 @@ async function validateEvalDirectory(options: {
     path.join(evalDirectory, 'case-manifest.yml'),
     errors
   );
+
+  const privateStoreEnvVar = readPrivateStoreEnvVar(baseline?.value);
+
+  if (privateStoreEnvVar) privateStoreEnvVars.add(privateStoreEnvVar);
 
   if (baseline) {
     await validateEvalBaseline({
@@ -195,6 +209,17 @@ function fold(value: string): string {
   return process.platform === 'darwin' || process.platform === 'win32'
     ? value.toLowerCase()
     : value;
+}
+
+/** The variable a workflow would have to name to resolve the held-out store. */
+function readPrivateStoreEnvVar(baseline: Record<string, unknown> | undefined): string | null {
+  const store = baseline?.private_store;
+
+  if (typeof store !== 'object' || store === null || Array.isArray(store)) return null;
+
+  const envVar = (store as Record<string, unknown>).env_var;
+
+  return typeof envVar === 'string' && envVar.trim().length > 0 ? envVar.trim() : null;
 }
 
 function readPrivateStoreCommit(baseline: Record<string, unknown> | undefined): string | null {

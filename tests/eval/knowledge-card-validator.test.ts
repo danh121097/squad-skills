@@ -231,7 +231,69 @@ describe('validateKnowledgeCards', () => {
 
     expect(errors.some((error) => error.includes('is not a supported platform'))).toBe(true);
   });
+
+  it('leaves the contributor template ungraded, placeholders and all', async () => {
+    const { errors, notes } = await validate([card('valid-card'), template()]);
+
+    expect(errors).toEqual([]);
+    expect(notes.some((note) => note.includes('validated 1 knowledge card'))).toBe(true);
+  });
+
+  it('fails when the template omits a field a copy of it would need', async () => {
+    const { errors } = await validate([template({ omit: ['license_note'] })]);
+
+    expect(
+      errors.some((error) => error.includes('template omits required field "license_note"'))
+    ).toBe(true);
+  });
+
+  it('fails when the template teaches a key the schema refuses', async () => {
+    const { errors } = await validate([template({ extra: { page_text: '<paste here>' } })]);
+
+    expect(
+      errors.some((error) => error.includes('template offers unknown frontmatter key "page_text"'))
+    ).toBe(true);
+  });
+
+  it('fails when the template omits a section every card must carry', async () => {
+    const { errors } = await validate([template({ body: '# Card\n\n## Abstraction\n\nText.\n' })]);
+
+    expect(errors.some((error) => error.includes('omits the required "## Provenance"'))).toBe(true);
+  });
+
+  it('fails when the template has no frontmatter to copy', async () => {
+    const { errors } = await validate([
+      { contents: '# Knowledge card\n\nFill this in.\n', name: 'TEMPLATE' },
+    ]);
+
+    expect(errors.some((error) => error.includes('no YAML frontmatter to copy'))).toBe(true);
+  });
 });
+
+/**
+ * The scaffold as a contributor meets it: every key a card needs, and a
+ * placeholder in place of every value. None of those values would survive card
+ * validation, which is the point of checking it separately.
+ */
+function template(
+  options: { body?: string; extra?: Record<string, string>; omit?: string[] } = {}
+): CardFixture {
+  const omitted = new Set(options.omit ?? []);
+  const fields: Record<string, string> = {
+    ...Object.fromEntries(Object.keys(validFrontmatter).map((key) => [key, `<${key}>`])),
+    gate: '<INV-...-001>',
+    ...options.extra,
+  };
+  const frontmatter = Object.entries(fields)
+    .filter(([key]) => !omitted.has(key))
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n');
+
+  return {
+    contents: `---\n# Copy this file and replace every value.\n${frontmatter}\n---\n\n${options.body ?? validBody}`,
+    name: 'TEMPLATE',
+  };
+}
 
 interface CardFixture {
   contents: string;

@@ -583,10 +583,16 @@ alternative is the autonomous ingestion this cycle rules out.
 `pnpm evals:links` closes the one remaining unfalsifiable half of that trust. It
 requests each `source_url` and reads **the status code only** — the response body
 is cancelled, never consumed — so a moved or deleted page is caught without any
-source content reaching the model, the cards, or a report. It is outside
-`pnpm test` for the same reason the browser is: the repository gate does not
-depend on third-party hosts. Run it when reviewing cards, and before a promotion
-that consumes them.
+source content reaching the model, the cards, or a report. Since Phase 6 it
+covers the skill source registries on the same terms: an entry there is a source
+agents are told to trust, and it carries no field in which to declare a status.
+An access-controlled or rate-limited answer counts as unreachable rather than
+dead — the registry deliberately lists sources behind an account — and only a
+real disagreement exits non-zero, so a network fault cannot train reviewers to
+ignore the report. It is outside `pnpm test` for the same reason the browser is:
+the repository gate does not depend on third-party hosts. It runs on pull
+requests as its own non-blocking job, and before a promotion that consumes these
+sources.
 
 Two limits are worth stating because they look like coverage and are not.
 `INV-ANIMCOST-001` gates the deterministic half of animation cost — whether a
@@ -628,3 +634,48 @@ proves narrower than what it can run.
   pinned judge. Order swapping and repeated runs bound the variance; they do not
   remove it, and the report states this rather than implying reproducibility the
   contract cannot enforce.
+
+## Contribution surface
+
+The repository takes public contributions, which changes what the fixtures under
+`evals/` have to survive. Three rules follow, and each is a gate rather than a
+paragraph in `CONTRIBUTING.md`.
+
+**The scaffold is not a card.** `knowledge/TEMPLATE.md` sits beside the cards so
+a contributor finds it, and every value in it is a placeholder. It is checked as
+a template — it must offer every required field and no key the allowlist
+refuses — and is excluded from card validation and from `pnpm evals:links`. A
+field added to the schema fails the gate until the scaffold teaches it.
+
+**No CI path resolves the held-out store.** `pnpm validate:evals` reads
+`private_store.env_var` from each baseline manifest and refuses any workflow that
+names it, triggers on `pull_request_target`, or reads a stored secret other than
+the per-run `GITHUB_TOKEN`. The variable name is derived rather than hard-coded,
+so renaming it cannot retire the check. This is the difference between the
+acceptance set being private and it being provably unreachable from a pull
+request an outsider opened.
+
+**Contributed content takes the maintainer path.** A contributed skill-content
+diff is compared against the same frozen baseline, graded by the same
+deterministic gates, and promoted only through the same human attestation. There
+is no reviewer-agreement route, and opening contribution added none.
+
+## What Phase 6 deliberately does not do
+
+Phase 6 opens the contribution path. Three boundaries keep what it claims
+narrower than what it enables.
+
+- **It does not judge trustworthiness.** CI checks structure: fields, dates,
+  enumerations, uniqueness, instruction shapes, and reachability. Whether a
+  source has the rights, the authority, and the applicability it claims is a
+  human step, and `CONTRIBUTING.md` records the five questions that step asks.
+- **It does not open the queryable-reference-data lane.** Decisions 12, 13, and
+  14 stand unchanged: a row is eligible only with external first-party
+  provenance and a verification date, ships only if it maps to a deterministic
+  invariant, and recency comes from dated capability data. `CONTRIBUTING.md`
+  states the licensing consequence — a `NOTICE` in the published package and a
+  retained per-row source URL — so the obligation is on record before any corpus
+  is copied.
+- **It does not declare a repository licence.** The contribution guide says so
+  rather than implying terms that do not exist. Until a licence lands, a
+  contributor whose reuse terms matter is told to ask first.

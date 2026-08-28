@@ -81,6 +81,18 @@ Read [AGENTS.md](AGENTS.md) before contributing with a coding agent.
 Use [the publishing guide](docs/publishing.md) when the local repository and npm
 package are ready to be made public.
 
+## Contribute
+
+[CONTRIBUTING.md](CONTRIBUTING.md) is the contract: the contribution types that
+are accepted, the ones that are rejected and why, the provenance a knowledge
+card must carry, and the evaluation a skill-content change runs before it ships.
+
+Two things are worth knowing before you start. Knowledge enters through a
+reviewed card citing a dated first-party source, never through crawling or a
+pasted page. And a change to anything an agent reads at runtime does not merge
+on review alone — it is measured against the frozen baseline and promoted only
+with a recorded human approval, whoever wrote it.
+
 ## Skill format
 
 Each skill directory must contain a `SKILL.md` whose YAML `name` matches the
