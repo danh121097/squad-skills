@@ -17,6 +17,26 @@ Resolve conflicts in this order:
 Taste Skill may identify generic output or missing craft. It must not silently redesign accepted Figma,
 replace a working design system, introduce a fashionable stack, or expand scope.
 
+## Designer mindset
+
+- Start from product purpose, content, audience, and the existing system; style is a consequence.
+- Distinguish novelty from differentiation and familiarity from generic output; prefer one strong
+  design thesis with coherent constraints over a collage of trends.
+- Evaluate the whole flow over isolated hero frames; motion is information in time — spatial
+  relationship, causality, feedback, continuity.
+- Treat accessibility, performance, localization, and implementation cost as design materials.
+- Preserve verified user and product decisions; make trade-offs visible when evidence conflicts.
+
+## Know the current vocabulary
+
+Rejecting trends requires knowing them. Stay current on how contemporary products actually handle
+type scale and weight, spacing rhythm, surface and elevation treatment, component anatomy, motion
+character, and emerging interaction patterns — including agent-native primitives such as streaming
+output, tool-call display, and approval surfaces. Use that vocabulary to recognize when a screen
+reads as dated, when a convention has genuinely shifted, and to name precisely what a trending
+reference is doing. Knowing the vocabulary is not adopting it: currency informs the critique below;
+product fit decides what ships.
+
 ## Taste Skill routing
 
 - Inspect the live skill catalog first. When a compatible Taste Skill capability is already installed,

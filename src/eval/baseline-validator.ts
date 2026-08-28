@@ -85,6 +85,61 @@ export async function validateEvalBaseline(options: ValidateEvalBaselineOptions)
 
   if (budget && budgetMeasurement) {
     validateTaskLoads(budgetMeasurement, taskTypes, manifest, budget, manifestPath, errors);
+    validateAgainstReference(budgetMeasurement, manifest, budgetSkill, manifestPath, errors);
+  }
+}
+
+/**
+ * Enforces the previous cycle's figures as a ceiling on the governing budget.
+ * `phase_1_reference` used to be read by no validator, so a regression against
+ * it survived every gate; now the comparison the cycle owes is machine-checked.
+ * The block is optional — a first cycle has no predecessor — but once present,
+ * removing or raising it is a reviewed diff like any other contract change.
+ */
+function validateAgainstReference(
+  measurement: SkillPayloadMeasurement,
+  manifest: Record<string, unknown>,
+  budgetSkill: string | null,
+  manifestPath: string,
+  errors: string[]
+): void {
+  if (!budgetSkill) return;
+
+  const referenceBlock = asRecord(manifest.phase_1_reference);
+
+  if (!referenceBlock) return;
+
+  const reference = asRecord(referenceBlock[budgetSkill]);
+
+  // A present block that omits the budget skill would disable the ceiling with
+  // a green gate — a key rename must fail loudly, not skip the comparison.
+  if (!reference) {
+    errors.push(
+      `${manifestPath}: phase_1_reference is present but has no entry for the budget skill "${budgetSkill}", so the comparison ceiling would silently not apply.`
+    );
+    return;
+  }
+
+  const caps: Array<[key: string, measured: number]> = [
+    ['entrypoint_words', measurement.entrypointWords],
+    ['median_loaded_words', measurement.medianLoadedWords],
+  ];
+
+  for (const [key, measured] of caps) {
+    const cap = reference[key];
+
+    if (typeof cap !== 'number') {
+      errors.push(
+        `${manifestPath}: phase_1_reference.${budgetSkill}.${key} must be a number to act as the comparison ceiling.`
+      );
+      continue;
+    }
+
+    if (measured > cap) {
+      errors.push(
+        `${manifestPath}: phase_1_reference.${budgetSkill}.${key}: measured ${measured} exceeds the reference ceiling ${cap}.`
+      );
+    }
   }
 }
 

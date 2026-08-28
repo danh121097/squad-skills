@@ -44,11 +44,22 @@ responsive adaptation, motion/reduced motion, slots/props and composition constr
 Reuse existing components before adding variants; add a new primitive only when semantics/behavior cannot
 fit without distortion. Avoid wrapper components that only rename styling.
 
-## Responsive and adaptive design
+## Responsive behavior in components
 
 Design around content and task thresholds, then map to project breakpoints. Specify reflow, collapse,
-priority, overflow, sticky behavior, touch/hover differences, safe areas, viewport/keyboard, zoom, long text,
-RTL and localization. Mobile is not desktop stacked vertically; preserve task priority and reachable actions.
+priority, overflow, sticky behavior, zoom, long text, RTL and localization per component. Cross-form-factor
+layout, split view, and input modality belong to the adaptive platform reference.
+
+## Evaluation passes
+
+Before handoff, review in order: comprehension (purpose, state, next action are quickly identifiable);
+task (the full job completes, recovers, resumes with realistic data and errors); hierarchy (type, spacing,
+contrast, grouping match information priority); consistency (one system without flattening distinct
+roles); accessibility (keyboard, touch, screen reader, zoom, reduced motion, cognitive clarity);
+responsive (usable across actual supported contexts); craft (alignment, rhythm, typography, states, motion
+are intentional); implementation (maps to repository primitives with bounded additions). Match method to
+risk — heuristic review, cognitive walkthrough, usability testing — and record evidence and unresolved
+assumptions; never claim user validation from expert critique alone.
 
 ## Accessibility
 

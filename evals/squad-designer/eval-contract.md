@@ -174,6 +174,31 @@ regression indistinguishable.
 The pinned subject model, judge model, and acceptance set did not change, so
 re-measurement stays inside this cycle rather than starting a new one.
 
+### Phase 3 re-measurement
+
+Phase 3 consolidated the reference set and expanded platform coverage, then
+re-measured and paid the Phase 2 overage back under the Phase 1 figures:
+
+| Figure                       | Phase 1 | Phase 2 | Phase 3 |
+| ---------------------------- | ------: | ------: | ------: |
+| `squad-designer` entrypoint  |   1,014 |   1,126 |   1,014 |
+| median loaded words per task |   2,018 |   2,187 |   1,813 |
+
+Structural changes: `official-sources.md` is the single source and capability
+registry; `design-mindset-evaluation-and-official-sources.md` and
+`runtime-capability-fallbacks.md` merged into their owning references and were
+deleted; `ui-foundation-and-motion-selection.md` became
+`platform-web-foundations-and-motion.md`; native cross-platform, Apple/Android,
+and adaptive references were added with tiered verification (plan decision 10).
+Total payload grew to 6,813 words — deliberately unbounded, because the loaded
+set per task, not the payload, is the governed budget (plan decision 5).
+
+The routing table changed with the consolidation; the manifest annotates each
+routing edit with the consolidation that justifies it, and the diff review
+required by the budget-metric limitation above is how those edits were
+accepted. The same phase made `phase_1_reference` a machine-enforced ceiling,
+closing the open question Phase 2 left about an unenforced comparison.
+
 ## What the recorded commits mean
 
 `repository.commit` names the commit whose `skills/` tree Phase 1 measured, so
@@ -184,10 +209,13 @@ one. The freeze proof for the current figures is `payload_hash` and the recorded
 word counts, which the gate recomputes from the working tree on every run — a
 drifted skill fails whatever the commit line says.
 
-`phase_1_reference` is human-maintained on the same terms. No validator reads
-it, so it carries the comparison target by convention: a cycle that edits it is
-editing the number it is measured against, and only reviewing that diff catches
-it. This is the budget-metric limitation below applied to the baseline itself.
+`phase_1_reference` is human-maintained but, since Phase 3, machine-enforced:
+`pnpm validate:evals` fails when the measured budget's `entrypoint_words` or
+`median_loaded_words` exceeds the recorded reference figures. The block is
+optional in the schema — a first cycle has no predecessor — but once present it
+is a ceiling, so a cycle that edits or removes it is editing the number it is
+measured against, and reviewing that diff remains the control on the ceiling
+itself.
 
 `private_store.commit` is the opposite: it is machine-checked. When
 `EVAL_PRIVATE_PATH` is set, the gate reads the store's `.git` HEAD and fails if

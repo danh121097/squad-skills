@@ -1,15 +1,17 @@
 import type { BoundaryClause, RetiredPhrase } from './cross-skill-contract-validator.ts';
 
 const designerSkill = 'skills/squad-designer/SKILL.md';
-const designerMotion = 'skills/squad-designer/references/ui-foundation-and-motion-selection.md';
+const designerMotion = 'skills/squad-designer/references/platform-web-foundations-and-motion.md';
 const designerHandoff =
   'skills/squad-designer/references/design-system-ux-accessibility-and-handoff.md';
-const designerFallbacks = 'skills/squad-designer/references/runtime-capability-fallbacks.md';
 const designerExamples = 'skills/squad-designer/references/codebase-first-examples.md';
 const designerQuality = 'skills/squad-designer/references/anti-slop-quality-review.md';
-const designerMindset =
-  'skills/squad-designer/references/design-mindset-evaluation-and-official-sources.md';
 const designerResearch = 'skills/squad-designer/references/task-specific-ui-ux-research.md';
+const designerSources = 'skills/squad-designer/references/official-sources.md';
+const designerNativeCross = 'skills/squad-designer/references/platform-native-cross-platform.md';
+const designerNativeAppleAndroid =
+  'skills/squad-designer/references/platform-native-apple-android.md';
+const designerAdaptive = 'skills/squad-designer/references/platform-adaptive-layout-and-input.md';
 const frontendIntake = 'skills/squad-frontend/references/designer-gate-and-design-intake.md';
 const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-motion-selection.md';
 const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
@@ -39,7 +41,15 @@ export const boundaryClauses: BoundaryClause[] = [
     id: 'BOUNDARY-MOTION-001',
     statement:
       'whoever writes the animation code owns its lifecycle scoping, teardown, and reduced-motion fallback',
-    files: [designerMotion, frontendMotion, mobileGates],
+    // The adaptive reference is not bound: it carries no animation guidance of
+    // its own and always composes with a platform reference that does.
+    files: [
+      designerMotion,
+      designerNativeCross,
+      designerNativeAppleAndroid,
+      frontendMotion,
+      mobileGates,
+    ],
   },
 ];
 
@@ -53,12 +63,38 @@ export const retiredPhrases: RetiredPhrase[] = [
   {
     id: 'RETIRED-SPEC-001',
     phrase: 'not production code',
-    files: [designerSkill, designerHandoff, designerMotion, teamContracts, teamPipeline],
+    files: [
+      designerSkill,
+      designerAdaptive,
+      designerExamples,
+      designerHandoff,
+      designerMotion,
+      designerNativeAppleAndroid,
+      designerNativeCross,
+      designerQuality,
+      designerResearch,
+      designerSources,
+      teamContracts,
+      teamPipeline,
+    ],
   },
   {
     id: 'RETIRED-SPEC-005',
     phrase: 'never production code',
-    files: [designerSkill, designerHandoff, designerMotion, teamContracts, teamPipeline],
+    files: [
+      designerSkill,
+      designerAdaptive,
+      designerExamples,
+      designerHandoff,
+      designerMotion,
+      designerNativeAppleAndroid,
+      designerNativeCross,
+      designerQuality,
+      designerResearch,
+      designerSources,
+      teamContracts,
+      teamPipeline,
+    ],
   },
   {
     id: 'RETIRED-SPEC-002',
@@ -71,13 +107,15 @@ export const retiredPhrases: RetiredPhrase[] = [
     id: 'RETIRED-SPEC-003',
     phrase: 'written spec',
     files: [
+      designerAdaptive,
       designerExamples,
-      designerFallbacks,
       designerHandoff,
-      designerMindset,
       designerMotion,
+      designerNativeAppleAndroid,
+      designerNativeCross,
       designerQuality,
       designerResearch,
+      designerSources,
     ],
   },
   {
@@ -85,13 +123,15 @@ export const retiredPhrases: RetiredPhrase[] = [
     phrase: 'markdown handoff',
     files: [
       designerSkill,
+      designerAdaptive,
       designerExamples,
-      designerFallbacks,
       designerHandoff,
-      designerMindset,
       designerMotion,
+      designerNativeAppleAndroid,
+      designerNativeCross,
       designerQuality,
       designerResearch,
+      designerSources,
     ],
   },
 ];

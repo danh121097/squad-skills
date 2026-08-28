@@ -95,6 +95,65 @@ cases:
       subject: { provider: codex, model: gpt-5.6-sol, effort: default }
       judge: { provider: anthropic, model: claude-opus-5, effort: default }
 
+  - id: dev-flutter-stat-tile-grid
+    lane: development
+    category: native-flutter
+    target_platform: flutter
+    output_type: presentational-code
+    request: >-
+      Build the presentational layer for a dashboard stat-tile grid in Flutter:
+      tile with label, value, trend indicator, and a loading skeleton state.
+      Values arrive as widget parameters.
+    evidence_packet:
+      - existing ThemeData extensions
+      - existing card widget conventions
+      - realistic labels including one at maximum length
+    allowed_capabilities:
+      - repository read
+    hard_invariants:
+      - { id: INV-COMPILE-001, severity: critical }
+      - { id: INV-SCOPE-001, severity: high }
+      - { id: INV-DEP-001, severity: high }
+    qualitative_rubric: [RUB-HIER-001, RUB-COHERE-001, RUB-CONTENT-001, RUB-SLOP-001]
+    expected_source_decisions:
+      - load the cross-platform native reference, not the Apple/Android or web one
+      - extend the existing ThemeData rather than ad-hoc constants
+      - state the compile-plus-partial-render verification tier explicitly
+    seed: 1
+    config:
+      subject: { provider: codex, model: gpt-5.6-sol, effort: default }
+      judge: { provider: anthropic, model: claude-opus-5, effort: default }
+
+  - id: dev-adaptive-inbox-two-pane
+    lane: development
+    category: adaptive-tablet-desktop
+    target_platform: adaptive
+    output_type: presentational-code
+    request: >-
+      Adapt an existing inbox list screen into a responsive two-pane layout:
+      list plus detail on tablet and desktop, single pane on mobile, with
+      selection, back, and focus behavior defined per size.
+    evidence_packet:
+      - existing list and navigation primitives
+      - existing breakpoint tokens
+    allowed_capabilities:
+      - repository read
+    hard_invariants:
+      - { id: INV-BUILD-001, severity: critical }
+      - { id: INV-OVERFLOW-001, severity: critical }
+      - { id: INV-A11Y-001, severity: critical }
+      - { id: INV-TOUCH-001, severity: high }
+      - { id: INV-SCOPE-001, severity: high }
+    qualitative_rubric: [RUB-HIER-001, RUB-COHERE-001, RUB-CONTENT-001]
+    expected_source_decisions:
+      - load the adaptive layout reference for size-class behavior
+      - reuse existing list and navigation primitives at both sizes
+      - keep hover-revealed actions reachable by touch and keyboard
+    seed: 1
+    config:
+      subject: { provider: codex, model: gpt-5.6-sol, effort: default }
+      judge: { provider: anthropic, model: claude-opus-5, effort: default }
+
   - id: acc-web-billing-usage-panel
     lane: acceptance
     content_hash: sha256:846268c207f64f95f18e9fad0aa86f52d6f1aac4b07fa1d0b20943c8136613ec

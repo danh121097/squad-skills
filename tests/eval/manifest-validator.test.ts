@@ -290,6 +290,75 @@ describe('validateEvalManifests', () => {
     ).toBe(true);
   });
 
+  it('enforces phase_1_reference as a ceiling on the governing budget', async () => {
+    const project = await createProject({
+      mutateBaseline: (manifest) => {
+        manifest.phase_1_reference = {
+          [budgetSkillName]: { entrypoint_words: 1, median_loaded_words: 1 },
+        };
+      },
+    });
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    expect(
+      result.errors.some((error) =>
+        error.includes(`phase_1_reference.${budgetSkillName}.entrypoint_words`)
+      )
+    ).toBe(true);
+    expect(
+      result.errors.some((error) =>
+        error.includes(`phase_1_reference.${budgetSkillName}.median_loaded_words`)
+      )
+    ).toBe(true);
+  });
+
+  it('accepts a budget at or below the phase_1_reference ceiling and rejects a malformed one', async () => {
+    const project = await createProject({
+      mutateBaseline: (manifest) => {
+        manifest.phase_1_reference = {
+          [budgetSkillName]: {
+            entrypoint_words: manifest.budget.entrypoint_words,
+            median_loaded_words: 'not-a-number',
+          },
+        };
+      },
+    });
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    expect(
+      result.errors.some((error) =>
+        error.includes(`phase_1_reference.${budgetSkillName}.entrypoint_words`)
+      )
+    ).toBe(false);
+    expect(
+      result.errors.some((error) =>
+        error.includes(`phase_1_reference.${budgetSkillName}.median_loaded_words must be a number`)
+      )
+    ).toBe(true);
+  });
+
+  it('rejects a phase_1_reference block that omits the budget skill', async () => {
+    const project = await createProject({
+      mutateBaseline: (manifest) => {
+        manifest.phase_1_reference = {
+          'renamed-skill': { entrypoint_words: 1, median_loaded_words: 1 },
+        };
+      },
+    });
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    expect(
+      result.errors.some(
+        (error) =>
+          error.includes('phase_1_reference is present but has no entry') &&
+          error.includes(budgetSkillName)
+      )
+    ).toBe(true);
+  });
+
   it('fails when the private commit hash is not a full commit', async () => {
     const project = await createProject({
       mutateBaseline: (manifest) => {

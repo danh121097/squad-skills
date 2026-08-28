@@ -83,7 +83,7 @@ while wiring behavior, such as route transitions and data-driven animation, plus
 bundle/performance verification of the whole app.
 
 The shared greenfield baseline is intentionally repeated for standalone operation; keep it aligned with
-Designer's `ui-foundation-and-motion-selection.md`, and resolve conflicts through accepted design first,
+Designer's `platform-web-foundations-and-motion.md`, and resolve conflicts through accepted design first,
 then the repository's existing system.
 
 ## 7. Cross-framework port

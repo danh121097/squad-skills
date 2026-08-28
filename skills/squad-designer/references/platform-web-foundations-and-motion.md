@@ -1,8 +1,9 @@
-# UI foundation and motion selection
+# Platform: web foundations and motion
 
-Read this reference when classifying an existing versus greenfield project, selecting a framework UI
-foundation, porting an interaction across frameworks, choosing animation technology, or evaluating
-OpenUI. Do not use these defaults to replace a working local system.
+Read this reference for a web target — classifying an existing versus greenfield web project,
+selecting a React/Next.js or Vue/Nuxt UI foundation, porting an interaction across frameworks,
+choosing web animation technology, or evaluating OpenUI. Native targets load their own platform
+reference instead. Do not use these defaults to replace a working local system.
 
 ## 1. Existing codebase
 
@@ -25,12 +26,10 @@ below. A new dependency requires a demonstrated gap and explicit approval.
 - Use Motion for React for component-state, layout, gesture, enter/exit, and ordinary scroll-linked motion.
 - Reserve GSAP for requirements that need its timeline or plugin model.
 
-Use the [beUI Agent Guide](https://beui.dev/docs/ai-agents),
-[component catalog](https://beui.dev/components/motion), and
-[Motion Guide](https://beui.dev/docs/motion-patterns) as current references.
-beUI is a preferred optional source, not a dependency or authority over the repository/design contract.
-Verify live availability, source, license and dependencies before adopting a component; if a deep link moves,
-use the beUI root/catalog or implement the same accepted behavior with local primitives.
+beUI is a preferred optional source, not a dependency or authority over the repository/design contract;
+its entrypoints live in the source registry. Fetch its agent guide live, verify availability, source,
+license and dependencies before adopting a component, and if a deep link moves, use the catalog root or
+implement the same accepted behavior with local primitives.
 
 ## 3. Greenfield Vue/Nuxt
 
@@ -84,6 +83,6 @@ resolve conflict in this order: accepted design, existing repository system, the
 - **Runtime Generative UI:** the shipped product asks a model to emit an abstract UI tree while running,
   and a renderer maps it to registered allowed components.
 
-Use the [beUI OpenUI guide](https://beui.dev/docs/openui) only for the second behavior. OpenUI is not a
-default dependency for normal screens. Treat that guide as changing external documentation and verify it
-live before relying on exact APIs.
+Use the beUI OpenUI guide, registered in the source registry, only for the second behavior. OpenUI is
+not a default dependency for normal screens. Treat that guide as changing external documentation and
+verify it live before relying on exact APIs.

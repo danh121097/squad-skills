@@ -28,25 +28,27 @@ private_store:
 # Word counts are whitespace-delimited tokens over the whole file, matching
 # `wc -w`. payload_hash covers SKILL.md plus every bundled reference.
 #
-# Re-measured in Phase 2, which moved squad-designer from spec-only to
-# presentational code and changed all three sides of the handoff in one cycle
-# (plan decision 7). The pinned subject model, judge model, and acceptance set
-# did not change, so this is the same cycle, not a new one. The figures these
-# replaced are recorded under `phase_1_reference` below and in ./eval-contract.md,
-# so the comparison Phase 3 owes is against a stated number, not a git archaeology
-# exercise.
+# Re-measured in Phase 3, which consolidated the reference set (two files merged
+# away, one renamed, four created) and expanded platform coverage to native and
+# adaptive targets. The pinned subject model, judge model, and acceptance set
+# did not change, so this is still the same cycle. The Phase 1 figures stay
+# under `phase_1_reference`, which `pnpm validate:evals` now enforces as a
+# ceiling on the governing budget — the comparison Phase 2 left unenforced.
+# squad-frontend's payload_hash moved because its motion reference names the
+# renamed designer file; its word counts are unchanged. squad-designer keeps
+# its Phase 2 boundary_hash: the role boundary did not move in Phase 3.
 skills:
   squad-designer:
-    version: 2.0.0
-    payload_hash: sha256:6390f5c7f8b4d40dce65e7cbd0af1714f1497dea8a3aae2e35828aaaf497f295
+    version: 2.1.0
+    payload_hash: sha256:b3d8c10d0e4287510fe0857645dc41f3b23d3db483b083b342808d108fa5cc3c
     boundary_hash: sha256:45b6073147b38c14324e812994988632c2ecc03db853f8dde84e0d2c2382e176
-    entrypoint_words: 1126
-    reference_count: 7
-    reference_words: 4159
-    total_payload_words: 5285
+    entrypoint_words: 1014
+    reference_count: 9
+    reference_words: 5799
+    total_payload_words: 6813
   squad-frontend:
     version: 1.5.0
-    payload_hash: sha256:2e79ff34e6885b145ab36cbcab08e22511f262ccf64983d0c685961ffec6880d
+    payload_hash: sha256:3a0bf1a434669016c00b26b9b1829fd96dc8dfbed60fe72493d4e3ff2d581ed6
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
     entrypoint_words: 848
     reference_count: 7
@@ -61,58 +63,93 @@ skills:
     reference_words: 1985
     total_payload_words: 2676
 
-# Transcribed from the conditional reference rules in
+# Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of
 # that type loads; loaded_words is entrypoint_words plus those references.
+#
+# Phase 3 routing changes, each tied to a consolidation, reviewed as this diff:
+# - ui-foundation-and-motion-selection.md is now platform-web-foundations-and-motion.md
+#   and loads only when web foundation, framework, motion, or OpenUI selection
+#   is in play — not for every web task.
+# - design-mindset-evaluation-and-official-sources.md merged: its evaluation
+#   passes into the handoff reference (accessibility-audit now loads one file),
+#   its source lists into official-sources.md.
+# - runtime-capability-fallbacks.md merged into official-sources.md, which
+#   degraded-runtime-fallback now loads instead of two files.
+# - Research-driven tasks additionally load official-sources.md because the
+#   research protocol now draws its source set from the registry.
+# - Native and design-system task types also load official-sources.md: their
+#   platform references cite official docs, HIG, and Material 3 through the
+#   registry, and the registry's own entries apply to design-system work.
+# - Native and adaptive task types are new with the platform expansion.
 task_types:
   - id: web-new-screen-greenfield
     references:
       - anti-slop-quality-review.md
       - design-system-ux-accessibility-and-handoff.md
+      - official-sources.md
+      - platform-web-foundations-and-motion.md
       - task-specific-ui-ux-research.md
-      - ui-foundation-and-motion-selection.md
-    loaded_words: 3757
+    loaded_words: 4650
   - id: web-redesign-existing-system
     references:
       - anti-slop-quality-review.md
       - codebase-first-examples.md
       - design-system-ux-accessibility-and-handoff.md
+      - official-sources.md
+      - platform-web-foundations-and-motion.md
       - task-specific-ui-ux-research.md
-      - ui-foundation-and-motion-selection.md
-    loaded_words: 4509
+    loaded_words: 5448
   - id: figma-accepted-handoff
     references:
       - design-system-ux-accessibility-and-handoff.md
-    loaded_words: 1773
+    loaded_words: 1760
   - id: design-system-tokens
     references:
       - design-system-ux-accessibility-and-handoff.md
-      - ui-foundation-and-motion-selection.md
-    loaded_words: 2471
+      - official-sources.md
+      - platform-web-foundations-and-motion.md
+    loaded_words: 3277
   - id: motion-direction
     references:
-      - ui-foundation-and-motion-selection.md
-    loaded_words: 1824
+      - platform-web-foundations-and-motion.md
+    loaded_words: 1732
   - id: accessibility-audit
     references:
-      - design-mindset-evaluation-and-official-sources.md
       - design-system-ux-accessibility-and-handoff.md
-    loaded_words: 2144
+    loaded_words: 1760
   - id: local-pattern-extension
     references:
       - codebase-first-examples.md
-    loaded_words: 1878
+    loaded_words: 1812
   - id: degraded-runtime-fallback
     references:
-      - runtime-capability-fallbacks.md
-      - ui-foundation-and-motion-selection.md
-    loaded_words: 2229
+      - official-sources.md
+    loaded_words: 1813
+  - id: native-cross-platform-build
+    references:
+      - anti-slop-quality-review.md
+      - design-system-ux-accessibility-and-handoff.md
+      - official-sources.md
+      - platform-native-cross-platform.md
+    loaded_words: 3782
+  - id: native-apple-android-build
+    references:
+      - anti-slop-quality-review.md
+      - design-system-ux-accessibility-and-handoff.md
+      - official-sources.md
+      - platform-native-apple-android.md
+    loaded_words: 3765
+  - id: adaptive-split-view
+    references:
+      - platform-adaptive-layout-and-input.md
+    loaded_words: 1376
 
 # The governing budget for later phases (plan decision 5).
 budget:
   skill: squad-designer
-  entrypoint_words: 1126
-  median_loaded_words: 2187
+  entrypoint_words: 1014
+  median_loaded_words: 1813
   method: >-
     entrypoint words plus the median across task types of the words loaded for
     that task type; even-length medians are the mean of the two middle values,
@@ -120,8 +157,10 @@ budget:
 
 # The Phase 1 figures this cycle is compared against. Not recomputed: these
 # describe the spec-only skill measured at repository.commit, which no longer
-# exists in the working tree. Phase 3 owns bringing the current numbers back to
-# or below them; Phase 2 exceeded them by rewriting the role, not by padding.
+# exists in the working tree. Since Phase 3, `pnpm validate:evals` enforces
+# entrypoint_words and median_loaded_words below as a ceiling on the measured
+# budget, so a regression against Phase 1 fails the gate instead of surviving
+# as a footnote. Raising or removing this block is a reviewed contract change.
 phase_1_reference:
   squad-designer:
     version: 1.3.0

@@ -17,15 +17,20 @@ const temporaryProjects: string[] = [];
 const designerEntrypoint = 'skills/squad-designer/SKILL.md';
 const designerHandoff =
   'skills/squad-designer/references/design-system-ux-accessibility-and-handoff.md';
-const designerMotion = 'skills/squad-designer/references/ui-foundation-and-motion-selection.md';
+const designerMotion = 'skills/squad-designer/references/platform-web-foundations-and-motion.md';
+const designerNativeAppleAndroid =
+  'skills/squad-designer/references/platform-native-apple-android.md';
+const designerNativeCross = 'skills/squad-designer/references/platform-native-cross-platform.md';
 const designerReferences = [
   'skills/squad-designer/references/anti-slop-quality-review.md',
   'skills/squad-designer/references/codebase-first-examples.md',
-  'skills/squad-designer/references/design-mindset-evaluation-and-official-sources.md',
   designerHandoff,
-  'skills/squad-designer/references/runtime-capability-fallbacks.md',
-  'skills/squad-designer/references/task-specific-ui-ux-research.md',
+  'skills/squad-designer/references/official-sources.md',
+  'skills/squad-designer/references/platform-adaptive-layout-and-input.md',
+  designerNativeAppleAndroid,
+  designerNativeCross,
   designerMotion,
+  'skills/squad-designer/references/task-specific-ui-ux-research.md',
 ];
 const frontendIntake = 'skills/squad-frontend/references/designer-gate-and-design-intake.md';
 const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-motion-selection.md';
@@ -207,12 +212,18 @@ describe('validateCrossSkillContract', () => {
     expect(inventory).toEqual({
       'BOUNDARY-ARTIFACT-001': [designerEntrypoint, frontendIntake, mobileGates, ...teamFiles],
       'BOUNDARY-LOGIC-001': [designerEntrypoint, frontendIntake, mobileGates, ...teamFiles],
-      'BOUNDARY-MOTION-001': [designerMotion, frontendMotion, mobileGates],
-      'RETIRED-SPEC-001': [designerEntrypoint, designerHandoff, designerMotion, ...teamFiles],
+      'BOUNDARY-MOTION-001': [
+        designerNativeAppleAndroid,
+        designerNativeCross,
+        designerMotion,
+        frontendMotion,
+        mobileGates,
+      ],
+      'RETIRED-SPEC-001': [designerEntrypoint, ...designerReferences, ...teamFiles],
       'RETIRED-SPEC-002': [designerEntrypoint, designerHandoff, teamPipeline],
       'RETIRED-SPEC-003': designerReferences,
       'RETIRED-SPEC-004': [designerEntrypoint, ...designerReferences],
-      'RETIRED-SPEC-005': [designerEntrypoint, designerHandoff, designerMotion, ...teamFiles],
+      'RETIRED-SPEC-005': [designerEntrypoint, ...designerReferences, ...teamFiles],
     });
   });
 
