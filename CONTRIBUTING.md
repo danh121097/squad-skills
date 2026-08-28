@@ -165,8 +165,8 @@ If third-party data is ever vendored into this repository, it ships with a
 `NOTICE` in the published package and retains each row's source URL. Attribution
 is not satisfied by a link in a pull-request description.
 
-This repository does not yet declare a licence. Until it does, ask before
-contributing anything whose reuse terms matter to you.
+This repository is MIT licensed. By contributing you agree your contribution is
+released under those terms.
 
 ## Security
 

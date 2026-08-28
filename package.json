@@ -2,6 +2,7 @@
   "name": "squad-skills",
   "version": "0.1.0",
   "description": "Role-specialized engineering squad skills for AI coding agents.",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "squad-skills": "./bin/cli.mjs"
@@ -10,6 +11,7 @@
     "dist",
     "bin",
     "skills",
+    "LICENSE",
     "README.md"
   ],
   "publishConfig": {

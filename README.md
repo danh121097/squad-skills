@@ -103,6 +103,10 @@ self-contained.
 The executable contract is owned by the TypeScript validator and tests. Run
 `pnpm validate` for a focused catalog check or `pnpm test` for the full gate.
 
+## License
+
+MIT. See [LICENSE](LICENSE).
+
 ## Discovery
 
 After this repository is public, run the documented GitHub smoke install once.

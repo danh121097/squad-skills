@@ -27,7 +27,7 @@ try {
   );
   const packResult = JSON.parse(stdout) as PackResult;
   const paths = packResult.files.map((file) => file.path);
-  const requiredPaths = ['bin/cli.mjs', 'dist/cli/cli.mjs', 'package.json', 'README.md'];
+  const requiredPaths = ['LICENSE', 'bin/cli.mjs', 'dist/cli/cli.mjs', 'package.json', 'README.md'];
   const unexpectedPaths = paths.filter(
     (path) =>
       !requiredPaths.includes(path) && path !== 'dist/cli/cli.d.mts' && !path.startsWith('skills/')
