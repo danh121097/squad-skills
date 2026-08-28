@@ -5,6 +5,7 @@ import { parseDocument } from 'yaml';
 
 import { validateEvalBaseline } from './baseline-validator.ts';
 import { validateEvalCases } from './case-validator.ts';
+import { validateJudgingContract } from './judging-contract-validator.ts';
 import { validateKnowledgeCards } from './knowledge-card-validator.ts';
 
 export interface EvalValidationResult {
@@ -110,6 +111,15 @@ async function validateEvalDirectory(options: {
     invariantIds: extractRegistryIds(contract ?? '', 'INV'),
     notes,
     projectRoot,
+  });
+
+  validateJudgingContract({
+    baseline: baseline?.value ?? null,
+    baselinePath: path.join(evalDirectory, 'baseline-manifest.yml'),
+    cases: cases?.value ?? null,
+    casesPath: path.join(evalDirectory, 'case-manifest.yml'),
+    errors,
+    notes,
   });
 
   if (cases) {

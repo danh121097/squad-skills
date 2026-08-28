@@ -2,6 +2,12 @@ import { summarizeGateResults, type GateResult, type GateSummary } from './gate-
 import { hashContent } from './skill-payload-measurement.ts';
 
 export interface CaseRunResult {
+  /**
+   * Which side of a pairwise run produced this result, when there was one. A
+   * judged run grades the same case twice, so the case id alone stops being
+   * unique and the report has to say which artifact each row measured.
+   */
+  arm?: 'baseline' | 'candidate';
   caseId: string;
   category: string;
   lane: string;
@@ -61,7 +67,10 @@ export function buildEvalRunReport(
   // `localeCompare` is locale-dependent, so the same run could hash differently
   // under a different ICU build.
   const sortedCases = [...cases]
-    .sort((left, right) => compare(left.caseId, right.caseId))
+    .sort(
+      (left, right) =>
+        compare(left.caseId, right.caseId) || compare(left.arm ?? '', right.arm ?? '')
+    )
     .map((entry) => ({ ...entry, results: sortResults(entry.results) }));
 
   const summary = summarizeGateResults(sortedCases.flatMap((entry) => entry.results));
@@ -98,7 +107,7 @@ export function renderMarkdownReport(report: EvalRunReport): string {
     const caseSummary = summarizeCase(entry);
 
     lines.push(
-      `## ${entry.caseId} — ${caseSummary.status}`,
+      `## ${entry.caseId}${entry.arm ? ` (${entry.arm})` : ''} — ${caseSummary.status}`,
       '',
       `lane \`${entry.lane}\` · category \`${entry.category}\` · platform \`${entry.targetPlatform}\` · artifacts \`${entry.runDirectory}\``,
       '',

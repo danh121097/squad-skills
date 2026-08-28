@@ -39,11 +39,13 @@
   "scripts": {
     "build": "obuild",
     "eval:designer": "node scripts/run-squad-designer-eval.ts",
+    "eval:judge": "node scripts/run-squad-designer-eval.ts --judge",
     "evals:links": "node scripts/check-knowledge-source-liveness.ts",
     "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "pack:check": "node scripts/check-package-contents.ts",
     "prepublishOnly": "pnpm release:check",
+    "promote:designer": "node scripts/promote-squad-designer-candidate.ts",
     "release:check": "pnpm test && pnpm build && node scripts/check-release-readiness.ts && pnpm pack:check",
     "skills:list": "skills add . --list",
     "test": "pnpm type-check && pnpm format:check && pnpm test:unit && pnpm validate && pnpm validate:evals && pnpm skills:list",

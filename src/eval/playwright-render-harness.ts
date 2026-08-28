@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises';
+import { access, mkdir, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -18,12 +18,20 @@ export interface RenderHarnessOptions {
   /** Viewport whose reduced-motion re-render answers `INV-MOTION-001`. */
   reducedMotionViewportLabel?: string;
   runDirectory: string;
+  /**
+   * Where to write one PNG per viewport. Judging needs rendered pixels — a
+   * judge given only code is grading code — and the deterministic gates need
+   * none of this, so capture stays opt-in and its failure never fails a gate.
+   */
+  screenshotDirectory?: string;
   viewports?: readonly ViewportSpec[];
 }
 
 export interface RenderHarnessOutcome {
   /** Pinned browser build, or `absent` when nothing rendered. */
   renderer: string;
+  /** Captured PNG paths, empty unless `screenshotDirectory` was given. */
+  screenshots: string[];
   snapshot: RenderedSnapshot;
 }
 
@@ -151,6 +159,11 @@ async function observe(
   }
 
   const axeSource = await readAxeSource();
+  const screenshotDirectory = options.screenshotDirectory ?? null;
+
+  if (screenshotDirectory) await mkdir(screenshotDirectory, { recursive: true });
+
+  const screenshots: string[] = [];
   const snapshots: ViewportSnapshot[] = [];
   // Read before the browser closes: the finally block runs before this
   // function's return expression is evaluated.
@@ -158,11 +171,37 @@ async function observe(
 
   try {
     for (const viewport of viewports) {
-      snapshots.push(await capture({ axeSource, browser, origin, reducedMotion: false, viewport }));
+      // Only the default-motion pass is captured: a reduced-motion still frame
+      // of the same layout tells a judge nothing the first image did not.
+      const screenshotPath = screenshotDirectory
+        ? path.join(screenshotDirectory, `${viewport.label}.png`)
+        : null;
+
+      snapshots.push(
+        await capture({
+          axeSource,
+          browser,
+          origin,
+          // Recorded only once the file exists. A path for a capture that threw
+          // is a promise of a render nothing wrote, and the judging stager
+          // downstream would fail the whole run copying it.
+          onScreenshot: (written) => screenshots.push(written),
+          reducedMotion: false,
+          screenshotPath,
+          viewport,
+        })
+      );
 
       if (viewport.label === reducedLabel) {
         snapshots.push(
-          await capture({ axeSource, browser, origin, reducedMotion: true, viewport })
+          await capture({
+            axeSource,
+            browser,
+            origin,
+            reducedMotion: true,
+            screenshotPath: null,
+            viewport,
+          })
         );
       }
     }
@@ -172,6 +211,7 @@ async function observe(
 
   return {
     renderer,
+    screenshots,
     snapshot: {
       buildDetail: `Built with Vite and observed at ${viewports.length} viewport(s).`,
       buildStatus: 'pass',
@@ -184,11 +224,14 @@ async function observe(
 async function capture(options: {
   axeSource: string | null;
   browser: Awaited<ReturnType<typeof import('playwright').chromium.launch>>;
+  onScreenshot?: (path: string) => void;
   origin: string;
   reducedMotion: boolean;
+  screenshotPath: string | null;
   viewport: ViewportSpec;
 }): Promise<ViewportSnapshot> {
-  const { axeSource, browser, origin, reducedMotion, viewport } = options;
+  const { axeSource, browser, onScreenshot, origin, reducedMotion, screenshotPath, viewport } =
+    options;
   const context = await browser.newContext({
     colorScheme: 'light',
     deviceScaleFactor: 1,
@@ -216,6 +259,20 @@ async function capture(options: {
       ViewportSnapshot,
       'axeStatus' | 'axeViolations' | 'reducedMotion' | 'tabOrder' | 'viewport'
     >;
+
+    // Before axe injects its own script tag, so the image is the candidate's
+    // page rather than the scanner's view of it. A capture failure is swallowed:
+    // no gate reads a screenshot, and losing one must not turn a graded run into
+    // an ungraded one.
+    if (screenshotPath) {
+      try {
+        await page.screenshot({ fullPage: true, path: screenshotPath });
+        onScreenshot?.(screenshotPath);
+      } catch {
+        // Reported by the absence of the path in the outcome, never by failing
+        // a gate: nothing here reads a screenshot to decide anything.
+      }
+    }
 
     return {
       ...observations,
@@ -309,6 +366,7 @@ async function readAxeSource(): Promise<string | null> {
 function absent(detail: string, status: 'fail' | 'pass' | 'unverified'): RenderHarnessOutcome {
   return {
     renderer: 'absent',
+    screenshots: [],
     snapshot: {
       buildDetail: detail,
       buildStatus: status,

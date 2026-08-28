@@ -46,6 +46,33 @@ the `EVAL_PRIVATE_PATH` environment variable.
   `request`, `evidence_packet`, or `expected_source_decisions` on a private case
   is a leak and fails validation.
 
+### Two settled questions about the store
+
+Both were carried from the Phase 1 review and are answered here because a paid
+lane is now runnable and their cost only grows with the store.
+
+**The pinned commit gets an annotated tag.** `pnpm validate:evals` already fails
+when the store is not parked on `private_store.commit`, so an accidental move is
+caught today. What a tag adds is a named anchor that survives a force-push or a
+deleted `develop` branch — the two ways a pinned hash becomes unreachable rather
+than merely wrong. Tag the pinned commit `eval-cycle-designer-2026-08-27` in the
+private repository before the first paid acceptance run. This is a maintainer
+action in another repository; nothing in this one can perform or verify it, and
+the hash remains the authority either way.
+
+**Held-out case ids become opaque.** `acc-web-billing-usage-panel` and its
+siblings publish the subject of a held-out case in a public manifest, which is
+mild contamination: the topic of the test is readable by anything that reads this
+repository, including a future subject model. Descriptive ids are worth less than
+that costs, so held-out cases move to `acc-001`-style ids with the descriptive
+title kept only in the private store.
+
+Execution is deliberately deferred and deliberately atomic. Renaming rewrites the
+store's files, all four `content_hash` values, and `private_store.commit`;
+editing the public half alone fails the gate, which is the correct behavior. It
+lands as one reviewed change across both repositories, before Phase 6 opens
+contribution and while the store still holds four cases.
+
 ## Case schema
 
 Every case declares:
@@ -165,6 +192,154 @@ a critical invariant failure.
 | `RUB-MOTION-001`  | motion has purpose, ownership, and a reduced-motion fallback |
 | `RUB-CONTENT-001` | realistic content lengths and edge states hold up            |
 | `RUB-SLOP-001`    | absence of generic AI-slop presentation patterns             |
+
+## Judging protocol
+
+Judging answers one question the deterministic gates cannot: between two
+artifacts that both pass every invariant, is the candidate's presentation
+better? It runs only in the paid lanes, only outside `pnpm test`, and only after
+gates have already spoken. A case whose baseline or candidate is blocked by a
+gate is never judged — a preference between a working screen and a broken one is
+not information about the skill.
+
+The pinned contract lives in the `judging:` block of `baseline-manifest.yml` and
+is checked by `pnpm validate:evals`. It records the subject model, the judge
+model, the sanity subset, the paid lanes, the budget, and the thresholds.
+
+**Cross-provider judging is mandatory.** The judge may not belong to the
+subject's provider family: `codex`/`openai` resolve to `openai`, and
+`claude`/`anthropic` to `anthropic`. Self-preference is the largest known bias in
+model-graded evaluation and is not correctable after the fact, so the runner
+refuses to start rather than producing a number that would need an asterisk. The
+validator refuses the same configuration offline, before any spend.
+
+**Both orders, every case.** Each pair is judged twice, once with the candidate
+presented first and once with the baseline presented first. Which order runs
+first is decided by a seeded per-case coin, so the sequence is reproducible
+without being the same for every case. The two orders must agree; when they do
+not, the case is recorded `inconclusive` and is excluded from scoring
+altogether. It is not scored as a tie, because a flip is evidence that the judge
+responded to position rather than to the artifact, and averaging that into parity
+would let instability read as equivalence.
+
+**Blinding covers filenames as well as prose.** Arms are presented as `entry-a`
+and `entry-b`; arm words and model names are redacted from the prompt, and
+screenshots are copied to `judge/<case>/<order>/entry-<side>-<n>.png` before the
+packet is built, because a path such as `dev-one.candidate/mobile.png` would
+defeat prompt-level blinding on its own. An `assertBlind` backstop re-scans the
+assembled prompt and every image path and refuses to send a packet that still
+leaks an arm label. Redaction runs before the assertion so that candidate code
+legitimately containing the word "candidate" does not produce a false refusal,
+while a newly introduced leak still fails loudly.
+
+**Evidence precedes preference.** The judge must fill a schema that requires one
+entry per registered rubric, each with written evidence, before it may state an
+overall winner. A response missing a rubric, or carrying blank evidence, is
+`inconclusive` rather than a vote.
+
+**An inconclusive pair says why.** `inconclusive` covers four different events:
+the judge flipped between orders, the deterministic gates blocked an arm so the
+pair was never sent, a render could not be staged, or the budget stop halted the
+run before the case. Each outcome carries the reason, so a maintainer is not sent
+to debug judge instability for a case no judge ever saw.
+
+**Length control.** Verbosity is a known confound: judges prefer longer answers
+independently of quality. A length-matched rewording of one arm is judged
+alongside the pair to estimate that bias, and the control must tie. An unmeasured
+control is reported as `biased: true`, not as absence of bias — the honest
+default when the measurement did not run.
+
+`judging.length_control` names one case **per paid lane**, and each named case
+must belong to the lane it is declared under. A single run-wide reference cannot
+work, because a run grades one lane at a time and would find the control case
+filtered out. The control's renders are produced by a separate grading pass that
+writes only into `graded/`, so it never enters the deterministic verdict; its two
+judge calls are still paid for out of the run budget and are counted in the
+report's totals.
+
+**Calibration.** A human-scored subset is compared against the judge on the same
+pairs, reported as raw agreement and as Cohen's kappa so that agreement expected
+by chance is not counted as skill. Human labels live in the run directory, not in
+the frozen private store, because a label compares against a candidate that does
+not exist at the time the store is frozen. Promotion refuses while calibration is
+unscored, below `minimum_judge_human_agreement`, or resting on fewer than
+`minimum_calibration_pairs` comparable pairs — a perfect agreement over two
+pairs is not a measurement. Only pairs this run actually judged are compared; a
+label for a case the run skipped is never counted as agreement.
+
+**The calibration lane is not yet large enough to promote on.** It holds one
+case (`cal-web-empty-state-card`) against a registered minimum of six, so the
+first promotion is blocked until the private store grows to at least six
+calibration cases and a human labels them. That is a prerequisite to record, not
+a defect to work around: lowering the minimum to fit the store would make the
+agreement figure unfalsifiable, which is what the minimum exists to prevent.
+
+**Scoring and interval.** Judged outcomes score +1 for the candidate, -1 for the
+baseline, and 0 for a tie; `inconclusive` is excluded. The reported interval is a
+seeded percentile bootstrap over those scores, so it reproduces exactly from
+`bootstrap_seed`. A verdict of "better" requires the interval's lower bound to
+clear `equivalence_boundary`; an interval that straddles it is reported as "not
+distinguishable at this sample size", which is a result, not a failure.
+
+`thresholds.registered` is `false` until the first calibration is scored, and the
+promotion gate refuses to state a verdict while it is false. The threshold is
+meant to be set from measured judge-human agreement, not guessed before any
+agreement exists; recording it as pre-registered before it is registered would be
+the exact failure mode pre-registration exists to prevent.
+
+**Cost and determinism are reported, never assumed.** Usage arrives per call and
+any absent field stays `null`; a null propagates to a null total, and the report
+prints "unknown", because an unknown cost recorded as zero is a false budget.
+The hard stop triggers only on a _known_ total exceeding `hard_stop_usd`. No
+temperature control is available on the judge, so no report may claim
+determinism; order swaps and repeated runs absorb the residual variance and the
+report says so explicitly.
+
+**Two judge clients, one guarantee.** The Codex client uses `-i` for renders,
+`--output-schema` for the rubric, `--json` for usage, and `-s read-only`; the
+Claude CLI has neither `--output-schema` nor `-i`, so it carries the schema and
+the render paths in the prompt and is allowed the `Read` tool only. What must not
+differ is the guarantee: pixels as well as code, evidence before score, and no
+write access from a process grading this repository's own output.
+
+**The sanity subset is not judged.** Its provider is the judge's own family, and
+judging it there would reintroduce precisely the self-preference the
+cross-provider rule removes. It exists to catch a skill that only works on a top
+tier, and deterministic gates answer that question without a preference.
+
+### Promotion
+
+Promotion is a separate decision from the run, and it is not automated.
+`pnpm promote:designer` reads the run's reports and refuses for any of:
+deterministic blocking, a per-case regression from `pass` to non-`pass`, order
+instability, an unregistered threshold, calibration unscored or below its
+minimum, a biased or unmeasured length control, a lower bound at or below the
+equivalence boundary, a budget regression against `phase_1_reference`, a stale
+knowledge card, a non-major version bump, or a missing approval record.
+
+It collects every refusal rather than stopping at the first, so one run tells the
+maintainer everything that stands in the way. It mutates nothing: it prints a
+decision and exits non-zero.
+
+**Evidence is read from one lane, and the lane is named.** Run artifacts live
+under `.eval-runs/<cycle>/<lane>/`, and promotion reads the lane recorded as
+`judging.promotion_lane` — which must itself be a paid lane. A report judged on
+`calibration` is refused for promotion even when every threshold in it passes:
+the calibration lane exists to score the judge, not the candidate.
+
+**A report has to be the one the run produced.** `buildJudgingReport` hashes its
+own body, and promotion recomputes that hash before reading a single number. A
+report whose verdict, cost, or interval was edited afterwards no longer matches
+and is refused. Promotion also refuses a report from a different cycle than the
+one being promoted.
+
+The approval record is the non-bypassable half. A maintainer must attest, in
+`promotion-approval.yml`, to having reviewed the diff, the transcripts, the
+source provenance, and the screenshots. The record also names `cycle_id`,
+`candidate_version`, and `judging_report_hash`, and all three must match what is
+being promoted: a signature that does not say what it signed can be reused
+against a later, unreviewed candidate. No measurement in this repository can
+substitute for that attestation, and no flag skips it.
 
 ## Budget metric
 
@@ -429,3 +604,27 @@ a transcription error: a control sized for the strictest platform the designer
 ships to is correct everywhere, and sizing to the AA floor would make the same
 component fail its own iOS case. Anything meeting 44px meets 24px, so the
 stricter number never produces a result the standard would call wrong.
+
+## What Phase 5 deliberately does not do
+
+Phase 5 builds the judging and promotion machinery. Five boundaries keep what it
+proves narrower than what it can run.
+
+- **No paid run was performed.** Every module here is offline-tested against
+  injected runners; no subject model produced an artifact and no judge graded
+  one. The harness is verified, the skill is not yet measured. Running a cycle
+  needs provider credentials and budget, and is a maintainer operation.
+- **No number is promoted.** `thresholds.registered` is `false`, so the gate
+  refuses to state a verdict. The first scored calibration is what turns
+  judging from a mechanism into a measurement.
+- **No automated promotion.** Nothing in this repository can promote a
+  candidate. The gate can only refuse; a maintainer's reviewed attestation is
+  the only path forward, and there is no flag that skips it.
+- **No paid or nondeterministic work inside `pnpm test`.** The repository gate
+  stays offline, free, and deterministic. `pnpm eval:judge` and
+  `pnpm promote:designer` are separate entry points, and a machine with no
+  credentials still verifies the whole contract.
+- **No claim of judge determinism.** Temperature is not controllable on the
+  pinned judge. Order swapping and repeated runs bound the variance; they do not
+  remove it, and the report states this rather than implying reproducibility the
+  contract cannot enforce.

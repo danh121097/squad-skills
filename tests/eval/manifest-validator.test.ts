@@ -488,6 +488,30 @@ describe('validateEvalManifests', () => {
 
     expect(result.errors).toEqual([]);
   });
+
+  it('fails when the judge shares the subject provider family', async () => {
+    const project = await createProject({
+      mutateBaseline: (baseline) => {
+        baseline.judging.judge = { provider: 'openai', model: 'o5' };
+      },
+    });
+
+    const result = await validateEvalManifests(project.root, { privatePath: null });
+
+    expect(result.errors.some((error) => error.includes('same family'))).toBe(true);
+  });
+
+  it('fails when a case pins a model the cycle did not', async () => {
+    const project = await createProject({
+      mutateCases: (cases) => {
+        cases.cases[0].config.judge.model = 'claude-sonnet-5';
+      },
+    });
+
+    const result = await validateEvalManifests(project.root, { privatePath: null });
+
+    expect(result.errors.some((error) => error.includes('not the cycle'))).toBe(true);
+  });
 });
 
 interface ProjectFixture {
@@ -539,6 +563,31 @@ async function createProject(
     },
     skills: {},
     task_types: [],
+    // The fixture declares a paid lane, so the pinned judging contract is
+    // required here for the same reason it is in the real manifest.
+    judging: {
+      subject: { provider: 'codex', model: 'gpt-5.6-sol' },
+      judge: { provider: 'anthropic', model: 'claude-opus-5' },
+      authoring_assistance: 'maintainer plus interactive assistance',
+      temperature_control: 'unavailable on the judge',
+      subject_sanity_subset: {
+        provider: 'anthropic',
+        model: 'claude-sonnet-5',
+        cases: 6,
+        judged: false,
+      },
+      paid_lanes: ['acceptance'],
+      promotion_lane: 'acceptance',
+      length_control: { acceptance: 'acc-held-out' },
+      budget: { estimated_usd_per_cycle: '15-25', hard_stop_usd: 150 },
+      thresholds: {
+        registered: false,
+        equivalence_boundary: 0,
+        minimum_judge_human_agreement: 0.7,
+        minimum_calibration_pairs: 6,
+        bootstrap_seed: 1,
+      },
+    },
     budget: {},
   };
 

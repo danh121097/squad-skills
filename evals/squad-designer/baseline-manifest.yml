@@ -167,6 +167,67 @@ task_types:
       - platform-adaptive-layout-and-input.md
     loaded_words: 1376
 
+# Pinned judging contract for the paid lanes (plan decision 9, phase 5).
+# `pnpm validate:evals` refuses a judge in the subject's provider family, a case
+# that pins a model this block does not, and a paid-lane list that disagrees
+# with case-manifest.yml. Nothing here makes a call; the runner reads it.
+judging:
+  subject:
+    provider: codex
+    model: gpt-5.6-sol
+    effort: default
+  judge:
+    provider: anthropic
+    model: claude-opus-5
+    effort: default
+  # Catches a skill that only works on a top tier. Not judged: its provider is
+  # the judge's own family, and judging it there would reintroduce exactly the
+  # self-preference the cross-provider rule removes. Deterministic gates carry
+  # it, which is enough for the question it asks.
+  subject_sanity_subset:
+    provider: anthropic
+    model: claude-sonnet-5
+    cases: 6
+    judged: false
+  authoring_assistance: >-
+    Maintainer plus interactive assistance. Disclosed as a caveat; the judged
+    artifact is produced by the subject, not by the authoring assistant.
+  temperature_control: >-
+    Unavailable on the judge, so its output is not guaranteed deterministic.
+    Order swaps and repeated runs absorb the residual variance; no report may
+    claim determinism this contract cannot enforce.
+  paid_lanes: [acceptance, calibration]
+  # Promotion is decided on the held-out lane. Both lanes write the same report
+  # shape into their own lane directory, so the gate names the lane it reads
+  # rather than trusting whichever run wrote last.
+  promotion_lane: acceptance
+  # The verbosity control is the same task reworded at greater length, not a
+  # task of its own: it reuses the named case's platform and rubrics, and the
+  # operator supplies its two arms as `length-control.baseline/` and
+  # `length-control.candidate/` under that lane's run directory. One per lane,
+  # because a lane only ever grades its own cases.
+  length_control:
+    acceptance: acc-web-billing-usage-panel
+    calibration: cal-web-empty-state-card
+  budget:
+    estimated_usd_per_cycle: '15-25'
+    hard_stop_usd: 150
+  # Pre-registered, and `registered: false` until the first calibration is
+  # scored. The promotion gate refuses to report a verdict while it is false,
+  # so the threshold is set from measured judge-human agreement rather than
+  # guessed before any agreement exists.
+  thresholds:
+    registered: false
+    equivalence_boundary: 0
+    minimum_judge_human_agreement: 0.7
+    # One agreeing pair is 100% agreement and no evidence at all. This is the
+    # number of labelled pairs an agreement figure has to rest on, and the
+    # calibration lane holds one case today: it must grow to at least this
+    # before any promotion is possible. Set with the same reviewed edit that
+    # registers the threshold above.
+    minimum_calibration_pairs: 6
+    bootstrap_seed: 1
+
 # The governing budget for later phases (plan decision 5).
 budget:
   skill: squad-designer

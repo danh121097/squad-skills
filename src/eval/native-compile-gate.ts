@@ -7,7 +7,14 @@ import { gateResult, type GateResult } from './gate-result.ts';
 export interface CommandOutcome {
   /** True when the toolchain itself is not installed, as opposed to failing. */
   missing: boolean;
+  /** Merged streams, for a human reading a compile failure. */
   output: string;
+  /**
+   * stdout alone, for a caller that parses it. A compiler's diagnostics read
+   * better merged; a JSONL answer stream does not survive a stderr write
+   * landing mid-line.
+   */
+  stdout?: string;
   /**
    * Exit status, or `null` when the toolchain never produced one — it timed
    * out, or the machine refused to run it. That is an environment fault, and

@@ -61,6 +61,23 @@
   part of `pnpm test`. It writes only to `.eval-runs/`, and exits non-zero when a
   gate fails at `critical` or `high`, or when a gate could not run. A `medium`
   failure is reported in full and exits zero.
+- Paid judging run: `pnpm eval:judge --lane acceptance`. Judges the graded pairs
+  from a designer run and is the only paid, nondeterministic entry point; it is
+  never reachable from `pnpm test`. It requires a lane listed in the manifest's
+  `judging.paid_lanes`, refuses a judge in the subject's provider family, and
+  needs `EVAL_PRIVATE_PATH` for a held-out lane. Artifacts are lane-scoped: it
+  expects, under `.eval-runs/<cycle>/<lane>/`, `<case>.baseline/` and
+  `<case>.candidate/` per case, the same pair under `length-control.*` for the
+  lane's length-matched control (named by `judging.length_control.<lane>`), and
+  `calibration-labels.yml` for the human-scored subset. It exits non-zero when a
+  gate blocks or any pair is inconclusive.
+- Promotion decision: `pnpm promote:designer`. Reads `report.json`,
+  `judging.json`, and `promotion-approval.yml` from the lane named by
+  `judging.promotion_lane`, refuses evidence judged on any other lane, verifies
+  the judging report against its own hash before reading it, prints every refusal
+  rather than the first, mutates nothing, and exits non-zero unless every gate
+  and the human approval checklist pass. The approval record must name the
+  `cycle_id`, `candidate_version`, and `judging_report_hash` it signed.
 - Knowledge source liveness: `pnpm evals:links`. Requests each card's
   `source_url` and reads the status code only — the body is never consumed — so
   a moved source is caught without ingesting any page. Needs network, so it is
