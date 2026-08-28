@@ -38,6 +38,7 @@
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "build": "obuild",
+    "eval:designer": "node scripts/run-squad-designer-eval.ts",
     "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" README.md AGENTS.md CLAUDE.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "pack:check": "node scripts/check-package-contents.ts",
@@ -55,9 +56,12 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "axe-core": "^4.13.0",
     "obuild": "^0.4.22",
+    "playwright": "^1.62.1",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
+    "vite": "8.2.2",
     "vitest": "^4.0.17",
     "yaml": "^2.8.3"
   }

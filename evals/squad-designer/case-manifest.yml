@@ -154,6 +154,75 @@ cases:
       subject: { provider: codex, model: gpt-5.6-sol, effort: default }
       judge: { provider: anthropic, model: claude-opus-5, effort: default }
 
+  # The two cases below exist to falsify the queryable-reference-data lane
+  # (plan decision 12). The four cases above cannot: none of them has a wrong
+  # answer that a style catalog would produce, so an A/B over them would measure
+  # aggregate preference, which is the signal a polished template wins. Both
+  # evidence packets carry an established token file and component inventory —
+  # a greenfield packet would remove the conflict the case is built to expose.
+  - id: dev-tokens-extend-established-system
+    lane: development
+    category: design-system-tokens
+    target_platform: web
+    output_type: presentational-code
+    request: >-
+      The product needs a semantic token layer for status and emphasis across
+      its existing surfaces. Extend what the repository already has so the new
+      tokens read as part of the same system.
+    evidence_packet:
+      - established token file with a working palette, type scale, and spacing ramp
+      - component inventory showing how those tokens are already consumed
+      - two surfaces that need the new status treatment
+    allowed_capabilities:
+      - repository read
+    hard_invariants:
+      - { id: INV-BUILD-001, severity: critical }
+      - { id: INV-CONTRAST-001, severity: critical }
+      - { id: INV-A11Y-001, severity: critical }
+      - { id: INV-TOKEN-001, severity: medium }
+      - { id: INV-SCOPE-001, severity: high }
+    qualitative_rubric: [RUB-SLOP-001, RUB-COHERE-001]
+    expected_source_decisions:
+      - extend the existing palette, type scale, and naming rather than introducing a parallel one
+      - derive the new status hues from the established palette relationships
+      - keep every new token consumed through the existing component surface
+    seed: 1
+    config:
+      subject: { provider: codex, model: gpt-5.6-sol, effort: default }
+      judge: { provider: anthropic, model: claude-opus-5, effort: default }
+
+  - id: dev-web-pricing-page-established-brand
+    lane: development
+    category: web-screen-responsive
+    target_platform: web
+    output_type: presentational-code
+    request: >-
+      Build the presentational layer for a three-plan pricing page inside an
+      existing product. Plan data, copy, and the current-plan flag arrive as
+      props.
+    evidence_packet:
+      - established token file and brand surfaces from the live product
+      - component inventory including card, badge, and button primitives
+      - realistic plan names, feature lists, and one plan at maximum feature count
+    allowed_capabilities:
+      - repository read
+    hard_invariants:
+      - { id: INV-BUILD-001, severity: critical }
+      - { id: INV-A11Y-001, severity: critical }
+      - { id: INV-CONTRAST-001, severity: critical }
+      - { id: INV-OVERFLOW-001, severity: critical }
+      - { id: INV-TOUCH-001, severity: high }
+      - { id: INV-SCOPE-001, severity: high }
+    qualitative_rubric: [RUB-SLOP-001, RUB-COHERE-001, RUB-CONTENT-001]
+    expected_source_decisions:
+      - take direction from the existing product surface, not from a page-type convention
+      - reuse the existing card, badge, and button primitives
+      - resolve emphasis for the highlighted plan through existing tokens
+    seed: 1
+    config:
+      subject: { provider: codex, model: gpt-5.6-sol, effort: default }
+      judge: { provider: anthropic, model: claude-opus-5, effort: default }
+
   - id: acc-web-billing-usage-panel
     lane: acceptance
     content_hash: sha256:846268c207f64f95f18e9fad0aa86f52d6f1aac4b07fa1d0b20943c8136613ec

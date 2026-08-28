@@ -38,15 +38,36 @@ export interface ValidateCrossSkillContractOptions {
  * and code spans are presentation, so a clause stays satisfied when a file
  * rewraps or bolds part of it, and fails only when the wording itself changes.
  *
- * Two limits bind whoever writes the next clause. Emphasis stripping is
- * character-level, so `snake_case` flattens to `snakecase` and link syntax
- * survives — keep clause text free of underscores and links. Matching is plain
- * substring, so a clause is satisfied by any occurrence, including one inside a
- * negation or a quoted changelog entry; state clauses as the live rule.
+ * Three narrowings, carried from the Phase 3 review of this matcher:
+ *
+ * - Fenced blocks and HTML comments are removed first. A boundary clause is a
+ *   claim the skill makes to its reader; one that survives only inside a code
+ *   sample or a comment is not stated, and would otherwise satisfy the check.
+ * - Markdown links collapse to their label, so a clause whose subject is linked
+ *   still matches the clause text. Before this, `[squad-frontend](...)` kept its
+ *   target and silently failed a correctly stated boundary.
+ * - Emphasis stripping stays character-level, so `snake_case` flattens to
+ *   `snakecase`. Keep clause text free of underscores.
+ *
+ * Fence stripping applies to *clause* matching only. The retired-phrase check
+ * reads fences, because a fenced handoff template is shipped instruction text
+ * rather than an illustrative sample — see `flattenForRetiredPhrase`.
  */
+/**
+ * Fences are matched by their own run length, so a four-backtick block that
+ * contains a three-backtick one closes where it actually closes. The previous
+ * pattern paired the first three backticks it saw with the next three, which
+ * swallowed the prose between two adjacent blocks — enough to delete a boundary
+ * clause from a file that states it correctly.
+ */
+const fencedBlock = /^([ \t]*)(`{3,}|~{3,})[^\n]*\n[\s\S]*?^[ \t]*\2[^\n]*$/gm;
+
 export function normalizeProse(source: string): string {
   return source
     .replace(/\r\n/g, '\n')
+    .replace(fencedBlock, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/[*_`]/g, '')
     .replace(/[‘’]/g, "'")
     .replace(/[“”]/g, '"')
@@ -67,6 +88,9 @@ export async function validateCrossSkillContract(
   const clauses = options.clauses ?? boundaryClauses;
   const phrases = options.retiredPhrases ?? retiredPhrases;
   const errors: string[] = [];
+  // Raw text is read once and flattened per check: the two checks need
+  // different normalizations, and a clause hidden in a fence is not stated
+  // while a retired instruction inside one still ships.
   const sources = new Map<string, string | null>();
 
   const checkedFiles = [
@@ -74,7 +98,7 @@ export async function validateCrossSkillContract(
   ].sort();
 
   for (const file of checkedFiles) {
-    sources.set(file, await readProse(projectRoot, file));
+    sources.set(file, await readSource(projectRoot, file));
   }
 
   for (const clause of clauses) {
@@ -110,7 +134,7 @@ function validateClause(
       continue;
     }
 
-    if (source.includes(needle)) carrying.push(file);
+    if (normalizeProse(source).includes(needle)) carrying.push(file);
     else missing.push(file);
   }
 
@@ -127,30 +151,68 @@ function validateClause(
 
 function validateRetiredPhrase(
   phrase: RetiredPhrase,
-  sources: Map<string, string | null>,
+  raw: Map<string, string | null>,
   errors: string[]
 ): void {
-  const needle = normalizeProse(phrase.phrase);
+  const needle = flattenForRetiredPhrase(phrase.phrase);
 
   for (const file of phrase.files) {
-    const source = sources.get(file);
+    const source = raw.get(file);
 
     if (source === null || source === undefined) {
       errors.push(`${phrase.id}: ${file} could not be read.`);
       continue;
     }
 
-    if (source.includes(needle)) {
+    if (retiredPhraseOptOut(phrase.id).test(source)) continue;
+
+    if (flattenForRetiredPhrase(source).includes(needle)) {
       errors.push(
-        `${phrase.id}: ${file} still says "${phrase.phrase}", which the current role boundary retired.`
+        `${phrase.id}: ${file} still says "${phrase.phrase}", which the current role boundary retired. ` +
+          `If the file is quoting the retirement on purpose, mark it with <!-- retired-phrase-ok: ${phrase.id} -->.`
       );
     }
   }
 }
 
-async function readProse(projectRoot: string, file: string): Promise<string | null> {
+/**
+ * Flattening for the retired-phrase check.
+ *
+ * Deliberately *not* `normalizeProse`: fenced blocks stay in. A retired
+ * instruction inside a fenced handoff template is still shipped instruction
+ * text, and stripping fences here let it through.
+ */
+export function flattenForRetiredPhrase(source: string): string {
+  return source
+    .replace(/\r\n/g, '\n')
+    .replace(/[*_`]/g, '')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201c\u201d]/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+/**
+ * Marks one retired phrase as deliberately quoted in this file.
+ *
+ * A skill that documents its own change has to carry the old wording once, and
+ * the first attempt at this inferred consent from nearby English — a marker
+ * list scanned in a 48-character window. That failed in both directions and
+ * failed silently: `not ` is a substring of `cannot`, so an ordinary sentence
+ * like "the build role cannot start until you hand over a written spec"
+ * suppressed the only gate that catches boundary drift.
+ *
+ * An explicit opt-out is checkable instead of inferred. It names the phrase id,
+ * it is visible in the diff that adds it, and English near the phrase changes
+ * nothing.
+ */
+const retiredPhraseOptOut = (id: string): RegExp =>
+  new RegExp(`<!--\\s*retired-phrase-ok:\\s*${id}\\s*-->`, 'i');
+
+async function readSource(projectRoot: string, file: string): Promise<string | null> {
   try {
-    return normalizeProse(await readFile(path.join(projectRoot, file), 'utf8'));
+    return await readFile(path.join(projectRoot, file), 'utf8');
   } catch {
     return null;
   }

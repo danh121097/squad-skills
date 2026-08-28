@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 # Local AgentKit execution records are not repository documentation.
 plans/
+
+# Candidate evaluation runs are generated artifacts, never repository state.
+.eval-runs/

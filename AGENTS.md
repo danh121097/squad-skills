@@ -56,6 +56,11 @@
   of the held-out store, outside this repository, to also verify its hashes;
   leave it unset in CI.
 - Catalog discovery: `pnpm skills:list`
+- Designer evaluation run: `pnpm eval:designer`. Builds and renders candidate
+  output with Vite, Playwright, and Chromium, so it needs a browser and is not
+  part of `pnpm test`. It writes only to `.eval-runs/`, and exits non-zero when a
+  gate fails at `critical` or `high`, or when a gate could not run. A `medium`
+  failure is reported in full and exits zero.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
 

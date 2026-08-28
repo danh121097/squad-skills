@@ -5,6 +5,7 @@ import { parseDocument } from 'yaml';
 
 import { validateEvalBaseline } from './baseline-validator.ts';
 import { validateEvalCases } from './case-validator.ts';
+import { validateKnowledgeCards } from './knowledge-card-validator.ts';
 
 export interface EvalValidationResult {
   directories: string[];
@@ -102,6 +103,14 @@ async function validateEvalDirectory(options: {
       projectRoot,
     });
   }
+
+  await validateKnowledgeCards({
+    cardsDirectory: path.posix.join(evalsRoot, directory, 'knowledge'),
+    errors,
+    invariantIds: extractRegistryIds(contract ?? '', 'INV'),
+    notes,
+    projectRoot,
+  });
 
   if (cases) {
     await validateEvalCases({

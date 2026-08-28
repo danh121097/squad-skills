@@ -90,8 +90,11 @@ explained by choosing a favorable category mix.
 
 ## Hard invariant registry
 
-Severity `critical` blocks promotion on its own. Severity `high` blocks
-promotion in aggregate and is always reported.
+Promotion is blocked by a single failure at `critical` or `high`, by any
+`unverified` result, and by an empty result set. Severity `medium` is always
+reported and never blocks: it marks a house-style claim worth fixing rather than
+a correctness failure. The verdict is the worst result in the set, never a mean,
+so one blocking failure cannot be averaged away by passes elsewhere.
 
 | Id                 | Check                                                    | Severity | Verification tier |
 | ------------------ | -------------------------------------------------------- | -------- | ----------------- |
@@ -101,14 +104,54 @@ promotion in aggregate and is always reported.
 | `INV-OVERFLOW-001` | no horizontal overflow at the declared viewports         | critical | render-gated      |
 | `INV-MOTION-001`   | reduced-motion preference is honored                     | critical | render-gated      |
 | `INV-TOUCH-001`    | interactive targets meet the minimum target size         | high     | render-gated      |
+| `INV-KEYBOARD-001` | every interactive element is reachable by Tab            | high     | render-gated      |
+| `INV-ANIMCOST-001` | transitions stay off the layout path                     | high     | render-gated      |
 | `INV-COMPILE-001`  | the native target compiles                               | critical | compile-tier      |
 | `INV-SCOPE-001`    | no state, data fetching, routing, or lifecycle ownership | high     | static            |
 | `INV-DEP-001`      | no dependency added without an approval marker           | high     | static            |
 | `INV-SOURCE-001`   | sources are fetched from the registry, never bundled     | critical | static            |
+| `INV-TOKEN-001`    | styling resolves to semantic tokens, not raw literals    | medium   | static            |
 
 Verification tiers follow plan decision 10: web and adaptive are render-gated,
 React Native and Flutter are compile plus partial render, SwiftUI and Compose
 are compile plus human review. Native limits are stated, not implied.
+
+Phase 4 implements the compile half of every native tier and the render tier for
+web and adaptive only. The partial render for React Native and Flutter is not
+built: those platforms currently receive the static gates plus `tsc --noEmit` or
+`flutter analyze`, and no rendered gate result is produced for them at all.
+That is a smaller claim than decision 10 describes, and it is recorded here
+rather than left to be inferred from an absent row in a report.
+
+A case's `hard_invariants` list declares which gates that case was written to
+exercise. It is not a filter: the runner executes every gate that applies to the
+case's platform, so a case cannot narrow what it is graded on by omitting a
+row.
+
+`INV-KEYBOARD-001`, `INV-ANIMCOST-001`, and `INV-TOKEN-001` were added in Phase
+4 for the three rows of its gate table that Phase 1 had named as gates but not
+as invariants. Registering them makes each one addressable by a case and
+blocking at a declared severity, rather than a check that runs and reports into
+nothing.
+
+`INV-COMPILE-001` reports twice on SwiftUI and Compose: once at `compile-tier`
+for the toolchain result, once at `human-review` for the reviewer's record.
+Splitting the tiers rather than the id keeps one invariant per claim while
+making the depth of each verification visible in the report.
+
+### What the compile and scope tiers do and do not prove
+
+An absent toolchain is reported as `unverified`, never as a pass. A run on a
+machine with no Flutter, no Kotlin, and no Xcode reports three unverified
+compiles, and a report where nothing was verified must not be readable as a
+report where everything passed.
+
+`INV-SCOPE-001` forbids _owning_ application state, data, routing, and platform
+lifecycle. It does not forbid presentation-local state — hover, expansion, focus
+— because a component that cannot hold those is not a presentational component.
+The static rule table matches network, routing, store, persistence, analytics,
+and credential access; it deliberately does not match `useState`, `useEffect`,
+`remember`, or `@State`.
 
 ## Qualitative rubric registry
 
@@ -330,3 +373,35 @@ any one side of the handoff is edited alone.
 - No enforcement of the forbidden-import rule `INV-SCOPE-001` names. Phase 2
   states the boundary in prose and gates the wording; proving emitted code obeys
   it needs the Phase 4 harness.
+
+## What Phase 4 deliberately does not do
+
+Phase 4 builds the harness that turns the invariant registry into measurements.
+Four boundaries keep what it proves narrower than what it runs.
+
+- **No judging and no scoring.** Every rubric row in this contract stays
+  unexercised. The harness emits `pass`, `fail`, or `unverified` per invariant
+  and a max-over-severity verdict; nothing weighs one invariant against another
+  and nothing produces a number. Rubric judging is a later phase.
+- **No model runs.** The harness grades output that already exists in a run
+  directory. Producing that output — invoking the skill against a case — is not
+  part of this phase, which is why a case with no candidate reports
+  `unverified` rather than passing.
+- **No browser inside `pnpm test`.** The repository gate stays offline and
+  deterministic: it exercises gate _decisions_ against fixture snapshots. Vite,
+  Playwright, and Chromium run only under `pnpm eval:designer`, so a machine
+  without a browser can still verify the contract, and a run that could not
+  reach one reports `unverified`.
+- **No autonomous knowledge ingestion.** Cards under `knowledge/` are written and
+  reviewed by a person. The validator never fetches a `source_url`; a dead
+  source is declared at review time through `source_status`, and an unreviewed
+  card fails the gate rather than being read.
+
+Two limits are worth stating because they look like coverage and are not.
+`INV-ANIMCOST-001` gates the deterministic half of animation cost — whether a
+transition or keyframe touches a layout property. It does not measure frame
+timing at all: a wall-clock threshold is machine-dependent and would make the
+gate flaky rather than strict, so the harness observes no timing and the gate
+claims none. And `INV-COMPILE-001` on SwiftUI and Compose proves the candidate
+compiles, not that it looks right; the second, `human-review` result stays
+`unverified` until a person records a verdict in `manual-review.yml`.
