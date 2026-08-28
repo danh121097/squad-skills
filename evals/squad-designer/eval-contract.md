@@ -51,14 +51,15 @@ the `EVAL_PRIVATE_PATH` environment variable.
 Both were carried from the Phase 1 review and are answered here because a paid
 lane is now runnable and their cost only grows with the store.
 
-**The pinned commit gets an annotated tag.** `pnpm validate:evals` already fails
-when the store is not parked on `private_store.commit`, so an accidental move is
-caught today. What a tag adds is a named anchor that survives a force-push or a
-deleted `develop` branch — the two ways a pinned hash becomes unreachable rather
-than merely wrong. Tag the pinned commit `eval-cycle-designer-2026-08-27` in the
-private repository before the first paid acceptance run. This is a maintainer
-action in another repository; nothing in this one can perform or verify it, and
-the hash remains the authority either way.
+**The pinned commit has an annotated tag. Done.** `pnpm validate:evals` already
+fails when the store is not parked on `private_store.commit`, so an accidental
+move is caught today. What a tag adds is a named anchor that survives a
+force-push or a deleted `develop` branch — the two ways a pinned hash becomes
+unreachable rather than merely wrong. `eval-cycle-designer-2026-08-27` now
+annotates the pinned commit, and both `develop` and the tag are pushed to the
+private remote. This was a maintainer action in another repository; nothing in
+this one can perform or verify it, and the hash remains the authority either
+way.
 
 **Held-out case ids are opaque. Executed.** Descriptive ids published the
 subject of a held-out case in a public manifest, which is mild contamination: the
