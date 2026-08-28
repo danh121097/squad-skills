@@ -223,18 +223,18 @@ cases:
       subject: { provider: codex, model: gpt-5.6-sol, effort: default }
       judge: { provider: anthropic, model: claude-opus-5, effort: default }
 
-  - id: acc-web-billing-usage-panel
+  - id: acc-001
     lane: acceptance
-    content_hash: sha256:846268c207f64f95f18e9fad0aa86f52d6f1aac4b07fa1d0b20943c8136613ec
+    content_hash: sha256:386c8e4c08ff1297353e604b1ad3d26f37248901bcb04b14a9c0bef1565732d8
 
-  - id: acc-native-rn-transaction-row
+  - id: acc-002
     lane: acceptance
-    content_hash: sha256:453f5f510c539a95afac187bd69d7f2d7c1f1a70314e2e7dbce1135be07b3d3c
+    content_hash: sha256:6b350066dab09fe69b08fd4ed5ce988ba73d6c7a9007d0fe8bf5acf6ab4e4337
 
-  - id: acc-adaptive-settings-two-pane
+  - id: acc-003
     lane: acceptance
-    content_hash: sha256:310a4e6edace927d09ca815e481d7d0dba85acadf831f65876523649e2d1d8c0
+    content_hash: sha256:1d416af8ab42b3d908406e0c9319edf5b57b361e9b6714d09a1c3d96e6ffaf17
 
-  - id: cal-web-empty-state-card
+  - id: cal-001
     lane: calibration
-    content_hash: sha256:567096db06219f7a7bcbe406bc411a99ecfbbb248f67681ab23a81ac12a62e3f
+    content_hash: sha256:06e0a18c1fca0c3c247c0b5c76d6aaaf71fbb0ce03b60f5b9d28c90e35e0dece

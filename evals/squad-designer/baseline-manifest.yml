@@ -23,7 +23,7 @@ private_store:
   repository: danh121097/squad-skills-eval-acceptance
   visibility: private
   branch: develop
-  commit: e1b18cb68f0c4106b9c97a570150b30aca5d359b
+  commit: 64c8623a9d30b2273890c5a3753772f114235ac5
 
 # Word counts are whitespace-delimited tokens over the whole file, matching
 # `wc -w`. payload_hash covers SKILL.md plus every bundled reference.
@@ -207,8 +207,8 @@ judging:
   # `length-control.candidate/` under that lane's run directory. One per lane,
   # because a lane only ever grades its own cases.
   length_control:
-    acceptance: acc-web-billing-usage-panel
-    calibration: cal-web-empty-state-card
+    acceptance: acc-001
+    calibration: cal-001
   budget:
     estimated_usd_per_cycle: '15-25'
     hard_stop_usd: 150

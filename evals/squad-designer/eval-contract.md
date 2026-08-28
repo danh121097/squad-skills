@@ -60,18 +60,18 @@ private repository before the first paid acceptance run. This is a maintainer
 action in another repository; nothing in this one can perform or verify it, and
 the hash remains the authority either way.
 
-**Held-out case ids become opaque.** `acc-web-billing-usage-panel` and its
-siblings publish the subject of a held-out case in a public manifest, which is
-mild contamination: the topic of the test is readable by anything that reads this
-repository, including a future subject model. Descriptive ids are worth less than
-that costs, so held-out cases move to `acc-001`-style ids with the descriptive
-title kept only in the private store.
+**Held-out case ids are opaque. Executed.** Descriptive ids published the
+subject of a held-out case in a public manifest, which is mild contamination: the
+topic of the test was readable by anything that reads this repository, including
+a future subject model. The four held-out cases are now `acc-001`, `acc-002`,
+`acc-003`, and `cal-001`, with the descriptive name kept only in the private
+store as each case's `title`.
 
-Execution is deliberately deferred and deliberately atomic. Renaming rewrites the
-store's files, all four `content_hash` values, and `private_store.commit`;
-editing the public half alone fails the gate, which is the correct behavior. It
-lands as one reviewed change across both repositories, before Phase 6 opens
-contribution and while the store still holds four cases.
+The change was atomic across both repositories, as it had to be: it rewrote the
+store's file names and internal ids, all four `content_hash` values, both
+`judging.length_control` entries, and `private_store.commit`. Editing the public
+half alone fails the gate, which is the correct behavior and is what made a
+partial rename impossible rather than merely unwise.
 
 ## Case schema
 
@@ -95,6 +95,11 @@ Every case declares:
 
 Public cases carry every field. Private cases carry `id`, `lane`, and
 `content_hash`; their bodies live behind `EVAL_PRIVATE_PATH`.
+
+Held-out ids are opaque, so a private case additionally carries `title` inside
+the store — the descriptive name the id used to state. That field exists only
+there. Any `title`, `request`, `evidence_packet`, or `expected_source_decisions`
+on a private case in this repository is a leak and fails validation.
 
 ## Pre-registered categories
 
@@ -268,7 +273,7 @@ pairs is not a measurement. Only pairs this run actually judged are compared; a
 label for a case the run skipped is never counted as agreement.
 
 **The calibration lane is not yet large enough to promote on.** It holds one
-case (`cal-web-empty-state-card`) against a registered minimum of six, so the
+case (`cal-001`) against a registered minimum of six, so the
 first promotion is blocked until the private store grows to at least six
 calibration cases and a human labels them. That is a prerequisite to record, not
 a defect to work around: lowering the minimum to fit the store would make the
