@@ -16,6 +16,25 @@ const frontendIntake = 'skills/squad-frontend/references/designer-gate-and-desig
 const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-motion-selection.md';
 const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
 const teamPipeline = 'skills/squads-team/references/delivery-pipeline-and-roster.md';
+const teamCoordination = 'skills/squads-team/references/coordination-contract.md';
+// Each role states the AgentKit pairing contract in the reference its own
+// router points at for tool selection, so the file names differ by role.
+const backendRuntime = 'skills/squad-backend/references/runtime-capability-fallbacks.md';
+const codeReviewRuntime = 'skills/squad-code-review/references/review-runtime-and-verdict.md';
+const devopsRuntime = 'skills/squad-devops/references/runtime-and-safe-delivery-fallbacks.md';
+const fixRuntime = 'skills/squad-fix/references/runtime-capability-fallbacks.md';
+const frontendRuntime = 'skills/squad-frontend/references/runtime-capability-fallbacks.md';
+const mobileRuntime = 'skills/squad-mobile/references/runtime-capability-fallbacks.md';
+const qaRuntime = 'skills/squad-qa/references/test-strategy-runtime-and-verdict.md';
+const roleRuntimes = [
+  backendRuntime,
+  codeReviewRuntime,
+  devopsRuntime,
+  fixRuntime,
+  frontendRuntime,
+  mobileRuntime,
+  qaRuntime,
+];
 // Handed to the lead when a named squad-* skill is absent, so it states the
 // boundary for exactly the case where `squad-designer` never runs.
 const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.md';
@@ -50,6 +69,29 @@ export const boundaryClauses: BoundaryClause[] = [
       frontendMotion,
       mobileGates,
     ],
+  },
+  {
+    id: 'PAIRING-DETECT-001',
+    // The team contract detects once per run rather than per task, so the
+    // clause binds the mechanism both share, not the cadence they do not.
+    statement: 'by inspecting the live skill catalog for',
+    files: [...roleRuntimes, designerSources, teamCoordination],
+  },
+  {
+    id: 'PAIRING-AUTHORITY-001',
+    // Deliberately starts after the subject: roles say "this role's boundary,
+    // gates, and evidence rules", the designer says "this skill's boundary,
+    // source lanes, and quality bar". What must not drift is which side wins.
+    statement: 'stay authoritative wherever the two disagree',
+    files: [...roleRuntimes, designerSources],
+  },
+  {
+    id: 'PAIRING-SAFETY-001',
+    // The designer is not bound: its entrypoint carries the never-auto-install
+    // rule in "Scope and boundary", and its registry states the same ban in the
+    // registry's own words rather than repeating this sentence.
+    statement: 'never report a skill as run when it does not exist',
+    files: roleRuntimes,
   },
 ];
 

@@ -37,6 +37,18 @@ const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-moti
 const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
 const teamPipeline = 'skills/squads-team/references/delivery-pipeline-and-roster.md';
 const teamFiles = [teamPipeline, 'skills/squads-team/references/domain-coverage-contracts.md'];
+const teamCoordination = 'skills/squads-team/references/coordination-contract.md';
+const designerSources = 'skills/squad-designer/references/official-sources.md';
+// Sorted, because the pinning assertion sorts each clause's file list.
+const roleRuntimes = [
+  'skills/squad-backend/references/runtime-capability-fallbacks.md',
+  'skills/squad-code-review/references/review-runtime-and-verdict.md',
+  'skills/squad-devops/references/runtime-and-safe-delivery-fallbacks.md',
+  'skills/squad-fix/references/runtime-capability-fallbacks.md',
+  'skills/squad-frontend/references/runtime-capability-fallbacks.md',
+  'skills/squad-mobile/references/runtime-capability-fallbacks.md',
+  'skills/squad-qa/references/test-strategy-runtime-and-verdict.md',
+];
 
 // Fixture aliases: the temp-dir projects reuse two real paths as stand-ins.
 const designerFile = designerEntrypoint;
@@ -219,6 +231,9 @@ describe('validateCrossSkillContract', () => {
         frontendMotion,
         mobileGates,
       ],
+      'PAIRING-DETECT-001': [designerSources, ...roleRuntimes, teamCoordination].sort(),
+      'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
+      'PAIRING-SAFETY-001': roleRuntimes,
       'RETIRED-SPEC-001': [designerEntrypoint, ...designerReferences, ...teamFiles],
       'RETIRED-SPEC-002': [designerEntrypoint, designerHandoff, teamPipeline],
       'RETIRED-SPEC-003': designerReferences,
