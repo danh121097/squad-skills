@@ -1,7 +1,7 @@
-import { access, readFile, readdir, realpath } from 'node:fs/promises';
+import { access, readFile, readdir, realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
 
-const inlineLinkPattern = /!?\[[^\]]*\]\(([^)]+)\)/g;
+const inlineLinkPattern = /!?\[[^\]]*\]\(((?:[^()]|\([^()]*\))*)\)/g;
 /** A definition line: up to three spaces of indent, then `[label]: target`. */
 const referenceDefinitionPattern = /^[ \t]{0,3}\[([^\]]+)\]:[ \t]*(\S+)/gm;
 
@@ -10,7 +10,7 @@ export async function validateMarkdownLinks(
   projectRoot: string,
   errors: string[]
 ): Promise<void> {
-  const markdownFiles = await findMarkdownFiles(skillRoot, projectRoot, errors);
+  const markdownFiles = await findMarkdownFiles(skillRoot, skillRoot, projectRoot, errors);
 
   for (const markdownFile of markdownFiles) {
     // Code is stripped first so a path written as an example, or an index
@@ -42,7 +42,7 @@ async function checkTarget(options: {
   skillRoot: string;
 }): Promise<void> {
   const { errors, markdownFile, projectRoot, raw, skillRoot } = options;
-  const target = unwrap(raw?.trim().split(/\s+["']/)[0]);
+  const target = unwrap(raw?.trim().split(/\s+["'(]/)[0]);
 
   if (!target || target.startsWith('#') || /^[a-z][a-z\d+.-]*:/i.test(target)) return;
 
@@ -101,7 +101,7 @@ function escapes(root: string, targetPath: string): boolean {
  * particular — only the text matters here, not the positions.
  */
 function stripCode(source: string): string {
-  return source.replace(/^(```|~~~)[\s\S]*?^\1/gm, '').replace(/`[^`\n]*`/g, '');
+  return source.replace(/^ {0,3}(```|~~~)[\s\S]*?^ {0,3}\1/gm, '').replace(/`[^`\n]*`/g, '');
 }
 
 function resolveLocalTarget(
@@ -122,6 +122,7 @@ function resolveLocalTarget(
 
 async function findMarkdownFiles(
   directory: string,
+  skillRoot: string,
   projectRoot: string,
   errors: string[]
 ): Promise<string[]> {
@@ -141,15 +142,47 @@ async function findMarkdownFiles(
 
   for (const entry of entries) {
     const entryPath = path.join(directory, entry.name);
+    // `Dirent` answers from lstat, so a symlink is neither a file nor a
+    // directory to it. Asking only those two questions skipped a symlinked
+    // SKILL.md entirely: its frontmatter was read and its links never were.
+    const kind = entry.isSymbolicLink()
+      ? await resolveSymlink(entryPath, skillRoot, projectRoot, errors)
+      : entry;
 
-    if (entry.isDirectory()) {
-      files.push(...(await findMarkdownFiles(entryPath, projectRoot, errors)));
-    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+    if (kind === null) continue;
+
+    if (kind.isDirectory()) {
+      files.push(...(await findMarkdownFiles(entryPath, skillRoot, projectRoot, errors)));
+    } else if (kind.isFile() && entry.name.endsWith('.md')) {
       files.push(entryPath);
     }
   }
 
   return files;
+}
+
+/** A symlink is followed only once it is known to land inside the skill. */
+async function resolveSymlink(
+  entryPath: string,
+  skillRoot: string,
+  projectRoot: string,
+  errors: string[]
+): Promise<{ isDirectory: () => boolean; isFile: () => boolean } | null> {
+  try {
+    if (escapes(await realpath(skillRoot), await realpath(entryPath))) {
+      errors.push(
+        `${relative(projectRoot, entryPath)}: symlink resolves outside its skill directory.`
+      );
+
+      return null;
+    }
+
+    return await stat(entryPath);
+  } catch {
+    errors.push(`${relative(projectRoot, entryPath)}: symlink could not be resolved.`);
+
+    return null;
+  }
 }
 
 function relative(projectRoot: string, filePath: string): string {

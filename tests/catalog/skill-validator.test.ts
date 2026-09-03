@@ -98,6 +98,67 @@ describe('validateSkills', () => {
     expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
   });
 
+  it('sees a link after a closing fence written with indent', async () => {
+    const projectRoot = await createProject();
+    // The indented fence closes the block. Pairing the opener with the later
+    // fence instead erased the real link between them.
+    await createSkill(projectRoot, 'fence-skill', {
+      body: '```\nexample\n  ```\n[Escape](../../outside.md)\n```\nmore\n```',
+    });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
+  });
+
+  it('reads a destination past a balanced parenthesis', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'paren-skill', {
+      body: '[Escape](references/(ok)/../../../outside.md)',
+    });
+    await mkdir(path.join(projectRoot, 'skills', 'paren-skill', 'references', '(ok'), {
+      recursive: true,
+    });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
+  });
+
+  it('keeps a parenthesised link title out of the path', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'title-skill', {
+      body: '[Guide](references/guide.md (Guide title))',
+      references: { 'guide.md': '# Guide\n' },
+    });
+
+    await expect(validateSkills(projectRoot)).resolves.toEqual({
+      errors: [],
+      skillNames: ['title-skill'],
+    });
+  });
+
+  it('refuses a symlinked SKILL.md that leaves the skill directory', async () => {
+    const projectRoot = await createProject();
+    const skillRoot = path.join(projectRoot, 'skills', 'linked-entry');
+    await mkdir(skillRoot, { recursive: true });
+    const real = path.join(projectRoot, 'real-skill.md');
+    await writeFile(
+      real,
+      '---\nname: linked-entry\ndescription: Test skill\n---\n\n[Escape](../../outside.md)\n',
+      'utf8'
+    );
+    // Frontmatter is read through the symlink, so the links inside it have to
+    // be reached too rather than skipped as neither file nor directory.
+    await symlink(real, path.join(skillRoot, 'SKILL.md'));
+
+    const result = await validateSkills(projectRoot);
+
+    expect(
+      result.errors.some((error) => error.includes('symlink resolves outside its skill directory'))
+    ).toBe(true);
+  });
+
   it('leaves bracket pairs in prose alone', async () => {
     const projectRoot = await createProject();
     await createSkill(projectRoot, 'prose-skill', {
