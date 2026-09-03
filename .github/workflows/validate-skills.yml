@@ -5,12 +5,21 @@ on:
   push:
     branches:
       - main
+  # Link rot is third-party state, not a property of any one change. Checking it
+  # on a cadence the maintainer owns means a vendor reorganizing its docs is
+  # reported to the person who can fix it, instead of failing the next unrelated
+  # pull request. 02:00 UTC Monday.
+  schedule:
+    - cron: '0 2 * * 1'
 
 permissions:
   contents: read
 
 jobs:
   validate:
+    # The scheduled run exists only for source liveness; re-running the offline
+    # gate on a repository nobody has touched proves nothing.
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -37,11 +46,17 @@ jobs:
   # gate above because it depends on third-party hosts: a slow documentation
   # site must not fail a contributor's pull request, and `pnpm test` stays
   # offline and deterministic. It reads status codes only and never a body.
+  #
+  # The same job serves two audiences, so its failure mode depends on the event.
+  # On a pull request it only reports, and a dead source never blocks a
+  # contributor whose change had nothing to do with it. On the weekly schedule it
+  # is allowed to fail, because a green run nobody is notified about is the same
+  # as not checking at all.
   knowledge-sources:
-    if: github.event_name == 'pull_request'
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    continue-on-error: true
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
 
     steps:
       - name: Check out repository
