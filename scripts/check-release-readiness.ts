@@ -50,7 +50,10 @@ if (packageMetadata.bin?.['squad-skills'] !== './bin/cli.mjs') {
   errors.push('package.json must expose squad-skills through ./bin/cli.mjs.');
 }
 
-const expectedFiles = ['dist', 'bin', 'skills', 'README.md'];
+// Kept in step with the required paths in `check-package-contents.ts`: that
+// check reads the packed tarball and demands LICENSE, so omitting it here
+// makes the two checks contradict each other and one of them always fail.
+const expectedFiles = ['dist', 'bin', 'skills', 'LICENSE', 'README.md'];
 if (JSON.stringify(packageMetadata.files) !== JSON.stringify(expectedFiles)) {
   errors.push(`package.json files must be ${expectedFiles.join(', ')}.`);
 }
