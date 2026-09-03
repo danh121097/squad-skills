@@ -487,6 +487,23 @@ async function runOrder(
     };
   }
 
+  // Weighing rubrics unequally is the judge's to do, and any weighting leaves at
+  // least one criterion agreeing with the overall call. When every one of them
+  // names the other side there is no weighting that explains the answer, so it
+  // is an incoherent response rather than a preference.
+  const sides = new Set(outcome.response.criteria.map((entry) => entry.winner));
+  const unanimous = sides.size === 1 ? [...sides][0] : null;
+
+  if (unanimous !== undefined && unanimous !== null && unanimous !== outcome.response.overall) {
+    return {
+      criteria: outcome.response.criteria,
+      detail: `Every rubric preferred ${unanimous} while the overall call was ${outcome.response.overall}.`,
+      order: packet.order,
+      usage: outcome.usage,
+      winner: null,
+    };
+  }
+
   return {
     criteria: outcome.response.criteria,
     detail: null,

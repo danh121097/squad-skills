@@ -274,6 +274,48 @@ describe('judgePair', () => {
     expect(outcome.detail).toContain('RUB-MADE-UP-001');
   });
 
+  it('refuses a preference every rubric contradicts', async () => {
+    const outcome = await judgePair({
+      pair: pair(),
+      packets: packets(),
+      run: runnerReturning(
+        {
+          criteria: rubricIds.map((rubric) => ({
+            evidence: 'looked at it',
+            rubric,
+            winner: 'entry-a' as const,
+          })),
+          overall: 'entry-b',
+        },
+        answer('entry-b')
+      ),
+    });
+
+    expect(outcome.verdict).toBe('inconclusive');
+    expect(outcome.detail).toContain('Every rubric preferred entry-a');
+  });
+
+  it('allows an overall call that only some rubrics disagree with', async () => {
+    const built = packets();
+    // One criterion dissenting is ordinary weighting, not a contradiction.
+    const weighted = built.map((packet) => ({
+      criteria: [
+        { evidence: 'hierarchy is cleaner', rubric: 'RUB-HIER-001', winner: 'entry-b' as const },
+        { evidence: 'much less slop', rubric: 'RUB-SLOP-001', winner: 'entry-a' as const },
+      ],
+      overall: (packet.assignment['entry-a'] === 'candidate' ? 'entry-a' : 'entry-b') as
+        'entry-a' | 'entry-b',
+    }));
+
+    const outcome = await judgePair({
+      pair: pair(),
+      packets: built,
+      run: runnerReturning(...weighted),
+    });
+
+    expect(outcome.verdict).toBe('candidate');
+  });
+
   it('refuses a score whose evidence is blank', async () => {
     const outcome = await judgePair({
       pair: pair(),
