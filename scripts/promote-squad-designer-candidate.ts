@@ -11,7 +11,7 @@ import {
   type PromotionInput,
 } from '../src/eval/promotion-gate.ts';
 import { measureSkillPayload } from '../src/eval/skill-payload-measurement.ts';
-import type { EvalRunReport } from '../src/eval/eval-run-report.ts';
+import { verifyEvalRunReportHash, type EvalRunReport } from '../src/eval/eval-run-report.ts';
 
 /**
  * Decides whether a candidate may be promoted, and changes nothing either way.
@@ -63,6 +63,23 @@ if (!gateReport) {
 
 if (!judgingReport) {
   console.error('No judging report; a promotion needs both halves of the evidence.');
+  process.exit(1);
+}
+
+// The deterministic half gets the same treatment as the judging half below.
+// Read as a bare `summary.blocking`, a hand-written `--report` naming no cases
+// at all counted as a clean gate run.
+if (!verifyEvalRunReportHash(gateReport)) {
+  console.error(
+    'The deterministic gate report does not match its own recorded hash; it was edited after the run that produced it.'
+  );
+  process.exit(1);
+}
+
+if (gateReport.environment.cycleId !== cycleId) {
+  console.error(
+    `The deterministic gate report belongs to cycle "${gateReport.environment.cycleId}", not the current "${cycleId}".`
+  );
   process.exit(1);
 }
 

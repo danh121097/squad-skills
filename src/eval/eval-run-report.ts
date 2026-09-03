@@ -79,6 +79,25 @@ export function buildEvalRunReport(
   return { ...body, reportHash: hashContent(canonicalize(body)) };
 }
 
+/**
+ * Recomputes the hash a deterministic report carries, over the report itself.
+ *
+ * The judging half of a promotion has always been checked this way; this half
+ * was read as a bare boolean, so a hand-written `--report` naming no cases at
+ * all passed as clean deterministic evidence.
+ *
+ * This is a check against stale, mixed-up and hand-edited artifacts, which is
+ * what actually goes wrong in a maintainer-run rig. It is deliberately not
+ * authentication: the digest is unkeyed, so anyone who can edit the body can
+ * recompute it. Making promotion unforgeable needs a signature or a CI
+ * attestation, which is a different decision than this one.
+ */
+export function verifyEvalRunReportHash(report: EvalRunReport): boolean {
+  const { cases, environment, summary } = report;
+
+  return hashContent(canonicalize({ cases, environment, summary })) === report.reportHash;
+}
+
 /** Per-case verdict, used by the Markdown renderer and by callers gating a promotion. */
 export function summarizeCase(entry: CaseRunResult): GateSummary {
   return summarizeGateResults(entry.results);

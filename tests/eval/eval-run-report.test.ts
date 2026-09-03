@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import {
   buildEvalRunReport,
   renderMarkdownReport,
+  verifyEvalRunReportHash,
   type CaseRunResult,
   type EvalRunEnvironment,
+  type EvalRunReport,
 } from '../../src/eval/eval-run-report.ts';
 import { gateResult, summarizeGateResults, type GateResult } from '../../src/eval/gate-result.ts';
 
@@ -121,6 +123,37 @@ describe('buildEvalRunReport', () => {
     expect(buildEvalRunReport(environment, [caseResult()]).reportHash).not.toBe(
       buildEvalRunReport(environment, [failing]).reportHash
     );
+  });
+
+  it('accepts the hash it just wrote', () => {
+    expect(verifyEvalRunReportHash(buildEvalRunReport(environment, [caseResult()]))).toBe(true);
+  });
+
+  it('refuses a verdict flipped after the run', () => {
+    const report = buildEvalRunReport(environment, [
+      caseResult({ results: [fail('INV-CONTRAST-001', 'critical')] }),
+    ]);
+
+    expect(report.summary.blocking).toBe(true);
+    // The exact edit promotion used to accept: the boolean it reads, turned
+    // over, with the hash left as written.
+    expect(
+      verifyEvalRunReportHash({
+        ...report,
+        summary: { ...report.summary, blocking: false },
+      })
+    ).toBe(false);
+  });
+
+  it('refuses a report hand-written around the boolean promotion reads', () => {
+    const forged = {
+      cases: [],
+      environment,
+      reportHash: 'sha256:whatever',
+      summary: { blocking: false },
+    } as unknown as EvalRunReport;
+
+    expect(verifyEvalRunReportHash(forged)).toBe(false);
   });
 
   it('orders failures ahead of unverified and passing results', () => {
