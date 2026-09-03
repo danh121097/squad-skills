@@ -141,7 +141,7 @@ so one blocking failure cannot be averaged away by passes elsewhere.
 | `INV-ANIMCOST-001` | transitions stay off the layout path                     | high     | render-gated      |
 | `INV-COMPILE-001`  | the native target compiles                               | critical | compile-tier      |
 | `INV-SCOPE-001`    | no state, data fetching, routing, or lifecycle ownership | high     | static            |
-| `INV-DEP-001`      | no dependency added without an approval marker           | high     | static            |
+| `INV-DEP-001`      | no import outside the manifest's approved set            | high     | static            |
 | `INV-SOURCE-001`   | sources are fetched from the registry, never bundled     | critical | static            |
 | `INV-TOKEN-001`    | styling resolves to semantic tokens, not raw literals    | medium   | static            |
 
@@ -240,8 +240,11 @@ while a newly introduced leak still fails loudly.
 
 **Evidence precedes preference.** The judge must fill a schema that requires one
 entry per registered rubric, each with written evidence, before it may state an
-overall winner. A response missing a rubric, or carrying blank evidence, is
-`inconclusive` rather than a vote.
+overall winner. A response missing a rubric, answering one twice or one nobody
+declared, or carrying blank evidence, is `inconclusive` rather than a vote. So
+is a response whose every rubric names one entry while the overall call names
+the other: rubrics may be weighed unequally, but any weighting leaves at least
+one criterion agreeing with the result.
 
 **An inconclusive pair says why.** `inconclusive` covers four different events:
 the judge flipped between orders, the deterministic gates blocked an arm so the

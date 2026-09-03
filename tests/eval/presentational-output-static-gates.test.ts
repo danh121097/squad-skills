@@ -100,13 +100,13 @@ describe('runPresentationalStaticGates', () => {
     expect(dependency.evidence).toEqual([]);
   });
 
-  it('accepts an unapproved import carrying a reviewer approval marker', () => {
+  it('refuses an in-source marker as approval, because the run writes that file', () => {
     const source = [
       '// eval-approved-dependency: motion primitives accepted in the evidence packet',
       "import { motion } from 'framer-motion';",
     ].join('\n');
 
-    expect(find(run([{ path: 'A.tsx', source }], []), 'INV-DEP-001').status).toBe('pass');
+    expect(find(run([{ path: 'A.tsx', source }], []), 'INV-DEP-001').status).toBe('fail');
   });
 
   it('treats relative and scoped specifiers correctly', () => {

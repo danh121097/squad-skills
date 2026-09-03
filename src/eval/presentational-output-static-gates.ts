@@ -30,8 +30,6 @@ export interface StaticGateOptions {
   tokenFilePatterns?: readonly RegExp[];
 }
 
-/** Explicit escape hatch a reviewer grants in the diff, not something a run can assume. */
-const approvalMarker = /eval-approved-dependency\s*:\s*\S+/;
 const importPattern =
   /(?:from\s+|import\s+|require\s*\(\s*|import\s*\(\s*)['"]([^'"\n]+)['"]|^\s*(?:import|export)\s+['"]([^'"\n]+)['"]/gm;
 const documentExtensions = ['.md', '.mdx', '.html', '.htm', '.txt', '.rst'];
@@ -108,7 +106,12 @@ function checkForbiddenCapabilities(files: readonly CandidateFile[]): GateResult
       );
 }
 
-/** `INV-DEP-001`: a new package is a material change, so it needs an approval marker. */
+/**
+ * `INV-DEP-001`: a new package is a material change, so only the set the
+ * repository declares approves one. There is deliberately no in-source escape
+ * hatch: the emitted file is written by the run being judged, so a marker in it
+ * approved the candidate to itself.
+ */
 function checkDependencies(
   files: readonly CandidateFile[],
   approved: readonly string[] | null
@@ -127,16 +130,11 @@ function checkDependencies(
   const evidence: string[] = [];
 
   for (const file of files) {
-    const lines = file.source.split('\n');
-
     for (const { line, text } of executableLines(file.source)) {
       for (const specifier of readImportSpecifiers(text)) {
         const root = packageRoot(specifier);
 
         if (root === null || approvedRoots.has(root)) continue;
-        // The marker may sit on the import line or the line above it, which is
-        // where a reviewer naturally writes the reason.
-        if (hasApprovalMarker(lines, line)) continue;
 
         evidence.push(`${file.path}:${line} imports unapproved package "${root}"`);
       }
@@ -259,12 +257,6 @@ function packageRoot(specifier: string): string | null {
   const segments = specifier.split('/');
 
   return specifier.startsWith('@') ? segments.slice(0, 2).join('/') : (segments[0] ?? null) || null;
-}
-
-function hasApprovalMarker(lines: readonly string[], line: number): boolean {
-  return [lines[line - 1], lines[line - 2]].some(
-    (candidate) => candidate !== undefined && approvalMarker.test(candidate)
-  );
 }
 
 function describe(rule: ScopeRule): string {

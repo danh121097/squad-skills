@@ -469,6 +469,22 @@ describe('validateEvalManifests', () => {
     expect(result.errors.some((error) => error.includes('grew in the held-out store'))).toBe(true);
   });
 
+  it('refuses a manifest whose approved dependency set omits a targeted platform', async () => {
+    const project = await createProject({
+      mutateCases: (cases) => {
+        cases.approved_dependencies = { flutter: [] };
+      },
+    });
+
+    const result = await validateEvalManifests(project.root, { privatePath: null });
+
+    expect(
+      result.errors.some((error) =>
+        error.includes('a case targets "web" but approved_dependencies')
+      )
+    ).toBe(true);
+  });
+
   it('refuses a case body that is a symlink pointing out of the store', async () => {
     const project = await createProject();
     const casePath = path.join(project.privateRoot, 'cases', 'acceptance', 'acc-held-out.yml');
@@ -661,6 +677,7 @@ async function createProject(
 
   const cases: MutableManifest = {
     schema_version: 1,
+    approved_dependencies: { web: ['react'] },
     lanes: {
       development: { visibility: 'public', paid_judging: false, frozen: false },
       acceptance: {

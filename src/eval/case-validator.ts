@@ -2,6 +2,7 @@ import { readFile, readdir, realpath } from 'node:fs/promises';
 import path from 'node:path';
 
 import { readGitHeadCommit } from './git-head-reader.ts';
+import { validateApprovedDependencies } from './approved-dependency-registry.ts';
 import { isInside } from './path-containment.ts';
 import { hashContent } from './skill-payload-measurement.ts';
 
@@ -84,6 +85,10 @@ export async function validateEvalCases(options: ValidateEvalCasesOptions): Prom
 
   const seenIds = new Set<string>();
   const privateCases: PrivateCase[] = [];
+  // Only public cases name their platform in the repository. A held-out case on
+  // an undeclared platform is caught at run time instead, where the missing set
+  // reports `unverified` and blocks rather than passing.
+  const targetedPlatforms = new Set<string>();
 
   for (const entry of cases) {
     const record = asRecord(entry);
@@ -113,6 +118,8 @@ export async function validateEvalCases(options: ValidateEvalCasesOptions): Prom
     }
 
     if (lane.visibility === 'public') {
+      if (typeof record.target_platform === 'string') targetedPlatforms.add(record.target_platform);
+
       validatePublicCase({ ...options, categories, id, record });
       continue;
     }
@@ -121,6 +128,14 @@ export async function validateEvalCases(options: ValidateEvalCasesOptions): Prom
 
     if (recordedHash) privateCases.push({ id, lane, recordedHash });
   }
+
+  validateApprovedDependencies({
+    errors,
+    manifest,
+    manifestPath,
+    platforms: targetPlatforms,
+    targeted: targetedPlatforms,
+  });
 
   if (!privatePath) {
     notes.push(`${manifestPath}: ${privateCases.length} private case hashes were not verified.`);

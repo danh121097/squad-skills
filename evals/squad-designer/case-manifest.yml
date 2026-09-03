@@ -5,6 +5,23 @@
 schema_version: 1
 cycle_id: designer-presentational-code-2026-08-27
 
+# Packages each platform's emitted output may import without that counting as a
+# new dependency. The set lives here, in the reviewed repository, because a run
+# directory is written by the candidate: any list it can reach is a list it can
+# extend. A platform with no entry reports INV-DEP-001 as unverified rather than
+# as pass, so an unlisted platform blocks loudly instead of passing silently.
+#
+# Swift and Kotlin spell imports without quotes, so the static scanner reads no
+# package specifiers from those outputs at all. Their empty lists record that
+# nothing is approved, not that nothing was checked.
+approved_dependencies:
+  web: [react, react-dom]
+  adaptive: [react, react-dom]
+  react-native: [react, react-native]
+  flutter: ['package:flutter', 'dart:ui', 'dart:async', 'dart:math']
+  swiftui: []
+  compose: []
+
 lanes:
   development:
     visibility: public

@@ -14,6 +14,7 @@ import {
   renderDivergenceReport,
   type RuntimeObservation,
 } from '../src/eval/cross-runtime-divergence-report.ts';
+import { approvedDependenciesFor } from '../src/eval/approved-dependency-registry.ts';
 import { buildRegressionLedger } from '../src/eval/eval-statistics.ts';
 import { resolveHeldOutCaseFile } from '../src/eval/held-out-store-access.ts';
 import {
@@ -515,7 +516,7 @@ async function gradeDirectory(options: {
 
   gates.push(
     ...runPresentationalStaticGates({
-      approvedDependencies: await readApprovedDependencies(runDirectory),
+      approvedDependencies: approvedDependenciesFor(manifestRecord, targetPlatform),
       files,
     })
   );
@@ -816,32 +817,6 @@ async function readCandidateFiles(runDirectory: string): Promise<CandidateFile[]
   await walk(runDirectory);
 
   return files.sort((left, right) => left.path.localeCompare(right.path));
-}
-
-/**
- * The evidence packet's own manifest is the approved dependency set.
- *
- * `null` when there is no manifest to read. Returning an empty set instead
- * failed every framework import as an unapproved dependency, which reads as the
- * output importing something it should not rather than as the harness having
- * nothing to compare against.
- */
-async function readApprovedDependencies(runDirectory: string): Promise<string[] | null> {
-  try {
-    const manifest = JSON.parse(
-      await readFile(path.join(runDirectory, 'package.json'), 'utf8')
-    ) as {
-      dependencies?: Record<string, string>;
-      devDependencies?: Record<string, string>;
-    };
-
-    return [
-      ...Object.keys(manifest.dependencies ?? {}),
-      ...Object.keys(manifest.devDependencies ?? {}),
-    ];
-  } catch {
-    return null;
-  }
 }
 
 /**
