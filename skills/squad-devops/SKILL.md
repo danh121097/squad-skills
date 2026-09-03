@@ -8,7 +8,7 @@ keywords: [devops, docker, kubernetes, helm, cicd, terraform, cloudflare, aws, g
 argument-hint: "[infra or deploy task]"
 metadata:
   author: Harry Nguyen
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Squad — DevOps
@@ -87,6 +87,19 @@ a recovery path. Before applying or handing over, run the self-review in
    only when requested or when the accepted delivery scope requires it. Do not leave an untracked watcher.
 6. **Hand off** — report static/plan/live evidence separately, rollback status and residual risks; route
    through QA then Code Review when available, otherwise run equivalent native passes.
+
+## Handoff contract
+
+- To the lead and Code Review, the deploy state: the exact target acted on, which verification level ran
+  — static, plan or deployed — and the rollback trigger and recovery path.
+- The reproducible artifact and its pinned inputs, the environment configuration and secret wiring by
+  reference rather than by value, and who owns the alerts on the changed path.
+- To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
+  that exercise it, and the checks already run.
+- QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
+  logical passes and labels them non-independent.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 

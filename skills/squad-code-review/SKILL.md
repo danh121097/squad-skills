@@ -8,7 +8,7 @@ keywords: [code-review, security, owasp, correctness, performance, contracts, ma
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
   author: Harry Nguyen
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Squad — Code Review
@@ -78,6 +78,18 @@ finding. Before issuing a verdict, run the self-review in
    residual risk and concise summary. State when no findings exist.
 5. **Verdict** — `APPROVE`, `CHANGES_REQUESTED`, or `NEEDS_EVIDENCE`. Fixes return to owner → QA → Review;
    missing evidence returns to the lead, then resumes Review when supplied.
+
+## Handoff contract
+
+- From QA, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and
+  residual risk, and whether the pass was independent. Review runs only on `PASS`.
+- From DevOps on an infrastructure change, the exact target acted on, which verification level ran
+  — static, plan or deployed — and the rollback trigger and recovery path.
+- To the owning role and the lead, severity-ranked findings carrying file:line, failure condition, impact
+  and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
+- What was inspected, what was not, and the residual unverified risk — reported even when no finding exists.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 

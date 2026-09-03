@@ -50,6 +50,18 @@ const roleRuntimes = [
   'skills/squad-qa/references/test-strategy-runtime-and-verdict.md',
 ];
 
+// Role entrypoints, the two ends every HANDOFF-* clause binds.
+const backendSkill = 'skills/squad-backend/SKILL.md';
+const codeReviewSkill = 'skills/squad-code-review/SKILL.md';
+const devopsSkill = 'skills/squad-devops/SKILL.md';
+const fixSkill = 'skills/squad-fix/SKILL.md';
+const frontendSkill = 'skills/squad-frontend/SKILL.md';
+const mobileSkill = 'skills/squad-mobile/SKILL.md';
+const qaSkill = 'skills/squad-qa/SKILL.md';
+const teamSkill = 'skills/squads-team/SKILL.md';
+const buildRoles = [backendSkill, devopsSkill, fixSkill, frontendSkill, mobileSkill];
+const preflightRoles = [...buildRoles, codeReviewSkill, qaSkill].sort();
+
 // Fixture aliases: the temp-dir projects reuse two real paths as stand-ins.
 const designerFile = designerEntrypoint;
 const frontendFile = frontendIntake;
@@ -234,6 +246,14 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-DETECT-001': [designerSources, ...roleRuntimes, teamCoordination].sort(),
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
+      'HANDOFF-API-001': [backendSkill, frontendSkill, mobileSkill],
+      'HANDOFF-QA-001': [...buildRoles, qaSkill].sort(),
+      'HANDOFF-VERDICT-001': [codeReviewSkill, qaSkill],
+      'HANDOFF-FINDINGS-001': [codeReviewSkill, fixSkill],
+      'HANDOFF-DEPLOY-001': [codeReviewSkill, devopsSkill],
+      'HANDOFF-GATE-001': [...buildRoles, teamSkill].sort(),
+      'HANDOFF-SOLO-001': [...buildRoles, codeReviewSkill, qaSkill, teamSkill].sort(),
+      'QUALITY-PREFLIGHT-001': preflightRoles,
       'RETIRED-SPEC-001': [designerEntrypoint, ...designerReferences, ...teamFiles],
       'RETIRED-SPEC-002': [designerEntrypoint, designerHandoff, teamPipeline],
       'RETIRED-SPEC-003': designerReferences,
@@ -247,6 +267,82 @@ describe('validateCrossSkillContract', () => {
 
     expect(new Set(ids).size).toBe(ids.length);
     expect(boundaryClauses.every((clause) => clause.files.length >= 2)).toBe(true);
+  });
+});
+
+/**
+ * The HANDOFF-* family binds the two ends of a stage boundary — what a role
+ * hands over and what the next role is told to expect — so both sides are
+ * entrypoints a reader reaches without loading a reference.
+ *
+ * squad-designer is absent from the family on purpose. Its SKILL.md is
+ * eval-covered, so an edit there runs the evaluation cycle rather than this
+ * gate, and its side of the design handoff is already bound by BOUNDARY-*.
+ */
+describe('handoff contract family', () => {
+  const handoffClauses = boundaryClauses.filter((clause) => clause.id.startsWith('HANDOFF-'));
+
+  it('binds every handoff clause to role entrypoints on both sides', () => {
+    expect(handoffClauses.length).toBeGreaterThan(0);
+
+    for (const clause of handoffClauses) {
+      expect(clause.files.length).toBeGreaterThanOrEqual(2);
+      expect(clause.files.every((file) => file.endsWith('/SKILL.md'))).toBe(true);
+    }
+  });
+
+  it('keeps the eval-covered designer entrypoint out of the family', () => {
+    expect(handoffClauses.some((clause) => clause.files.includes(designerEntrypoint))).toBe(false);
+  });
+
+  // The solo clause is the one every non-designer role carries, so it is the
+  // one a propagation pass is most likely to leave half-applied.
+  it('states the solo fallback on all eight non-designer entrypoints', async () => {
+    const solo = boundaryClauses.find((clause) => clause.id === 'HANDOFF-SOLO-001');
+
+    expect(solo?.files.sort()).toEqual([...buildRoles, codeReviewSkill, qaSkill, teamSkill].sort());
+
+    const result = await validateCrossSkillContract(process.cwd(), {
+      clauses: solo ? [solo] : [],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toEqual([]);
+  });
+
+  it('fails when one side of a handoff drops the bound shape', async () => {
+    const api = boundaryClauses.find((clause) => clause.id === 'HANDOFF-API-001');
+    if (!api) throw new Error('HANDOFF-API-001 is missing from the shipped clauses.');
+
+    const projectRoot = await createProject({
+      [backendSkill]: `# Backend\n\nTo Frontend and Mobile, ${api.statement}.\n`,
+      [frontendSkill]: '# Frontend\n\nFrom Backend, whatever the endpoint list happens to say.\n',
+      [mobileSkill]: `# Mobile\n\nFrom Backend, ${api.statement}.\n`,
+    });
+
+    const result = await validateCrossSkillContract(projectRoot, {
+      clauses: [api],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(frontendSkill);
+    expect(result.errors[0]).toContain(backendSkill);
+  });
+
+  // Carried in from the quality-bar phase: seven roles were given this line
+  // word for word with nothing holding them to it.
+  it('binds the quality-bar pre-flight line to every role that runs one', async () => {
+    const preflight = boundaryClauses.find((clause) => clause.id === 'QUALITY-PREFLIGHT-001');
+
+    expect(preflight?.files.sort()).toEqual(preflightRoles);
+
+    const result = await validateCrossSkillContract(process.cwd(), {
+      clauses: preflight ? [preflight] : [],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toEqual([]);
   });
 });
 

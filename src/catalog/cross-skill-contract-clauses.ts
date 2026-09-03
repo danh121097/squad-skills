@@ -35,6 +35,34 @@ const roleRuntimes = [
   mobileRuntime,
   qaRuntime,
 ];
+// Role entrypoints. The handoff clauses below bind the two ends of a stage
+// boundary, so they name SKILL.md rather than a reference: what a role hands
+// over is part of the contract a reader learns from the entrypoint alone.
+const backendSkill = 'skills/squad-backend/SKILL.md';
+const codeReviewSkill = 'skills/squad-code-review/SKILL.md';
+const devopsSkill = 'skills/squad-devops/SKILL.md';
+const fixSkill = 'skills/squad-fix/SKILL.md';
+const frontendSkill = 'skills/squad-frontend/SKILL.md';
+const mobileSkill = 'skills/squad-mobile/SKILL.md';
+const qaSkill = 'skills/squad-qa/SKILL.md';
+const teamSkill = 'skills/squads-team/SKILL.md';
+// squad-designer is deliberately absent from every clause below. Its SKILL.md is
+// eval-covered — `evals/squad-designer/case-manifest.yml` exists — so editing it
+// runs the evaluation cycle and human promotion approval, which no clause here
+// can substitute for. Its side of the design handoff is already bound by
+// BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001, stated on the build roles that
+// consume it.
+const buildRoles = [backendSkill, devopsSkill, fixSkill, frontendSkill, mobileSkill];
+const everyRoleWithAPreflight = [
+  backendSkill,
+  codeReviewSkill,
+  devopsSkill,
+  fixSkill,
+  frontendSkill,
+  mobileSkill,
+  qaSkill,
+];
+
 // Handed to the lead when a named squad-* skill is absent, so it states the
 // boundary for exactly the case where `squad-designer` never runs.
 const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.md';
@@ -92,6 +120,71 @@ export const boundaryClauses: BoundaryClause[] = [
     // registry's own words rather than repeating this sentence.
     statement: 'never report a skill as run when it does not exist',
     files: roleRuntimes,
+  },
+  {
+    id: 'HANDOFF-API-001',
+    // Written from the consumer's side: Frontend and Mobile cannot start until
+    // they know the error shape and the auth rules, so those are the contract,
+    // not the endpoint list the producer finds convenient to publish.
+    statement:
+      'the schema, error shape, auth rules, pagination and idempotency behavior the consumer codes against, not a description of the endpoint',
+    files: [backendSkill, frontendSkill, mobileSkill],
+  },
+  {
+    id: 'HANDOFF-QA-001',
+    // Every producing role states this and QA states the same sentence as what
+    // it receives, so a role cannot hand over less than QA is told to expect.
+    statement:
+      'the diff under test, the acceptance criteria it claims to meet, the commands and environment that exercise it, and the checks already run',
+    files: [...buildRoles, qaSkill],
+  },
+  {
+    id: 'HANDOFF-VERDICT-001',
+    statement:
+      'a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and residual risk, and whether the pass was independent',
+    files: [codeReviewSkill, qaSkill],
+  },
+  {
+    id: 'HANDOFF-FINDINGS-001',
+    // squad-fix is the consuming side that acts on findings; the lead's copy of
+    // the same rule lives in the team pipeline reference in its own words.
+    statement:
+      'severity-ranked findings carrying file:line, failure condition, impact and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`',
+    files: [codeReviewSkill, fixSkill],
+  },
+  {
+    id: 'HANDOFF-DEPLOY-001',
+    // Code Review gates operational readiness, so it is the consumer that has
+    // to be told which level of verification actually ran.
+    statement:
+      'the exact target acted on, which verification level ran — static, plan or deployed — and the rollback trigger and recovery path',
+    files: [codeReviewSkill, devopsSkill],
+  },
+  {
+    id: 'HANDOFF-GATE-001',
+    // squads-team declares QA and Code Review non-optional. A role running
+    // without those skills installed has to name who carries them, or the
+    // mandatory gate disappears with nothing reporting that it did.
+    statement:
+      'QA and Code Review stay mandatory: with neither skill installed this role runs both as separate logical passes and labels them non-independent',
+    files: [...buildRoles, teamSkill],
+  },
+  {
+    id: 'HANDOFF-SOLO-001',
+    // The squad-peer analog of PAIRING-SAFETY-001, which covers an absent
+    // `ak:*` skill rather than an absent role. "where this role's boundary
+    // allows" is load-bearing: QA may not carry an implementer's stage, and no
+    // role may absorb one the boundary clauses put somewhere else.
+    statement:
+      "When a named squad peer is absent, carry its stage inline at the same standard where this role's boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run",
+    files: [...buildRoles, codeReviewSkill, qaSkill, teamSkill],
+  },
+  {
+    id: 'QUALITY-PREFLIGHT-001',
+    // Carried in from the quality-bar phase, which gave seven roles this line
+    // word for word and left the sameness enforced by nothing.
+    statement: 'The quality-bar pre-flight ran; failed checks were fixed or reported',
+    files: everyRoleWithAPreflight,
   },
 ];
 

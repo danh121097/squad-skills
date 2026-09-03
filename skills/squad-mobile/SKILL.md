@@ -8,7 +8,7 @@ keywords: [mobile, react-native, expo, flutter, swiftui, compose, api-integratio
 argument-hint: "[mobile feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Squad — Mobile
@@ -81,6 +81,20 @@ implemented. Before handing over, run the self-review in
    relevant device checks; inspect cold start, memory, frame rate and bundle/app size when affected.
 6. **Hand off** — report environment and evidence; route through QA then Code Review when available, or
    run equivalent native passes and disclose reduced independence.
+
+## Handoff contract
+
+- From Backend, the API contract: the schema, error shape, auth rules, pagination and idempotency
+  behavior the consumer codes against, not a description of the endpoint. A contract gap returns to
+  Backend rather than being worked around in the app.
+- From Designer, presentational components whose props and slots this role binds; a visual or interaction
+  gap returns to Designer.
+- To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
+  that exercise it, and the checks already run, named against the simulator, device and OS version used.
+- QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
+  logical passes and labels them non-independent.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 

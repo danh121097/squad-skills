@@ -8,7 +8,7 @@ keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka,
 argument-hint: "[feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Squad — Frontend
@@ -93,6 +93,20 @@ handing over, run the self-review in
    performance, and accessibility checks. Debug causes rather than weakening checks.
 7. **Review and hand off** — inspect the diff against API/design contracts and acceptance criteria. Use
    QA/Code Review squad gates when available; otherwise run equivalent native checklists and report them.
+
+## Handoff contract
+
+- From Backend, the API contract: the schema, error shape, auth rules, pagination and idempotency
+  behavior the consumer codes against, not a description of the endpoint. A mismatch returns to Backend
+  rather than being reimplemented in the client.
+- From Designer, presentational components whose props and slots this role binds; a visual or interaction
+  gap returns to Designer.
+- To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
+  that exercise it, and the checks already run.
+- QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
+  logical passes and labels them non-independent.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 

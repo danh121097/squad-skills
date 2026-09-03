@@ -8,7 +8,7 @@ keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code
 argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--delegate] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
 metadata:
   author: Harry Nguyen
-  version: "2.5.0"
+  version: "2.6.0"
 ---
 
 # Squads Team
@@ -87,6 +87,17 @@ PR, deploy, mutate data or change external services unless requested or required
    update durable docs only when behavior/setup/contracts/architecture changed.
 9. **Finish** — report result, mode, roles, files/branches, tests, gate verdicts, residual risk and anything
    not verified; clean up only resources/processes created by this run.
+
+## Handoff contract
+
+- Each role receives its slice with the acceptance criteria it must meet, the files it owns, the contracts
+  it may not move, and the environment and authority available to it.
+- Each role returns its artifact, the evidence at the level it actually ran, and the gaps it could not
+  close; the lead composes these and never upgrades a gap into a result.
+- QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
+  logical passes and labels them non-independent.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 

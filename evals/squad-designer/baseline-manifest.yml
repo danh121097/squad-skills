@@ -71,6 +71,22 @@ private_store:
 # added reference plus the entrypoint section that routes to it. Neither carries
 # task_types here, so no loaded-words figure moves and the phase_1_reference
 # ceiling on the governing budget is untouched.
+#
+# Re-measured a fifth time as the same upgrade gives every non-designer role a
+# stated `Handoff contract`: what it produces for the next stage, in what shape,
+# who carries QA and Code Review when neither skill is installed, and what it
+# does when a named squad peer is absent. The wording is bound by the new
+# HANDOFF-* clause family, so both ends of each stage boundary move together or
+# `pnpm validate` fails. Still the same cycle, and squad-designer is untouched
+# again — deliberately, because its entrypoint is eval-covered and an edit there
+# would owe the evaluation cycle rather than this gate; its side of the design
+# handoff is already bound by BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001. So
+# its payload hash, routing table, budget, pinned models and acceptance set are
+# unchanged, and the frozen baseline remains
+# designer-presentational-code-2026-08-27. squad-frontend and squad-mobile move
+# by the added entrypoint section alone: reference_count and reference_words are
+# unchanged, neither carries task_types here, so no loaded-words figure moves
+# and the phase_1_reference ceiling on the governing budget is untouched.
 skills:
   squad-designer:
     version: 2.3.0
@@ -81,21 +97,21 @@ skills:
     reference_words: 6483
     total_payload_words: 7497
   squad-frontend:
-    version: 1.7.0
-    payload_hash: sha256:40bf1319956c1eacb47a75765b493097fc3453bf89cd4dec5caf4d1518d19449
+    version: 1.8.0
+    payload_hash: sha256:2e8077a22c1eddef60816b3d0ab13fe5b0cbcbc7303cb17ca787877919542204
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 931
+    entrypoint_words: 1079
     reference_count: 8
     reference_words: 3504
-    total_payload_words: 4435
+    total_payload_words: 4583
   squad-mobile:
-    version: 1.7.0
-    payload_hash: sha256:4c8308a74f4745bb69f4fb29ec3c599d822723f1d57516eee4168214651a1e20
+    version: 1.8.0
+    payload_hash: sha256:b37680790de0e859d3a29bfaaacfc42320c308ad411e60219b2940c9c0ee2f35
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 776
+    entrypoint_words: 935
     reference_count: 7
     reference_words: 2482
-    total_payload_words: 3258
+    total_payload_words: 3417
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of

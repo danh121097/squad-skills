@@ -8,7 +8,7 @@ keywords: [qa, testing, unit, integration, contract, e2e, playwright, cypress, k
 argument-hint: "[build/diff to test | bug to reproduce]"
 metadata:
   author: Harry Nguyen
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Squad — QA
@@ -79,6 +79,18 @@ verdict, run the self-review in
 5. **Verdict** — `PASS` with coverage/residual risk advances to Code Review. `FAIL` returns to owner; after
    the fix, rerun affected and regression checks. `NEEDS_ENVIRONMENT` returns to the lead for the smallest
    missing capability/artifact, then resumes QA. It blocks `done` without claiming the product failed.
+
+## Handoff contract
+
+- From the owning role, the diff under test, the acceptance criteria it claims to meet, the commands and
+  environment that exercise it, and the checks already run.
+- To Code Review, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage
+  and residual risk, and whether the pass was independent.
+- On `FAIL`, to the owning role: the minimal repro, expected versus actual, and the redacted artifacts.
+- On `NEEDS_ENVIRONMENT`, to the lead: the exact missing target, artifact or access and the smallest next
+  action. It never becomes an inferred pass.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 

@@ -8,7 +8,7 @@ keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, mig
 argument-hint: "[api or data task]"
 metadata:
   author: Harry Nguyen
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Squad — Backend
@@ -91,6 +91,20 @@ self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflig
    performance/query checks. Test forward and rollback paths when data changes.
 6. **Hand off** — publish the consumer contract and evidence; route through QA then Code Review when those
    gates exist, otherwise run equivalent native passes and report their reduced independence.
+
+## Handoff contract
+
+- To Frontend and Mobile, the API contract: the schema, error shape, auth rules, pagination and
+  idempotency behavior the consumer codes against, not a description of the endpoint.
+- Compatibility impact on existing consumers, and the migration or version path off an intentional break.
+- Data changes as shipped: migration direction, rollback boundary, backfill state, and the environment
+  each one ran against.
+- To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
+  that exercise it, and the checks already run.
+- QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
+  logical passes and labels them non-independent.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 

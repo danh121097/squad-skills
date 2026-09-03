@@ -8,7 +8,7 @@ keywords: [bugfix, debug, root-cause, regression, error, failing-test, ci-failur
 argument-hint: "[bug, error, log, or failing test] [--quick] [--mode auto|team|subagent|single]"
 metadata:
   author: Harry Nguyen
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Squad — Fix
@@ -111,6 +111,19 @@ was. Before declaring the repair complete, run the self-review in
 - The same failure survives three cause-aligned fix attempts; stop changing code, reassess architecture and
   present evidence plus the smallest decision needed.
 - Verification reveals a regression or contract change outside accepted scope; do not silently broaden work.
+
+## Handoff contract
+
+- To the owning role, the proven root cause: symptom, minimal repro or static proof, expected versus
+  actual, the exact defect, why it surfaced now, and the blast radius the fix must cover.
+- To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
+  that exercise it, and the checks already run, against the recorded pre-fix baseline.
+- From Code Review, severity-ranked findings carrying file:line, failure condition, impact and
+  remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
+- QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
+  logical passes and labels them non-independent.
+- When a named squad peer is absent, carry its stage inline at the same standard where this role's
+  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
 
 ## Completion checklist
 
