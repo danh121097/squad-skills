@@ -17,8 +17,13 @@ export interface StaticGateOptions {
   /**
    * Package roots the evidence packet already contains. Anything else is a new
    * dependency, which the designer boundary forbids without approval.
+   *
+   * `null` means the set could not be determined at all, which is not the same
+   * as an empty one: with no approved set every framework import reads as a new
+   * dependency, so reporting that as a failure would blame the output for a
+   * fact about the harness.
    */
-  approvedDependencies?: readonly string[];
+  approvedDependencies?: readonly string[] | null;
   files: readonly CandidateFile[];
   /** Words above which a bundled document counts as a copied source page. */
   maxBundledDocumentWords?: number;
@@ -62,7 +67,10 @@ export function runPresentationalStaticGates(options: StaticGateOptions): GateRe
 
   return [
     checkForbiddenCapabilities(files),
-    checkDependencies(files, options.approvedDependencies ?? []),
+    checkDependencies(
+      files,
+      options.approvedDependencies === undefined ? [] : options.approvedDependencies
+    ),
     checkBundledSources(files, options.maxBundledDocumentWords ?? 200),
     checkTokenUsage(files, options.tokenFilePatterns ?? defaultTokenFilePatterns),
   ];
@@ -103,8 +111,18 @@ function checkForbiddenCapabilities(files: readonly CandidateFile[]): GateResult
 /** `INV-DEP-001`: a new package is a material change, so it needs an approval marker. */
 function checkDependencies(
   files: readonly CandidateFile[],
-  approved: readonly string[]
+  approved: readonly string[] | null
 ): GateResult {
+  if (approved === null) {
+    return gateResult(
+      'INV-DEP-001',
+      'high',
+      'static',
+      'unverified',
+      'The approved dependency set could not be read, so no import could be judged against it.'
+    );
+  }
+
   const approvedRoots = new Set(approved);
   const evidence: string[] = [];
 

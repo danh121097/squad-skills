@@ -818,8 +818,15 @@ async function readCandidateFiles(runDirectory: string): Promise<CandidateFile[]
   return files.sort((left, right) => left.path.localeCompare(right.path));
 }
 
-/** The evidence packet's own manifest is the approved dependency set. */
-async function readApprovedDependencies(runDirectory: string): Promise<string[]> {
+/**
+ * The evidence packet's own manifest is the approved dependency set.
+ *
+ * `null` when there is no manifest to read. Returning an empty set instead
+ * failed every framework import as an unapproved dependency, which reads as the
+ * output importing something it should not rather than as the harness having
+ * nothing to compare against.
+ */
+async function readApprovedDependencies(runDirectory: string): Promise<string[] | null> {
   try {
     const manifest = JSON.parse(
       await readFile(path.join(runDirectory, 'package.json'), 'utf8')
@@ -833,7 +840,7 @@ async function readApprovedDependencies(runDirectory: string): Promise<string[]>
       ...Object.keys(manifest.devDependencies ?? {}),
     ];
   } catch {
-    return [];
+    return null;
   }
 }
 

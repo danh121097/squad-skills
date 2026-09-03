@@ -92,6 +92,14 @@ describe('runPresentationalStaticGates', () => {
     expect(dependency.evidence[0]).toContain('framer-motion');
   });
 
+  it('reports an unreadable approved set as unverified, not as a failing import', () => {
+    const source = "import React from 'react';";
+    const dependency = find(run([{ path: 'A.tsx', source }], null), 'INV-DEP-001');
+
+    expect(dependency.status).toBe('unverified');
+    expect(dependency.evidence).toEqual([]);
+  });
+
   it('accepts an unapproved import carrying a reviewer approval marker', () => {
     const source = [
       '// eval-approved-dependency: motion primitives accepted in the evidence packet',
@@ -156,7 +164,7 @@ describe('runPresentationalStaticGates', () => {
   });
 });
 
-function run(files: CandidateFile[], approvedDependencies: string[] = []): GateResult[] {
+function run(files: CandidateFile[], approvedDependencies: string[] | null = []): GateResult[] {
   return runPresentationalStaticGates({ approvedDependencies, files });
 }
 
