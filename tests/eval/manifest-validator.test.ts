@@ -469,6 +469,25 @@ describe('validateEvalManifests', () => {
     expect(result.errors.some((error) => error.includes('grew in the held-out store'))).toBe(true);
   });
 
+  it('refuses a case body that is a symlink pointing out of the store', async () => {
+    const project = await createProject();
+    const casePath = path.join(project.privateRoot, 'cases', 'acceptance', 'acc-held-out.yml');
+    const elsewhere = await mkdtemp(path.join(tmpdir(), 'squad-skills-elsewhere-'));
+    temporaryDirectories.push(elsewhere);
+    const moved = path.join(elsewhere, 'acc-held-out.yml');
+    await cp(casePath, moved);
+    await rm(casePath);
+    // The lane directory is still contained and the body still reads; only the
+    // file inside it now points out of the store.
+    await symlink(moved, casePath);
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    expect(
+      result.errors.some((error) => error.includes('resolves outside the held-out store'))
+    ).toBe(true);
+  });
+
   it('refuses a lane source that is a symlink pointing out of the store', async () => {
     const project = await createProject();
     const lanePath = path.join(project.privateRoot, 'cases', 'acceptance');

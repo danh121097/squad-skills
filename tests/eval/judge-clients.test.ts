@@ -180,6 +180,8 @@ describe('judge response reader', () => {
 
     expect(schema.required).toEqual(['criteria', 'overall']);
     expect(schema.properties.criteria.minItems).toBe(2);
+    // Bounded above too, or a decoder may legally repeat a rubric row.
+    expect(schema.properties.criteria.maxItems).toBe(2);
     expect(schema.properties.criteria.items.required).toEqual(['rubric', 'evidence', 'winner']);
   });
 

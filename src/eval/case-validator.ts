@@ -258,8 +258,25 @@ async function readPrivateCase(options: {
     return null;
   }
 
+  let file: string;
+
   try {
-    return await readFile(path.join(source, `${id}.yml`), 'utf8');
+    file = await realpath(path.join(source, `${id}.yml`));
+  } catch {
+    errors.push(`${manifestPath}: case "${id}" is missing from the held-out store.`);
+    return null;
+  }
+
+  // Resolving the lane leaves the file inside it unresolved, and a symlinked
+  // case body reads from wherever it points. The runner already checks this at
+  // its own read; the validator has to agree with it.
+  if (!isInside(file, await realpath(privatePath))) {
+    errors.push(`${manifestPath}: case "${id}" resolves outside the held-out store.`);
+    return null;
+  }
+
+  try {
+    return await readFile(file, 'utf8');
   } catch {
     errors.push(`${manifestPath}: case "${id}" is missing from the held-out store.`);
     return null;

@@ -380,8 +380,14 @@ function sideId(provider: string, model: string): string {
     .replace(/^-|-$/g, '');
 }
 
+/**
+ * Deduplicated, because a repeated rubric id makes the judge contract
+ * unsatisfiable: the response schema would demand one row per listed id
+ * including the repeat, while the reader refuses a rubric answered twice. Every
+ * response would then be inconclusive for a reason no judge could fix.
+ */
 function readRubricIds(value: unknown): string[] {
-  return Array.isArray(value) ? value.map((entry) => String(entry)) : [];
+  return Array.isArray(value) ? [...new Set(value.map((entry) => String(entry)))] : [];
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
