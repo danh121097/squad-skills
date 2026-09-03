@@ -469,6 +469,22 @@ describe('validateEvalManifests', () => {
     expect(result.errors.some((error) => error.includes('grew in the held-out store'))).toBe(true);
   });
 
+  it('refuses a lane source that is a symlink pointing out of the store', async () => {
+    const project = await createProject();
+    const lanePath = path.join(project.privateRoot, 'cases', 'acceptance');
+    const elsewhere = await mkdtemp(path.join(tmpdir(), 'squad-skills-elsewhere-'));
+    temporaryDirectories.push(elsewhere);
+    await cp(lanePath, elsewhere, { recursive: true });
+    await rm(lanePath, { recursive: true });
+    // Spelled as a plain child of the store, so the path as written is contained
+    // and every case body is still readable through it.
+    await symlink(elsewhere, lanePath);
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    expect(result.errors.some((error) => error.includes('no usable source path'))).toBe(true);
+  });
+
   it('fails when the held-out store is not parked on the pinned commit', async () => {
     const project = await createProject();
     await writeGitHead(project.privateRoot, 'b'.repeat(40));

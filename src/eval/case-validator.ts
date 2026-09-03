@@ -1,7 +1,8 @@
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, realpath } from 'node:fs/promises';
 import path from 'node:path';
 
 import { readGitHeadCommit } from './git-head-reader.ts';
+import { isInside } from './path-containment.ts';
 import { hashContent } from './skill-payload-measurement.ts';
 
 export interface ValidateEvalCasesOptions {
@@ -248,7 +249,7 @@ async function readPrivateCase(options: {
   privatePath: string;
 }): Promise<string | null> {
   const { errors, id, lane, manifestPath, privatePath } = options;
-  const source = resolveLaneSource(lane, privatePath);
+  const source = await resolveLaneSource(lane, privatePath);
 
   if (source === null) {
     errors.push(
@@ -277,7 +278,7 @@ async function detectStoreGrowth(options: {
   const registered = new Set(privateCases.map(({ id }) => id));
 
   for (const [name, lane] of lanes) {
-    const source = resolveLaneSource(lane, privatePath);
+    const source = await resolveLaneSource(lane, privatePath);
 
     if (lane.visibility !== 'private' || source === null) continue;
 
@@ -330,8 +331,18 @@ async function verifyStoreCommit(options: {
   }
 }
 
-/** Rejects absolute and traversing lane sources so a manifest cannot read outside the store. */
-function resolveLaneSource(lane: LaneDefinition, privatePath: string): string | null {
+/**
+ * Rejects absolute, traversing, and symlinked-out lane sources so a manifest
+ * cannot read outside the store.
+ *
+ * The spelling is checked first, then the resolved path. Checking only the
+ * spelling accepts a source that is a symlink to somewhere else entirely, which
+ * is the same escape written one level down.
+ */
+async function resolveLaneSource(
+  lane: LaneDefinition,
+  privatePath: string
+): Promise<string | null> {
   if (!lane.source) return null;
 
   const resolved = path.resolve(privatePath, lane.source);
@@ -339,7 +350,13 @@ function resolveLaneSource(lane: LaneDefinition, privatePath: string): string | 
 
   if (relative.length === 0 || relative.startsWith('..') || path.isAbsolute(relative)) return null;
 
-  return resolved;
+  try {
+    return isInside(await realpath(resolved), await realpath(privatePath)) ? resolved : null;
+  } catch {
+    // Nothing there to resolve. The callers already report the absence in the
+    // terms their own check is about, so this stays silent.
+    return null;
+  }
 }
 
 function readLanes(

@@ -7,6 +7,7 @@ import { validateEvalBaseline } from './baseline-validator.ts';
 import { validateEvalCases } from './case-validator.ts';
 import { validateJudgingContract } from './judging-contract-validator.ts';
 import { validateKnowledgeCards } from './knowledge-card-validator.ts';
+import { isInside } from './path-containment.ts';
 import { validateWorkflowIsolation } from './workflow-isolation-check.ts';
 
 export interface EvalValidationResult {
@@ -193,22 +194,6 @@ async function resolvePrivatePath(
   notes.push(`private store: checked against ${resolvedStore}.`);
 
   return resolvedStore;
-}
-
-function isInside(candidate: string, root: string): boolean {
-  const relative = path.relative(fold(root), fold(candidate));
-
-  if (path.isAbsolute(relative)) return false;
-  if (relative === '..' || relative.startsWith(`..${path.sep}`)) return false;
-
-  return true;
-}
-
-/** APFS and NTFS are case-insensitive by default, so a case variant is the same path. */
-function fold(value: string): string {
-  return process.platform === 'darwin' || process.platform === 'win32'
-    ? value.toLowerCase()
-    : value;
 }
 
 /** The variable a workflow would have to name to resolve the held-out store. */

@@ -15,10 +15,10 @@ import {
   type RuntimeObservation,
 } from '../src/eval/cross-runtime-divergence-report.ts';
 import { buildRegressionLedger } from '../src/eval/eval-statistics.ts';
+import { resolveHeldOutCaseFile } from '../src/eval/held-out-store-access.ts';
 import {
   armDirectoryId,
   budgetStopExceeded,
-  heldOutCaseFile,
   OrchestrationError,
   parseEvalInvocation,
   resolveArms,
@@ -249,13 +249,16 @@ async function resolveCases(): Promise<ResolvedCase[]> {
 
   for (const entry of selectedCases) {
     const id = String(entry.id);
-    const file = heldOutCaseFile({ id, laneSource: lane.source, privatePath });
+    const located = await resolveHeldOutCaseFile({ id, laneSource: lane.source, privatePath });
+
+    if (located.error !== undefined) fail(`Held-out case "${id}": ${located.error}.`);
+
     let body: string;
 
     try {
-      body = await readFile(file, 'utf8');
+      body = await readFile(located.file, 'utf8');
     } catch {
-      fail(`Held-out case "${id}" is missing from the store at ${file}.`);
+      fail(`Held-out case "${id}" could not be read from ${located.file}.`);
     }
 
     resolved.push(
