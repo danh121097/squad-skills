@@ -52,7 +52,6 @@ import { renderJudgingReport } from '../src/eval/judging-report.ts';
 import { runJudging, type JudgingCaseInput } from '../src/eval/judging-orchestrator.ts';
 import { runNativeCompileGate, type CommandOutcome } from '../src/eval/native-compile-gate.ts';
 import {
-  assertCrossProvider,
   providerFamily,
   type JudgeRunner,
   type PairwiseWinner,
@@ -106,6 +105,8 @@ const textExtensions = new Set([
 
 /** Long enough for a cold native toolchain, short enough that CI cannot hang. */
 const compileTimeoutMs = 300_000;
+/** Per-stream capture ceiling for any child process this runner spawns. */
+const maxCapturedBytes = 4 * 1024 * 1024;
 /** A judge reads images and writes prose; it is slower than a compiler. */
 const judgeTimeoutMs = 600_000;
 /** The pair whose two arms measure verbosity bias rather than design quality. */
@@ -641,7 +642,7 @@ async function judgeGradedPairs(config: JudgeContract): Promise<boolean> {
   // The stop itself fires inside the run, between cases; this only reports what
   // it cost. Subscription auth reports no cost at all, which is why an unknown
   // total is never treated as a run that was free.
-  if (judgingReport.usage.costUsd !== null && judgingReport.usage.costUsd > config.hardStopUsd) {
+  if (budgetStopExceeded(judgingReport.usage.costUsd, config.hardStopUsd)) {
     console.error(
       `Judging cost ${judgingReport.usage.costUsd} passed the hard stop ${config.hardStopUsd}; remaining cases were not judged.`
     );
@@ -860,9 +861,41 @@ function runCommand(
     });
     let stdout = '';
     let stderr = '';
+    let capturedBytes = 0;
+    let truncated = false;
 
-    child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
-    child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+    // The timeout bounds how long a child runs, not how much it says. A noisy
+    // compiler or a judge stuck in a loop can fill this process's heap well
+    // inside the time limit, so the byte count is its own stop. The cap sits far
+    // above any real judge envelope; reaching it means something is wrong, and
+    // the truncated stdout then fails to parse, which is the honest outcome.
+    const capture = (chunk: Buffer, append: (text: string) => void): void => {
+      if (truncated) return;
+
+      const remaining = maxCapturedBytes - capturedBytes;
+
+      if (chunk.length < remaining) {
+        capturedBytes += chunk.length;
+        append(chunk.toString());
+
+        return;
+      }
+
+      append(chunk.subarray(0, remaining).toString());
+      capturedBytes = maxCapturedBytes;
+      truncated = true;
+
+      if (child.pid) {
+        try {
+          process.kill(-child.pid, 'SIGKILL');
+        } catch {
+          // Already gone, which is the outcome we wanted.
+        }
+      }
+    };
+
+    child.stdout.on('data', (chunk: Buffer) => capture(chunk, (text) => (stdout += text)));
+    child.stderr.on('data', (chunk: Buffer) => capture(chunk, (text) => (stderr += text)));
     // `ENOENT` here means the binary is absent; every other spawn error is an
     // environment fault, and reporting one as a compile failure would blame the
     // candidate for the machine.
@@ -885,6 +918,20 @@ function runCommand(
       }
 
       const output = stderr.length > 0 ? `${stdout}\n${stderr}` : stdout;
+
+      // Reported separately from a timeout: the process was stopped because it
+      // would not stop talking, and calling that a timeout would send whoever
+      // reads it looking for a slow toolchain.
+      if (truncated) {
+        resolve({
+          missing: false,
+          output: `${output}\nOutput passed ${maxCapturedBytes} bytes; the process was stopped.`,
+          status: null,
+          stdout,
+        });
+
+        return;
+      }
 
       resolve(
         signal === 'SIGKILL'
