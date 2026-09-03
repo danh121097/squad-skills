@@ -1,0 +1,103 @@
+/* ---------------------------------------------------------------------------
+   Numbers and traveller voices — both stripped back to type on paper
+--------------------------------------------------------------------------- */
+
+.figures { padding-block: var(--rhythm-tight); }
+
+.figures__list { border-top: 1px solid var(--rule); }
+.figure {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: baseline;
+  gap: clamp(14px, 3vw, 48px);
+  padding-block: clamp(16px, 2.2vw, 34px);
+  border-bottom: 1px solid var(--rule);
+}
+.figure__num {
+  font-family: var(--serif);
+  font-size: clamp(52px, 8.4vw, 120px);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.figure__label {
+  justify-self: end;
+  text-align: right;
+  font-size: clamp(11px, 0.24vw + 10.2px, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------------------------
+   Voices
+--------------------------------------------------------------------------- */
+.voices { padding-block: var(--rhythm); }
+.voices__inner {
+  display: grid;
+  gap: clamp(36px, 5vw, 72px);
+  padding-left: clamp(0px, 5vw, 110px);
+}
+
+.voices__quote p {
+  font-family: var(--serif);
+  font-size: clamp(26px, 4.3vw, 68px);
+  line-height: 1.14;
+  letter-spacing: -0.028em;
+  max-width: 21ch;
+  text-wrap: pretty;
+}
+.voices__quote p::before { content: "\201C"; }
+.voices__quote p::after { content: "\201D"; }
+
+/* fade + vertical slide between quotes */
+.motion .voices__quote,
+.motion .voices__who {
+  transition: opacity 0.45s var(--ease-soft), transform 0.55s var(--ease);
+}
+.motion .voices__inner.is-swapping .voices__quote,
+.motion .voices__inner.is-swapping .voices__who {
+  opacity: 0;
+  transform: translate3d(0, -14px, 0);
+}
+
+.voices__by {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 24px);
+}
+.voices__avatars { display: flex; }
+.voices__avatars img {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid var(--paper);
+  margin-left: -12px;
+}
+.voices__avatars img:first-child { margin-left: 0; }
+
+.voices__who { display: grid; gap: 4px; }
+.voices__name { font-size: clamp(15px, 0.3vw + 14px, 17px); font-weight: 500; }
+.voices__route {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.voices__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: clamp(16px, 2vw, 28px);
+  border-top: 1px solid var(--rule);
+}
+.voices__dots { display: flex; }
+.voices__arrows { display: flex; gap: 8px; }
+
+@media (max-width: 640px) {
+  .figure { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .figure__label { justify-self: start; text-align: left; }
+}

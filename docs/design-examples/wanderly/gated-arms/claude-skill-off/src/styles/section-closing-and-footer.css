@@ -1,0 +1,192 @@
+/* ---------------------------------------------------------------------------
+   The last three movements: full-screen transition, closing call, footer
+--------------------------------------------------------------------------- */
+
+/* --- Somewhere next ----------------------------------------------------- */
+.next {
+  position: relative;
+  height: 200svh;
+  background: var(--paper);
+}
+/* No padding: at scale 1 the plate is exactly the screen, and the margins
+   you see on the way in are the scale itself opening up. */
+.next__pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.frame--next {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--next-radius, 40px);
+  transform: scale(var(--next-scale, 0.88));
+  transform-origin: 50% 50%;
+  will-change: transform;
+  background: #0b0f0c;
+}
+.frame--next img { width: 100%; height: 100%; object-fit: cover; }
+
+.next__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(var(--scrim), 0.9) 0%,
+    rgba(var(--scrim), 0.78) 26%,
+    rgba(var(--scrim), 0.5) 56%,
+    rgba(var(--scrim), 0.3) 100%
+  );
+}
+
+.next__text {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: clamp(28px, 5vw, 88px);
+  color: var(--on-forest);
+  max-width: var(--shell);
+  margin-inline: auto;
+}
+.next__title {
+  margin-top: clamp(14px, 2vw, 26px);
+  font-size: clamp(34px, 6.6vw, 110px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+@media (max-width: 640px) {
+  .next { height: 175svh; }
+}
+
+/* --- Closing ------------------------------------------------------------ */
+.closing {
+  background: var(--forest);
+  color: var(--on-forest);
+  padding-block: var(--rhythm);
+}
+.closing__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, min(38%, 460px));
+  gap: clamp(32px, 5vw, 90px);
+  align-items: end;
+}
+.closing__title {
+  font-size: clamp(42px, 8.6vw, 140px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+.closing__note {
+  font-size: clamp(16px, 0.5vw + 14.4px, 20px);
+  color: var(--on-forest-soft);
+  max-width: 26ch;
+}
+.closing__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: clamp(22px, 3vw, 34px);
+}
+
+@media (max-width: 900px) {
+  .closing__inner { grid-template-columns: minmax(0, 1fr); }
+  .closing__side { margin-top: clamp(28px, 6vw, 48px); }
+}
+
+/* --- Footer ------------------------------------------------------------- */
+.foot {
+  background: var(--forest);
+  color: var(--on-forest);
+  padding-top: clamp(48px, 7vw, 110px);
+  padding-bottom: clamp(24px, 3vw, 44px);
+  border-top: 1px solid var(--rule-dark);
+}
+
+.foot__cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, auto)) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 64px);
+  padding-bottom: clamp(40px, 6vw, 90px);
+}
+.foot__colTitle {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 6px;
+}
+.foot__col a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+  color: var(--on-forest);
+  position: relative;
+}
+.foot__col a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 12px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 0.6s var(--ease);
+}
+.foot__col a:hover::after,
+.foot__col a:focus-visible::after { transform: scaleX(1); transform-origin: 0 50%; }
+
+.foot__blurb {
+  justify-self: end;
+  max-width: 34ch;
+  color: var(--on-forest-soft);
+  font-size: clamp(14px, 0.3vw + 13px, 16px);
+}
+
+/* The wordmark. Sized in vw so it always stops short of the edges. */
+.foot__mark {
+  font-family: var(--serif);
+  font-size: min(12.4vw, 200px);
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--on-forest);
+  padding-block: clamp(10px, 1.6vw, 26px);
+}
+
+.foot__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: clamp(24px, 3vw, 44px);
+  padding-top: clamp(8px, 1vw, 16px);
+  border-top: 1px solid var(--rule-dark);
+}
+.foot__copy,
+.foot__legal a {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-forest-soft);
+}
+.foot__legal { display: flex; gap: 8px 24px; }
+.foot__legal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.foot__legal a:hover { color: var(--on-forest); }
+
+@media (max-width: 900px) {
+  .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .foot__blurb { justify-self: start; grid-column: 1 / -1; }
+}
+@media (max-width: 420px) {
+  .foot__cols { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}

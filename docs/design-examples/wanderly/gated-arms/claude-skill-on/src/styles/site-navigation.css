@@ -1,0 +1,299 @@
+/* Floating navigation + full-screen mobile menu.
+   Two states: over-hero (transparent, light type, sitting on the hero's top scrim) and
+   pinned (a shrunken off-white bar with a hairline, soft shadow and dark type). */
+
+[hidden] {
+  display: none !important;
+}
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 180;
+  padding: clamp(14px, 2vw, 26px) var(--gutter);
+  color: var(--paper);
+  transition: padding var(--t-slow) var(--ease), color var(--t-base) var(--ease);
+}
+
+html.motion .nav {
+  opacity: 0;
+  transform: translate3d(0, -12px, 0);
+  transition: opacity var(--t-slow) var(--ease) 200ms, transform var(--t-slow) var(--ease) 200ms,
+    padding var(--t-slow) var(--ease), color var(--t-base) var(--ease);
+}
+
+html.motion .nav.is-ready {
+  opacity: 1;
+  transform: none;
+}
+
+.nav__inner {
+  max-width: var(--measure-max);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 6px 6px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  transition: background-color var(--t-slow) var(--ease), border-color var(--t-slow) var(--ease),
+    box-shadow var(--t-slow) var(--ease), padding var(--t-slow) var(--ease);
+}
+
+.nav.is-pinned {
+  padding-block: clamp(10px, 1.1vw, 14px);
+  color: var(--ink);
+}
+
+.nav.is-pinned .nav__inner {
+  background: rgba(247, 245, 240, 0.9);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  backdrop-filter: blur(16px) saturate(1.1);
+  border-color: rgba(17, 17, 17, 0.09);
+  box-shadow: 0 12px 40px -18px rgba(17, 17, 17, 0.35);
+  padding: 5px 6px 5px 20px;
+}
+
+.nav__brand {
+  font-size: clamp(0.8125rem, 0.95vw, 0.9375rem);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 4px;
+}
+
+/* ---------- centre links ---------- */
+
+.nav__links ul {
+  display: flex;
+  justify-content: center;
+  gap: clamp(18px, 2.4vw, 40px);
+}
+
+.nav__links a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+}
+
+.nav__links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--t-base) var(--ease);
+}
+
+.nav__links a:hover::after,
+.nav__links a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- actions ---------- */
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: end;
+}
+
+.nav__icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  transition: background-color var(--t-base) var(--ease);
+}
+
+.nav__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav__icon:hover {
+  background: rgba(247, 245, 240, 0.16);
+}
+
+.nav.is-pinned .nav__icon:hover {
+  background: rgba(17, 17, 17, 0.07);
+}
+
+.nav__cta {
+  min-height: 44px;
+  padding-inline: 1.35rem;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.nav.is-pinned .nav__cta {
+  background: var(--night);
+  color: var(--paper);
+}
+
+.nav__cta:hover {
+  background: var(--forest);
+  color: var(--paper);
+}
+
+.nav__toggle {
+  display: none;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.nav__toggle-bars {
+  display: block;
+  width: 22px;
+}
+
+.nav__toggle-bars i {
+  display: block;
+  height: 1px;
+  background: currentColor;
+  transition: transform var(--t-base) var(--ease), opacity var(--t-fast) var(--ease);
+}
+
+.nav__toggle-bars i:first-child {
+  transform: translateY(-3px);
+}
+
+.nav__toggle-bars i:last-child {
+  transform: translateY(3px);
+}
+
+.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:first-child {
+  transform: translateY(0.5px) rotate(45deg);
+}
+
+.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:last-child {
+  transform: translateY(-0.5px) rotate(-45deg);
+}
+
+/* ---------- full-screen menu ---------- */
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: var(--night);
+  color: var(--night-text-primary);
+  display: grid;
+  align-items: end;
+  padding: calc(env(safe-area-inset-top, 0px) + 96px) var(--gutter)
+    calc(env(safe-area-inset-bottom, 0px) + 40px);
+  opacity: 1;
+}
+
+html.motion .menu {
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease);
+}
+
+html.motion .menu.is-open {
+  opacity: 1;
+}
+
+.menu__list a {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 12vw, 4.5rem);
+  line-height: 1.06;
+  letter-spacing: var(--ls-display);
+  padding-block: 6px;
+}
+
+html.motion .menu__list a {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
+  transition: transform var(--t-slow) var(--ease), opacity var(--t-slow) var(--ease);
+  transition-delay: calc(120ms + var(--i, 0) * 70ms);
+}
+
+html.motion .menu.is-open .menu__list a {
+  transform: none;
+  opacity: 1;
+}
+
+.menu__list li {
+  overflow: hidden;
+}
+
+.menu__foot {
+  margin-top: clamp(40px, 8vh, 80px);
+  display: grid;
+  gap: 20px;
+  justify-items: start;
+  border-top: 1px solid var(--night-hairline);
+  padding-top: 28px;
+}
+
+.menu__note {
+  font-size: var(--fs-label);
+  letter-spacing: 0.06em;
+  color: var(--night-text-secondary);
+  max-width: 32ch;
+}
+
+html.motion .menu__foot {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition: opacity var(--t-slow) var(--ease) 380ms, transform var(--t-slow) var(--ease) 380ms;
+}
+
+html.motion .menu.is-open .menu__foot {
+  opacity: 1;
+  transform: none;
+}
+
+body.is-menu-open .nav {
+  color: var(--paper);
+}
+
+body.is-menu-open .nav.is-pinned .nav__inner {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ---------- breakpoints ---------- */
+
+@media (max-width: 1023px) {
+  .nav__links,
+  .nav__cta,
+  .nav__icon {
+    display: none;
+  }
+
+  .nav__toggle {
+    display: grid;
+  }
+
+  .nav__inner {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .menu {
+    display: none;
+  }
+}

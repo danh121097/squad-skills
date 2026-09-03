@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Semantic tokens. Names describe the role in the editorial system, never the
+   hue. Photography supplies the colour; the palette stays deliberately thin.
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-surface: #f7f5f0;
+  --color-surface-inverse: #111713;
+  --color-primary: #111111;
+  --color-secondary: #6b6b65;
+  --color-on-inverse: #f7f5f0;
+  --color-on-inverse-muted: #9aa096;
+  --color-accent: #385a4a;
+  --color-accent-warm: #d7864a;
+  --color-rule: rgba(17, 17, 17, 0.14);
+  --color-rule-inverse: rgba(247, 245, 240, 0.16);
+
+  --font-display: var(--font-editorial-serif), Georgia, "Times New Roman", Times,
+    serif;
+  --font-sans: var(--font-ui-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Helvetica, Arial, sans-serif;
+
+  /* Type roles. Display sizes carry their own leading and optical tracking:
+     at 140px the letter-spacing that reads well at 16px looks slack. */
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1.1;
+  --text-label--letter-spacing: 0.14em;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.62;
+
+  --text-body-lg: clamp(1.0625rem, 0.98rem + 0.34vw, 1.25rem);
+  --text-body-lg--line-height: 1.55;
+
+  --text-hero: clamp(3.25rem, 8.6vw, 8.75rem);
+  --text-hero--line-height: 0.92;
+  --text-hero--letter-spacing: -0.022em;
+
+  --text-section: clamp(2.5rem, 5.6vw, 6rem);
+  --text-section--line-height: 0.98;
+  --text-section--letter-spacing: -0.018em;
+
+  --text-statement: clamp(2.25rem, 5.9vw, 5.5rem);
+  --text-statement--line-height: 1.04;
+  --text-statement--letter-spacing: -0.02em;
+
+  --text-chapter: clamp(2rem, 3.8vw, 3.5rem);
+  --text-chapter--line-height: 1.04;
+  --text-chapter--letter-spacing: -0.018em;
+
+  --text-numeral: clamp(3.5rem, 7.4vw, 7.5rem);
+  --text-numeral--line-height: 0.84;
+  --text-numeral--letter-spacing: -0.03em;
+
+  --text-quote: clamp(1.75rem, 3.5vw, 3.625rem);
+  --text-quote--line-height: 1.16;
+  --text-quote--letter-spacing: -0.015em;
+
+  /* The single motion curve the whole page is tuned to. */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+  }
+
+  /* Accent green reaches 7.0:1 on the paper surface but only 2.4:1 on the dark
+     surface, so dark regions switch the focus ring to the warm accent (6.5:1).
+     Both clear the 3:1 non-text contrast requirement of WCAG 2.2 (1.4.11). */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  [data-surface="inverse"] :focus-visible {
+    outline-color: var(--color-accent-warm);
+  }
+
+  figure {
+    margin: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Pre-animation states.
+
+   These are applied only once the inline boot script in the document head has
+   confirmed that motion is wanted, so the server-rendered document is legible
+   on its own: no JavaScript, no motion preference, no hidden content. GSAP
+   re-establishes the same values with gsap.set() before it animates, so the
+   handover is seamless rather than a flash.
+   --------------------------------------------------------------------------- */
+@layer base {
+  [data-motion="on"] [data-reveal-mask] > span {
+    transform: translateY(110%);
+  }
+
+  [data-motion="on"] [data-reveal-fade] {
+    opacity: 0;
+  }
+
+  [data-motion="on"] [data-reveal-rise] {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  [data-motion="on"] [data-reveal-clip] {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  [data-motion="on"] [data-dim-line] {
+    opacity: 0.2;
+  }
+
+  /* Gated to the same viewport as the sticky layout in journey-chapters.tsx.
+     Below `lg` the chapters are an ordinary stacked sequence in which every
+     photograph must stay visible; hiding all but the first one there would
+     silently delete three chapters for anyone on a tablet. */
+  @media (min-width: 64rem) {
+    [data-motion="on"] [data-chapter-visual]:not([data-chapter-visual="0"]) {
+      opacity: 0;
+    }
+  }
+}
+
+/* Belt and braces: even if the boot script were to mis-fire, an explicit
+   reduce preference restores every element to its resting, readable state. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal-mask] > span,
+  [data-reveal-fade],
+  [data-reveal-rise],
+  [data-reveal-clip],
+  [data-dim-line],
+  [data-chapter-visual] {
+    transform: none !important;
+    opacity: 1 !important;
+    clip-path: none !important;
+    filter: none !important;
+  }
+}
+
+@utility text-balance-editorial {
+  text-wrap: balance;
+}

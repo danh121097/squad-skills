@@ -1,0 +1,279 @@
+@media (max-width: 75rem) {
+  .destination-composition {
+    grid-template-columns: 1.1fr 0.55fr 0.75fr;
+    gap: var(--space-12) var(--space-6);
+  }
+
+  .journey-story { gap: var(--space-16); }
+  .final-cta { align-items: center; }
+}
+
+@media (max-width: 56.25rem) {
+  :root {
+    --gutter: 2rem;
+    --space-40: 8rem;
+    --space-48: 10rem;
+  }
+
+  .site-header { top: var(--space-3); }
+  .nav-shell {
+    display: flex;
+    width: calc(100% - (var(--gutter) * 2));
+    min-height: 3.75rem;
+    padding-inline: var(--space-4);
+    justify-content: space-between;
+  }
+  .site-header.is-scrolled .nav-shell { min-height: 3.5rem; }
+  .nav-links,
+  .nav-actions { display: none; }
+  .menu-button { display: flex; }
+
+  .destination-composition {
+    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-rows: auto;
+    gap: var(--space-16) var(--space-8);
+  }
+  .destination-amalfi { grid-row: auto; }
+  .destination-kyoto { grid-column: 2; padding-top: var(--space-24); }
+  .destination-bali { grid-column: 1; }
+  .destination-alps { grid-column: 2; padding-top: var(--space-16); }
+  .destination-kyoto .destination-image,
+  .destination-alps .destination-image { aspect-ratio: 3 / 4; }
+
+  .experiences {
+    height: auto;
+    padding-block: var(--space-16);
+  }
+  .experiences-sticky {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+  .experiences-heading {
+    position: static;
+    display: block;
+    padding-bottom: var(--space-12);
+    text-shadow: none;
+  }
+  .experiences-heading p { margin-top: var(--space-4); color: var(--light-muted); }
+  .experience-viewport {
+    height: auto;
+    overflow-x: auto;
+    padding: 0 var(--gutter) var(--space-4);
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-inline: contain;
+  }
+  .experience-viewport::-webkit-scrollbar { display: none; }
+  .experience-track {
+    width: max-content;
+    height: auto;
+    gap: var(--space-4);
+    transform: none !important;
+  }
+  .experience-panel {
+    width: min(78vw, 34rem);
+    height: 70svh;
+    min-height: 31rem;
+    border-radius: var(--radius-md);
+    scroll-snap-align: center;
+  }
+  .experience-copy {
+    right: var(--space-6);
+    bottom: var(--space-8);
+    left: var(--space-6);
+    display: block;
+  }
+  .experience-copy h3 { margin-top: var(--space-2); font-size: clamp(3.5rem, 12vw, 6rem); }
+  .experience-copy p { margin-top: var(--space-4); }
+
+  .featured-journey {
+    grid-template-columns: minmax(0, 1.2fr) minmax(17rem, 0.8fr);
+    gap: var(--space-8);
+  }
+
+  .journey-story {
+    display: block;
+    padding-bottom: var(--space-32);
+  }
+  .story-gallery { display: none; }
+  .story-chapter {
+    display: block;
+    min-height: 0;
+    padding-bottom: var(--space-24);
+    color: var(--ink);
+  }
+  .story-mobile-image {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--space-8);
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    aspect-ratio: 4 / 5;
+  }
+  .story-chapter h3 { max-width: 38rem; }
+
+  .journal-grid { grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 0.75fr); gap: var(--space-8); }
+
+  .final-cta {
+    min-height: 80svh;
+    align-items: end;
+  }
+  .final-actions { max-width: 20rem; }
+  .final-actions .button { width: 100%; }
+}
+
+@media (max-width: 47.9375rem) {
+  :root {
+    --gutter: 1.25rem;
+    --space-32: 6rem;
+    --space-40: 7.5rem;
+    --space-48: 8rem;
+  }
+
+  .hero { height: 112svh; }
+  .hero-content { bottom: var(--space-8); }
+  .hero-title {
+    max-width: 22rem;
+    font-size: clamp(2.55rem, 12.8vw, 3.25rem);
+    line-height: 0.92;
+  }
+  .hero-title .reveal-mask > span { white-space: nowrap; }
+  .hero-eyebrow { max-width: 15rem; margin-bottom: var(--space-4); }
+  .hero-copy { max-width: 22rem; margin-top: var(--space-4); font-size: var(--step-0); }
+  .hero-link { margin-top: var(--space-4); }
+
+  .intro-statement { min-height: 82svh; padding-block: var(--space-24); }
+  .statement-lines { font-size: clamp(2.75rem, 13vw, 4rem); }
+
+  .destinations { padding-block: var(--space-32); }
+  .destinations-intro,
+  .journal-header { margin-left: 0; }
+  .section-intro h2,
+  .journal-header h2 { font-size: clamp(2.75rem, 13vw, 4rem); }
+  .destination-composition {
+    display: block;
+    margin-top: var(--space-16);
+  }
+  .destination {
+    display: grid;
+    margin-bottom: var(--space-24);
+    grid-template-columns: 1fr;
+  }
+  .destination-kyoto,
+  .destination-alps { padding-top: 0; }
+  .destination-image,
+  .destination-amalfi .destination-image,
+  .destination-kyoto .destination-image,
+  .destination-bali .destination-image,
+  .destination-alps .destination-image { aspect-ratio: 4 / 5; }
+  .destination:nth-child(even) .destination-image { margin-left: var(--space-8); }
+  .destination:nth-child(odd) .destination-image { margin-right: var(--space-8); }
+  .destination-copy { padding-inline: var(--space-2); }
+  .destination-copy h3 { font-size: 2.5rem; }
+
+  .experiences { padding-block: var(--space-12) var(--space-8); }
+  .experiences-heading { padding-bottom: var(--space-8); }
+  .experiences-heading h2 { font-size: clamp(2.75rem, 13vw, 4rem); }
+  .experience-panel {
+    width: 84vw;
+    height: 68svh;
+    min-height: 28rem;
+  }
+
+  .featured-journey {
+    display: flex;
+    padding-block: var(--space-32);
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+  .featured-visual { width: calc(100% + var(--gutter)); align-self: flex-start; aspect-ratio: 4 / 5; }
+  .featured-copy { width: 100%; }
+  .featured-copy h2 { font-size: clamp(2.75rem, 13vw, 4rem); }
+
+  .journey-story { padding-bottom: var(--space-24); }
+  .story-chapter { padding-bottom: var(--space-24); }
+  .story-chapter:nth-child(even) .story-mobile-image { width: calc(100% - var(--space-8)); margin-left: auto; }
+  .story-chapter h3 { margin-top: var(--space-4); font-size: clamp(2.75rem, 12vw, 4rem); }
+  .story-chapter p { margin-top: var(--space-4); }
+
+  .manifesto { min-height: 82svh; }
+
+  .journal { padding-block: var(--space-32); }
+  .journal-grid { display: block; margin-top: var(--space-16); }
+  .journal-main { margin-right: var(--space-8); }
+  .journal-main .journal-image { aspect-ratio: 4 / 5; }
+  .journal-side { margin-top: var(--space-16); gap: var(--space-16); }
+  .journal-side article { width: calc(76% - var(--space-2)); }
+  .journal-side article:nth-child(2) { margin-left: auto; }
+  .journal-side .journal-image { aspect-ratio: 3 / 4; }
+  .journal-grid h3 { font-size: 2rem; }
+
+  .numbers { padding-block: var(--space-24) var(--space-32); }
+  .stats-list > div {
+    min-height: 8rem;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: var(--space-4);
+  }
+  .stats-list dd { font-size: clamp(4rem, 20vw, 6rem); }
+  .stats-list dt { max-width: 8rem; justify-self: end; text-align: right; }
+
+  .testimonials {
+    min-height: 85svh;
+    padding-block: var(--space-32);
+  }
+  .quote-stage { min-height: 25rem; }
+  .quote-stage blockquote p { font-size: clamp(2.25rem, 10vw, 3.5rem); }
+  .quote-stage blockquote p br { display: none; }
+  .quote-stage blockquote footer { justify-content: flex-start; }
+  .carousel-controls { margin-top: var(--space-8); }
+
+  .somewhere-next { height: 115svh; }
+  .somewhere-copy { bottom: var(--space-8); }
+  .somewhere-copy h2 { font-size: clamp(3.5rem, 15vw, 5rem); }
+
+  .final-cta {
+    display: block;
+    min-height: 82svh;
+    padding-block: var(--space-32) var(--space-24);
+  }
+  .final-cta h2 { font-size: clamp(3.75rem, 18vw, 5.5rem); }
+  .final-actions { margin-top: var(--space-12); justify-content: start; }
+
+  .site-footer { padding-top: var(--space-8); }
+  .footer-wordmark { font-size: 12vw; letter-spacing: -0.045em; }
+  .footer-columns { grid-template-columns: 1fr 1fr; gap: var(--space-12) var(--space-8); }
+  .footer-columns > div:last-child { grid-column: 2; }
+  .footer-bottom { align-items: end; }
+}
+
+@media (max-width: 22rem) {
+  .hero-title { font-size: 2.45rem; }
+  .hero-copy { max-width: 18rem; }
+  .mobile-menu-links a { font-size: 2.35rem; }
+  .statement-lines,
+  .section-intro h2,
+  .journal-header h2,
+  .featured-copy h2,
+  .story-chapter h3 { font-size: 2.55rem; }
+  .experience-panel { width: 82vw; }
+  .journey-details div { align-items: flex-start; flex-direction: column; justify-content: center; gap: 0; }
+  .quote-stage blockquote p { font-size: 2.1rem; }
+  .carousel-controls { gap: var(--space-2); }
+  .final-cta h2 { font-size: 3.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-frame,
+  .hero-image,
+  .somewhere-frame,
+  .featured-visual img,
+  .experience-track {
+    transform: none !important;
+  }
+
+  .hero-frame,
+  .somewhere-frame { border-radius: 0 !important; }
+
+  .statement-lines > span { color: var(--ink); }
+}

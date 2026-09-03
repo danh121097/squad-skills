@@ -1,0 +1,170 @@
+/* ---------------------------------------------------------------------------
+   Featured journey + the sticky chapter story
+--------------------------------------------------------------------------- */
+
+.feature { padding-block: var(--rhythm); overflow: hidden; }
+
+.feature__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 66fr) minmax(0, 34fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 80px);
+}
+
+/* The plate runs off the left edge of the page — an editorial bleed. */
+.feature__visual { min-width: 0; }
+.frame--feature {
+  aspect-ratio: 5 / 4;
+  border-radius: 0 var(--r-frame-lg) var(--r-frame-lg) 0;
+}
+/* Oversized inside its frame so the parallax always has cover to spare */
+.frame--feature img {
+  position: absolute;
+  top: -6%;
+  left: 0;
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  transform: translate3d(0, var(--py, 0px), 0);
+  will-change: transform;
+}
+
+.feature__text { padding-right: var(--pad); max-width: 46ch; }
+.feature__title {
+  margin-top: clamp(16px, 2vw, 28px);
+  font-size: clamp(30px, 4.1vw, 68px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+.facts {
+  margin-top: clamp(28px, 3.4vw, 48px);
+  border-top: 1px solid var(--rule);
+}
+.facts__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.facts dt {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.facts dd { font-size: clamp(15px, 0.3vw + 14px, 17px); text-align: right; }
+
+.feature__price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: clamp(24px, 3vw, 40px);
+}
+.feature__priceLabel {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.feature__priceValue {
+  font-family: var(--serif);
+  font-size: clamp(30px, 2.6vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.feature__act { margin-top: clamp(24px, 3vw, 40px); }
+
+@media (max-width: 900px) {
+  .feature__grid { grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 6vw, 48px); }
+  .frame--feature { aspect-ratio: 4 / 3.4; margin-right: clamp(20px, 8vw, 90px); border-radius: 0 var(--r-frame-lg) var(--r-frame-lg) 0; }
+  .feature__text { padding-inline: var(--pad); max-width: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   Chapters
+--------------------------------------------------------------------------- */
+.chapters {
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding: var(--rhythm) var(--pad);
+  display: grid;
+  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  gap: clamp(32px, 5vw, 96px);
+}
+
+.chapters__visual {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+}
+.frame--chapter {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 76svh;
+  border-radius: var(--r-frame-lg);
+}
+
+.chapter {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 8vh;
+  transition: opacity 0.7s var(--ease);
+}
+.chapter__thumb { display: none; }
+.chapter__num {
+  font-family: var(--serif);
+  font-size: clamp(44px, 5vw, 84px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+.chapter__title {
+  margin-top: clamp(14px, 1.6vw, 24px);
+  font-size: clamp(26px, 3.5vw, 56px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+  transition: color 0.7s var(--ease);
+}
+/* Chapters that don't hold the screen step back in tone, never in opacity —
+   soft ink still clears 4.9:1 on paper, so nothing becomes unreadable. */
+@media (min-width: 901px) {
+  html.motion .chapters.is-tracking .chapter:not(.is-active) .chapter__title { color: var(--ink-soft); }
+}
+.chapter__note {
+  margin-top: clamp(14px, 1.6vw, 22px);
+  max-width: 40ch;
+  color: var(--ink-soft);
+  font-size: clamp(15px, 0.3vw + 14px, 18px);
+}
+
+/* Image, text, image, text on small screens */
+@media (max-width: 900px) {
+  .chapters { display: block; padding-block: var(--rhythm); }
+  .chapters__visual { display: none; }
+  .chapter {
+    min-height: 0;
+    display: block;
+    padding-block: 0;
+    margin-bottom: clamp(56px, 12vw, 96px);
+  }
+  .chapter:last-child { margin-bottom: 0; }
+  .chapter__thumb {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--r-frame-lg);
+    aspect-ratio: 4 / 3;
+    margin-bottom: clamp(20px, 4vw, 30px);
+    background: var(--paper-tint);
+  }
+  .chapter__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .chapter:nth-child(even) .chapter__thumb { aspect-ratio: 3 / 4; margin-left: clamp(24px, 14vw, 120px); }
+}

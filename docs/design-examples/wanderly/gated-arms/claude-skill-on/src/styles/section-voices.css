@@ -1,0 +1,141 @@
+/* Traveller voices — an editorial quote that changes, not a row of testimonial cards.
+   Without script the three quotes simply read as a sequence; with script they stack and
+   cross-dissolve under manual control (never auto-advancing). */
+
+.voices__inner {
+  display: grid;
+  gap: clamp(32px, 4vw, 56px);
+}
+
+.voices__stack {
+  display: grid;
+  gap: clamp(48px, 6vw, 80px);
+}
+
+.voice {
+  display: grid;
+  gap: clamp(20px, 2.4vw, 34px);
+  max-width: 24ch;
+}
+
+.voice__quote p {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3.7vw, 3.375rem);
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+}
+
+.voice__quote p::before {
+  content: "“";
+}
+
+.voice__quote p::after {
+  content: "”";
+}
+
+.voice__by {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: var(--fs-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.voice__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.voice__route {
+  color: var(--text-secondary);
+}
+
+html.js .voices__stack {
+  gap: 0;
+  align-items: start;
+}
+
+html.js .voice {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, 26px, 0);
+  transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease),
+    visibility 0s linear var(--t-slow);
+}
+
+html.js .voice.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease),
+    visibility 0s linear 0s;
+}
+
+.voices__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid var(--hairline);
+  padding-top: clamp(18px, 2vw, 26px);
+}
+
+.voices__progress {
+  display: flex;
+  gap: 8px;
+}
+
+.voices__progress span {
+  display: block;
+  width: clamp(28px, 4vw, 46px);
+  height: 2px;
+  background: rgba(17, 17, 17, 0.22);
+  transition: background-color var(--t-base) var(--ease);
+}
+
+.voices__progress span.is-active {
+  background: var(--forest);
+}
+
+.voices__buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.voices__btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--text-secondary);
+  display: grid;
+  place-items: center;
+  transition: background-color var(--t-base) var(--ease), color var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease);
+}
+
+.voices__btn svg {
+  width: 20px;
+  height: 10px;
+}
+
+.voices__btn:hover {
+  background: var(--night);
+  border-color: var(--night);
+  color: var(--paper);
+}
+
+@media (min-width: 900px) {
+  .voice {
+    max-width: 22ch;
+    margin-left: 6%;
+  }
+
+  .voices__controls {
+    margin-left: 6%;
+  }
+}

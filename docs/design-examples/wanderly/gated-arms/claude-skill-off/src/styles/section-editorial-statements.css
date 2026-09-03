@@ -1,0 +1,43 @@
+/* ---------------------------------------------------------------------------
+   The two text-only movements: the opening statement and the manifesto.
+   No cards, no rules, no ornament — only type and air.
+--------------------------------------------------------------------------- */
+
+.statement {
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding: calc(var(--rhythm) + 2vw) var(--pad) var(--rhythm);
+}
+
+.statement__title {
+  /* Pulled off the left edge so the block sits asymmetrically on the page */
+  margin-left: clamp(0px, 7vw, 150px);
+  max-width: 22ch;
+  font-size: clamp(30px, 6.1vw, 104px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-wrap: pretty;
+}
+
+.manifesto {
+  padding: clamp(96px, 15vw, 210px) var(--pad);
+  display: grid;
+  place-items: center;
+  min-height: 78svh;
+}
+
+.manifesto__title {
+  text-align: center;
+  font-size: clamp(32px, 6.6vw, 112px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  padding-block: clamp(24px, 6vw, 100px);
+  text-wrap: pretty;
+}
+
+@media (max-width: 640px) {
+  .statement__title,
+  .manifesto__title { letter-spacing: -0.02em; }
+  .manifesto__title { text-align: left; }
+  .manifesto { place-items: start; min-height: 0; }
+}

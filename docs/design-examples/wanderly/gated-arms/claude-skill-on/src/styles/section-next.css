@@ -1,0 +1,59 @@
+/* Fullscreen destination transition — the plate grows from an inset editorial block to a
+   full-bleed frame as it is scrolled through. Transform and radius only. */
+
+.next {
+  position: relative;
+  height: 200vh;
+  background: var(--surface);
+}
+
+.next__pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+}
+
+.next__media {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--next-radius, 0px);
+  transform: scale(var(--next-scale, 1));
+  will-change: transform;
+}
+
+html.motion .next__media {
+  --next-scale: 0.88;
+  --next-radius: 40px;
+}
+
+.next__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.next__content {
+  position: relative;
+  z-index: 2;
+  color: var(--paper);
+  padding-bottom: clamp(48px, 8vh, 110px);
+  display: grid;
+  gap: clamp(14px, 1.8vh, 24px);
+}
+
+.next__eyebrow {
+  color: rgba(247, 245, 240, 0.86);
+}
+
+.next__title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 7vw, 6.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.028em;
+  max-width: 14ch;
+  text-shadow: 0 2px 40px rgba(10, 14, 12, 0.3);
+}

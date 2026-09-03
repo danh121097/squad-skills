@@ -1,0 +1,80 @@
+/* Design tokens — primitive palette, semantic roles, type scale, space, motion.
+   Roles are named for meaning, never appearance, so sections can re-map them. */
+
+:root {
+  /* ---- primitive palette (kept deliberately small; photography carries colour) */
+  --paper: #f7f5f0;
+  --ink: #111111;
+  --ink-soft: #6b6b65;
+  --night: #111713;
+  --forest: #385a4a;
+  --ember: #d7864a;
+
+  /* ---- semantic roles on the warm editorial surface */
+  --surface: var(--paper);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --hairline: rgba(17, 17, 17, 0.14);
+  --accent: var(--forest);
+  --focus-ring: var(--forest);
+
+  /* ---- semantic roles inside night sections (set locally by .on-night) */
+  --night-text-primary: #f7f5f0;
+  --night-text-secondary: rgba(247, 245, 240, 0.74);
+  --night-hairline: rgba(247, 245, 240, 0.16);
+  --night-accent: var(--ember);
+
+  /* ---- scrim roles: guarantee legible type over photography */
+  --scrim-top: linear-gradient(
+    to bottom,
+    rgba(10, 14, 12, 0.62) 0%,
+    rgba(10, 14, 12, 0.34) 10%,
+    rgba(10, 14, 12, 0.1) 22%,
+    rgba(10, 14, 12, 0) 34%
+  );
+  --scrim-bottom: linear-gradient(
+    to top,
+    rgba(10, 14, 12, 0.82) 0%,
+    rgba(10, 14, 12, 0.52) 26%,
+    rgba(10, 14, 12, 0.12) 58%,
+    rgba(10, 14, 12, 0) 82%
+  );
+
+  /* ---- typography: editorial serif for voice, minimal sans for interface */
+  --font-serif: "Instrument Serif", "Cormorant Garamond", "DM Serif Display", "Iowan Old Style",
+    "Palatino Linotype", "Book Antiqua", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", "Manrope", "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", system-ui, sans-serif;
+
+  --fs-hero: clamp(3rem, 12vw, 8.75rem);
+  --fs-display: clamp(2.5rem, 6.4vw, 6rem);
+  --fs-statement: clamp(2.25rem, 6vw, 5.5rem);
+  --fs-numeral: clamp(3.5rem, 7.4vw, 7.5rem);
+  --fs-chapter-index: clamp(2.5rem, 4vw, 4.5rem);
+  --fs-lead: clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem);
+  --fs-body: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  --fs-label: clamp(0.6875rem, 0.66rem + 0.14vw, 0.8125rem);
+
+  --ls-display: -0.025em;
+  --ls-label: 0.14em;
+  --lh-display: 0.94;
+  --lh-body: 1.62;
+
+  /* ---- spatial system */
+  --gutter: clamp(20px, 4.4vw, 80px);
+  --measure-max: 1560px;
+  --section-y: clamp(88px, 11vw, 200px);
+  --section-y-tight: clamp(64px, 7vw, 120px);
+  --radius-frame: 6px;
+  --radius-frame-lg: 12px;
+  --radius-pill: 999px;
+
+  /* ---- motion: slow, weighted, non-bouncy */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 320ms;
+  --t-base: 640ms;
+  --t-slow: 900ms;
+  --t-cinematic: 1200ms;
+  --stagger: 55ms;
+}

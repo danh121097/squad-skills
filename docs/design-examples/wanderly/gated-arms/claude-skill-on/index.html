@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Wanderly — Curated journeys around the world</title>
+    <meta
+      name="description"
+      content="Wanderly designs small, slow, thoughtfully curated journeys — extraordinary places, unhurried days, and stories worth bringing home."
+    />
+    <meta name="theme-color" content="#f7f5f0" />
+    <script>
+      /* Set before first paint: the document's default state is the finished state, so hidden
+         pre-animation states only exist when script runs AND motion is welcome. */
+      (function () {
+        var root = document.documentElement;
+        root.classList.add("js");
+        try {
+          if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            root.classList.add("motion");
+          }
+        } catch (e) {
+          /* no matchMedia: stay in the fully-composed default state */
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="/src/styles/index.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- ============================== navigation ============================== -->
+    <header class="nav" data-nav>
+      <div class="nav__inner">
+        <a class="nav__brand" href="#top" data-magnetic="4">Wanderly</a>
+
+        <nav class="nav__links" aria-label="Primary">
+          <ul>
+            <li><a href="#destinations">Destinations</a></li>
+            <li><a href="#journeys">Journeys</a></li>
+            <li><a href="#stories">Stories</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </nav>
+
+        <div class="nav__actions">
+          <button class="nav__icon" type="button" aria-label="Search journeys">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+              <circle cx="9" cy="9" r="5.6" stroke="currentColor" stroke-width="1.3" />
+              <path d="M13.4 13.4 18 18" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+          </button>
+          <a class="btn nav__cta" href="#plan" data-magnetic="5">Plan a trip</a>
+          <button
+            class="nav__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-menu"
+            data-menu-toggle
+          >
+            <span class="nav__toggle-bars" aria-hidden="true"><i></i><i></i></span>
+            <span class="sr-only" data-menu-label>Open menu</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="menu" id="site-menu" data-menu hidden>
+      <nav class="menu__inner" aria-label="Mobile">
+        <ul class="menu__list">
+          <li><a href="#destinations">Destinations</a></li>
+          <li><a href="#journeys">Journeys</a></li>
+          <li><a href="#stories">Stories</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+        <div class="menu__foot">
+          <a class="btn btn--paper menu__cta" href="#plan">Plan a trip</a>
+          <p class="menu__note">Curated journeys around the world, designed one traveller at a time.</p>
+        </div>
+      </nav>
+    </div>
+
+    <main id="main">
+      <!-- ============================== hero ============================== -->
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero__stage" data-hero-stage>
+          <figure class="hero__media scrim-t scrim-b" data-hero-media>
+            <img
+              src="/assets/hero-coastline.jpg"
+              alt="Terraced village houses above a wide, bright coastline in late afternoon light"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </figure>
+        </div>
+
+        <div class="hero__content container">
+          <p class="eyebrow hero__eyebrow" data-hero-item="1">Curated journeys around the world</p>
+          <h1 class="hero__title" id="hero-title" data-reveal-text="words" data-hero-item="2">
+            <span class="line">Go somewhere</span>
+            <span class="line">you’ll remember.</span>
+          </h1>
+          <div class="hero__foot">
+            <p class="hero__lede" data-hero-item="3">
+              Thoughtfully curated journeys, extraordinary places, and stories worth bringing home.
+            </p>
+            <a class="link-arrow hero__cta" href="#journeys" data-hero-item="4">
+              Explore journeys
+              <svg class="arrow" viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== intro statement ============================== -->
+      <section class="statement section" id="about" aria-labelledby="statement-title">
+        <div class="container">
+          <h2 class="statement__title" id="statement-title" data-line-focus>
+            <span class="statement__line">Travel isn’t about</span>
+            <span class="statement__line">seeing more places.</span>
+            <span class="statement__line">It’s about feeling</span>
+            <span class="statement__line">something new.</span>
+          </h2>
+        </div>
+      </section>
+
+      <!-- ============================== destinations ============================== -->
+      <section class="places section" id="destinations" aria-labelledby="places-title" data-places>
+        <div class="container">
+          <header class="places__head">
+            <p class="eyebrow" data-reveal-mask>Places worth getting lost in</p>
+            <h2 class="section-title places__title" id="places-title" data-reveal-text="lines">
+              <span class="line">Not just destinations.</span>
+              <span class="line">Stories waiting to happen.</span>
+            </h2>
+          </header>
+
+          <div class="places__layout">
+            <div class="places__stage" aria-hidden="true">
+              <figure class="frame places__frame places__frame--tall" data-place-frame="primary">
+                <img src="/assets/amalfi.jpg" alt="" loading="lazy" decoding="async" data-place-image="0" class="is-active" />
+                <img src="/assets/kyoto.jpg" alt="" loading="lazy" decoding="async" data-place-image="1" />
+                <img src="/assets/bali.jpg" alt="" loading="lazy" decoding="async" data-place-image="2" />
+                <img src="/assets/alps.jpg" alt="" loading="lazy" decoding="async" data-place-image="3" />
+              </figure>
+              <figure class="frame places__frame places__frame--wide" data-place-frame="secondary">
+                <img src="/assets/kyoto.jpg" alt="" loading="lazy" decoding="async" data-place-image="0" class="is-active" />
+                <img src="/assets/bali.jpg" alt="" loading="lazy" decoding="async" data-place-image="1" />
+                <img src="/assets/alps.jpg" alt="" loading="lazy" decoding="async" data-place-image="2" />
+                <img src="/assets/amalfi.jpg" alt="" loading="lazy" decoding="async" data-place-image="3" />
+              </figure>
+            </div>
+
+            <ol class="places__list">
+              <li class="place" data-place="0">
+                <figure class="frame place__media" data-reveal>
+                  <img src="/assets/amalfi.jpg" alt="Pastel houses stacked down a cliff above the Mediterranean" loading="lazy" decoding="async" />
+                </figure>
+                <div class="place__text">
+                  <h3 class="place__name">Amalfi Coast</h3>
+                  <p class="place__country">Italy</p>
+                  <p class="place__note">Sun-bleached villages, winding roads and endless Mediterranean blue.</p>
+                  <a class="link-arrow place__link" href="#journeys">
+                    Explore<span class="sr-only"> the Amalfi Coast</span>
+                    <svg class="arrow" viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                      <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                    </svg>
+                  </a>
+                </div>
+              </li>
+              <li class="place" data-place="1">
+                <figure class="frame place__media" data-reveal>
+                  <img src="/assets/kyoto.jpg" alt="A quiet temple path in Kyoto under low morning light" loading="lazy" decoding="async" />
+                </figure>
+                <div class="place__text">
+                  <h3 class="place__name">Kyoto</h3>
+                  <p class="place__country">Japan</p>
+                  <p class="place__note">Temple bells, paper doors and mornings that move slowly on purpose.</p>
+                  <a class="link-arrow place__link" href="#journeys">
+                    Explore<span class="sr-only"> Kyoto</span>
+                    <svg class="arrow" viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                      <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                    </svg>
+                  </a>
+                </div>
+              </li>
+              <li class="place" data-place="2">
+                <figure class="frame place__media" data-reveal>
+                  <img src="/assets/bali.jpg" alt="Rice terraces falling away into jungle after rain" loading="lazy" decoding="async" />
+                </figure>
+                <div class="place__text">
+                  <h3 class="place__name">Bali</h3>
+                  <p class="place__country">Indonesia</p>
+                  <p class="place__note">Warm rain, terraced green and evenings that end in the water.</p>
+                  <a class="link-arrow place__link" href="#journeys">
+                    Explore<span class="sr-only"> Bali</span>
+                    <svg class="arrow" viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                      <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                    </svg>
+                  </a>
+                </div>
+              </li>
+              <li class="place" data-place="3">
+                <figure class="frame place__media" data-reveal>
+                  <img src="/assets/alps.jpg" alt="Snow ridges of the Swiss Alps above a valley of cloud" loading="lazy" decoding="async" />
+                </figure>
+                <div class="place__text">
+                  <h3 class="place__name">Swiss Alps</h3>
+                  <p class="place__country">Switzerland</p>
+                  <p class="place__note">Thin air, long silences and light that arrives before anyone else.</p>
+                  <a class="link-arrow place__link" href="#journeys">
+                    Explore<span class="sr-only"> the Swiss Alps</span>
+                    <svg class="arrow" viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                      <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                    </svg>
+                  </a>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== horizontal experience ============================== -->
+      <section class="escapes on-night" aria-labelledby="escapes-title" data-escapes>
+        <div class="escapes__pin" data-escapes-pin>
+          <div class="escapes__head container">
+            <p class="eyebrow" data-reveal-mask>Four ways to travel</p>
+            <h2 class="section-title escapes__title" id="escapes-title" data-reveal-text="lines">
+              <span class="line">Choose your kind</span>
+              <span class="line">of escape.</span>
+            </h2>
+          </div>
+
+          <ol
+            class="escapes__track"
+            data-escapes-track
+            tabindex="0"
+            aria-label="Four kinds of escape, scroll sideways to move between them"
+          >
+            <li class="escape">
+              <figure class="frame escape__media scrim-b">
+                <img src="/assets/exp-ocean.jpg" alt="Flat morning water reaching an empty shoreline" loading="lazy" decoding="async" />
+              </figure>
+              <div class="escape__text">
+                <p class="escape__index" aria-hidden="true">01</p>
+                <h3 class="escape__name">Ocean</h3>
+                <p class="escape__note">Slow mornings. Salt air. Nothing planned.</p>
+              </div>
+            </li>
+            <li class="escape">
+              <figure class="frame escape__media scrim-b">
+                <img src="/assets/exp-mountains.jpg" alt="A ridge line disappearing into high cloud" loading="lazy" decoding="async" />
+              </figure>
+              <div class="escape__text">
+                <p class="escape__index" aria-hidden="true">02</p>
+                <h3 class="escape__name">Mountains</h3>
+                <p class="escape__note">Go where the signal disappears.</p>
+              </div>
+            </li>
+            <li class="escape">
+              <figure class="frame escape__media scrim-b">
+                <img src="/assets/exp-city.jpg" alt="A dense city street glowing after dark" loading="lazy" decoding="async" />
+              </figure>
+              <div class="escape__text">
+                <p class="escape__index" aria-hidden="true">03</p>
+                <h3 class="escape__name">City</h3>
+                <p class="escape__note">Culture, chaos and unforgettable nights.</p>
+              </div>
+            </li>
+            <li class="escape">
+              <figure class="frame escape__media scrim-b">
+                <img src="/assets/exp-wild.jpg" alt="Open wilderness with no road or building in sight" loading="lazy" decoding="async" />
+              </figure>
+              <div class="escape__text">
+                <p class="escape__index" aria-hidden="true">04</p>
+                <h3 class="escape__name">Wild</h3>
+                <p class="escape__note">Places that still feel untouched.</p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="escapes__progress" aria-hidden="true"><span data-escapes-bar></span></div>
+        </div>
+      </section>
+
+      <!-- ============================== featured journey ============================== -->
+      <section class="journey section" id="journeys" aria-labelledby="journey-title">
+        <div class="container journey__grid">
+          <figure class="frame journey__media" data-clip-reveal data-parallax>
+            <img src="/assets/journey-bali.jpg" alt="A boutique villa opening onto palms and terraced green in Bali" loading="lazy" decoding="async" />
+          </figure>
+
+          <div class="journey__body">
+            <p class="eyebrow" data-reveal-mask>Featured journey</p>
+            <h2 class="section-title journey__title" id="journey-title" data-reveal-text="lines">
+              <span class="line">Seven days</span>
+              <span class="line">in the slower side</span>
+              <span class="line">of Bali.</span>
+            </h2>
+            <p class="lede journey__lede" data-reveal-mask>
+              Rice terraces at first light, a boat with no schedule, and four small stays chosen for the way
+              the morning arrives.
+            </p>
+
+            <dl class="journey__facts" data-reveal-mask>
+              <div><dt>Duration</dt><dd>7 days</dd></div>
+              <div><dt>Stays</dt><dd>4 boutique stays</dd></div>
+              <div><dt>Experiences</dt><dd>12 experiences</dd></div>
+              <div><dt>Group</dt><dd>Max 8 travellers</dd></div>
+            </dl>
+
+            <div class="journey__cta" data-reveal-mask>
+              <p class="journey__price"><span>From</span> $1,240</p>
+              <a class="link-arrow" href="#plan">
+                Discover the journey
+                <svg class="arrow" viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                  <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== sticky journey story ============================== -->
+      <section class="chapters section--tight" aria-labelledby="chapters-title" data-chapters>
+        <div class="container chapters__head">
+          <p class="eyebrow" data-reveal-mask>Inside the journey</p>
+          <h2 class="section-title chapters__title" id="chapters-title" data-reveal-text="lines">
+            <span class="line">Four moments</span>
+            <span class="line">from seven days.</span>
+          </h2>
+        </div>
+
+        <div class="container chapters__grid">
+          <div class="chapters__sticky" aria-hidden="true">
+            <div class="frame chapters__stage">
+              <img src="/assets/chapter-01.jpg" alt="" loading="lazy" decoding="async" data-chapter-image="0" class="is-active" />
+              <img src="/assets/chapter-02.jpg" alt="" loading="lazy" decoding="async" data-chapter-image="1" />
+              <img src="/assets/chapter-03.jpg" alt="" loading="lazy" decoding="async" data-chapter-image="2" />
+              <img src="/assets/chapter-04.jpg" alt="" loading="lazy" decoding="async" data-chapter-image="3" />
+            </div>
+          </div>
+
+          <ol class="chapters__list">
+            <li class="chapter" data-chapter="0">
+              <figure class="frame chapter__media">
+                <img src="/assets/chapter-01.jpg" alt="An open room looking out over jungle at dawn" loading="lazy" decoding="async" />
+              </figure>
+              <p class="chapter__index" aria-hidden="true">01</p>
+              <h3 class="chapter__title">Wake up above the jungle.</h3>
+              <p class="chapter__note">
+                A room with no fourth wall, opened to the valley before the mist has decided to lift.
+              </p>
+            </li>
+            <li class="chapter" data-chapter="1">
+              <figure class="frame chapter__media">
+                <img src="/assets/chapter-02.jpg" alt="A waterfall falling into a shaded pool" loading="lazy" decoding="async" />
+              </figure>
+              <p class="chapter__index" aria-hidden="true">02</p>
+              <h3 class="chapter__title">Swim beneath hidden waterfalls.</h3>
+              <p class="chapter__note">
+                A twenty minute walk your guide has done a hundred times, and a pool that belongs to nobody.
+              </p>
+            </li>
+            <li class="chapter" data-chapter="2">
+              <figure class="frame chapter__media">
+                <img src="/assets/chapter-03.jpg" alt="A small family kitchen serving one dish at a street table" loading="lazy" decoding="async" />
+              </figure>
+              <p class="chapter__index" aria-hidden="true">03</p>
+              <h3 class="chapter__title">Eat where the locals eat.</h3>
+              <p class="chapter__note">
+                Plastic stools, one dish done perfectly, and a family who has cooked it for thirty years.
+              </p>
+            </li>
+            <li class="chapter" data-chapter="3">
+              <figure class="frame chapter__media">
+                <img src="/assets/chapter-04.jpg" alt="The sun dropping into the ocean from a warm stone terrace" loading="lazy" decoding="async" />
+              </figure>
+              <p class="chapter__index" aria-hidden="true">04</p>
+              <h3 class="chapter__title">Watch the sun disappear into the ocean.</h3>
+              <p class="chapter__note">
+                No terrace, no reservation. Just warm stone, and the part of the day everyone remembers.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============================== manifesto ============================== -->
+      <section class="manifesto" aria-labelledby="manifesto-title">
+        <div class="container">
+          <h2 class="manifesto__title" id="manifesto-title" data-line-focus>
+            <span class="statement__line">The best trips</span>
+            <span class="statement__line">aren’t measured</span>
+            <span class="statement__line">in miles.</span>
+          </h2>
+        </div>
+      </section>
+
+      <!-- ============================== journal ============================== -->
+      <section class="journal section" id="stories" aria-labelledby="journal-title">
+        <div class="container">
+          <header class="journal__head">
+            <p class="eyebrow" data-reveal-mask>From the journal</p>
+            <h2 class="section-title journal__title" id="journal-title" data-reveal-text="lines">
+              <span class="line">Stories from</span>
+              <span class="line">somewhere else.</span>
+            </h2>
+          </header>
+
+          <div class="journal__grid">
+            <article class="story story--lead" data-reveal-mask>
+              <a class="story__link" href="#stories">
+                <figure class="frame story__media frame--zoom">
+                  <img src="/assets/journal-tokyo.jpg" alt="Neon reflections on a wet Tokyo side street at night" loading="lazy" decoding="async" />
+                </figure>
+                <p class="story__meta"><span>Journal</span><span>8 min read</span></p>
+                <h3 class="story__title">48 hours lost in Tokyo</h3>
+                <p class="story__note">Two days, no itinerary, and a city that rewards every wrong turn.</p>
+                <span class="story__cue" aria-hidden="true">
+                  <svg class="arrow" viewBox="0 0 26 12" fill="none" focusable="false">
+                    <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                  </svg>
+                </span>
+              </a>
+            </article>
+
+            <article class="story" data-reveal-mask style="--i: 1">
+              <a class="story__link" href="#stories">
+                <figure class="frame story__media frame--zoom">
+                  <img src="/assets/journal-mallorca.jpg" alt="A pale stone village lane on the quiet side of Mallorca" loading="lazy" decoding="async" />
+                </figure>
+                <p class="story__meta"><span>Journal</span><span>6 min read</span></p>
+                <h3 class="story__title">The quiet side of Mallorca</h3>
+                <span class="story__cue" aria-hidden="true">
+                  <svg class="arrow" viewBox="0 0 26 12" fill="none" focusable="false">
+                    <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                  </svg>
+                </span>
+              </a>
+            </article>
+
+            <article class="story" data-reveal-mask style="--i: 2">
+              <a class="story__link" href="#stories">
+                <figure class="frame story__media frame--zoom">
+                  <img src="/assets/journal-dolomites.jpg" alt="Vertical limestone towers of the Dolomites above a green valley" loading="lazy" decoding="async" />
+                </figure>
+                <p class="story__meta"><span>Journal</span><span>5 min read</span></p>
+                <h3 class="story__title">Why the Dolomites never feel real</h3>
+                <span class="story__cue" aria-hidden="true">
+                  <svg class="arrow" viewBox="0 0 26 12" fill="none" focusable="false">
+                    <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                  </svg>
+                </span>
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== numbers ============================== -->
+      <section class="numbers section--tight" aria-label="Wanderly in numbers">
+        <div class="container">
+          <dl class="numbers__row">
+            <div class="stat" data-reveal-mask>
+              <dt class="stat__value"><span data-count-to="42">42</span></dt>
+              <dd class="stat__label">Countries</dd>
+            </div>
+            <div class="stat" data-reveal-mask style="--i: 1">
+              <dt class="stat__value"><span data-count-to="128">128</span></dt>
+              <dd class="stat__label">Curated journeys</dd>
+            </div>
+            <div class="stat" data-reveal-mask style="--i: 2">
+              <dt class="stat__value"><span data-count-to="18" data-count-suffix="K+">18K+</span></dt>
+              <dd class="stat__label">Travellers</dd>
+            </div>
+            <div class="stat" data-reveal-mask style="--i: 3">
+              <dt class="stat__value"><span data-count-to="4.9" data-count-decimals="1">4.9</span></dt>
+              <dd class="stat__label">Average rating</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ============================== testimonials ============================== -->
+      <section class="voices section" aria-label="Traveller stories" data-voices>
+        <div class="container voices__inner">
+          <div class="voices__stack">
+            <figure class="voice is-active" data-voice="0">
+              <blockquote class="voice__quote">
+                <p>
+                  We stopped checking the itinerary after day two. Everything just felt exactly where we were
+                  supposed to be.
+                </p>
+              </blockquote>
+              <figcaption class="voice__by">
+                <img class="voice__avatar" src="/assets/avatar-1.jpg" alt="" loading="lazy" decoding="async" />
+                <span class="voice__name">Emma &amp; Daniel</span>
+                <span class="voice__route">London — Bali</span>
+              </figcaption>
+            </figure>
+
+            <figure class="voice" data-voice="1">
+              <blockquote class="voice__quote">
+                <p>
+                  Nobody handed us a schedule. Someone handed us a boat, a map drawn by hand, and the rest of
+                  the afternoon.
+                </p>
+              </blockquote>
+              <figcaption class="voice__by">
+                <img class="voice__avatar" src="/assets/avatar-2.jpg" alt="" loading="lazy" decoding="async" />
+                <span class="voice__name">Sofía M.</span>
+                <span class="voice__route">Madrid — Amalfi Coast</span>
+              </figcaption>
+            </figure>
+
+            <figure class="voice" data-voice="2">
+              <blockquote class="voice__quote">
+                <p>
+                  I had been to Kyoto twice before. This was the first time I felt like I had actually
+                  arrived.
+                </p>
+              </blockquote>
+              <figcaption class="voice__by">
+                <img class="voice__avatar" src="/assets/avatar-3.jpg" alt="" loading="lazy" decoding="async" />
+                <span class="voice__name">Noah K.</span>
+                <span class="voice__route">Toronto — Kyoto</span>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="voices__controls">
+            <div class="voices__progress" aria-hidden="true">
+              <span class="is-active" data-voice-dot="0"></span>
+              <span data-voice-dot="1"></span>
+              <span data-voice-dot="2"></span>
+            </div>
+            <div class="voices__buttons">
+              <button class="voices__btn" type="button" data-voice-prev aria-label="Previous traveller story">
+                <svg viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                  <path d="M26 6H2M6.5 1 1 6l5.5 5" stroke="currentColor" stroke-width="1.2" />
+                </svg>
+              </button>
+              <button class="voices__btn" type="button" data-voice-next aria-label="Next traveller story">
+                <svg viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                  <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== fullscreen transition ============================== -->
+      <section class="next" aria-labelledby="next-title" data-next>
+        <div class="next__pin">
+          <figure class="frame next__media scrim-b" data-next-media>
+            <img src="/assets/somewhere-next.jpg" alt="A mountain lake holding the last light of the day" loading="lazy" decoding="async" />
+          </figure>
+          <div class="next__content container">
+            <p class="eyebrow next__eyebrow">Somewhere next</p>
+            <h2 class="next__title" id="next-title" data-reveal-text="lines">
+              <span class="line">Where will</span>
+              <span class="line">you disappear to?</span>
+            </h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== final cta ============================== -->
+      <section class="plan on-night section" id="plan" aria-labelledby="plan-title">
+        <div class="container plan__inner">
+          <h2 class="plan__title" id="plan-title" data-reveal-text="lines">
+            <span class="line">The world</span>
+            <span class="line">is waiting.</span>
+          </h2>
+          <div class="plan__side">
+            <p class="lede plan__note" data-reveal-mask>Find a journey worth remembering.</p>
+            <div class="plan__actions">
+              <a class="btn btn--paper" href="#journeys" data-magnetic="6">
+                Explore journeys
+                <svg class="arrow" viewBox="0 0 26 12" fill="none" aria-hidden="true" focusable="false">
+                  <path d="M0 6h24M19.5 1 25 6l-5.5 5" stroke="currentColor" stroke-width="1.2" />
+                </svg>
+              </a>
+              <a class="btn btn--outline" href="#plan" data-magnetic="6">Talk to a travel designer</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================== footer ============================== -->
+    <footer class="site-foot on-night">
+      <div class="container">
+        <div class="site-foot__wordmark" aria-hidden="true">
+          <svg viewBox="0 0 1000 132" role="presentation" focusable="false">
+            <text
+              x="0"
+              y="112"
+              textLength="1000"
+              lengthAdjust="spacingAndGlyphs"
+              font-size="132"
+              fill="currentColor"
+            >
+              WANDERLY
+            </text>
+          </svg>
+        </div>
+
+        <div class="site-foot__grid">
+          <p class="site-foot__blurb">
+            Small groups, long lunches and journeys designed around the way a place actually feels.
+          </p>
+
+          <nav class="site-foot__col" aria-label="Explore">
+            <h2 class="site-foot__label">Explore</h2>
+            <ul>
+              <li><a href="#destinations">Destinations</a></li>
+              <li><a href="#journeys">Journeys</a></li>
+              <li><a href="#stories">Journal</a></li>
+              <li><a href="#stories">Travel guides</a></li>
+            </ul>
+          </nav>
+
+          <nav class="site-foot__col" aria-label="Company">
+            <h2 class="site-foot__label">Company</h2>
+            <ul>
+              <li><a href="#about">About</a></li>
+              <li><a href="#about">Careers</a></li>
+              <li><a href="#plan">Contact</a></li>
+            </ul>
+          </nav>
+
+          <nav class="site-foot__col" aria-label="Social">
+            <h2 class="site-foot__label">Social</h2>
+            <ul>
+              <li><a href="#plan">Instagram</a></li>
+              <li><a href="#plan">YouTube</a></li>
+              <li><a href="#plan">Pinterest</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="site-foot__bottom">
+          <p>© 2026 Wanderly</p>
+          <ul>
+            <li><a href="#plan">Privacy</a></li>
+            <li><a href="#plan">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

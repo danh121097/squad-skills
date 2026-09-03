@@ -1,0 +1,131 @@
+/* ---------------------------------------------------------------------------
+   Reset, document, typography scale, utilities
+--------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Smooth anchor scrolling is opted into per-click in JS instead of globally,
+     so programmatic scrolling stays instant and predictable. */
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  /* clip (not hidden) so nothing scrolls sideways while position:sticky lives */
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: clamp(15px, 0.42vw + 13.6px, 18px);
+  line-height: 1.62;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+[hidden] { display: none !important; }
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+ul, ol { list-style: none; padding: 0; }
+
+img, svg { display: block; max-width: 100%; }
+img { height: auto; background-color: var(--paper-tint); }
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+
+::selection { background: var(--green); color: var(--paper); }
+
+/* --- Layout shell ------------------------------------------------------- */
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* --- Utilities ---------------------------------------------------------- */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 200;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transform: translateY(-160%);
+  transition: transform 0.35s var(--ease);
+}
+.skip-link:focus-visible { transform: translateY(0); }
+
+/* --- Focus -------------------------------------------------------------- */
+:where(a, button, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.hero :focus-visible,
+.escapes :focus-visible,
+.next :focus-visible,
+.closing :focus-visible,
+.foot :focus-visible,
+.menu :focus-visible {
+  outline-color: var(--on-forest);
+}
+
+/* --- Masked line primitive ---------------------------------------------
+   Every display heading is authored as .rl > .rl__i so the same reveal
+   behaviour can drive it. The padding/margin pair gives descenders room so
+   the mask never crops a "g" or a "y".                                    */
+.rl {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.rl__i { display: block; }
+
+/* --- Small caps label --------------------------------------------------- */
+.eyebrow {
+  font-size: clamp(11px, 0.24vw + 10.2px, 13px);
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--green);
+  margin: 0;
+}
+.eyebrow--onDark { color: var(--ember); }
+.eyebrow--light { color: var(--on-forest); }

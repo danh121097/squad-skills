@@ -1,0 +1,89 @@
+.site-nav {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  z-index: 50;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  width: calc(100% - 32px);
+  max-width: 1488px;
+  min-height: 64px;
+  padding: 0 24px;
+  color: var(--light);
+  transform: translateX(-50%);
+  transition: min-height 300ms var(--ease-out-quart), max-width 300ms var(--ease-out-quart), color 300ms var(--ease-out-quart), background-color 300ms var(--ease-out-quart), box-shadow 300ms var(--ease-out-quart);
+}
+.site-nav--scrolled {
+  max-width: 1360px;
+  min-height: 56px;
+  background: rgba(247, 245, 240, 0.92);
+  color: var(--ink);
+  box-shadow: 0 4px 24px rgba(17, 23, 19, 0.08);
+  backdrop-filter: blur(12px);
+}
+.site-nav--scrolled::after { position: absolute; inset: 0; border: 1px solid var(--hairline); border-radius: var(--radius-small); content: ""; pointer-events: none; }
+.brand-mark { justify-self: start; font-size: 14px; font-weight: 600; letter-spacing: 0.14em; }
+.desktop-nav { display: flex; gap: 32px; }
+.desktop-nav a { position: relative; padding: 12px 0; font-size: 13px; }
+.desktop-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  content: "";
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 250ms var(--ease-out-quart);
+}
+.desktop-nav a:hover::after, .desktop-nav a:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.nav-actions { align-items: center; display: flex; gap: 12px; justify-self: end; }
+.icon-button {
+  align-items: center;
+  justify-content: center;
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transition: transform 150ms var(--ease-out-quart), background-color 250ms var(--ease-out-quart);
+}
+.icon-button:hover { transform: translateY(-2px); }
+.icon-button:active { transform: translateY(2px); }
+.nav-cta { min-height: 44px; padding: 11px 20px; border: 1px solid currentColor; border-radius: 999px; font-size: 13px; transition: background-color 250ms var(--ease-out-quart), color 250ms var(--ease-out-quart), transform 150ms var(--ease-out-quart); }
+.nav-cta:hover { background: var(--light); color: var(--ink); transform: translateY(-2px); }
+.site-nav--scrolled .nav-cta:hover { background: var(--forest); color: var(--light); }
+.nav-cta:active { transform: translateY(2px); }
+.menu-button { display: none; }
+
+.mobile-menu, .search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  visibility: hidden;
+  background: var(--forest);
+  color: var(--light);
+  opacity: 0;
+  transform: translateY(-16px);
+  transition: opacity 300ms var(--ease-out-quart), transform 300ms var(--ease-out-quart), visibility 300ms;
+}
+.mobile-menu.is-open, .search-overlay.is-open { visibility: visible; opacity: 1; transform: translateY(0); }
+.menu-topline { align-items: center; display: flex; justify-content: space-between; padding: 24px 20px; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; }
+.mobile-menu nav { display: flex; flex-direction: column; justify-content: center; min-height: 64svh; padding: 48px 20px; }
+.mobile-menu nav a { display: flex; gap: 20px; align-items: baseline; font-family: var(--font-display); font-size: clamp(48px, 14vw, 72px); line-height: 1.04; transform: translateY(24px); opacity: 0; }
+.mobile-menu nav a span { font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.12em; }
+.mobile-menu.is-open nav a { animation: menu-rise 500ms var(--ease-out-expo) forwards; animation-delay: calc(var(--menu-index) * 60ms + 80ms); }
+.mobile-menu > p { padding: 20px; color: #b8beb9; font-size: 13px; }
+@keyframes menu-rise { to { opacity: 1; transform: translateY(0); } }
+
+.search-overlay { display: grid; place-items: center; padding: 24px; }
+.search-close { position: absolute; top: 24px; right: 24px; }
+.search-form { width: min(100%, 960px); }
+.search-form label { display: block; margin-bottom: 48px; font-family: var(--font-display); font-size: clamp(48px, 7vw, 96px); line-height: 0.95; }
+.search-form > div { display: flex; border-bottom: 1px solid var(--dark-hairline); }
+.search-form input { width: 100%; min-height: 64px; padding: 12px 0; border: 0; outline: 0; background: transparent; color: var(--light); font-size: 18px; }
+.search-form input::placeholder { color: #a8afa9; }
+.search-form button { width: 56px; border: 0; background: transparent; color: var(--light); }

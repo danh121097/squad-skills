@@ -1,0 +1,113 @@
+/* Footer — the wordmark runs the full measure. It is drawn as SVG text with a fixed
+   textLength so it fits the viewport exactly whatever font actually resolves. */
+
+.site-foot {
+  padding-block: clamp(56px, 7vw, 110px) clamp(24px, 3vw, 40px);
+}
+
+.site-foot__wordmark {
+  margin-bottom: clamp(40px, 6vw, 90px);
+}
+
+.site-foot__wordmark svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--night-text-primary);
+}
+
+.site-foot__wordmark text {
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+.site-foot__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 56px);
+  padding-bottom: clamp(40px, 5vw, 72px);
+}
+
+.site-foot__blurb {
+  grid-column: 1 / -1;
+  font-size: var(--fs-lead);
+  color: var(--text-secondary);
+  max-width: 34ch;
+}
+
+.site-foot__label {
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: clamp(8px, 1vw, 14px);
+}
+
+.site-foot__col a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  font-size: 1rem;
+  position: relative;
+}
+
+.site-foot__col a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--t-base) var(--ease);
+}
+
+.site-foot__col a:hover::after,
+.site-foot__col a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.site-foot__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  border-top: 1px solid var(--night-hairline);
+  padding-top: clamp(18px, 2vw, 26px);
+  font-size: var(--fs-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.site-foot__bottom ul {
+  display: flex;
+  gap: 20px;
+}
+
+.site-foot__bottom a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+}
+
+.site-foot__bottom a:hover {
+  color: var(--night-text-primary);
+}
+
+@media (min-width: 900px) {
+  .site-foot__grid {
+    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .site-foot__blurb {
+    grid-column: auto;
+    padding-right: clamp(20px, 4vw, 80px);
+  }
+}

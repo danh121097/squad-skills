@@ -1,0 +1,95 @@
+/* ---------------------------------------------------------------------------
+   Reveal states
+
+   Everything here is scoped to html.motion. That class is only added when the
+   user has NOT asked for reduced motion, which means the resting, fully
+   readable state is the default — no JS, no class, no hidden content.
+   Only transform / opacity / clip-path are animated.
+--------------------------------------------------------------------------- */
+
+.motion [data-reveal] { --delay: 0s; }
+
+/* Fade + rise ------------------------------------------------------------ */
+.motion [data-reveal="fade"] {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition:
+    opacity var(--dur) var(--ease) var(--delay),
+    transform var(--dur-long) var(--ease) var(--delay);
+}
+.motion [data-reveal="fade"].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Masked line-by-line typography ---------------------------------------- */
+.motion [data-reveal="lines"] .rl__i {
+  transform: translate3d(0, 125%, 0);
+  opacity: 0;
+  transition:
+    transform var(--dur-long) var(--ease) var(--line-delay),
+    opacity 0.7s var(--ease) var(--line-delay),
+    color 0.5s linear;
+}
+.motion [data-reveal="lines"].is-in .rl__i {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+/* Per-line stagger, resolved entirely in CSS */
+.motion [data-reveal] .rl { --line-delay: calc(var(--delay) + var(--step, 0s)); }
+.motion [data-reveal] .rl:nth-child(2) { --step: 0.09s; }
+.motion [data-reveal] .rl:nth-child(3) { --step: 0.18s; }
+.motion [data-reveal] .rl:nth-child(4) { --step: 0.27s; }
+.motion [data-reveal] .rl:nth-child(5) { --step: 0.36s; }
+
+/* Word-by-word variant, produced by the text-reveal module ---------------- */
+.motion [data-reveal="words"] .rw { display: inline-block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; vertical-align: bottom; }
+.motion [data-reveal="words"] .rw__i {
+  display: inline-block;
+  transform: translate3d(0, 125%, 0);
+  opacity: 0;
+  transition:
+    transform 1s var(--ease) var(--word-delay, 0s),
+    opacity 0.6s var(--ease) var(--word-delay, 0s);
+}
+.motion [data-reveal="words"].is-in .rw__i {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+/* Clip-path wipe for photography ---------------------------------------- */
+.motion [data-reveal="clip"] {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.15s var(--ease) var(--delay);
+}
+.motion [data-reveal="clip"].is-in { clip-path: inset(0 0 0 0); }
+
+/* Line focus: the line being read is ink, the rest step back to soft ink.
+   Soft ink still clears 4.9:1 on paper, so nothing ever becomes unreadable. */
+[data-line-focus] .rl__i { transition: color 0.55s linear; }
+[data-line-focus] .rl.is-dim .rl__i { color: var(--ink-soft); }
+
+/* ---------------------------------------------------------------------------
+   Reduced motion — belt and braces.
+   Even if html.motion were somehow present, nothing moves and nothing hides.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal],
+  [data-reveal] .rl__i,
+  [data-reveal] .rw__i {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+  }
+  [data-line-focus] .rl.is-dim .rl__i { color: var(--ink); }
+}

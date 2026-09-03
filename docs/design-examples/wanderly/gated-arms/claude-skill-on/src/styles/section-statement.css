@@ -1,0 +1,63 @@
+/* Two text-only movements: the opening statement and the closing manifesto.
+   Reading emphasis moves line by line — expressed as colour, not opacity, so every line
+   stays above 4.5:1 whether it is the active one or not. */
+
+.statement {
+  padding-block: clamp(120px, 17vw, 260px);
+}
+
+.statement__title,
+.manifesto__title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: var(--fs-statement);
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  color: var(--text-primary);
+  max-width: 22ch;
+}
+
+.statement__line {
+  display: block;
+}
+
+html.js .statement__line {
+  color: var(--text-secondary);
+  transition: color var(--t-slow) var(--ease);
+}
+
+html.js .statement__line.is-active {
+  color: var(--text-primary);
+}
+
+.statement .container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* offset the statement off the left edge so it reads as a page, not a banner */
+@media (min-width: 900px) {
+  .statement__title {
+    margin-left: 8%;
+  }
+}
+
+/* ---------- manifesto ---------- */
+
+.manifesto {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding-block: clamp(96px, 14vw, 180px);
+}
+
+.manifesto .container {
+  display: grid;
+  place-items: center;
+}
+
+.manifesto__title {
+  text-align: center;
+  max-width: 16ch;
+  padding-block: clamp(40px, 8vw, 100px);
+}

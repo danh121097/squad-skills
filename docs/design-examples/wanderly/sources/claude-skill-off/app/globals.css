@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Design tokens — deliberately few colours; the photography carries
+ * the palette. Two typefaces, in hard contrast: editorial serif for
+ * voice, minimal sans for interface.
+ * ------------------------------------------------------------------ */
+@theme {
+  --color-canvas: #f7f5f0;
+  --color-ink: #111111;
+  --color-muted: #6b6b65;
+  --color-forest: #111713;
+  --color-pine: #385a4a;
+  --color-ember: #d7864a;
+
+  --font-serif: var(--font-instrument-serif), "Iowan Old Style", "Palatino Linotype", Palatino,
+    Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
+
+  /* The single easing curve the whole page moves on. */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --breakpoint-xs: 30rem;
+}
+
+@layer base {
+  html {
+    /* clip, not hidden — `hidden` would break every position:sticky below */
+    overflow-x: clip;
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-pine);
+    color: var(--color-canvas);
+  }
+
+  :focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 6px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  img {
+    -webkit-user-drag: none;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Layout + type primitives
+ * ------------------------------------------------------------------ */
+
+/* Page gutter. 20 / 32 / 48 / 80px against a 1600px measure. */
+@utility wrap {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1600px;
+  padding-inline: 20px;
+
+  @media (width >= 48rem) {
+    padding-inline: 32px;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 48px;
+  }
+  @media (width >= 96rem) {
+    padding-inline: 80px;
+  }
+}
+
+/* The tiny uppercase eyebrow used across every section. */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  @media (width >= 48rem) {
+    font-size: 12px;
+  }
+}
+
+/* Display type: serif, tight leading, slightly negative tracking. */
+@utility display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+}
+
+/* Masked line reveal: the clip window. Extra room so descenders and
+   italic overhang are never shaved off. */
+@utility reveal-line {
+  display: block;
+  overflow: hidden;
+  padding-block-end: 0.14em;
+  margin-block-end: -0.14em;
+}
+
+/* An underline that draws from the left on hover / focus. */
+@utility link-underline {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -4px;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s var(--ease-editorial);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* For content that swaps in place — a carousel slide, a caption that
+   follows the hovered destination. Keyed remounts replay it. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility rise-in {
+  animation: rise-in 0.85s var(--ease-editorial) both;
+}
+
+/* ------------------------------------------------------------------ *
+ * Reduced motion — a real fallback. Every reveal renders in its
+ * resting, legible state; nothing is merely sped up.
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide the native cursor only where the custom one is actually on. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-cursor-active="true"],
+  html[data-cursor-active="true"] a,
+  html[data-cursor-active="true"] button {
+    cursor: none;
+  }
+}

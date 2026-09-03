@@ -1,0 +1,92 @@
+/* Featured journey — one wide plate carrying two thirds of the width, the trip set beside it
+   like a magazine caption column. */
+
+.journey__grid {
+  display: grid;
+  gap: clamp(28px, 3.4vw, 56px);
+  align-items: end;
+}
+
+.journey__media {
+  aspect-ratio: 16 / 11;
+  border-radius: var(--radius-frame-lg);
+}
+
+.journey__body {
+  display: grid;
+  gap: clamp(16px, 1.8vw, 26px);
+}
+
+.journey__title {
+  font-size: clamp(2.25rem, 4.4vw, 4rem);
+}
+
+.journey__lede {
+  max-width: 34ch;
+}
+
+.journey__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px) clamp(18px, 2vw, 32px);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding-block: clamp(18px, 2vw, 26px);
+}
+
+.journey__facts dt {
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.journey__facts dd {
+  font-size: clamp(1rem, 1.1vw, 1.125rem);
+}
+
+.journey__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.journey__price {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 2.2vw, 2.125rem);
+  letter-spacing: -0.01em;
+}
+
+.journey__price span {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-right: 0.5em;
+  vertical-align: middle;
+}
+
+@media (min-width: 900px) {
+  .journey__grid {
+    grid-template-columns: minmax(0, 67fr) minmax(0, 33fr);
+    column-gap: clamp(32px, 4vw, 72px);
+  }
+
+  .journey__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .journey__facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .journey__facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

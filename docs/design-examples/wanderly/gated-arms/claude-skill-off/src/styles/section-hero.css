@@ -1,0 +1,113 @@
+/* ---------------------------------------------------------------------------
+   Hero — full bleed on arrival, an editorial image block on the way out
+--------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  min-height: 560px;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: var(--paper);
+  isolation: isolate;
+}
+
+/* The stage is what shrinks and rounds as you scroll past the hero. */
+.hero__stage {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: var(--hero-radius, 0px);
+  transform: scale(var(--hero-scale, 1));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.hero__media { position: absolute; inset: 0; overflow: hidden; }
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 52%;
+}
+.motion .hero__media img {
+  transform: scale(1.08);
+  transition: transform 1.8s var(--ease);
+}
+.motion .hero.is-loaded .hero__media img { transform: scale(1); }
+
+/* Scrims. Cinematic rather than flat: the middle of the frame stays open,
+   the edges carry enough density for light type to hold 4.5:1. */
+.hero__veil { position: absolute; left: 0; right: 0; pointer-events: none; }
+.hero__veil--top {
+  top: 0;
+  height: 30%;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--scrim), 0.58) 0%,
+    rgba(var(--scrim), 0.26) 45%,
+    rgba(var(--scrim), 0) 100%
+  );
+}
+.hero__veil--bottom {
+  bottom: 0;
+  height: 68%;
+  background: linear-gradient(
+    to top,
+    rgba(var(--scrim), 0.9) 0%,
+    rgba(var(--scrim), 0.84) 26%,
+    rgba(var(--scrim), 0.72) 48%,
+    rgba(var(--scrim), 0.46) 72%,
+    rgba(var(--scrim), 0) 100%
+  );
+}
+
+/* Content sits low in the frame, inside the dense part of the scrim. */
+.hero__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding: 0 var(--pad) clamp(40px, 7vh, 92px);
+  color: var(--paper);
+}
+
+.hero__title {
+  font-size: clamp(46px, 8vw, 140px);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  margin: clamp(14px, 2.2vh, 30px) 0 0;
+}
+
+.hero__lede {
+  margin-top: clamp(16px, 2.4vh, 30px);
+  max-width: 44ch;
+  font-size: clamp(15px, 0.5vw + 13.4px, 19px);
+  line-height: 1.5;
+  color: rgba(247, 245, 240, 0.94);
+}
+
+.hero__act { margin-top: clamp(22px, 3.4vh, 42px); }
+
+.hero__place {
+  position: absolute;
+  right: var(--pad);
+  bottom: clamp(40px, 7vh, 92px);
+  z-index: 1;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(247, 245, 240, 0.86);
+}
+
+@media (max-width: 1100px) {
+  .hero__place { display: none; }
+}
+
+@media (max-width: 640px) {
+  .hero__title { font-size: clamp(38px, 12.6vw, 62px); }
+  .hero__lede { font-size: 16px; max-width: 34ch; }
+}

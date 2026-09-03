@@ -1,0 +1,221 @@
+/* ---------------------------------------------------------------------------
+   Shared components: frames, links, buttons, the cursor
+--------------------------------------------------------------------------- */
+
+/* --- Photographic frame -------------------------------------------------
+   Everything photographic sits in a .frame: clipped, lightly radiused,
+   never a rounded "card".                                                 */
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-frame);
+  background: var(--paper-tint);
+}
+.frame > img,
+.frame__stack img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.frame > img {
+  transition: transform 1.4s var(--ease);
+}
+
+/* Layered crossfade stack — used by places + chapters */
+.frame__stack { position: absolute; inset: 0; }
+.frame__stack img {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.05);
+  transition:
+    opacity 0.85s var(--ease),
+    transform 1.3s var(--ease);
+}
+.frame__stack img.is-shown { opacity: 1; transform: scale(1); }
+.frame__stack--blur img { filter: blur(5px); transition: opacity 0.85s var(--ease), transform 1.3s var(--ease), filter 0.85s var(--ease); }
+.frame__stack--blur img.is-shown { filter: blur(0); }
+
+/* --- Arrow glyph -------------------------------------------------------- */
+.arrow {
+  width: 26px;
+  height: 10px;
+  flex: none;
+  transition: transform 0.55s var(--ease);
+}
+
+/* --- Text link with arrow ----------------------------------------------- */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: clamp(12px, 0.2vw + 11.4px, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ink);
+  position: relative;
+}
+.link-arrow > span:first-child { position: relative; }
+.link-arrow > span:first-child::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 0.6s var(--ease);
+}
+.link-arrow:hover > span:first-child::after,
+.link-arrow:focus-visible > span:first-child::after { transform: scaleX(1); transform-origin: 0 50%; }
+.link-arrow:hover .arrow,
+.link-arrow:focus-visible .arrow { transform: translateX(4px); }
+.link-arrow--onDark { color: var(--on-forest); }
+
+/* --- Primary call to action --------------------------------------------- */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 54px;
+  padding: 0 30px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: clamp(13px, 0.2vw + 12.4px, 15px);
+  letter-spacing: 0.02em;
+  font-weight: 500;
+  transition: background-color 0.5s var(--ease), color 0.5s var(--ease), transform 0.5s var(--ease);
+  will-change: transform;
+}
+.cta:hover .arrow, .cta:focus-visible .arrow { transform: translateX(4px); }
+.cta:hover { background: var(--green); }
+
+.cta--light { background: var(--paper); color: var(--ink); }
+.cta--light:hover { background: #ffffff; color: var(--forest); }
+
+.cta--onDark { background: var(--paper); color: var(--forest); }
+.cta--onDark:hover { background: #ffffff; }
+
+.cta--ghost {
+  background: transparent;
+  color: var(--on-forest);
+  border: 1px solid var(--rule-dark-strong);
+  padding: 0 28px;
+}
+.cta--ghost:hover { background: rgba(247, 245, 240, 0.09); border-color: var(--on-forest); }
+
+/* --- Pill (nav CTA) ----------------------------------------------------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  background: var(--paper);
+  color: var(--forest);
+  transition: background-color 0.5s var(--ease), color 0.5s var(--ease), transform 0.5s var(--ease);
+  will-change: transform;
+  white-space: nowrap;
+}
+.pill:hover { background: #ffffff; }
+.pill--onDark { background: var(--paper); color: var(--forest); }
+
+/* --- Icon button -------------------------------------------------------- */
+.iconbtn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.45s var(--ease), color 0.45s var(--ease);
+}
+.iconbtn svg { width: 20px; height: 20px; }
+.iconbtn:hover { background: rgba(255, 255, 255, 0.14); }
+.iconbtn--outline {
+  border: 1px solid var(--rule-strong);
+  color: var(--ink);
+}
+.iconbtn--outline svg { width: 26px; height: 10px; }
+.iconbtn--outline:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* --- Carousel dot ------------------------------------------------------- */
+.dot {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.dot__line {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: var(--rule-strong);
+  transition: background-color 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.dot.is-active .dot__line { background: var(--ink); transform: scaleY(1.5); }
+.dot:hover .dot__line { background: var(--ink); }
+
+/* --- Custom cursor ------------------------------------------------------
+   Desktop, fine-pointer, motion-allowed only. Purely decorative: it never
+   carries information that isn't already in the markup.                   */
+.cursor { display: none; }
+html.has-cursor .cursor {
+  display: grid;
+  place-items: center;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 300;
+  width: 26px; height: 26px;
+  margin: -13px 0 0 -13px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 17, 17, 0.55);
+  pointer-events: none;
+  transform: translate3d(-100px, -100px, 0);
+  transition: width 0.45s var(--ease), height 0.45s var(--ease),
+    margin 0.45s var(--ease), background-color 0.45s var(--ease),
+    border-color 0.45s var(--ease), opacity 0.3s linear;
+  will-change: transform;
+}
+html.has-cursor .cursor__label {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper);
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
+html.has-cursor .cursor.is-view {
+  width: 92px; height: 92px; margin: -46px 0 0 -46px;
+  background: rgba(17, 23, 19, 0.82);
+  border-color: transparent;
+}
+html.has-cursor .cursor.is-view .cursor__label { opacity: 1; }
+html.has-cursor .cursor.is-hover {
+  width: 46px; height: 46px; margin: -23px 0 0 -23px;
+  border-color: rgba(17, 17, 17, 0.75);
+}
+html.has-cursor .cursor.is-onDark { border-color: rgba(247, 245, 240, 0.7); }
+html.has-cursor .cursor.is-hidden { opacity: 0; }
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button { cursor: none; }
+
+@media (hover: none), (pointer: coarse) {
+  .cursor { display: none !important; }
+  html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: auto; }
+}

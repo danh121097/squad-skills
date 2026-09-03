@@ -1,0 +1,165 @@
+/* Destination storytelling — asymmetric editorial spread, never a grid of cards.
+   Desktop: a tall sticky portrait on the left, a smaller landscape plate top right, and the
+   destination list running underneath it. Below 1024px the same content becomes a stacked
+   editorial sequence where every destination carries its own photograph. */
+
+.places__head {
+  display: grid;
+  gap: clamp(14px, 1.6vw, 22px);
+  margin-bottom: clamp(48px, 7vw, 110px);
+  max-width: 24ch;
+}
+
+.places__title {
+  font-size: var(--fs-display);
+}
+
+.places__layout {
+  display: grid;
+  gap: clamp(32px, 4vw, 64px);
+}
+
+.places__stage {
+  display: none;
+}
+
+.place {
+  display: grid;
+  gap: clamp(16px, 2vw, 26px);
+  padding-block: clamp(26px, 3vw, 40px);
+  border-top: 1px solid var(--hairline);
+}
+
+.places__list > .place:last-child {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.place__media {
+  aspect-ratio: 4 / 5;
+}
+
+.place__text {
+  display: grid;
+  gap: clamp(10px, 1.2vw, 16px);
+}
+
+.place__name {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 6.4vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: color var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+}
+
+.place__country {
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.place__note {
+  color: var(--text-secondary);
+  max-width: 34ch;
+}
+
+.place:hover .place__name,
+.place:focus-within .place__name {
+  color: var(--forest);
+}
+
+@media (min-width: 1024px) {
+  .places__layout {
+    grid-template-columns: minmax(0, 43fr) minmax(0, 57fr);
+    grid-template-areas:
+      "tall wide"
+      "tall list";
+    column-gap: clamp(32px, 4.4vw, 88px);
+    row-gap: clamp(40px, 5vw, 90px);
+    align-items: start;
+  }
+
+  .places__stage {
+    display: contents;
+  }
+
+  .places__frame {
+    position: relative;
+  }
+
+  .places__frame--tall {
+    grid-area: tall;
+    aspect-ratio: 3 / 4.3;
+    position: sticky;
+    top: clamp(96px, 13vh, 150px);
+    border-radius: var(--radius-frame-lg);
+  }
+
+  .places__frame--wide {
+    grid-area: wide;
+    aspect-ratio: 16 / 10;
+    width: min(100%, 30vw);
+    margin-left: auto;
+    margin-top: clamp(-90px, -6vw, -40px);
+  }
+
+  .places__frame img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(1.02);
+    transition: opacity var(--t-slow) var(--ease), transform var(--t-cinematic) var(--ease);
+  }
+
+  .places__frame img.is-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .places__frame.is-hovered img.is-active {
+    transform: scale(1.05) translate3d(-8px, 0, 0);
+  }
+
+  .places__list {
+    grid-area: list;
+  }
+
+  .place__media {
+    display: none;
+  }
+
+  .place__text {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-areas:
+      "name note"
+      "country link";
+    align-items: start;
+    column-gap: clamp(24px, 3vw, 56px);
+    row-gap: clamp(12px, 1.4vw, 20px);
+  }
+
+  .place__name {
+    grid-area: name;
+    font-size: clamp(2rem, 3vw, 3.25rem);
+  }
+
+  .place__country {
+    grid-area: country;
+  }
+
+  .place__note {
+    grid-area: note;
+    padding-top: 0.5em;
+  }
+
+  .place__link {
+    grid-area: link;
+    justify-self: start;
+  }
+
+  .place:hover .place__name,
+  .place:focus-within .place__name {
+    transform: translate3d(8px, 0, 0);
+  }
+}

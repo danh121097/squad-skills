@@ -1,0 +1,106 @@
+.destination-mobile-image { display: none; }
+
+@media (max-width: 1100px) {
+  :root { --page-gutter: 32px; --section-space: 128px; }
+  .destination-composition { gap: 40px; }
+  .destination-name { font-size: 44px; }
+  .featured-layout { gap: 40px; }
+  .journal-lead .journal-image { height: 600px; }
+}
+
+@media (max-width: 900px) {
+  .desktop-nav, .nav-cta, .search-button { display: none; }
+  .site-nav { grid-template-columns: 1fr auto; }
+  .menu-button { display: inline-flex; }
+  .destination-composition { grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); }
+  .experience-track { padding-left: 32vw; }
+  .featured-layout { grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr); }
+  .journey-story { grid-template-columns: 0.9fr 1.1fr; }
+  .story-chapters { padding-left: 48px; }
+  .journal-grid { gap: 48px 24px; }
+}
+
+@media (max-width: 767px) {
+  :root { --page-gutter: 20px; --section-space: 96px; }
+  .site-nav { top: 8px; width: calc(100% - 16px); min-height: 56px; padding: 0 12px; }
+  .site-nav--scrolled { min-height: 52px; }
+  .brand-mark { font-size: 12px; }
+  .section-title { font-size: clamp(48px, 14vw, 64px); }
+
+  .hero-shell { height: 112svh; }
+  .hero-content { padding: 88px 20px 24px; }
+  .hero-content h1 { margin-top: 12px; font-size: clamp(52px, 15vw, 64px); line-height: 0.9; }
+  .hero-bottom { align-items: flex-start; flex-direction: column; gap: 16px; margin-top: 20px; }
+  .hero-bottom > p { max-width: 320px; font-size: 14px; }
+  .intro-statement { min-height: 84svh; }
+  .intro-statement > p { font-size: clamp(48px, 13.5vw, 64px); line-height: 0.96; }
+
+  .destinations-heading, .featured-intro, .journal-header { display: block; margin-bottom: 64px; }
+  .destinations-heading .eyebrow, .featured-intro .eyebrow, .journal-header .eyebrow { margin-bottom: 24px; padding-top: 0; }
+  .destination-composition { display: block; }
+  .destination-visual { display: none; }
+  .destination-list article { padding: 64px 0; }
+  .destination-mobile-image { position: relative; display: block; height: 112vw; max-height: 560px; margin-bottom: 24px; overflow: hidden; border-radius: var(--radius-medium); }
+  .destination-list button { min-height: 80px; }
+  .destination-name { font-size: 48px; }
+  .destination-detail, .destination-list article.is-active .destination-detail { grid-template-columns: 1fr auto; max-height: none; opacity: 1; transform: none; }
+
+  .experiences { height: auto; min-height: 100svh; padding: 96px 0 64px; }
+  .experience-heading { position: relative; top: auto; left: auto; padding: 0 20px; }
+  .experience-heading h2 { font-size: 56px; }
+  .experience-track { width: 100%; height: auto; margin-top: 48px; padding: 0 20px 16px; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .experience-track::-webkit-scrollbar { display: none; }
+  .experience-panel { flex: 0 0 86vw; width: 86vw; height: 68svh; min-height: 520px; scroll-snap-align: center; }
+  .experience-panel > div:last-child { right: 20px; bottom: 24px; left: 20px; }
+  .experience-panel h3 { font-size: 56px; }
+
+  .featured-layout { display: block; }
+  .featured-image { height: 120vw; max-height: 680px; }
+  .featured-copy { padding-top: 48px; }
+  .featured-copy dl { margin: 48px 0; }
+
+  .journey-story { display: block; padding-top: 64px; padding-bottom: 64px; }
+  .story-visual { display: none; }
+  .story-chapters { padding-left: 0; }
+  .story-chapters article { min-height: auto; padding: 48px 0 96px; color: var(--ink); }
+  .chapter-mobile-image { position: relative; display: block; width: 100%; height: 112vw; max-height: 560px; margin-bottom: 32px; overflow: hidden; border-radius: var(--radius-medium); }
+  .story-chapters article > span { margin-bottom: 20px; }
+  .story-chapters h2 { font-size: 52px; }
+
+  .manifesto { min-height: 84svh; }
+  .manifesto p { font-size: clamp(52px, 15vw, 68px); line-height: 0.94; }
+  .journal-grid { display: block; }
+  .journal-grid article { margin-bottom: 64px; }
+  .journal-lead .journal-image, .journal-image { height: 116vw; max-height: 600px; }
+  .journal-small .journal-image { height: 80vw; }
+  .journal-grid h3, .journal-small h3 { font-size: 40px; }
+
+  .numbers { padding-top: 24px; padding-bottom: 24px; }
+  .stat-row { grid-template-columns: 1.3fr 0.7fr; gap: 20px; padding: 24px 0; }
+  .stat-row > span { font-size: clamp(64px, 21vw, 88px); }
+  .stat-row p { font-size: 10px; }
+
+  .testimonials { min-height: 84svh; }
+  .quote-viewport { min-height: 560px; }
+  .quote-viewport blockquote { font-size: clamp(44px, 12vw, 60px); line-height: 1; }
+  .quote-viewport figcaption { margin-top: 32px; }
+  .quote-progress button { width: 36px; }
+
+  .somewhere-next { height: 116svh; }
+  .somewhere-copy { padding: 64px 20px; }
+  .somewhere-copy h2 { font-size: clamp(56px, 16vw, 72px); line-height: 0.9; }
+
+  .final-cta { display: block; min-height: 88svh; padding: 128px 20px 96px; }
+  .final-title { font-size: clamp(72px, 24vw, 104px); }
+  .final-actions { margin-top: 96px; }
+  .footer-columns { grid-template-columns: 1fr 1fr; gap: 48px 24px; }
+  .footer-columns > p { grid-column: 1 / -1; }
+  .footer-wordmark { margin-top: 96px; font-size: 23vw; }
+}
+
+@media (max-width: 420px) {
+  .destination-detail { display: block; }
+  .destination-detail a { margin-top: 12px; }
+  .quote-viewport { min-height: 640px; }
+  .footer-bottom { align-items: flex-start; flex-direction: column; gap: 12px; }
+}

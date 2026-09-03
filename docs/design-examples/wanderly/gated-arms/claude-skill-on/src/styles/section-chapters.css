@@ -1,0 +1,119 @@
+/* Sticky journey story. Desktop holds one photograph still on the left while the chapters move
+   past it, crossfading with a slight scale and a short blur. Below 1024px the story becomes
+   image, text, image, text — the same chapters, sequenced rather than pinned. */
+
+.chapters {
+  padding-bottom: var(--section-y);
+}
+
+.chapters__head {
+  display: grid;
+  gap: clamp(12px, 1.4vw, 20px);
+  margin-bottom: clamp(40px, 6vw, 90px);
+  max-width: 20ch;
+}
+
+.chapters__title {
+  font-size: var(--fs-display);
+}
+
+.chapters__grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 72px);
+}
+
+.chapters__sticky {
+  display: none;
+}
+
+.chapter {
+  display: grid;
+  gap: clamp(14px, 1.6vw, 22px);
+  padding-block: clamp(28px, 4vw, 56px);
+}
+
+.chapter__media {
+  aspect-ratio: 4 / 5;
+  margin-bottom: clamp(6px, 1vw, 14px);
+}
+
+.chapter__index {
+  font-family: var(--font-serif);
+  font-size: var(--fs-chapter-index);
+  line-height: 1;
+  color: var(--text-secondary);
+  transition: color var(--t-slow) var(--ease);
+}
+
+.chapter.is-active .chapter__index {
+  color: var(--forest);
+}
+
+.chapter__title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  max-width: 18ch;
+}
+
+.chapter__note {
+  color: var(--text-secondary);
+  max-width: 38ch;
+}
+
+@media (min-width: 1024px) {
+  .chapters__grid {
+    grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+    column-gap: clamp(40px, 5vw, 96px);
+    align-items: start;
+  }
+
+  .chapters__sticky {
+    display: block;
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: grid;
+    align-content: center;
+  }
+
+  .chapters__stage {
+    position: relative;
+    width: 100%;
+    height: min(74svh, 780px);
+    border-radius: var(--radius-frame-lg);
+    background: #e6e2d9;
+    overflow: hidden;
+  }
+
+  .chapters__stage img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(6px);
+    transition: opacity var(--t-slow) var(--ease), transform var(--t-cinematic) var(--ease),
+      filter var(--t-slow) var(--ease);
+  }
+
+  .chapters__stage img.is-active {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  .chapter {
+    min-height: 88svh;
+    align-content: center;
+    padding-block: clamp(48px, 6vw, 90px);
+  }
+
+  .chapter__media {
+    display: none;
+  }
+}

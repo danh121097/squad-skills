@@ -1,0 +1,46 @@
+/* Final invitation on the night surface — one headline, one line of copy, two ways in. */
+
+.plan {
+  padding-block: clamp(110px, 14vw, 220px);
+}
+
+.plan__inner {
+  display: grid;
+  gap: clamp(32px, 5vw, 72px);
+  align-items: end;
+}
+
+.plan__title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 7.6vw, 7rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+}
+
+.plan__side {
+  display: grid;
+  gap: clamp(20px, 2.4vw, 30px);
+}
+
+.plan__note {
+  color: var(--text-secondary);
+  max-width: 26ch;
+}
+
+.plan__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .plan__inner {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    column-gap: clamp(40px, 6vw, 110px);
+  }
+
+  .plan__side {
+    padding-bottom: clamp(8px, 1.4vw, 20px);
+  }
+}

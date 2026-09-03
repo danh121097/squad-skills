@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Wanderly curates intimate journeys, remarkable places, and travel stories worth bringing home."
+    />
+    <meta name="theme-color" content="#111713" />
+    <title>Wanderly — Journeys worth remembering</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/scripts/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header" data-site-header>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="wordmark" href="#top" aria-label="Wanderly home">Wanderly</a>
+        <div class="desktop-nav" aria-label="Site sections">
+          <a href="#destinations">Destinations</a>
+          <a href="#journeys">Journeys</a>
+          <a href="#journal">Stories</a>
+          <a href="#about">About</a>
+        </div>
+        <div class="nav-actions">
+          <a class="search-link" href="#destinations" aria-label="Search destinations">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5"></circle>
+              <path d="m16 16 4 4"></path>
+            </svg>
+            <span>Search</span>
+          </a>
+          <a class="pill-link" href="#final-cta">Plan a trip</a>
+          <button
+            class="menu-button"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            data-menu-open
+          >
+            <span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true" data-mobile-menu inert>
+      <div class="mobile-menu-top">
+        <span class="wordmark">Wanderly</span>
+        <button class="menu-close" type="button" aria-label="Close navigation menu" data-menu-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5 19 19M19 5 5 19"></path></svg>
+        </button>
+      </div>
+      <nav class="mobile-menu-links" aria-label="Mobile navigation">
+        <a href="#destinations"><span>01</span> Destinations</a>
+        <a href="#journeys"><span>02</span> Journeys</a>
+        <a href="#journal"><span>03</span> Stories</a>
+        <a href="#about"><span>04</span> About</a>
+      </nav>
+      <div class="mobile-menu-foot">
+        <p>Journeys made personal.</p>
+        <a class="text-link text-link--light" href="#final-cta">Plan a trip <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title" data-hero>
+        <div class="hero-media" data-hero-media>
+          <img src="/assets/hero-coastline.jpg" alt="A sunlit Mediterranean coastline curving around the sea" />
+        </div>
+        <div class="hero-scrim" aria-hidden="true"></div>
+        <div class="hero-content page-gutter">
+          <p class="eyebrow eyebrow--light hero-eyebrow">Curated journeys around the world</p>
+          <h1
+            class="hero-title"
+            id="hero-title"
+            aria-label="Go somewhere you'll remember."
+            data-text-reveal
+            data-reveal-mode="lines"
+          >
+            <span class="reveal-mask"><span>Go somewhere</span></span>
+            <span class="reveal-mask"><span><em>you'll remember.</em></span></span>
+          </h1>
+          <div class="hero-support">
+            <p>Thoughtfully curated journeys, extraordinary places, and stories worth bringing home.</p>
+            <a class="arrow-link arrow-link--light hero-cta" href="#destinations">
+              Explore journeys <span aria-hidden="true">&#8594;</span>
+            </a>
+          </div>
+        </div>
+        <p class="hero-index" aria-hidden="true">41.9028&deg; N &nbsp; 12.4964&deg; E</p>
+      </section>
+
+      <section class="statement section-pad" aria-labelledby="statement-title" data-line-section>
+        <div class="page-shell">
+          <p class="eyebrow">A different way to go</p>
+          <h2 class="statement-title" id="statement-title">
+            <span data-focus-line>Travel isn't about</span>
+            <span data-focus-line>seeing more places.</span>
+            <span data-focus-line>It's about feeling</span>
+            <span data-focus-line><em>something new.</em></span>
+          </h2>
+        </div>
+      </section>
+
+      <section class="destinations section-pad" id="destinations" aria-labelledby="destinations-title">
+        <div class="page-shell">
+          <div class="section-heading destinations-heading">
+            <p class="eyebrow">Places worth getting lost in</p>
+            <h2 id="destinations-title">Not just destinations.<br /><em>Stories waiting to happen.</em></h2>
+          </div>
+
+          <div class="destination-editorial" data-destinations>
+            <figure class="destination-visual destination-visual--primary" data-destination-image="amalfi">
+              <img src="/assets/amalfi.jpg" alt="Clifftop villages along the Amalfi Coast" loading="lazy" />
+              <figcaption>Amalfi Coast, Italy</figcaption>
+            </figure>
+            <figure class="destination-visual destination-visual--secondary" data-destination-image="kyoto">
+              <img src="/assets/kyoto.jpg" alt="A quiet, historic street in Kyoto" loading="lazy" />
+              <figcaption>Kyoto, Japan</figcaption>
+            </figure>
+
+            <div class="destination-list">
+              <article class="destination-item is-active" data-destination="amalfi">
+                <p class="destination-number">01</p>
+                <div>
+                  <p class="destination-country">Italy</p>
+                  <h3>Amalfi Coast</h3>
+                  <p>Sun-bleached villages, winding roads and endless Mediterranean blue.</p>
+                  <a class="text-link" href="#featured">Explore <span aria-hidden="true">&#8594;</span></a>
+                </div>
+              </article>
+              <article class="destination-item" data-destination="kyoto">
+                <p class="destination-number">02</p>
+                <div>
+                  <p class="destination-country">Japan</p>
+                  <h3>Kyoto</h3>
+                  <p>Lantern-lit alleys, quiet gardens and rituals refined over centuries.</p>
+                  <a class="text-link" href="#featured">Explore <span aria-hidden="true">&#8594;</span></a>
+                </div>
+              </article>
+              <article class="destination-item" data-destination="bali">
+                <p class="destination-number">03</p>
+                <div>
+                  <p class="destination-country">Indonesia</p>
+                  <h3>Bali</h3>
+                  <p>Jungle mornings, saltwater afternoons and a gentler sense of time.</p>
+                  <a class="text-link" href="#featured">Explore <span aria-hidden="true">&#8594;</span></a>
+                </div>
+              </article>
+              <article class="destination-item" data-destination="alps">
+                <p class="destination-number">04</p>
+                <div>
+                  <p class="destination-country">Switzerland</p>
+                  <h3>Swiss Alps</h3>
+                  <p>High trails, glassy lakes and silence that follows you home.</p>
+                  <a class="text-link" href="#featured">Explore <span aria-hidden="true">&#8594;</span></a>
+                </div>
+              </article>
+            </div>
+
+            <div class="destination-thumbs" aria-hidden="true">
+              <figure class="destination-thumb" data-destination-image="bali">
+                <img src="/assets/bali.jpg" alt="" loading="lazy" />
+              </figure>
+              <figure class="destination-thumb" data-destination-image="alps">
+                <img src="/assets/alps.jpg" alt="" loading="lazy" />
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="experiences" id="journeys" aria-labelledby="experiences-title" data-horizontal-section>
+        <div class="experience-sticky">
+          <div class="experience-intro">
+            <p class="eyebrow eyebrow--light">Journeys by instinct</p>
+            <h2 id="experiences-title">Choose your kind<br /><em>of escape.</em></h2>
+            <p class="swipe-hint">Swipe to explore <span aria-hidden="true">&#8594;</span></p>
+          </div>
+          <div
+            class="experience-track"
+            data-horizontal-track
+            role="region"
+            aria-label="Escape types. Swipe or use arrow keys to explore on smaller screens."
+            tabindex="0"
+          >
+            <article class="experience-panel">
+              <img src="/assets/exp-ocean.jpg" alt="A calm ocean escape" loading="lazy" />
+              <div class="experience-overlay"></div>
+              <div class="experience-copy"><span>01</span><h3>Ocean</h3><p>Slow mornings. Salt air.<br />Nothing planned.</p></div>
+            </article>
+            <article class="experience-panel">
+              <img src="/assets/exp-mountains.jpg" alt="A remote mountain landscape" loading="lazy" />
+              <div class="experience-overlay"></div>
+              <div class="experience-copy"><span>02</span><h3>Mountains</h3><p>Go where the signal<br />disappears.</p></div>
+            </article>
+            <article class="experience-panel">
+              <img src="/assets/exp-city.jpg" alt="A city illuminated at night" loading="lazy" />
+              <div class="experience-overlay"></div>
+              <div class="experience-copy"><span>03</span><h3>City</h3><p>Culture, chaos and<br />unforgettable nights.</p></div>
+            </article>
+            <article class="experience-panel">
+              <img src="/assets/exp-wild.jpg" alt="An untouched landscape in the wild" loading="lazy" />
+              <div class="experience-overlay"></div>
+              <div class="experience-copy"><span>04</span><h3>Wild</h3><p>Places that still feel<br />untouched.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="featured section-pad" id="featured" aria-labelledby="featured-title">
+        <div class="page-shell featured-grid">
+          <div class="featured-copy" data-reveal>
+            <p class="eyebrow">Featured journey</p>
+            <h2 id="featured-title">Seven days<br />in the slower side<br /><em>of Bali.</em></h2>
+            <p class="featured-description">Trade the familiar for mornings above the jungle, family kitchens, hidden water and long sunsets at the edge of the Indian Ocean.</p>
+            <dl class="journey-facts">
+              <div><dt>Duration</dt><dd>7 days</dd></div>
+              <div><dt>Stays</dt><dd>4 boutique</dd></div>
+              <div><dt>Experiences</dt><dd>12 included</dd></div>
+              <div><dt>Group</dt><dd>Max 8</dd></div>
+            </dl>
+            <div class="featured-action">
+              <p><span>From</span> $1,240</p>
+              <a class="text-link" href="#story">Discover the journey <span aria-hidden="true">&#8594;</span></a>
+            </div>
+          </div>
+          <figure class="featured-visual image-reveal" data-image-reveal data-parallax>
+            <img src="/assets/journey-bali.jpg" alt="A secluded retreat surrounded by lush Bali jungle" loading="lazy" />
+            <figcaption>Bali, Indonesia &mdash; 8&deg; 20' S</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="story" id="story" aria-labelledby="story-title" data-story>
+        <div class="page-shell story-heading">
+          <p class="eyebrow">A journey, slowly told</p>
+          <h2 id="story-title">Seven days.<br /><em>A thousand small moments.</em></h2>
+        </div>
+        <div class="page-shell story-layout">
+          <div class="story-visual" aria-hidden="true">
+            <img class="is-active" src="/assets/chapter-01.jpg" alt="" data-story-image="0" />
+            <img src="/assets/chapter-02.jpg" alt="" data-story-image="1" loading="lazy" />
+            <img src="/assets/chapter-03.jpg" alt="" data-story-image="2" loading="lazy" />
+            <img src="/assets/chapter-04.jpg" alt="" data-story-image="3" loading="lazy" />
+            <p><span data-story-count>01</span> / 04</p>
+          </div>
+          <div class="story-chapters">
+            <article class="story-chapter is-active" data-story-chapter="0">
+              <img class="story-mobile-image" src="/assets/chapter-01.jpg" alt="A peaceful morning above the Bali jungle" loading="lazy" />
+              <span>01</span>
+              <h3>Wake up above<br />the jungle.</h3>
+              <p>Before the roads stir, the valley is mist and birdsong. Coffee arrives while the world below is still dreaming.</p>
+            </article>
+            <article class="story-chapter" data-story-chapter="1">
+              <img class="story-mobile-image" src="/assets/chapter-02.jpg" alt="A hidden waterfall in dense tropical forest" loading="lazy" />
+              <span>02</span>
+              <h3>Swim beneath<br />hidden waterfalls.</h3>
+              <p>Follow a forest path to water known mostly by the village nearby. Stay until the afternoon light turns silver.</p>
+            </article>
+            <article class="story-chapter" data-story-chapter="2">
+              <img class="story-mobile-image" src="/assets/chapter-03.jpg" alt="A local meal prepared and shared in Bali" loading="lazy" />
+              <span>03</span>
+              <h3>Eat where<br />the locals eat.</h3>
+              <p>Pull up a chair in a family kitchen. Learn the recipe, hear the story and leave with neither written down.</p>
+            </article>
+            <article class="story-chapter" data-story-chapter="3">
+              <img class="story-mobile-image" src="/assets/chapter-04.jpg" alt="Sunset disappearing into the ocean in Bali" loading="lazy" />
+              <span>04</span>
+              <h3>Watch the sun disappear<br />into the ocean.</h3>
+              <p>End where the island falls away. No schedule, no ceremony—only the last warm light and somewhere to be.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="manifesto section-pad" aria-labelledby="manifesto-title" data-line-section>
+        <p class="eyebrow">What remains</p>
+        <h2 id="manifesto-title">
+          <span data-focus-line>The best trips</span>
+          <span data-focus-line>aren't measured</span>
+          <span data-focus-line><em>in miles.</em></span>
+        </h2>
+      </section>
+
+      <section class="journal section-pad" id="journal" aria-labelledby="journal-title">
+        <div class="page-shell">
+          <div class="section-heading journal-heading">
+            <p class="eyebrow">From the journal</p>
+            <h2 id="journal-title">Stories from<br /><em>somewhere else.</em></h2>
+            <a class="text-link" href="#journal-grid">Read all stories <span aria-hidden="true">&#8594;</span></a>
+          </div>
+          <div class="journal-grid" id="journal-grid">
+            <article class="journal-article journal-article--lead" data-reveal>
+              <a href="#journal-grid" aria-label="Read 48 hours lost in Tokyo">
+                <figure><img src="/assets/journal-tokyo.jpg" alt="Tokyo glowing after dark" loading="lazy" /></figure>
+                <div class="article-meta"><span>Journal</span><span>8 min read</span></div>
+                <h3>48 hours lost<br />in Tokyo <span aria-hidden="true">&#8599;</span></h3>
+              </a>
+            </article>
+            <div class="journal-stack">
+              <article class="journal-article" data-reveal>
+                <a href="#journal-grid" aria-label="Read The quiet side of Mallorca">
+                  <figure><img src="/assets/journal-mallorca.jpg" alt="The quiet coast of Mallorca" loading="lazy" /></figure>
+                  <div class="article-meta"><span>Journal</span><span>8 min read</span></div>
+                  <h3>The quiet side<br />of Mallorca <span aria-hidden="true">&#8599;</span></h3>
+                </a>
+              </article>
+              <article class="journal-article journal-article--wide" data-reveal>
+                <a href="#journal-grid" aria-label="Read Why the Dolomites never feel real">
+                  <figure><img src="/assets/journal-dolomites.jpg" alt="The dramatic peaks of the Dolomites" loading="lazy" /></figure>
+                  <div class="article-meta"><span>Journal</span><span>8 min read</span></div>
+                  <h3>Why the Dolomites<br />never feel real <span aria-hidden="true">&#8599;</span></h3>
+                </a>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="numbers" aria-labelledby="numbers-title" data-stats>
+        <div class="page-shell">
+          <h2 class="visually-hidden" id="numbers-title">Wanderly in numbers</h2>
+          <dl class="stats-list">
+            <div><dd data-count="42">42</dd><dt>Countries</dt></div>
+            <div><dd data-count="128">128</dd><dt>Curated journeys</dt></div>
+            <div><dd data-count="18" data-suffix="K+">18K+</dd><dt>Travelers</dt></div>
+            <div><dd data-count="4.9" data-decimals="1">4.9</dd><dt>Average rating</dt></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="testimonials section-pad" aria-labelledby="testimonials-title" data-carousel>
+        <div class="page-shell">
+          <div class="testimonial-topline">
+            <p class="eyebrow">Traveler notes</p>
+            <div class="carousel-controls">
+              <button type="button" aria-label="Previous testimonial" data-carousel-prev>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"></path></svg>
+              </button>
+              <button type="button" aria-label="Next testimonial" data-carousel-next>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg>
+              </button>
+            </div>
+          </div>
+          <h2 class="visually-hidden" id="testimonials-title">What our travelers remember</h2>
+          <div class="testimonial-stage" aria-live="polite" aria-atomic="true">
+            <figure class="testimonial is-active" data-testimonial>
+              <blockquote>“We stopped checking the itinerary<br />after day two. Everything just felt<br /><em>exactly where we were supposed to be.</em>”</blockquote>
+              <figcaption>
+                <span class="avatar-pair"><img src="/assets/avatar-1.jpg" alt="" /><img src="/assets/avatar-2.jpg" alt="" /></span>
+                <span><strong>Emma &amp; Daniel</strong>London &#8594; Bali</span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial" data-testimonial hidden>
+              <blockquote>“It felt less like following a route<br />and more like being let in<br /><em>on a beautiful secret.</em>”</blockquote>
+              <figcaption>
+                <span class="avatar-pair"><img src="/assets/avatar-3.jpg" alt="" /></span>
+                <span><strong>Maya Chen</strong>Singapore &#8594; Kyoto</span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="carousel-progress" aria-hidden="true"><span data-carousel-progress></span></div>
+          <p class="carousel-status visually-hidden" data-carousel-status>Testimonial 1 of 2</p>
+        </div>
+      </section>
+
+      <section class="next-place" aria-labelledby="next-place-title" data-next-place>
+        <div class="next-place-media" data-next-place-media>
+          <img src="/assets/somewhere-next.jpg" alt="A remote mountain landscape disappearing into cloud" loading="lazy" />
+          <div class="next-place-overlay"></div>
+          <div class="next-place-copy">
+            <p class="eyebrow eyebrow--light">Somewhere next</p>
+            <h2 id="next-place-title">Where will<br /><em>you disappear to?</em></h2>
+          </div>
+        </div>
+      </section>
+
+      <section class="final-cta" id="final-cta" aria-labelledby="final-title">
+        <div class="page-shell final-cta-inner">
+          <div>
+            <p class="eyebrow eyebrow--light">Begin somewhere</p>
+            <h2 id="final-title">The world<br /><em>is waiting.</em></h2>
+          </div>
+          <div class="final-actions">
+            <p>Find a journey worth remembering.</p>
+            <a class="button button--light" href="#destinations" data-magnetic>Explore journeys <span aria-hidden="true">&#8594;</span></a>
+            <a class="button button--ghost" href="mailto:hello@wanderly.example" data-magnetic>Talk to a travel designer</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="about">
+      <div class="page-shell">
+        <div class="footer-top">
+          <p>Travel well.<br />Remember more.</p>
+          <div class="footer-links">
+            <div><h2>Explore</h2><a href="#destinations">Destinations</a><a href="#journeys">Journeys</a><a href="#journal">Journal</a><a href="#journal">Travel guides</a></div>
+            <div><h2>Company</h2><a href="#about">About</a><a href="mailto:careers@wanderly.example">Careers</a><a href="mailto:hello@wanderly.example">Contact</a></div>
+            <div><h2>Social</h2><a href="#about">Instagram</a><a href="#about">YouTube</a><a href="#about">Pinterest</a></div>
+          </div>
+        </div>
+        <p class="footer-wordmark" aria-hidden="true">Wanderly</p>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Wanderly</p>
+          <div><a href="#about">Privacy</a><a href="#about">Terms</a></div>
+          <a href="#top">Back to top <span aria-hidden="true">&#8593;</span></a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

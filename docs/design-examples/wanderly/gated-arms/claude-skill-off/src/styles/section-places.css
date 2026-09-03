@@ -1,0 +1,116 @@
+/* ---------------------------------------------------------------------------
+   Destination storytelling — a standing portrait on the left, a landscape
+   plate top right, the reading column beneath it. Not a grid of cards.
+--------------------------------------------------------------------------- */
+
+.places { padding-block: var(--rhythm); }
+
+.places__head { margin-bottom: clamp(40px, 6vw, 96px); }
+.places__title {
+  margin-top: clamp(18px, 2.4vw, 32px);
+  font-size: clamp(28px, 5.1vw, 86px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  max-width: 18ch;
+}
+
+.places__body {
+  display: grid;
+  grid-template-columns: minmax(0, 41fr) minmax(0, 59fr);
+  column-gap: clamp(24px, 4vw, 88px);
+  align-items: start;
+}
+
+/* Left: the standing portrait, held in place while the list scrolls by */
+.places__tall {
+  position: sticky;
+  top: clamp(88px, 12vh, 132px);
+}
+.frame--tall {
+  aspect-ratio: 3 / 4.15;
+  border-radius: var(--r-frame-lg);
+}
+.places__tall.is-active .frame__stack img.is-shown { transform: scale(1.035) translateY(-0.8%); }
+
+.places__caption {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 18px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.places__index { color: var(--green); font-variant-numeric: tabular-nums; }
+
+/* Right: landscape plate, then the reading column */
+.frame--wide {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-frame-lg);
+  margin-bottom: clamp(40px, 6vw, 96px);
+}
+.places__right.is-active .frame--wide .frame__stack img.is-shown { transform: scale(1.03) translateX(0.8%); }
+
+.places__list { border-top: 1px solid var(--rule); }
+
+.place {
+  border-bottom: 1px solid var(--rule);
+  padding-block: clamp(24px, 3.2vw, 44px);
+  transition: opacity 0.6s var(--ease);
+}
+.place__thumb { display: none; }
+
+.place__name {
+  font-size: clamp(26px, 3.6vw, 54px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  transition: transform 0.7s var(--ease), color 0.5s var(--ease);
+  transform-origin: 0 50%;
+}
+.places__list:hover .place:not(:hover) .place__name,
+.places__list:focus-within .place:not(:focus-within) .place__name { color: var(--ink-soft); }
+.place:hover .place__name,
+.place:focus-within .place__name { transform: scale(1.02); }
+
+.place__country {
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+.place__note {
+  margin-top: 14px;
+  max-width: 42ch;
+  color: var(--ink-soft);
+  font-size: clamp(15px, 0.3vw + 14px, 17px);
+}
+.place .link-arrow { margin-top: 10px; }
+
+/* --- Stacked editorial blocks on small screens -------------------------- */
+@media (max-width: 900px) {
+  .places__body { display: block; }
+  .places__tall,
+  .frame--wide { display: none; }
+
+  .places__list { border-top: 0; }
+  .place {
+    border-bottom: 0;
+    padding-block: 0;
+    margin-bottom: clamp(56px, 12vw, 96px);
+  }
+  .place:last-child { margin-bottom: 0; }
+  .place__thumb {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--r-frame-lg);
+    aspect-ratio: 4 / 5;
+    margin-bottom: clamp(20px, 4vw, 32px);
+    background: var(--paper-tint);
+  }
+  .place__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  /* Give the stacked blocks an editorial rhythm rather than a stack of equals */
+  .place:nth-child(even) .place__thumb { aspect-ratio: 5 / 4; margin-inline: 0 clamp(24px, 12vw, 90px); }
+  .place:nth-child(odd) .place__text { padding-left: clamp(0px, 4vw, 40px); }
+}

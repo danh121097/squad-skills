@@ -1,0 +1,118 @@
+/* Travel journal — a magazine spread: one lead story across roughly 60% of the width and two
+   shorter, vertical pieces beside it. Deliberately unequal. */
+
+.journal__head {
+  display: grid;
+  gap: clamp(12px, 1.4vw, 20px);
+  margin-bottom: clamp(40px, 6vw, 96px);
+}
+
+.journal__title {
+  font-size: var(--fs-display);
+  max-width: 16ch;
+}
+
+.journal__grid {
+  display: grid;
+  gap: clamp(36px, 4vw, 64px);
+}
+
+.story__link {
+  display: grid;
+  gap: clamp(12px, 1.2vw, 18px);
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.story__media {
+  aspect-ratio: 3 / 2;
+  margin-bottom: clamp(4px, 0.8vw, 12px);
+}
+
+.story--lead .story__media {
+  aspect-ratio: 5 / 4;
+}
+
+.story__meta {
+  display: flex;
+  gap: 18px;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.story__meta span + span {
+  position: relative;
+}
+
+.story__meta span + span::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 3px;
+  height: 1px;
+  background: currentColor;
+}
+
+.story__title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.2vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.018em;
+  max-width: 20ch;
+  transition: color var(--t-base) var(--ease);
+}
+
+.story--lead .story__title {
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
+  max-width: 16ch;
+}
+
+.story__note {
+  color: var(--text-secondary);
+  max-width: 40ch;
+}
+
+.story__cue {
+  display: inline-flex;
+  color: var(--text-primary);
+  transition: transform var(--t-base) var(--ease);
+}
+
+.story__cue .arrow {
+  width: 1.9em;
+}
+
+.story__link:hover .story__title,
+.story__link:focus-visible .story__title {
+  color: var(--forest);
+}
+
+.story__link:hover .story__cue,
+.story__link:focus-visible .story__cue {
+  transform: translate3d(6px, 0, 0);
+}
+
+@media (min-width: 900px) {
+  .journal__grid {
+    grid-template-columns: minmax(0, 60fr) minmax(0, 40fr);
+    column-gap: clamp(32px, 4vw, 80px);
+    row-gap: clamp(40px, 5vw, 72px);
+    align-items: start;
+  }
+
+  .story--lead {
+    grid-row: span 2;
+  }
+
+  .story:not(.story--lead) {
+    padding-left: clamp(0px, 2vw, 40px);
+  }
+
+  .story:not(.story--lead) .story__media {
+    aspect-ratio: 16 / 10;
+  }
+}

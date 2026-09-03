@@ -1,0 +1,25 @@
+:root {
+  --paper: #f7f5f0;
+  --paper-deep: #ece9e1;
+  --ink: #111111;
+  --muted: #5f5f59;
+  --forest: #111713;
+  --forest-soft: #1c2821;
+  --green: #385a4a;
+  --clay: #d7864a;
+  --light: #f7f5f0;
+  --hairline: #d7d3c9;
+  --dark-hairline: #354039;
+  --wash: rgba(12, 17, 14, 0.46);
+  --wash-light: rgba(12, 17, 14, 0.12);
+  --max-width: 1600px;
+  --page-gutter: clamp(20px, 4vw, 64px);
+  --section-space: clamp(96px, 12vw, 192px);
+  --radius-small: 4px;
+  --radius-medium: 12px;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-display: var(--font-editorial), "Times New Roman", serif;
+  --font-ui: var(--font-sans), "Helvetica Neue", sans-serif;
+}
