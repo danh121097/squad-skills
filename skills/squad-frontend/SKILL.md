@@ -99,14 +99,15 @@ handing over, run the self-review in
 - From Backend, the API contract: the schema, error shape, auth rules, pagination and idempotency
   behavior the consumer codes against, not a description of the endpoint. A mismatch returns to Backend
   rather than being reimplemented in the client.
-- From Designer, presentational components whose props and slots this role binds; a visual or interaction
-  gap returns to Designer.
+- From Designer, the artifact and boundary stated in
+  [references/designer-gate-and-design-intake.md](references/designer-gate-and-design-intake.md);
+  this role wires behavior into what it receives and returns a visual or interaction gap to Designer.
 - To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
   that exercise it, and the checks already run.
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
   logical passes and labels them non-independent.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
-  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
+  boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
 
 ## Completion checklist
 

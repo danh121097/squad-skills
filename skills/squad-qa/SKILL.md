@@ -89,8 +89,10 @@ verdict, run the self-review in
 - On `FAIL`, to the owning role: the minimal repro, expected versus actual, and the redacted artifacts.
 - On `NEEDS_ENVIRONMENT`, to the lead: the exact missing target, artifact or access and the smallest next
   action. It never becomes an inferred pass.
+- QA and Code Review are both mandatory: when the peer gate's skill is absent, this role runs that
+  pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
-  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
+  boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
 
 ## Completion checklist
 

@@ -59,8 +59,14 @@ const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
-const buildRoles = [backendSkill, devopsSkill, fixSkill, frontendSkill, mobileSkill];
-const preflightRoles = [...buildRoles, codeReviewSkill, qaSkill].sort();
+const rolesWithAnImplementationSlice = [
+  backendSkill,
+  devopsSkill,
+  fixSkill,
+  frontendSkill,
+  mobileSkill,
+];
+const preflightRoles = [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill].sort();
 
 // Fixture aliases: the temp-dir projects reuse two real paths as stand-ins.
 const designerFile = designerEntrypoint;
@@ -247,12 +253,18 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
       'HANDOFF-API-001': [backendSkill, frontendSkill, mobileSkill],
-      'HANDOFF-QA-001': [...buildRoles, qaSkill].sort(),
+      'HANDOFF-QA-001': [...rolesWithAnImplementationSlice, qaSkill].sort(),
       'HANDOFF-VERDICT-001': [codeReviewSkill, qaSkill],
       'HANDOFF-FINDINGS-001': [codeReviewSkill, fixSkill],
       'HANDOFF-DEPLOY-001': [codeReviewSkill, devopsSkill],
-      'HANDOFF-GATE-001': [...buildRoles, teamSkill].sort(),
-      'HANDOFF-SOLO-001': [...buildRoles, codeReviewSkill, qaSkill, teamSkill].sort(),
+      'HANDOFF-GATE-001': [...rolesWithAnImplementationSlice, teamSkill].sort(),
+      'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],
+      'HANDOFF-SOLO-001': [
+        ...rolesWithAnImplementationSlice,
+        codeReviewSkill,
+        qaSkill,
+        teamSkill,
+      ].sort(),
       'QUALITY-PREFLIGHT-001': preflightRoles,
       'RETIRED-SPEC-001': [designerEntrypoint, ...designerReferences, ...teamFiles],
       'RETIRED-SPEC-002': [designerEntrypoint, designerHandoff, teamPipeline],
@@ -299,11 +311,16 @@ describe('handoff contract family', () => {
   // one a propagation pass is most likely to leave half-applied.
   it('states the solo fallback on all eight non-designer entrypoints', async () => {
     const solo = boundaryClauses.find((clause) => clause.id === 'HANDOFF-SOLO-001');
+    if (!solo) throw new Error('HANDOFF-SOLO-001 is missing from the shipped clauses.');
 
-    expect(solo?.files.sort()).toEqual([...buildRoles, codeReviewSkill, qaSkill, teamSkill].sort());
+    // Sort a copy. `solo.files` is the shipped array itself, and sorting it in
+    // place would reorder module state every later test reads.
+    expect([...solo.files].sort()).toEqual(
+      [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill].sort()
+    );
 
     const result = await validateCrossSkillContract(process.cwd(), {
-      clauses: solo ? [solo] : [],
+      clauses: [solo],
       retiredPhrases: [],
     });
 
@@ -334,11 +351,12 @@ describe('handoff contract family', () => {
   // word for word with nothing holding them to it.
   it('binds the quality-bar pre-flight line to every role that runs one', async () => {
     const preflight = boundaryClauses.find((clause) => clause.id === 'QUALITY-PREFLIGHT-001');
+    if (!preflight) throw new Error('QUALITY-PREFLIGHT-001 is missing from the shipped clauses.');
 
-    expect(preflight?.files.sort()).toEqual(preflightRoles);
+    expect([...preflight.files].sort()).toEqual(preflightRoles);
 
     const result = await validateCrossSkillContract(process.cwd(), {
-      clauses: preflight ? [preflight] : [],
+      clauses: [preflight],
       retiredPhrases: [],
     });
 

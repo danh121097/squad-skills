@@ -52,7 +52,17 @@ const teamSkill = 'skills/squads-team/SKILL.md';
 // can substitute for. Its side of the design handoff is already bound by
 // BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001, stated on the build roles that
 // consume it.
-const buildRoles = [backendSkill, devopsSkill, fixSkill, frontendSkill, mobileSkill];
+// Not `buildRoles`: "the build role" is already a term of art in this contract
+// layer, meaning squad-frontend on web and squad-mobile on native — the phrase
+// BOUNDARY-LOGIC-001 is bound on. These five are simply the roles that produce
+// an implementation slice and therefore depend on the QA and Review gates.
+const rolesWithAnImplementationSlice = [
+  backendSkill,
+  devopsSkill,
+  fixSkill,
+  frontendSkill,
+  mobileSkill,
+];
 const everyRoleWithAPreflight = [
   backendSkill,
   codeReviewSkill,
@@ -136,10 +146,15 @@ export const boundaryClauses: BoundaryClause[] = [
     // it receives, so a role cannot hand over less than QA is told to expect.
     statement:
       'the diff under test, the acceptance criteria it claims to meet, the commands and environment that exercise it, and the checks already run',
-    files: [...buildRoles, qaSkill],
+    files: [...rolesWithAnImplementationSlice, qaSkill],
   },
   {
     id: 'HANDOFF-VERDICT-001',
+    // The verdict names keep their underscores against the matcher's general
+    // advice, because both the clause and the skills that state it flatten the
+    // same way — `NEEDS_ENVIRONMENT` and NEEDS_ENVIRONMENT both reduce to one
+    // token. What the advice guards against is an underscore that is markdown
+    // emphasis on one side only; a verdict name is neither side's emphasis.
     statement:
       'a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and residual risk, and whether the pass was independent',
     files: [codeReviewSkill, qaSkill],
@@ -165,9 +180,24 @@ export const boundaryClauses: BoundaryClause[] = [
     // squads-team declares QA and Code Review non-optional. A role running
     // without those skills installed has to name who carries them, or the
     // mandatory gate disappears with nothing reporting that it did.
+    //
+    // squad-qa and squad-code-review are not bound here, because "with neither
+    // skill installed" cannot be said by a role that is one of the two. They
+    // owe the same answer in their own terms, which is HANDOFF-GATE-002.
     statement:
       'QA and Code Review stay mandatory: with neither skill installed this role runs both as separate logical passes and labels them non-independent',
-    files: [...buildRoles, teamSkill],
+    files: [...rolesWithAnImplementationSlice, teamSkill],
+  },
+  {
+    id: 'HANDOFF-GATE-002',
+    // HANDOFF-GATE-001 for the two roles that are themselves the gates. Install
+    // squad-qa alone and Code Review is still mandatory with nobody named to
+    // carry it; the same holds in reverse. "where its boundary allows" keeps QA
+    // out of marking work done, and "reports the gate as unowned" is the honest
+    // answer when the pass cannot be carried at all.
+    statement:
+      "QA and Code Review are both mandatory: when the peer gate's skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned",
+    files: [codeReviewSkill, qaSkill],
   },
   {
     id: 'HANDOFF-SOLO-001',
@@ -175,9 +205,14 @@ export const boundaryClauses: BoundaryClause[] = [
     // `ak:*` skill rather than an absent role. "where this role's boundary
     // allows" is load-bearing: QA may not carry an implementer's stage, and no
     // role may absorb one the boundary clauses put somewhere else.
+    //
+    // The closing test is about the pass, not the peer. An earlier wording ran
+    // "when the peer did not run", which contradicted the branch above it: a
+    // lead that carries QA inline has to report that QA ran, disclosing the
+    // reduced independence, and the peer skill never ran in that case either.
     statement:
-      "When a named squad peer is absent, carry its stage inline at the same standard where this role's boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run",
-    files: [...buildRoles, codeReviewSkill, qaSkill, teamSkill],
+      "When a named squad peer is absent, carry its stage inline at the same standard where this role's boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it",
+    files: [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill],
   },
   {
     id: 'QUALITY-PREFLIGHT-001',

@@ -123,7 +123,7 @@ was. Before declaring the repair complete, run the self-review in
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
   logical passes and labels them non-independent.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
-  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
+  boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
 
 ## Completion checklist
 

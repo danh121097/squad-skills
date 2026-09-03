@@ -88,8 +88,10 @@ finding. Before issuing a verdict, run the self-review in
 - To the owning role and the lead, severity-ranked findings carrying file:line, failure condition, impact
   and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - What was inspected, what was not, and the residual unverified risk — reported even when no finding exists.
+- QA and Code Review are both mandatory: when the peer gate's skill is absent, this role runs that
+  pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
-  boundary allows, and otherwise report the gap; never report a stage as run when the peer did not run.
+  boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
 
 ## Completion checklist
 

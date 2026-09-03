@@ -87,6 +87,15 @@ private_store:
 # by the added entrypoint section alone: reference_count and reference_words are
 # unchanged, neither carries task_types here, so no loaded-words figure moves
 # and the phase_1_reference ceiling on the governing budget is untouched.
+#
+# Amended in the same unpushed set after a review of that change. Three
+# corrections move skill text: the solo clause no longer forbids reporting a
+# stage a role legitimately carried inline, the two gate roles now name who
+# carries the peer gate, and squad-frontend and squad-mobile point at the
+# reference the designer boundary is bound in instead of paraphrasing it in
+# their entrypoints. Version numbers stay where the previous amendment put them,
+# because nothing between the two was published. Still the same cycle, and
+# squad-designer is still untouched.
 skills:
   squad-designer:
     version: 2.3.0
@@ -98,20 +107,20 @@ skills:
     total_payload_words: 7497
   squad-frontend:
     version: 1.8.0
-    payload_hash: sha256:2e8077a22c1eddef60816b3d0ab13fe5b0cbcbc7303cb17ca787877919542204
+    payload_hash: sha256:395c99f3c430bdaa650c3c25f9ddc12b4b89b6b1f24c29fb2dd4ab99df818dd6
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 1079
+    entrypoint_words: 1086
     reference_count: 8
     reference_words: 3504
-    total_payload_words: 4583
+    total_payload_words: 4590
   squad-mobile:
     version: 1.8.0
-    payload_hash: sha256:b37680790de0e859d3a29bfaaacfc42320c308ad411e60219b2940c9c0ee2f35
+    payload_hash: sha256:623c297b0c5f58311d84e8ebc63645fb4c7f4902944d84e1e8d9729397666ea5
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 935
+    entrypoint_words: 942
     reference_count: 7
     reference_words: 2482
-    total_payload_words: 3417
+    total_payload_words: 3424
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of
