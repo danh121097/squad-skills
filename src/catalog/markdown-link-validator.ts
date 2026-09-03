@@ -4,8 +4,6 @@ import path from 'node:path';
 const inlineLinkPattern = /!?\[[^\]]*\]\(([^)]+)\)/g;
 /** A definition line: up to three spaces of indent, then `[label]: target`. */
 const referenceDefinitionPattern = /^[ \t]{0,3}\[([^\]]+)\]:[ \t]*(\S+)/gm;
-/** A full or collapsed use: `[text][label]` or `[text][]`. */
-const referenceUsePattern = /!?\[([^\]]*)\]\[([^\]]*)\]/g;
 
 export async function validateMarkdownLinks(
   skillRoot: string,
@@ -18,36 +16,20 @@ export async function validateMarkdownLinks(
     // Code is stripped first so a path written as an example, or an index
     // expression like `rows[0][1]`, is not read as a link.
     const source = stripCode(await readFile(markdownFile, 'utf8'));
-    const definitions = new Map<string, string>();
-
-    for (const match of source.matchAll(referenceDefinitionPattern)) {
-      const label = match[1]?.trim().toLowerCase();
-      const target = match[2]?.trim();
-
-      if (label !== undefined && target !== undefined) definitions.set(label, target);
-    }
-
     // The definition is where a reference-style link keeps its path, so both
     // forms reach the same checks. Scanning only `](...)` left `[a][b]` with
     // `[b]: ../../outside.md` completely unexamined.
+    //
+    // Only definitions are checked, never uses: by CommonMark a reference with
+    // no matching definition is literal text, so reporting one as a broken link
+    // fires on ordinary prose like `rows[0][1]`.
     const targets = [
       ...[...source.matchAll(inlineLinkPattern)].map((match) => match[1]),
-      ...definitions.values(),
+      ...[...source.matchAll(referenceDefinitionPattern)].map((match) => match[2]),
     ];
 
     for (const raw of targets) {
       await checkTarget({ errors, markdownFile, projectRoot, raw, skillRoot });
-    }
-
-    for (const match of source.matchAll(referenceUsePattern)) {
-      // A collapsed `[text][]` uses its own text as the label.
-      const label = (match[2]?.trim() || match[1]?.trim() || '').toLowerCase();
-
-      if (label.length > 0 && !definitions.has(label)) {
-        errors.push(
-          `${relative(projectRoot, markdownFile)}: reference-style link [${label}] has no definition.`
-        );
-      }
     }
   }
 }
@@ -60,7 +42,7 @@ async function checkTarget(options: {
   skillRoot: string;
 }): Promise<void> {
   const { errors, markdownFile, projectRoot, raw, skillRoot } = options;
-  const target = raw?.trim().split(/\s+["']/)[0];
+  const target = unwrap(raw?.trim().split(/\s+["']/)[0]);
 
   if (!target || target.startsWith('#') || /^[a-z][a-z\d+.-]*:/i.test(target)) return;
 
@@ -100,6 +82,11 @@ async function checkTarget(options: {
   } catch {
     errors.push(`${relative(projectRoot, markdownFile)}: unresolvable local link: ${target}.`);
   }
+}
+
+/** `<./guide.md>` is a destination CommonMark spells with angle brackets. */
+function unwrap(target: string | undefined): string | undefined {
+  return target?.startsWith('<') && target.endsWith('>') ? target.slice(1, -1) : target;
 }
 
 /** Whether `targetPath` sits outside `root`. */

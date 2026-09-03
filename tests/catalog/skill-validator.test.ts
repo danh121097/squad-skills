@@ -85,13 +85,29 @@ describe('validateSkills', () => {
     expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
   });
 
-  it('reports a reference-style link nothing defines', async () => {
+  it('checks an angle-bracket destination rather than calling it broken', async () => {
     const projectRoot = await createProject();
-    await createSkill(projectRoot, 'dangling-skill', { body: 'See [the guide][guide].' });
+    await createSkill(projectRoot, 'angle-skill', {
+      body: '[Guide](<references/guide.md>) and [Away][away]\n\n[away]: <../../outside.md>',
+      references: { 'guide.md': '# Guide\n' },
+    });
 
     const result = await validateSkills(projectRoot);
 
-    expect(result.errors.some((error) => error.includes('[guide] has no definition'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('broken local link'))).toBe(false);
+    expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
+  });
+
+  it('leaves bracket pairs in prose alone', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'prose-skill', {
+      body: 'Read rows[0][1] and matrix[i][j] from the grid.',
+    });
+
+    await expect(validateSkills(projectRoot)).resolves.toEqual({
+      errors: [],
+      skillNames: ['prose-skill'],
+    });
   });
 
   it('reads paths written as code as prose, not as links', async () => {
