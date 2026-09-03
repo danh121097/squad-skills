@@ -77,11 +77,32 @@ if (cards.length === 0) {
   process.exit(0);
 }
 
-const results: LivenessResult[] = [];
+/**
+ * Bounded, not serial and not unbounded.
+ *
+ * Serially each source can spend two 20-second attempts, so the current catalog
+ * runs to roughly 29 minutes against a 10-minute job — the report is killed
+ * rather than read. A `Promise.all` over every card would instead open the whole
+ * catalog at once and manufacture rate-limit responses from the few hosts that
+ * carry most of it. Six in flight keeps the wall clock inside the cap without
+ * making a host answer for the pace.
+ */
+const requestConcurrency = 6;
 
-for (const card of cards) {
-  results.push(await check(card));
-}
+// Written by index, so the printed order stays the catalog order no matter
+// which host answers first. Diffing one run against the next depends on that.
+const results = new Array<LivenessResult>(cards.length);
+let nextCard = 0;
+
+await Promise.all(
+  Array.from({ length: Math.min(requestConcurrency, cards.length) }, async () => {
+    for (let index = nextCard++; index < cards.length; index = nextCard++) {
+      const card = cards[index];
+
+      if (card !== undefined) results[index] = await check(card);
+    }
+  })
+);
 
 let mismatches = 0;
 
