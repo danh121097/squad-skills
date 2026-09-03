@@ -127,14 +127,22 @@ describe('codex judge client', () => {
 describe('claude judge client', () => {
   it('carries the schema in the prompt and allows no tool but Read', () => {
     const argv = buildClaudeJudgeArgv({ model: 'claude-opus-5', packet: packet() });
-    const prompt = argv.at(-1) ?? '';
+    const toolsFlag = argv.indexOf('--allowedTools');
+    const prompt = argv.find((entry) => entry.includes('"RUB-SLOP-001"')) ?? '';
 
     expect(argv.slice(0, 5)).toEqual(['-p', '--model', 'claude-opus-5', '--output-format', 'json']);
-    expect(argv[argv.indexOf('--allowed-tools') + 1]).toBe('Read');
+    expect(argv[toolsFlag + 1]).toBe('Read');
+    // The kebab-case spelling is not a synonym; the CLI rejects it as an unknown
+    // option before it reads anything else.
+    expect(argv).not.toContain('--allowed-tools');
+    // `--allowedTools` is variadic, so a prompt after it is swallowed as another
+    // tool name and the CLI exits asking for input it was already handed. The
+    // ordering is the contract, not an accident of construction.
+    expect(prompt).not.toBe('');
+    expect(argv.indexOf(prompt)).toBeLessThan(toolsFlag);
     // Rejected by the installed CLI, and every mode it does accept would only
     // widen the allow-list this contract deliberately keeps at one tool.
     expect(argv).not.toContain('--permission-mode');
-    expect(prompt).toContain('"RUB-SLOP-001"');
   });
 
   it('reads a fenced answer out of the real envelope', async () => {

@@ -30,13 +30,19 @@ export function buildClaudeJudgeArgv(options: { model: string; packet: JudgePack
     model,
     '--output-format',
     'json',
+    // The prompt is positional and must precede the tool allow-list. That flag
+    // is variadic, so a prompt placed after it is consumed as another tool name
+    // and the CLI exits asking for input it was already given.
+    renderPrompt(packet),
     // The judge reads images and nothing else. A judge that can edit is a judge
     // that can change what it is grading. No permission-mode flag: `-p` with an
     // explicit allow-list already denies the rest, and every mode this CLI
     // accepts would only widen that.
-    '--allowed-tools',
+    //
+    // Spelled camelCase because that is the flag the CLI actually defines; the
+    // kebab-case form is rejected outright as an unknown option.
+    '--allowedTools',
     'Read',
-    renderPrompt(packet),
   ];
 }
 
