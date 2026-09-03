@@ -8,7 +8,7 @@ keywords: [devops, docker, kubernetes, helm, cicd, terraform, cloudflare, aws, g
 argument-hint: "[infra or deploy task]"
 metadata:
   author: Harry Nguyen
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Squad — DevOps
@@ -66,6 +66,12 @@ task. Reuse safe project-owned processes; stop only task-owned resources at comp
 - AgentKit pairing, or a missing provider CLI/access/QA/Review capability:
   [runtime-and-safe-delivery-fallbacks.md](references/runtime-and-safe-delivery-fallbacks.md)
 
+## Quality bar
+
+A plan is not a deployment, a green pipeline is not a healthy service, and a backup nobody restored is not
+a recovery path. Before applying or handing over, run the self-review in
+[quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
+
 ## Workflow
 
 1. **Frame and scout** — capture outcome, environment, authorization and acceptance; inspect pipelines,
@@ -95,3 +101,4 @@ task. Reuse safe project-owned processes; stop only task-owned resources at comp
 - [ ] IAM/secrets/supply-chain risks were checked without leaking values
 - [ ] Static, plan and deployed verification levels are reported separately
 - [ ] No feature code or unauthorized external mutation was performed
+- [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

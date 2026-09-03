@@ -8,7 +8,7 @@ keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, mig
 argument-hint: "[api or data task]"
 metadata:
   author: Harry Nguyen
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Squad — Backend
@@ -71,6 +71,12 @@ layer when AgentKit is absent:
 - AgentKit pairing, or a missing provider/test/review capability:
   [runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md)
 
+## Quality bar
+
+Match the repository before reaching for an abstraction, claim only the guarantees the transport and the
+database actually provide, and verify on a run rather than on a reading. Before handing over, run the
+self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
+
 ## Workflow
 
 1. **Frame and scout** — capture acceptance criteria; inspect modules, models, API/auth conventions,
@@ -98,3 +104,4 @@ layer when AgentKit is absent:
 - [ ] Unit/integration/contract/migration tests and build checks actually run are reported
 - [ ] Frontend/Mobile/DevOps receive the real contract and operational requirements
 - [ ] No UI or deployment ownership was absorbed
+- [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

@@ -8,7 +8,7 @@ keywords: [bugfix, debug, root-cause, regression, error, failing-test, ci-failur
 argument-hint: "[bug, error, log, or failing test] [--quick] [--mode auto|team|subagent|single]"
 metadata:
   author: Harry Nguyen
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Squad — Fix
@@ -78,6 +78,12 @@ Read only what the current bug requires:
 - When a concrete routing, severity or scope example will improve judgment, read
   [worked-bugfix-examples.md](references/worked-bugfix-examples.md).
 
+## Quality bar
+
+A symptom that stopped appearing is not a proven cause, and a verification level is reported for what it
+was. Before declaring the repair complete, run the self-review in
+[quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
+
 ## Workflow
 
 1. **Intake** — normalize the report into expected/actual, target environment, impact, authority and safe
@@ -117,3 +123,4 @@ Read only what the current bug requires:
 - [ ] QA PASS and Code Review APPROVE are recorded with independence level
 - [ ] No unauthorized production/data/deploy/Git/external mutation occurred
 - [ ] Residual risk, docs impact and task-owned resource cleanup are explicit
+- [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

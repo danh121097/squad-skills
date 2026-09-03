@@ -8,7 +8,7 @@ keywords: [mobile, react-native, expo, flutter, swiftui, compose, api-integratio
 argument-hint: "[mobile feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Squad — Mobile
@@ -61,6 +61,12 @@ by the task. Reuse safe project processes, and stop only task-owned resources wh
   browser/docs tools are in question, read
   [references/runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md).
 
+## Quality bar
+
+Simulator smoothness is not evidence, and a state the app can enter but the build never entered is not
+implemented. Before handing over, run the self-review in
+[references/quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
+
 ## Workflow
 
 1. **Frame and scout** — capture acceptance; inspect architecture, navigation, state, components, API
@@ -87,3 +93,4 @@ by the task. Reuse safe project processes, and stop only task-owned resources wh
 - [ ] Deep links, push, permissions, biometrics and IAP behavior are verified when touched
 - [ ] Accessibility and platform conventions are covered
 - [ ] Test/build/device/performance evidence and unverified targets are explicit
+- [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

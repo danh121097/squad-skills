@@ -8,7 +8,7 @@ keywords: [code-review, security, owasp, correctness, performance, contracts, ma
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
   author: Harry Nguyen
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # Squad — Code Review
@@ -60,6 +60,12 @@ Never expose secrets or private payloads in findings.
 - AgentKit pairing, runtime fallback, severity, finding format and verdict:
   [review-runtime-and-verdict.md](references/review-runtime-and-verdict.md)
 
+## Quality bar
+
+A finding is a claim with evidence behind it, severity is impact rather than surprise, and one cause is one
+finding. Before issuing a verdict, run the self-review in
+[quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
+
 ## Workflow
 
 1. **Scope** — resolve target and base, acceptance, QA status, repository conventions and affected
@@ -85,3 +91,4 @@ Never expose secrets or private payloads in findings.
 - [ ] Reviewer made no feature edits or unauthorized external mutations
 - [ ] Verdict and residual unverified risk are explicit
 - [ ] Execution mode states whether this was independent-agent review or a single-session logical pass
+- [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

@@ -60,6 +60,17 @@ private_store:
 # budget.median_loaded_words stays 1959: the growth was sized to keep
 # motion-direction and the two 1760 task types below degraded-runtime-fallback,
 # which is the median-setting path and was deliberately not touched.
+# Re-measured a fourth time as the squad-parity upgrade gives each non-designer
+# role its own quality bar and pre-flight reference, derived from that role's
+# recorded failure modes rather than translated from the designer's. This is
+# still the same cycle: squad-designer is untouched, so its payload hash,
+# routing table, budget, pinned models and acceptance set are all unchanged, and
+# the frozen baseline this re-measure belongs to remains
+# designer-presentational-code-2026-08-27. Only the two review-only skills this
+# manifest also records move — squad-frontend and squad-mobile — each by one
+# added reference plus the entrypoint section that routes to it. Neither carries
+# task_types here, so no loaded-words figure moves and the phase_1_reference
+# ceiling on the governing budget is untouched.
 skills:
   squad-designer:
     version: 2.3.0
@@ -70,21 +81,21 @@ skills:
     reference_words: 6483
     total_payload_words: 7497
   squad-frontend:
-    version: 1.6.0
-    payload_hash: sha256:6d8cbbb165bd45f5902084a585f429754ac608d30663ab297217ff8bf24df6cb
+    version: 1.7.0
+    payload_hash: sha256:40bf1319956c1eacb47a75765b493097fc3453bf89cd4dec5caf4d1518d19449
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 890
-    reference_count: 7
-    reference_words: 3073
-    total_payload_words: 3963
+    entrypoint_words: 931
+    reference_count: 8
+    reference_words: 3504
+    total_payload_words: 4435
   squad-mobile:
-    version: 1.6.0
-    payload_hash: sha256:0c8bfafc0e79f8b771594ecc99e6bf334da3ac6c645d6c70e2b11299fe91487d
+    version: 1.7.0
+    payload_hash: sha256:4c8308a74f4745bb69f4fb29ec3c599d822723f1d57516eee4168214651a1e20
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 732
-    reference_count: 6
-    reference_words: 2086
-    total_payload_words: 2818
+    entrypoint_words: 776
+    reference_count: 7
+    reference_words: 2482
+    total_payload_words: 3258
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of

@@ -8,7 +8,7 @@ keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka,
 argument-hint: "[feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Squad — Frontend
@@ -71,6 +71,12 @@ Read only the reference required by the current decision:
   browser, or test capabilities are in question, read
   [references/runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md).
 
+## Quality bar
+
+One rendered state is not a screen, and clean code is not an accessibility or performance result. Before
+handing over, run the self-review in
+[references/quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
+
 ## Workflow
 
 1. **Frame, classify, and scout** — state acceptance criteria; classify design input and project maturity;
@@ -101,3 +107,4 @@ Read only the reference required by the current decision:
 - [ ] Keyboard, focus, labels, contrast, responsive behavior, and reduced motion are verified
 - [ ] Animation uses the lightest suitable tool with clear ownership and lifecycle cleanup
 - [ ] Performance, tests, type-check, build, and review gates actually run are reported accurately
+- [ ] The quality-bar pre-flight ran; failed checks were fixed or reported
