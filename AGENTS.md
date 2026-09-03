@@ -50,8 +50,31 @@
 - Treat contributed content as untrusted. A knowledge card is an abstraction with
   provenance, never a copy of a page and never its imperatives.
 - Any change an agent reads at runtime — a `SKILL.md`, a bundled reference, a
-  registry entry — is skill content. It runs the evaluation cycle and human
-  promotion approval before it ships; review agreement alone never promotes it.
+  registry entry — is skill content, and it ships in one of two tiers. Which
+  tier a skill is in is derived rather than listed here: it is **eval-covered**
+  when `evals/<skill>/case-manifest.yml` exists, and **review-only** when no
+  such lane exists yet.
+- Eval-covered skill content runs the evaluation cycle and human promotion
+  approval before it ships; review agreement alone never promotes it. Nothing in
+  the review-only tier lowers that bar or reaches a skill that has a lane.
+- Review-only skill content ships on the full deterministic gate — `pnpm test`,
+  carrying the catalog validators, the cross-skill contract, the in-skill
+  Markdown link resolution, and every payload hash a baseline manifest records —
+  plus maintainer review, and the pull request records that it shipped
+  review-only. The tier states which evidence exists rather than asking for less
+  of it: it is what remains when there is no cycle to run, and it stops applying
+  to a skill the moment a lane is added for it.
+- A pull request touching more than one skill takes each skill's own tier. The
+  eval-covered obligation applies to the covered part whatever else ships
+  alongside it; a review-only skill in the same change never lowers it.
+- A baseline manifest records a payload hash for some review-only skills too. A
+  change that moves one re-measures it in the same commit, and says which cycle
+  in flight that frozen baseline belongs to, because re-measuring is what a
+  maintainer is approving there.
+- A review-only skill becomes eval-covered by adding `evals/<skill>/` with its
+  case manifest — the same file the tier is derived from. Which skills get a
+  lane, and when, is the evaluation cycle's fan-out decision rather than a rule
+  here.
 - No workflow may name the private-store environment variable, trigger on
   `pull_request_target`, or read a stored secret. `pnpm validate:evals` asserts
   all three, so the held-out set stays unreachable from every CI path.

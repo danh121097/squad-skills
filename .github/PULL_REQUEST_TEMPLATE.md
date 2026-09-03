@@ -10,7 +10,9 @@
 - [ ] Source registry entry
 - [ ] Worked example
 - [ ] Development eval case
-- [ ] Skill content (`skills/**`) — **requires an evaluation cycle**
+- [ ] Skill content (`skills/**`) — **eval-covered**: requires an evaluation cycle
+- [ ] Skill content (`skills/**`) — **review-only**: no evaluation lane exists
+      for this skill yet
 - [ ] Tooling, validator, or test
 - [ ] Documentation
 
@@ -36,11 +38,16 @@
 
 ## If this changes skill content
 
-- [ ] I understand this cannot merge on review alone: it is labelled
-      `needs-evaluation-cycle` and runs through the same evaluation and human
-      promotion approval a maintainer change does.
+- [ ] I ticked the tier of every skill this pull request changes, read off the
+      rule in [AGENTS.md](../AGENTS.md) rather than from how risky the change
+      feels. A change touching both tiers ticks both.
 - [ ] I stated which task types load the changed file, so the payload budget can
       be re-measured.
+- [ ] Eval-covered: I understand this cannot merge on review alone. It is
+      labelled `needs-evaluation-cycle` and runs through the same evaluation and
+      human promotion approval a maintainer change does.
+- [ ] Review-only: no `evals/<skill>/case-manifest.yml` exists for any skill
+      this pull request changes.
 
 ## Evidence
 

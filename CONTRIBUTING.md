@@ -26,16 +26,23 @@ contract. A pull request that does not pass it locally will not pass in CI.
 | -------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
 | Knowledge card             | `evals/<skill>/knowledge/<id>.md`                     | Schema and provenance in CI, then maintainer source review |
 | Source registry entry      | the owning skill's source registry reference          | Maintainer review against the source lanes                 |
-| Worked example             | inside the owning skill directory                     | Maintainer review, plus an evaluation cycle                |
+| Worked example             | inside the owning skill directory                     | Maintainer review, then the owning skill's tier            |
 | Development eval case      | `evals/<skill>/case-manifest.yml`, `development` lane | Schema in CI, then an evaluation cycle                     |
-| Skill content              | `skills/<skill>/`                                     | An evaluation cycle, then human promotion approval         |
+| Skill content              | `skills/<skill>/`                                     | The owning skill's tier: eval-covered or review-only       |
 | Tooling, validators, tests | `src/`, `scripts/`, `tests/`                          | `pnpm test`, plus review                                   |
 | Documentation              | `README.md`, `docs/`, `AGENTS.md`                     | Review                                                     |
 
 Anything that changes what an agent reads at runtime — a `SKILL.md`, a bundled
-reference, a registry entry — is **skill content**. It is labelled
-`needs-evaluation-cycle` and does not merge on review alone. See
-[the evaluation path](#the-evaluation-path) below.
+reference, a registry entry — is **skill content**, and none of it merges on
+review agreement alone. Which evidence it needs is set by the tier its skill is
+in. [AGENTS.md](AGENTS.md) defines the two tiers, **eval-covered** and
+**review-only**, and how a skill's tier is derived.
+
+- **Eval-covered.** The change is labelled `needs-evaluation-cycle` and takes
+  [the evaluation path](#the-evaluation-path) below.
+- **Review-only.** The change ships on `pnpm test` plus maintainer review, and
+  the pull request says so. Every rejection rule below still applies, and a
+  maintainer still reads the sources.
 
 ## What is rejected, and why
 
@@ -53,7 +60,7 @@ is closed with the rule named, so refusals stay consistent between reviewers.
 | A trend signal offered as recency                                               | Recency comes from dated, machine-readable platform capability data — Baseline and browser compatibility on web, platform changelogs on native                         |
 | Bundled content from an agent-ready source                                      | Registered agent-ready sources are fetched live at the moment of use. Bundling them freezes a moving source into the payload                                           |
 | A change to the `acceptance` or `calibration` lane                              | Those lanes are held out and private. See [Held-out data](#held-out-data)                                                                                              |
-| A skill-content change with no evaluation                                       | Merging on taste is what the evaluation contract exists to prevent                                                                                                     |
+| A skill-content change to an eval-covered skill with no evaluation              | Merging on taste is what the evaluation contract exists to prevent                                                                                                     |
 | Autonomous crawling, scraping, or bulk ingestion in any form                    | A repository non-goal. New knowledge enters through a reviewed card                                                                                                    |
 
 ## Knowledge cards
@@ -118,11 +125,12 @@ contributor PR
    `- evaluation cycle -> promotion decision (acceptance set stays private)
 ```
 
-Skill content is compared against the frozen baseline, graded by deterministic
-gates, and only then judged. Promotion needs a human to review the diff, the
-transcripts, the source provenance, and the screenshots, and to record that
-attestation; nothing in this repository can promote on its own. A contributed
-diff takes exactly the same path a maintainer diff takes.
+This path is what eval-covered skill content takes. Its content is compared
+against the frozen baseline, graded by deterministic gates, and only then
+judged. Promotion needs a human to review the diff, the transcripts, the source
+provenance, and the screenshots, and to record that attestation; nothing in this
+repository can promote on its own. A contributed diff takes exactly the same
+path a maintainer diff takes.
 
 ## Held-out data
 
