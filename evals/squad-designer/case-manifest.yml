@@ -223,6 +223,48 @@ cases:
       subject: { provider: codex, model: gpt-5.6-sol, effort: default }
       judge: { provider: anthropic, model: claude-opus-5, effort: default }
 
+  - id: dev-web-cinematic-landing-page
+    lane: development
+    category: web-screen-responsive
+    target_platform: web
+    output_type: presentational-code
+    request: >-
+      Build the presentational layer for a long-form editorial landing page for a
+      travel brand, from navigation through footer, including a full-viewport
+      opening, a horizontally read experience row, a scroll-driven chapter
+      sequence, a quoted-voice section, and a closing call to action. All copy,
+      imagery paths, and figures arrive as content.
+    evidence_packet:
+      - brand direction naming the palette, type pairing, and vertical rhythm
+      - the full section list with the content each section carries
+      - a fixed local image set, with no network access at build or render time
+      - a motion language stating duration range, easing, and what may not animate
+    allowed_capabilities:
+      - repository read
+    hard_invariants:
+      - { id: INV-BUILD-001, severity: critical }
+      - { id: INV-A11Y-001, severity: critical }
+      - { id: INV-CONTRAST-001, severity: critical }
+      - { id: INV-OVERFLOW-001, severity: critical }
+      - { id: INV-MOTION-001, severity: critical }
+      - { id: INV-SOURCE-001, severity: critical }
+      - { id: INV-TOUCH-001, severity: high }
+      - { id: INV-KEYBOARD-001, severity: high }
+      - { id: INV-SCOPE-001, severity: high }
+      - { id: INV-DEP-001, severity: high }
+      - { id: INV-ANIMCOST-001, severity: medium }
+    qualitative_rubric:
+      [RUB-SLOP-001, RUB-HIER-001, RUB-COHERE-001, RUB-CONTENT-001, RUB-MOTION-001]
+    expected_source_decisions:
+      - build the motion on platform primitives rather than reaching for a library
+      - carry one type and spacing scale across every section instead of styling each one locally
+      - let the reduced-motion path present the whole page, not a stripped one
+      - keep every section presentational, with no data access, routing, or storage
+    seed: 1
+    config:
+      subject: { provider: codex, model: gpt-5.6-sol, effort: default }
+      judge: { provider: anthropic, model: claude-opus-5, effort: default }
+
   - id: acc-001
     lane: acceptance
     content_hash: sha256:386c8e4c08ff1297353e604b1ad3d26f37248901bcb04b14a9c0bef1565732d8

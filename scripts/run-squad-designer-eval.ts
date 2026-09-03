@@ -9,7 +9,32 @@ import { createClaudeJudgeRunner } from '../src/eval/claude-judge-client.ts';
 import { createCodexJudgeRunner } from '../src/eval/codex-judge-client.ts';
 import { rubricOutputSchema } from '../src/eval/judge-response-parser.ts';
 import { validateJudgingContract } from '../src/eval/judging-contract-validator.ts';
+import {
+  buildDivergenceReport,
+  renderDivergenceReport,
+  type RuntimeObservation,
+} from '../src/eval/cross-runtime-divergence-report.ts';
 import { buildRegressionLedger } from '../src/eval/eval-statistics.ts';
+import {
+  armDirectoryId,
+  budgetStopExceeded,
+  heldOutCaseFile,
+  OrchestrationError,
+  parseEvalInvocation,
+  resolveArms,
+  resolveHeldOutCase,
+  resolveJudgeContract,
+  resolveLengthControlCase as resolveDeclaredLengthControl,
+  resolvePublicCase,
+  resolveReportDirectory,
+  resolveRuntimeReportDirectory,
+  resolveRuntimeSides,
+  selectCaseEntries,
+  selectLane,
+  type JudgeContract,
+  type ResolvedCase,
+  type RuntimeSide,
+} from '../src/eval/eval-run-orchestration.ts';
 import {
   buildEvalRunReport,
   renderMarkdownReport,
@@ -51,8 +76,12 @@ import { hashContent, measureSkillPayload } from '../src/eval/skill-payload-meas
  * `pnpm test` exercises it against fixtures.
  *
  * Candidate output is read from `.eval-runs/<cycle>/<case>/`, or from
- * `<case>.baseline/` and `<case>.candidate/` when judging a pair. Producing
+ * `<case>.baseline/` and `<case>.candidate/` when comparing a pair. Producing
  * that output is a separate step: this script runs no subject model.
+ *
+ * Every decision this file used to make inline now lives in
+ * `src/eval/eval-run-orchestration.ts`, which is importable and therefore
+ * testable. What stays here is I/O, process control, and rendering.
  */
 const skill = 'squad-designer';
 const evalDirectory = path.join('evals', skill);
@@ -84,10 +113,9 @@ const lengthControlCaseId = 'length-control';
 const calibrationLabelsFile = 'calibration-labels.yml';
 
 const projectRoot = process.cwd();
-const onlyCase = readFlag('--case');
-const laneName = readFlag('--lane') ?? 'development';
-const judging = process.argv.includes('--judge');
-const runsRoot = path.resolve(projectRoot, readFlag('--runs-root') ?? runsRootName);
+const invocation = decide(() => parseEvalInvocation(process.argv));
+const { caseId: onlyCase, comparing, dualRuntime, judging, lane: laneName } = invocation;
+const runsRoot = path.resolve(projectRoot, invocation.runsRoot ?? runsRootName);
 
 // `--runs-root` is operator input and `cycle_id` comes from a manifest, so both
 // are checked before anything is read or written. Without this the guards in
@@ -113,20 +141,11 @@ const baselineManifest = parseDocument(
   await readFile(path.join(projectRoot, evalDirectory, 'baseline-manifest.yml'), 'utf8')
 ).toJS() as Record<string, Record<string, any>>;
 
-const lane = caseManifest.lanes?.[laneName];
-
-if (!lane) fail(`Case manifest declares no lane "${laneName}".`);
-
-const judgeConfig = judging ? readJudgeConfig() : null;
-
-const selectedCases = caseManifest.cases.filter(
-  (entry) => entry.lane === laneName && (!onlyCase || entry.id === onlyCase)
-);
-
-if (selectedCases.length === 0) {
-  fail(onlyCase ? `No "${laneName}" case "${onlyCase}".` : `No cases in lane "${laneName}".`);
-}
-
+const manifestRecord = caseManifest as unknown as Record<string, unknown>;
+const lane = decide(() => selectLane(manifestRecord, laneName));
+const judgeConfig = judging ? readJudgeContract() : null;
+const runtimeSides = dualRuntime ? decide(() => resolveRuntimeSides({ baselineManifest })) : null;
+const selectedCases = decide(() => selectCaseEntries(manifestRecord, laneName, onlyCase));
 const cases = await resolveCases();
 
 interface GradedArm {
@@ -136,46 +155,15 @@ interface GradedArm {
   status: GateStatus;
 }
 
-const results: CaseRunResult[] = [];
 const graded = new Map<string, GradedArm>();
 let renderer = 'absent';
 
-for (const entry of cases) {
-  const arms = judging ? (['baseline', 'candidate'] as const) : ([null] as const);
-
-  for (const arm of arms) {
-    const directoryId = arm ? `${entry.id}.${arm}` : entry.id;
-    const runDirectory = resolveOrFail(directoryId);
-    const files = await readCandidateFiles(runDirectory);
-    const outcome = await gradeDirectory({
-      files,
-      runDirectory,
-      screenshotDirectory: judging ? path.join(runDirectory, 'screenshots') : undefined,
-      targetPlatform: entry.targetPlatform,
-    });
-
-    const caseResult: CaseRunResult = {
-      ...(arm ? { arm } : {}),
-      caseId: entry.id,
-      category: entry.category,
-      lane: laneName,
-      results: outcome.gates,
-      runDirectory: path.relative(projectRoot, runDirectory),
-      targetPlatform: entry.targetPlatform,
-    };
-
-    const summary = summarizeCase(caseResult);
-
-    graded.set(directoryId, {
-      blocking: summary.blocking,
-      files,
-      screenshots: outcome.screenshots,
-      status: summary.status,
-    });
-
-    results.push(caseResult);
-  }
-}
+// A dual-runtime run grades the same skill version twice, once per runtime, and
+// compares. It is a different question from the A/B lanes — which grade two skill
+// versions on one runtime — so it writes its own per-side reports and a
+// divergence review rather than overloading the arm column.
+const divergenceBlocked = runtimeSides ? await runPortability(runtimeSides) : false;
+const results: CaseRunResult[] = runtimeSides ? [] : await gradeLane(null);
 
 // Graded like a case, reported like neither: the control measures verbosity
 // bias, so it must not move the deterministic verdict or the scored set. When
@@ -185,56 +173,25 @@ const lengthControlCase = judging ? resolveLengthControlCase() : null;
 
 if (lengthControlCase) {
   for (const arm of ['baseline', 'candidate'] as const) {
-    const directoryId = `${lengthControlCaseId}.${arm}`;
-    const runDirectory = resolveOrFail(directoryId);
-    const files = await readCandidateFiles(runDirectory);
-    const outcome = await gradeDirectory({
-      files,
-      runDirectory,
-      screenshotDirectory: path.join(runDirectory, 'screenshots'),
-      targetPlatform: lengthControlCase.targetPlatform,
-    });
-
-    const summary = summarizeCase({
-      caseId: lengthControlCaseId,
-      category: lengthControlCase.category,
-      lane: laneName,
-      results: outcome.gates,
-      runDirectory: path.relative(projectRoot, runDirectory),
-      targetPlatform: lengthControlCase.targetPlatform,
-    });
-
-    graded.set(directoryId, {
-      blocking: summary.blocking,
-      files,
-      screenshots: outcome.screenshots,
-      status: summary.status,
+    await gradeInto({
+      arm,
+      directoryId: armDirectoryId(lengthControlCaseId, arm),
+      entry: lengthControlCase,
+      screenshots: true,
     });
   }
 }
 
-const payload = await measureSkillPayload({ skillRoot: path.join(projectRoot, 'skills', skill) });
-const report = buildEvalRunReport(
-  {
-    caseManifestHash: hashContent(caseSource),
-    cycleId: caseManifest.cycle_id,
-    nodeVersion: process.versions.node,
-    payloadHash: payload.payloadHash,
-    renderer,
-  },
-  results
-);
-
-// Lane-scoped on purpose. Both lanes write the same report shape, so a shared
-// path let a later calibration run silently overwrite the acceptance evidence a
-// promotion is then decided on.
-const reportDirectory = path.join(runsRoot, caseManifest.cycle_id, laneName);
-
-await mkdir(reportDirectory, { recursive: true });
-await writeFile(path.join(reportDirectory, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
-await writeFile(path.join(reportDirectory, 'report.md'), renderMarkdownReport(report));
+const reportDirectory = resolveReportDirectory({
+  cycleId: caseManifest.cycle_id,
+  laneName,
+  runsRoot,
+});
+const report = await writeReport(reportDirectory, results);
 
 console.log(renderMarkdownReport(report));
+
+if (comparing) console.log(renderComparison());
 
 const judgingBlocked = judgeConfig ? await judgeGradedPairs(judgeConfig) : false;
 
@@ -243,29 +200,16 @@ console.log(`Artifacts: ${path.relative(projectRoot, reportDirectory)}`);
 // Unverified is not success: a run nothing could check must not exit green.
 // A medium-only failure is reported in full and does not block, which is the
 // one case where the verdict and the exit code disagree.
-process.exit(report.summary.blocking || judgingBlocked ? 1 : 0);
-
-interface ResolvedCase {
-  category: string;
-  id: string;
-  rubricIds: string[];
-  seed: number;
-  targetPlatform: string;
-}
-
-interface JudgeConfig {
-  hardStopUsd: number;
-  judge: { model: string; provider: string };
-  models: { authoringAssistance: string; judge: string; subject: string };
-  seed: number;
-}
+process.exit(
+  (runtimeSides ? divergenceBlocked : report.summary.blocking) || judgingBlocked ? 1 : 0
+);
 
 /**
  * Reads the pinned judging contract and refuses a same-family pairing before a
  * single call is made, because that is where self-preference bias operates on
  * the judged artifact.
  */
-function readJudgeConfig(): JudgeConfig {
+function readJudgeContract(): JudgeContract {
   // The same offline validator `pnpm validate:evals` runs. Re-reading the block
   // by hand here is how a missing `subject` became a raw TypeError and a
   // non-numeric hard stop became `NaN`, which silently disables the stop.
@@ -284,34 +228,7 @@ function readJudgeConfig(): JudgeConfig {
     fail(`The pinned judging contract is invalid:\n- ${contractErrors.join('\n- ')}`);
   }
 
-  const block = baselineManifest.judging;
-
-  if (!block) fail('The baseline manifest pins no judging contract.');
-
-  const paidLanes: string[] = block.paid_lanes ?? [];
-
-  if (!paidLanes.includes(laneName)) {
-    fail(
-      `Lane "${laneName}" is not a paid judging lane (${paidLanes.join(', ')}). The development lane is covered by deterministic gates, which carry the iteration signal for free.`
-    );
-  }
-
-  try {
-    assertCrossProvider(block.subject.provider, block.judge.provider);
-  } catch (error) {
-    fail((error as Error).message);
-  }
-
-  return {
-    hardStopUsd: Number(block.budget?.hard_stop_usd ?? 0),
-    judge: block.judge,
-    models: {
-      authoringAssistance: String(block.authoring_assistance ?? 'undisclosed'),
-      judge: `${block.judge.provider}/${block.judge.model}`,
-      subject: `${block.subject.provider}/${block.subject.model}`,
-    },
-    seed: Number(block.thresholds?.bootstrap_seed ?? 1),
-  };
+  return decide(() => resolveJudgeContract({ baselineManifest, laneName }));
 }
 
 /**
@@ -321,26 +238,17 @@ function readJudgeConfig(): JudgeConfig {
  * quietly grading against different text.
  */
 async function resolveCases(): Promise<ResolvedCase[]> {
-  if (lane?.visibility !== 'private') {
-    return selectedCases.map((entry) => ({
-      category: String(entry.category),
-      id: String(entry.id),
-      rubricIds: (entry.qualitative_rubric as string[] | undefined) ?? [],
-      seed: Number(entry.seed ?? 1),
-      targetPlatform: String(entry.target_platform),
-    }));
-  }
+  if (lane.visibility !== 'private') return selectedCases.map(resolvePublicCase);
 
   const privatePath = process.env.EVAL_PRIVATE_PATH;
 
   if (!privatePath) fail(`Lane "${laneName}" is held out; set EVAL_PRIVATE_PATH to its clone.`);
 
-  const source = String(lane?.source ?? '');
   const resolved: ResolvedCase[] = [];
 
   for (const entry of selectedCases) {
     const id = String(entry.id);
-    const file = path.join(privatePath, source, `${id}.yml`);
+    const file = heldOutCaseFile({ id, laneSource: lane.source, privatePath });
     let body: string;
 
     try {
@@ -349,26 +257,230 @@ async function resolveCases(): Promise<ResolvedCase[]> {
       fail(`Held-out case "${id}" is missing from the store at ${file}.`);
     }
 
-    const measured = hashContent(body);
-
-    if (measured !== entry.content_hash) {
-      fail(
-        `Held-out case "${id}" changed: manifest records ${String(entry.content_hash)}, store measures ${measured}.`
-      );
-    }
-
-    const parsed = parseDocument(body).toJS() as Record<string, unknown>;
-
-    resolved.push({
-      category: String(parsed.category),
-      id,
-      rubricIds: (parsed.qualitative_rubric as string[] | undefined) ?? [],
-      seed: Number(parsed.seed ?? 1),
-      targetPlatform: String(parsed.target_platform),
-    });
+    resolved.push(
+      decide(() =>
+        resolveHeldOutCase({
+          body,
+          id,
+          parsed: parseDocument(body).toJS() as Record<string, unknown>,
+          recordedHash: entry.content_hash,
+        })
+      )
+    );
   }
 
   return resolved;
+}
+
+/**
+ * Grades every case in the lane, optionally suffixing each run directory.
+ *
+ * The suffix is what separates the layouts this script supports: absent for a
+ * plain run, an arm for a two-version comparison, a runtime side id for a
+ * portability run. All three read the same `<runsRoot>/<cycle>/<id>` shape, so
+ * one guarded resolver covers them.
+ */
+async function gradeLane(side: RuntimeSide | null): Promise<CaseRunResult[]> {
+  const collected: CaseRunResult[] = [];
+  const arms = side ? ([side.id] as const) : resolveArms({ comparing, judging });
+
+  for (const entry of cases) {
+    for (const arm of arms) {
+      collected.push(
+        await gradeInto({
+          arm: arm === 'baseline' || arm === 'candidate' ? arm : null,
+          directoryId: armDirectoryId(entry.id, arm as never),
+          entry,
+          screenshots: judging,
+        })
+      );
+    }
+  }
+
+  return collected;
+}
+
+/** Grades one directory, records it for later comparison, and returns its row. */
+async function gradeInto(options: {
+  arm: 'baseline' | 'candidate' | null;
+  directoryId: string;
+  entry: ResolvedCase;
+  screenshots: boolean;
+}): Promise<CaseRunResult> {
+  const { arm, directoryId, entry, screenshots } = options;
+  const runDirectory = resolveOrFail(directoryId);
+  const files = await readCandidateFiles(runDirectory);
+  const outcome = await gradeDirectory({
+    files,
+    runDirectory,
+    screenshotDirectory: screenshots ? path.join(runDirectory, 'screenshots') : undefined,
+    targetPlatform: entry.targetPlatform,
+  });
+
+  const caseResult: CaseRunResult = {
+    ...(arm ? { arm } : {}),
+    caseId: entry.id,
+    category: entry.category,
+    lane: laneName,
+    results: outcome.gates,
+    runDirectory: path.relative(projectRoot, runDirectory),
+    targetPlatform: entry.targetPlatform,
+  };
+  const summary = summarizeCase(caseResult);
+
+  graded.set(directoryId, {
+    blocking: summary.blocking,
+    files,
+    screenshots: outcome.screenshots,
+    status: summary.status,
+  });
+
+  return caseResult;
+}
+
+/** Writes the run report for one directory and returns it. */
+async function writeReport(
+  directory: string,
+  rows: readonly CaseRunResult[]
+): Promise<ReturnType<typeof buildEvalRunReport>> {
+  const payload = await measureSkillPayload({
+    skillRoot: path.join(projectRoot, 'skills', skill),
+  });
+  const built = buildEvalRunReport(
+    {
+      caseManifestHash: hashContent(caseSource),
+      cycleId: caseManifest.cycle_id,
+      nodeVersion: process.versions.node,
+      payloadHash: payload.payloadHash,
+      renderer,
+    },
+    rows
+  );
+
+  await mkdir(directory, { recursive: true });
+  await writeFile(path.join(directory, 'report.json'), `${JSON.stringify(built, null, 2)}\n`);
+  await writeFile(path.join(directory, 'report.md'), renderMarkdownReport(built));
+
+  return built;
+}
+
+/**
+ * The free half of an A/B: which cases the candidate broke, and which it fixed.
+ *
+ * `--compare` exists so the deterministic signal can be read without paying a
+ * judge. A `pass` -> non-`pass` move is the regression the promotion gate refuses
+ * on its own, independently of any aggregate score.
+ */
+function renderComparison(): string {
+  const statuses = (arm: 'baseline' | 'candidate') =>
+    new Map(cases.map((entry) => [entry.id, statusOf(armDirectoryId(entry.id, arm))]));
+  const baseline = statuses('baseline');
+  const candidate = statuses('candidate');
+  const regressions = buildRegressionLedger(baseline, candidate);
+  const lines = [
+    '',
+    '## Deterministic A/B',
+    '',
+    '| Case | Baseline | Candidate | Move |',
+    '| --- | --- | --- | --- |',
+  ];
+
+  for (const entry of cases) {
+    const before = baseline.get(entry.id) ?? 'unverified';
+    const after = candidate.get(entry.id) ?? 'unverified';
+
+    lines.push(
+      `| \`${entry.id}\` | ${before} | ${after} | ${before === after ? 'unchanged' : `${before} -> ${after}`} |`
+    );
+  }
+
+  lines.push(
+    '',
+    regressions.length === 0
+      ? 'No case regressed from `pass`.'
+      : `${regressions.length} regression(s): ${regressions.map((entry) => `\`${entry.caseId}\``).join(', ')}. A regression blocks promotion regardless of the aggregate.`
+  );
+
+  return lines.join('\n');
+}
+
+/**
+ * Grades one skill version on both pinned runtimes and reports where they differ.
+ *
+ * Returns whether the review must block. A divergence carrying a critical or high
+ * gate severity blocks, because the same instruction produced a failing artifact
+ * on one of the runtimes the skill is published for. A partial review — one
+ * runtime never answered — blocks too: the artifacts are preserved and reported,
+ * but nothing was actually compared.
+ */
+async function runPortability(sides: readonly RuntimeSide[]): Promise<boolean> {
+  const perSide = new Map<string, CaseRunResult[]>();
+
+  for (const side of sides) {
+    const rows = await gradeLane(side);
+
+    perSide.set(side.id, rows);
+
+    await writeReport(
+      resolveRuntimeReportDirectory({
+        cycleId: caseManifest.cycle_id,
+        laneName,
+        runsRoot,
+        side,
+      }),
+      rows
+    );
+  }
+
+  const directory = resolveReportDirectory({
+    cycleId: caseManifest.cycle_id,
+    laneName,
+    runsRoot,
+  });
+  const reviews = [];
+  let blocking = false;
+
+  await mkdir(directory, { recursive: true });
+
+  for (const entry of cases) {
+    const observations: RuntimeObservation[] = [];
+
+    for (const side of sides) {
+      const row = perSide.get(side.id)?.find((candidate) => candidate.caseId === entry.id);
+
+      // A side that produced nothing is left out rather than filled in with a
+      // clean row, so the review reports itself as partial instead of inventing
+      // agreement out of absence.
+      if (!row || row.results.length === 0) continue;
+
+      observations.push({
+        effort: side.effort,
+        gates: row.results,
+        model: side.model,
+        provider: side.provider,
+        side: side.id,
+      });
+    }
+
+    const review = decide(() => buildDivergenceReport({ caseId: entry.id, observations }));
+
+    reviews.push(review);
+    blocking ||=
+      review.partial ||
+      review.divergences.some(
+        (divergence) => divergence.severity && divergence.severity !== 'medium'
+      );
+
+    console.log(renderDivergenceReport(review));
+  }
+
+  await writeFile(path.join(directory, 'divergence.json'), `${JSON.stringify(reviews, null, 2)}\n`);
+  await writeFile(
+    path.join(directory, 'divergence.md'),
+    reviews.map(renderDivergenceReport).join('\n')
+  );
+
+  return blocking;
 }
 
 async function gradeDirectory(options: {
@@ -448,23 +560,18 @@ async function gradeDirectory(options: {
  * verbosity bias it is supposed to estimate.
  */
 function resolveLengthControlCase(): ResolvedCase | null {
-  const declared = baselineManifest.judging?.length_control?.[laneName];
-
-  if (typeof declared !== 'string' || declared.trim().length === 0) return null;
-
-  const referenced = cases.find((entry) => entry.id === declared.trim());
-
-  if (!referenced) {
-    fail(
-      `judging.length_control.case names "${declared}", which is not a case in lane "${laneName}".`
-    );
-  }
-
-  return { ...referenced, id: lengthControlCaseId };
+  return decide(() =>
+    resolveDeclaredLengthControl({
+      baselineManifest,
+      cases,
+      controlId: lengthControlCaseId,
+      laneName,
+    })
+  );
 }
 
 /** Returns whether judging produced a result that must block promotion. */
-async function judgeGradedPairs(config: JudgeConfig): Promise<boolean> {
+async function judgeGradedPairs(config: JudgeContract): Promise<boolean> {
   const judgeDirectory = path.join(reportDirectory, 'judge');
   const schemaDirectory = path.join(judgeDirectory, 'schema');
 
@@ -546,7 +653,7 @@ async function judgeGradedPairs(config: JudgeConfig): Promise<boolean> {
 }
 
 function createRunner(
-  config: JudgeConfig,
+  config: JudgeContract,
   schemaPath: (packet: { caseId: string; rubricIds: string[] }) => Promise<string>,
   judgeCwd: string
 ): JudgeRunner | null {
@@ -654,23 +761,22 @@ function fail(message: string): never {
 }
 
 /**
- * Reads `--flag value`. A flag with no value, or one followed by another flag,
- * is an error rather than a silent `null` — `--case` with a missing argument
- * used to grade every case instead of the one the operator named.
+ * Runs one decision from `src/eval/eval-run-orchestration.ts` and exits on refusal.
+ *
+ * The decisions themselves throw rather than exiting so a test can assert them;
+ * this is the single place a refusal becomes a non-zero exit, which keeps the
+ * script's error surface uniform.
  */
-function readFlag(name: string): string | null {
-  const index = process.argv.indexOf(name);
+function decide<T>(decision: () => T): T {
+  try {
+    return decision();
+  } catch (error) {
+    if (error instanceof OrchestrationError || (error as Error).name === 'JudgeContractError') {
+      fail((error as Error).message);
+    }
 
-  if (index === -1) return null;
-
-  const value = process.argv[index + 1];
-
-  if (value === undefined || value.startsWith('--')) {
-    console.error(`${name} needs a value.`);
-    process.exit(1);
+    throw error;
   }
-
-  return value;
 }
 
 /** Candidate text files, as POSIX paths relative to the run directory. */

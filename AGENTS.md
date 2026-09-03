@@ -89,6 +89,15 @@
   lane's length-matched control (named by `judging.length_control.<lane>`), and
   `calibration-labels.yml` for the human-scored subset. It exits non-zero when a
   gate blocks or any pair is inconclusive.
+- Deterministic A/B: `pnpm eval:designer --compare`. Grades `<case>.baseline/` and
+  `<case>.candidate/` for every case in the lane and prints the per-case move plus
+  the regression ledger, without calling a judge. Free and offline apart from the
+  browser, so it carries the iteration signal the development lane cannot buy.
+- Cross-runtime portability run: `pnpm eval:designer --dual-runtime`. Runs the
+  promoted skill on both pinned runtimes at high reasoning effort over one lane,
+  runs the deterministic gates on both outputs, and writes a divergence report.
+  Paid and nondeterministic, so it is never reachable from `pnpm test`. Neither
+  runtime may write into `skills/` during the run.
 - Promotion decision: `pnpm promote:designer`. Reads `report.json`,
   `judging.json`, and `promotion-approval.yml` from the lane named by
   `judging.promotion_lane`, refuses evidence judged on any other lane, verifies
