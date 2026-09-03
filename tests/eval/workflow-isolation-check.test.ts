@@ -111,6 +111,31 @@ describe('validateWorkflowIsolation', () => {
     expect(errors).toEqual([]);
   });
 
+  // Only a quoted scalar hides a `#`. In a plain scalar YAML starts a comment
+  // at ` #` exactly as a text scan would, so the two agree and there is nothing
+  // to catch; inside quotes the `#` is data and the whole line still runs.
+  it('sees a store reference behind a hash in a single-quoted scalar', async () => {
+    const { errors } = await check({
+      'quoted.yml': `${cleanWorkflow}      - run: 'echo a # && env | grep EVAL_PRIVATE_PATH'\n`,
+    });
+
+    expect(errors.some((error) => error.includes('names EVAL_PRIVATE_PATH'))).toBe(true);
+  });
+
+  it('sees a secret behind a hash in a double-quoted scalar', async () => {
+    const { errors } = await check({
+      'quoted-secret.yml': `${cleanWorkflow}      - run: "echo a # \${{ secrets.NPM_TOKEN }}"\n`,
+    });
+
+    expect(errors.some((error) => error.includes('reads stored secret(s) NPM_TOKEN'))).toBe(true);
+  });
+
+  it('refuses a workflow it cannot parse rather than scanning nothing', async () => {
+    const { errors } = await check({ 'broken.yml': 'on: [push\njobs: {{{\n' });
+
+    expect(errors.some((error) => error.includes('could not be parsed as YAML'))).toBe(true);
+  });
+
   it('notes an absent workflow directory rather than failing', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'workflows-'));
 

@@ -1,5 +1,6 @@
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
+import { parseDocument, visit } from 'yaml';
 
 export interface ValidateWorkflowIsolationOptions {
   errors: string[];
@@ -24,7 +25,36 @@ export const defaultWorkflowsDirectory = '.github/workflows';
 const permittedSecret = 'GITHUB_TOKEN';
 
 const secretReferencePattern = /secrets\.([A-Za-z_][A-Za-z0-9_]*)/g;
-const commentPattern = /(^|\s)#.*$/gm;
+
+/**
+ * Every key and string value in a workflow, with comments already gone.
+ *
+ * Stripping comments by regex cannot be made correct. In a plain scalar YAML
+ * does start a comment at ` #`, so a text scan agrees there — but inside a
+ * quoted scalar the `#` is data, and the scan deletes the rest of a line that
+ * still runs in full. `- run: 'echo a # && env | grep PRIVATE_VAR'` is the
+ * whole bypass. The parser draws that boundary the same way the YAML runtime
+ * does, so what this returns is what actually runs.
+ *
+ * `null` means the document did not parse. That fails the workflow rather than
+ * scanning an empty string, because an unreadable gate is not a passed gate.
+ */
+function readableContent(source: string): string | null {
+  const document = parseDocument(source);
+
+  if (document.errors.length > 0) return null;
+
+  const parts: string[] = [];
+
+  // Keys are scalars too, so a trigger name is captured alongside every value.
+  visit(document, {
+    Scalar(_key, node) {
+      if (typeof node.value === 'string') parts.push(node.value);
+    },
+  });
+
+  return parts.join('\n');
+}
 
 /**
  * Proves that no continuous-integration path can reach the held-out acceptance
@@ -85,9 +115,18 @@ function checkWorkflow(options: {
   source: string;
 }): void {
   const { errors, privateStoreEnvVars, relativePath, source } = options;
-  // Comments are stripped first: a workflow that explains in prose why it does
-  // not touch the private store must not fail for saying so.
-  const body = source.replace(commentPattern, '$1');
+  // Parsed, not text-scanned: a workflow that explains in prose why it does not
+  // touch the private store must not fail for saying so, and a workflow that
+  // hides a reference behind a quoted `#` must not pass for saying nothing.
+  const body = readableContent(source);
+
+  if (body === null) {
+    errors.push(
+      `${relativePath}: could not be parsed as YAML, so its isolation cannot be checked.`
+    );
+
+    return;
+  }
 
   for (const variable of privateStoreEnvVars) {
     if (body.includes(variable)) {
