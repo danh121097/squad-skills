@@ -37,6 +37,10 @@ export function rubricOutputSchema(rubricIds: readonly string[]): Record<string,
           required: ['rubric', 'evidence', 'winner'],
           type: 'object',
         },
+        // Bounded at both ends: exactly one row per declared rubric. Without the
+        // ceiling a decoder may legally repeat a row or add one nobody asked
+        // for, and the reader then has to reject an answer the schema allowed.
+        maxItems: rubricIds.length,
         minItems: rubricIds.length,
         type: 'array',
       },

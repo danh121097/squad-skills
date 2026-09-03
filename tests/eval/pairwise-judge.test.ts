@@ -224,6 +224,56 @@ describe('judgePair', () => {
     expect(outcome.detail).toContain('RUB-SLOP-001');
   });
 
+  it('refuses a rubric answered more than once', async () => {
+    const outcome = await judgePair({
+      pair: pair(),
+      packets: packets(),
+      run: runnerReturning(
+        {
+          // Every declared id is present, so a check that only asks "did each
+          // one appear" passes this and counts the row twice.
+          criteria: [
+            ...rubricIds.map((rubric) => ({
+              evidence: 'looked at it',
+              rubric,
+              winner: 'entry-a' as const,
+            })),
+            { evidence: 'looked again', rubric: 'RUB-SLOP-001', winner: 'entry-a' as const },
+          ],
+          overall: 'entry-a',
+        },
+        answer('entry-b')
+      ),
+    });
+
+    expect(outcome.verdict).toBe('inconclusive');
+    expect(outcome.detail).toContain('more than once');
+  });
+
+  it('refuses a rubric nobody declared', async () => {
+    const outcome = await judgePair({
+      pair: pair(),
+      packets: packets(),
+      run: runnerReturning(
+        {
+          criteria: [
+            ...rubricIds.map((rubric) => ({
+              evidence: 'looked at it',
+              rubric,
+              winner: 'entry-a' as const,
+            })),
+            { evidence: 'invented', rubric: 'RUB-MADE-UP-001', winner: 'entry-a' as const },
+          ],
+          overall: 'entry-a',
+        },
+        answer('entry-b')
+      ),
+    });
+
+    expect(outcome.verdict).toBe('inconclusive');
+    expect(outcome.detail).toContain('RUB-MADE-UP-001');
+  });
+
   it('refuses a score whose evidence is blank', async () => {
     const outcome = await judgePair({
       pair: pair(),

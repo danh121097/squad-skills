@@ -445,16 +445,30 @@ async function runOrder(
     };
   }
 
-  const missing = rubricIds.filter(
-    (id) => !outcome.response?.criteria.some((entry) => entry.rubric === id)
-  );
+  const answered = outcome.response.criteria.map((entry) => entry.rubric);
+  const declared = new Set(rubricIds);
+  const missing = rubricIds.filter((id) => !answered.includes(id));
+  // Extra and repeated rows are refused alongside missing ones. Asking only
+  // whether each declared id appears at least once lets a judge answer a rubric
+  // twice, or answer one nobody asked about, and the tally then counts rows that
+  // no declared criterion accounts for.
+  const unknown = [...new Set(answered.filter((id) => !declared.has(id)))];
+  const duplicated = [...new Set(answered.filter((id, index) => answered.indexOf(id) !== index))];
 
   // A verdict with no evidence for a declared rubric row is a score without a
   // reason, which is the shape of judging this phase exists to avoid.
-  if (missing.length > 0) {
+  if (missing.length > 0 || unknown.length > 0 || duplicated.length > 0) {
+    const detail = [
+      missing.length > 0 ? `Missing criterion evidence for ${missing.join(', ')}.` : '',
+      unknown.length > 0 ? `Answered undeclared rubric(s) ${unknown.join(', ')}.` : '',
+      duplicated.length > 0 ? `Answered rubric(s) ${duplicated.join(', ')} more than once.` : '',
+    ]
+      .filter((part) => part.length > 0)
+      .join(' ');
+
     return {
       criteria: outcome.response.criteria,
-      detail: `Missing criterion evidence for ${missing.join(', ')}.`,
+      detail,
       order: packet.order,
       usage: outcome.usage,
       winner: null,
