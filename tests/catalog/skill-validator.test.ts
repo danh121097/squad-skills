@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -71,6 +71,59 @@ describe('validateSkills', () => {
 
     expect(result.errors.some((error) => error.includes('broken local link'))).toBe(true);
     expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
+  });
+
+  it('holds a reference-style link to the same checks as an inline one', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'reference-skill', {
+      body: '[Guide][guide] and [Away][away]\n\n[guide]: references/missing.md\n[away]: ../../outside.md',
+    });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.some((error) => error.includes('broken local link'))).toBe(true);
+    expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
+  });
+
+  it('reports a reference-style link nothing defines', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'dangling-skill', { body: 'See [the guide][guide].' });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.some((error) => error.includes('[guide] has no definition'))).toBe(true);
+  });
+
+  it('reads paths written as code as prose, not as links', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'code-skill', {
+      body: 'Write `[Missing](references/missing.md)` to link a reference.\n\n```md\n[Sample](references/sample.md)\n```\n',
+    });
+
+    await expect(validateSkills(projectRoot)).resolves.toEqual({
+      errors: [],
+      skillNames: ['code-skill'],
+    });
+  });
+
+  it('reports a link whose symlink lands outside the skill directory', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'symlink-skill', { body: '[Outside](references/guide.md)' });
+    await writeFile(path.join(projectRoot, 'outside.md'), '# Outside\n', 'utf8');
+    await mkdir(path.join(projectRoot, 'skills', 'symlink-skill', 'references'), {
+      recursive: true,
+    });
+    // Lexically the link stays inside the skill; only the resolved path leaves.
+    await symlink(
+      path.join(projectRoot, 'outside.md'),
+      path.join(projectRoot, 'skills', 'symlink-skill', 'references', 'guide.md')
+    );
+
+    const result = await validateSkills(projectRoot);
+
+    expect(
+      result.errors.some((error) => error.includes('resolves outside its skill directory'))
+    ).toBe(true);
   });
 });
 
