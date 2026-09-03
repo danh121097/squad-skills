@@ -13,9 +13,13 @@
   `danh121097/squad-skills` through `npx skills add`, and the public
   `squad-skills` npm CLI. Keep the npm CLI a thin adapter over the official
   `skills` runtime instead of reimplementing discovery or installation.
-- Package only `dist/`, `bin/`, `skills/`, and `README.md`. Build the TypeScript
-  CLI before packaging and keep npm-installed skills independent from temporary
-  package-cache symlinks.
+- Package only `dist/`, `bin/`, `skills/`, `LICENSE`, and `README.md`. Build the
+  TypeScript CLI before packaging and keep npm-installed skills independent from
+  temporary package-cache symlinks. That list is asserted in three places at
+  once — `package.json` `files`, `expectedFiles` in
+  `scripts/check-release-readiness.ts`, and `requiredPaths` in
+  `scripts/check-package-contents.ts` — so changing one without the others turns
+  the release gate red.
 - Treat `skills/*/SKILL.md` and each skill's bundled files as the public product.
   Preserve their relative paths because the Skills CLI copies the whole skill
   directory during installation.
