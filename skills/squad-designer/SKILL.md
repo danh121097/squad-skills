@@ -8,7 +8,7 @@ keywords: [ui, ux, design, design-system, tokens, accessibility, motion, react-n
 argument-hint: "[screen/flow to design]"
 metadata:
   author: Harry Nguyen
-  version: "2.2.0"
+  version: "2.3.0"
 ---
 
 # Squad — Designer

@@ -65,6 +65,22 @@ responsive variants, and a reduced-motion fallback in the component you write.
 
 Use CSS instead of installing a motion dependency for an effect CSS handles cleanly.
 
+### Scroll-driven integration
+
+Scroll motion breaks in a small set of repeatable ways. Check each before shipping:
+
+- **One clock.** A smooth-scroll library (Lenis, Locomotive) and a scroll-driven timeline must share a
+  ticker: drive the library from the animation library's ticker and forward its scroll event to the
+  timeline's update. Left on its own `requestAnimationFrame`, the library scrolls the page while the
+  timeline reads a stale position, and every pin, scrub and snap desyncs.
+- **Never `overflow-x: hidden` on `html` or `body`.** It silently disables `position: sticky` and
+  scroll-driven motion. Clip on an inner wrapper instead.
+- **`100svh`, not `100vh`,** for a full-height section, so mobile browser chrome does not crop it.
+- **A custom cursor is gated twice** — `prefers-reduced-motion` and `(pointer: fine)` — and moves by a
+  transform written outside the render cycle, never component state per `pointermove`.
+- **Component CSS belongs in a cascade layer.** An unlayered component class outranks every utility
+  class, so the utility override the design intends loses silently.
+
 ### Cross-role ownership
 
 Motion ownership follows authorship: whoever writes the animation code owns its lifecycle scoping,

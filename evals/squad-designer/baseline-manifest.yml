@@ -48,15 +48,27 @@ private_store:
 # anti-slop-quality-review.md. No reference was added or removed. A later edit
 # in the same amendment set metadata.author to a linked profile in all nine
 # skills, which is the +1 entrypoint word in each measured skill.
+#
+# Re-measured a third time for the 2026-09-03 amendment, which carried nine
+# emit-time rules into squad-designer from the first run that ever built and
+# served an artifact (docs/design-examples/wanderly/). Three references grew:
+# platform-web-foundations-and-motion.md 718 -> 883 (scroll-driven integration),
+# design-system-ux-accessibility-and-handoff.md 746 -> 871 (three recurring
+# accessibility failures), anti-slop-quality-review.md 802 -> 871 (content is
+# data). SKILL.md, the routing table, every boundary_hash, the pinned models and
+# the acceptance set are all unchanged, so this is still the same cycle.
+# budget.median_loaded_words stays 1959: the growth was sized to keep
+# motion-direction and the two 1760 task types below degraded-runtime-fallback,
+# which is the median-setting path and was deliberately not touched.
 skills:
   squad-designer:
-    version: 2.2.0
-    payload_hash: sha256:9d25b34599b8f2f58909567679e4220e4489eed3f7e611ac9b159f627943463c
+    version: 2.3.0
+    payload_hash: sha256:adbf51674eaf52beac4ff62f6ce2bff667cf8587e8706f7fb161a89438a2df0f
     boundary_hash: sha256:45b6073147b38c14324e812994988632c2ecc03db853f8dde84e0d2c2382e176
     entrypoint_words: 1014
     reference_count: 9
-    reference_words: 6124
-    total_payload_words: 7138
+    reference_words: 6483
+    total_payload_words: 7497
   squad-frontend:
     version: 1.6.0
     payload_hash: sha256:6d8cbbb165bd45f5902084a585f429754ac608d30663ab297217ff8bf24df6cb
@@ -111,7 +123,7 @@ task_types:
       - official-sources.md
       - platform-web-foundations-and-motion.md
       - task-specific-ui-ux-research.md
-    loaded_words: 4975
+    loaded_words: 5334
   - id: web-redesign-existing-system
     references:
       - anti-slop-quality-review.md
@@ -120,26 +132,26 @@ task_types:
       - official-sources.md
       - platform-web-foundations-and-motion.md
       - task-specific-ui-ux-research.md
-    loaded_words: 5773
+    loaded_words: 6132
   - id: figma-accepted-handoff
     references:
       - design-system-ux-accessibility-and-handoff.md
-    loaded_words: 1760
+    loaded_words: 1885
   - id: design-system-tokens
     references:
       - anti-slop-quality-review.md
       - design-system-ux-accessibility-and-handoff.md
       - official-sources.md
       - platform-web-foundations-and-motion.md
-    loaded_words: 4225
+    loaded_words: 4584
   - id: motion-direction
     references:
       - platform-web-foundations-and-motion.md
-    loaded_words: 1732
+    loaded_words: 1897
   - id: accessibility-audit
     references:
       - design-system-ux-accessibility-and-handoff.md
-    loaded_words: 1760
+    loaded_words: 1885
   - id: local-pattern-extension
     references:
       - codebase-first-examples.md
@@ -154,14 +166,14 @@ task_types:
       - design-system-ux-accessibility-and-handoff.md
       - official-sources.md
       - platform-native-cross-platform.md
-    loaded_words: 4017
+    loaded_words: 4211
   - id: native-apple-android-build
     references:
       - anti-slop-quality-review.md
       - design-system-ux-accessibility-and-handoff.md
       - official-sources.md
       - platform-native-apple-android.md
-    loaded_words: 4000
+    loaded_words: 4194
   - id: adaptive-split-view
     references:
       - platform-adaptive-layout-and-input.md

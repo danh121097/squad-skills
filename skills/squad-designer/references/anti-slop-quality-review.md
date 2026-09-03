@@ -77,6 +77,10 @@ Pass every applicable check honestly:
 - Components share tokens, anatomy, variants, radii, borders, shadows, icons, and state behavior.
 - New blocks extend one coherent system instead of forming isolated showcase pieces.
 - Realistic content and long/short values do not collapse the composition.
+- Content is data, not decoration: per-item metadata is authored per item, counts follow the data, and
+  text containers grow with their content. One placeholder repeated across a list — the same read time on
+  every article, a fixed avatar count whatever the party size, a `max-height` that crops the longest real
+  string — is the tell that the composition was designed against one sample and never a second.
 
 ### Anti-patterns
 

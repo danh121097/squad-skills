@@ -71,6 +71,18 @@ custom web widgets; platform HIG/Material guidance for mobile/native.
 Accessibility includes cognitive clarity: plain language, consistent actions, visible state, safe recovery,
 time-limit handling and reduced surprise. Automated contrast/axe checks never replace interaction review.
 
+### Failures that survive review
+
+Three recur often enough to check by name before handoff:
+
+- **An inverted surface needs its own ink.** A dark section reusing the light-theme secondary text colour
+  is the most common contrast failure; give every surface role its own body and secondary text token, and
+  verify the pair rather than the palette.
+- **A scrollable region needs a tab stop.** A horizontally scrolling track reachable only by pointer
+  strands keyboard users: give it a tab stop and an accessible name, or reach its content another way.
+- **Reduced motion means reachable, not merely still.** An element whose reveal is skipped must render in
+  its final state. Guard the initial hidden state too, or the fallback ships content at zero opacity.
+
 ## Trust, safety, and privacy UX
 
 Make data collection, audience/visibility, permission, irreversible action and system/AI uncertainty clear
