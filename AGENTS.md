@@ -35,16 +35,25 @@
   adding `evals/<skill>/`, not editing `src/eval/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
   so every `SKILL.md` change must pass the repository gate.
-- Every skill carries a total-payload ceiling in
+- Every skill carries a payload ceiling in
   `src/catalog/skill-payload-ceilings.ts`, checked by `pnpm validate`. It exists
   because the manifest budget reaches three skills and binds a loaded-set figure
   for one, which left eight able to grow with nothing objecting — and they grew
   by 12% to 42% of their reference words in a single upgrade that believed a
-  budget governed it. A change that pushes a skill past its ceiling cuts content
-  first; raising the figure is a reviewed number in the same diff, which is the
-  whole point of recording it. Total payload is the coarse metric deliberately:
-  where a skill declares task types the loaded set is the honest budget, but a
-  skill that declares none has no loaded set to measure.
+  budget governed it. Which figure a ceiling bounds depends on the skill. One
+  that declares task types in `src/catalog/skill-task-types.ts` is bounded on
+  the median loaded set, because that is what a run costs and bounding the total
+  would tax the routing that keeps a run cheap. One that declares none has no
+  loaded set to measure and is bounded on the total; `squad-designer` is the
+  only such skill, and deliberately, because its task types live in the baseline
+  manifest where the evaluation budget binds them. A change that passes a
+  ceiling cuts content, or routes it to the tasks that need it so the median
+  does not move; raising the figure is a reviewed number in the same diff.
+- Task types are transcribed by hand from a skill's own router, so editing
+  either one edits both. `pnpm validate` fails on a task type naming a
+  reference the skill does not ship, on a reference no task type loads — that
+  file would be payload the median never counts — and on fewer than three task
+  types, which is too few for a median to mean anything.
 - Keep durable user guidance in `README.md` or `docs/`. `plans/` is ignored local
   execution state and must not become product authority.
 - Squad handoffs are contracts stated in prose, not records written to disk. No

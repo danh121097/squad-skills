@@ -1,7 +1,10 @@
 import process from 'node:process';
 
 import { validateCrossSkillContract } from '../src/catalog/cross-skill-contract-validator.ts';
-import { validateSkillPayloads } from '../src/catalog/skill-payload-validator.ts';
+import {
+  ceilingBoundFigure,
+  validateSkillPayloads,
+} from '../src/catalog/skill-payload-validator.ts';
 import { validateSkills } from '../src/catalog/skill-validator.ts';
 
 const catalog = await validateSkills(process.cwd());
@@ -17,4 +20,10 @@ if (errors.length > 0) {
 
 console.log(`Validated ${catalog.skillNames.length} skills: ${catalog.skillNames.join(', ')}`);
 console.log(`Cross-skill role contract checked across ${contract.checkedFiles.length} files.`);
-console.log(`Payload ceiling checked for ${payloads.checkedSkills.length} skills.`);
+const medianBound = payloads.checkedSkills.filter(
+  (skill) => ceilingBoundFigure(skill) === 'median loaded'
+).length;
+
+console.log(
+  `Payload ceiling checked for ${payloads.checkedSkills.length} skills: ${medianBound} on the median loaded set, ${payloads.checkedSkills.length - medianBound} on total payload.`
+);

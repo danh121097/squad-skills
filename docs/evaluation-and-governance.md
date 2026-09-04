@@ -242,13 +242,21 @@ loads for a web task, and a total-payload cap would punish exactly the routing
 that keeps a run cheap. Words are whitespace-delimited tokens over the whole
 file, matching `wc -w`, so any recorded figure can be checked by hand.
 
-That figure only exists for a skill that declares its task types, and only one
-does. So a second, coarser bound covers the rest: every skill carries a
-**total-payload ceiling** in `src/catalog/skill-payload-ceilings.ts`, checked by
-`pnpm validate` rather than `pnpm validate:evals`, because six of the nine
-skills appear in no manifest and the eval gate would never reach them. Read it
-as a proxy that catches unnoticed growth, not as a claim about what a run loads —
-where the median-loaded figure exists, it is the one that binds.
+That figure exists for a skill that declares its task types, and all nine now
+do — `squad-designer` in its baseline manifest, the other eight in
+`src/catalog/skill-task-types.ts`. Every skill carries a ceiling in
+`src/catalog/skill-payload-ceilings.ts`, checked by `pnpm validate` rather than
+`pnpm validate:evals`, because six of the nine appear in no manifest and the
+eval gate would never reach them. Eight of those ceilings bound the median
+loaded set. `squad-designer` is bounded on its total there instead, as the outer
+bound behind the median its own manifest already enforces.
+
+The difference is not cosmetic. Across the eight, totals range from 3,275 to
+5,327 words while medians sit between 1,836 and 2,595: the roles already cost
+about the same per run, and the total was measuring something no run pays. It
+also changes what a contributor can do about a breach. A total cap leaves one
+move, cutting; a median leaves two, and routing the new content to the tasks
+that need it is usually the better one.
 
 Three rules follow, and all three bite in ordinary work:
 
@@ -265,11 +273,13 @@ Three rules follow, and all three bite in ordinary work:
   change — and for the reference cap the manifest additionally requires it to be
   recorded in the eval contract. Neither is a step in landing a change that did
   not fit.
-- **Every skill has a size bound, not only the measured ones.** The
-  total-payload ceiling above covers all nine and fails in `pnpm validate` on
-  the first word past it. Raising one is legitimate where the content earns it;
-  what the ceiling buys is that the increase appears as a reviewed number in the
-  diff instead of as a side effect nobody sized.
+- **Every skill has a size bound, not only the measured ones.** The ceilings
+  above cover all nine and fail in `pnpm validate` on the first word past one.
+  Raising a figure is legitimate where the content earns it; what the ceiling
+  buys is that the increase appears as a reviewed number in the diff instead of
+  as a side effect nobody sized. On a median-bounded skill, `pnpm validate` also
+  fails on a reference no task type loads, because payload the median never
+  counts is exactly how a skill would grow unseen.
 
 There is a stated limit here worth repeating: the routing table and the skill it
 measures are edited by the same party, so the gate proves the recorded numbers
