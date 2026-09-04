@@ -8,7 +8,7 @@ keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka,
 argument-hint: "[feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # Squad — Frontend
@@ -104,6 +104,9 @@ handing over, run the self-review in
 - From Designer, the artifact and boundary stated in
   [references/designer-gate-and-design-intake.md](references/designer-gate-and-design-intake.md);
   this role wires behavior into what it receives and returns a visual or interaction gap to Designer.
+- To DevOps, the build command and the artifact it produces, which configuration values are baked
+  into that artifact at build time and which are read at runtime, and what the artifact assumes about
+  routing, signing or release channel.
 - To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
   that exercise it, and the checks already run.
 - On a QA `FAIL`, the minimal repro, expected versus actual, and the redacted artifacts.

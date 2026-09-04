@@ -54,10 +54,13 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // evals/squad-designer/baseline-manifest.yml, whose `median_loaded_words` is
   // the figure that binds in practice. This is the outer bound behind it.
   'squad-designer': 7497,
-  'squad-devops': 2168,
+  'squad-devops': 2209,
   'squad-fix': 2101,
-  'squad-frontend': 2095,
-  'squad-mobile': 1836,
+  // Frontend, mobile and devops each rose about forty words in the same change:
+  // HANDOFF-BUILD-001 is one sentence stated at three entrypoints, and an
+  // entrypoint sentence is read by every task of that skill.
+  'squad-frontend': 2134,
+  'squad-mobile': 1875,
   'squad-qa': 2236,
   // The highest median in the catalog and the flattest router, in the skill
   // that runs on every squad task. Worth the next routing pass.

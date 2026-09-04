@@ -8,7 +8,7 @@ keywords: [devops, docker, kubernetes, helm, cicd, terraform, cloudflare, aws, g
 argument-hint: "[infra or deploy task]"
 metadata:
   author: Harry Nguyen
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # Squad — DevOps
@@ -100,6 +100,9 @@ a recovery path. Before applying or handing over, run the self-review in
 - From Backend, what the change needs to run: the runtime version and service configuration by
   reference rather than by value, the migration ordering against the deploy, and the health
   signal that proves the service started.
+- From Frontend and Mobile, the build command and the artifact it produces, which configuration
+  values are baked into that artifact at build time and which are read at runtime, and what the
+  artifact assumes about routing, signing or release channel.
 - To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
   that exercise it, and the checks already run.
 - On a QA `FAIL`, the minimal repro, expected versus actual, and the redacted artifacts.

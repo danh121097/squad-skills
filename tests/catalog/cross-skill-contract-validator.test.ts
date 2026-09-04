@@ -258,6 +258,7 @@ describe('validateCrossSkillContract', () => {
       'HANDOFF-FINDINGS-001': [codeReviewSkill, ...rolesWithAnImplementationSlice].sort(),
       'HANDOFF-REPRO-001': [qaSkill, ...rolesWithAnImplementationSlice].sort(),
       'HANDOFF-RUNTIME-001': [backendSkill, devopsSkill],
+      'HANDOFF-BUILD-001': [devopsSkill, frontendSkill, mobileSkill],
       'HANDOFF-DEPLOY-001': [codeReviewSkill, devopsSkill],
       'HANDOFF-GATE-001': [...rolesWithAnImplementationSlice, teamSkill].sort(),
       'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],

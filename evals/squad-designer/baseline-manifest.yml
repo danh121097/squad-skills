@@ -163,6 +163,15 @@ private_store:
 # HANDOFF-FINDINGS-001 widened from squad-fix to every role that owns a slice.
 # squad-frontend and squad-mobile each move by the two receiving bullets and
 # nothing else; their references are untouched, so only entrypoint words move.
+#
+# Re-measured a ninth time, same cycle, squad-designer untouched again. The
+# handoff audit above left one producer pair unbound: HANDOFF-RUNTIME-001 covers
+# squad-backend to squad-devops, and a frontend or mobile build crossed the same
+# boundary with nothing said about it. HANDOFF-BUILD-001 now binds all three on
+# the build-time-versus-runtime split — a configuration value baked into a client
+# artifact cannot change without a rebuild and, if it is a secret, shipped to
+# every viewer. One entrypoint sentence on each of the three; references untouched
+# on both skills recorded here, so again only entrypoint words move.
 skills:
   squad-designer:
     version: 2.3.0
@@ -173,21 +182,21 @@ skills:
     reference_words: 6483
     total_payload_words: 7497
   squad-frontend:
-    version: 1.8.0
-    payload_hash: sha256:38f80c72f0b42b062aa9bd4928e38edb028edb7c527fa4f3e396746e24c63db1
+    version: 1.9.0
+    payload_hash: sha256:9266196e7f9d6a66476e30914fadebe8079f0ebc2eb2288d077f95f61b5ba509
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 1137
+    entrypoint_words: 1176
     reference_count: 9
     reference_words: 4123
-    total_payload_words: 5260
+    total_payload_words: 5299
   squad-mobile:
-    version: 1.8.0
-    payload_hash: sha256:f9637c14cf9f96192ff11726e62b099961a148da4b57370cfa8417b391661cf1
+    version: 1.9.0
+    payload_hash: sha256:f2468644b4b62007bb068aaa9ba8bab41d3ba35492401d3411ae025ddde5d8a1
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 1003
+    entrypoint_words: 1042
     reference_count: 8
     reference_words: 2919
-    total_payload_words: 3922
+    total_payload_words: 3961
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of

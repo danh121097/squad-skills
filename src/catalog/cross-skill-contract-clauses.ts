@@ -200,6 +200,17 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [backendSkill, devopsSkill],
   },
   {
+    id: 'HANDOFF-BUILD-001',
+    // HANDOFF-RUNTIME-001 bound backend to devops and left the other two
+    // producers unbound, so a bundle could cross the same boundary with nothing
+    // said about it. The build-time-versus-runtime split is the specific failure:
+    // a value baked into a client artifact cannot be changed without a rebuild
+    // and, if it is a secret, was published to every viewer the moment it shipped.
+    statement:
+      'the build command and the artifact it produces, which configuration values are baked into that artifact at build time and which are read at runtime, and what the artifact assumes about routing, signing or release channel',
+    files: [devopsSkill, frontendSkill, mobileSkill],
+  },
+  {
     id: 'HANDOFF-DEPLOY-001',
     // Code Review gates operational readiness, so it is the consumer that has
     // to be told which level of verification actually ran.
