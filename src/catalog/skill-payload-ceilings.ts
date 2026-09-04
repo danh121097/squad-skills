@@ -61,7 +61,16 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // entrypoint sentence is read by every task of that skill.
   'squad-frontend': 2134,
   'squad-mobile': 1875,
-  'squad-qa': 2236,
+  // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
+  // non-zero exit can mean the process was dirty rather than an assertion
+  // failing. Sixty words, and all six task types load that file, so the median
+  // pays the whole file cost — the case where the median regime offers no
+  // discount. It buys it anyway: the rule is about what makes this gate's FAIL
+  // legitimate, and it was found by running the skill's own domain against a
+  // seeded-defect corpus, where a produced test's own double leaked exactly
+  // this exit. No checklist item accompanies it, deliberately: an entrypoint
+  // line would be read by every task to repeat what every task already loads.
+  'squad-qa': 2296,
   // The highest median in the catalog and the flattest router, in the skill
   // that runs on every squad task. Worth the next routing pass.
   'squads-team': 2595,

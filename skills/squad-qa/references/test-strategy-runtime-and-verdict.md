@@ -63,6 +63,10 @@ limitation. Redact tokens, credentials, personal data and private payloads.
 - Blocking criterion/risk.
 - Minimal steps and fixture/data setup.
 - Expected versus actual.
+- Which assertion failed, named rather than inferred from the runner's exit code. A non-zero exit can
+  also mean the process was dirty — an unhandled rejection from a test double, a leaked handle, a worker
+  that died after the assertions passed. Charging that to the product is a false `FAIL`, and a gate that
+  issues one stops being believed.
 - Deterministic artifact/log reference.
 - Owning role and retest scope.
 

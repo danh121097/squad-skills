@@ -8,7 +8,7 @@ keywords: [qa, testing, unit, integration, contract, e2e, playwright, cypress, k
 argument-hint: "[build/diff to test | bug to reproduce]"
 metadata:
   author: Harry Nguyen
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Squad — QA
