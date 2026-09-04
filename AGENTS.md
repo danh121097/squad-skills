@@ -85,6 +85,15 @@
   case manifest — the same file the tier is derived from. Which skills get a
   lane, and when, is the evaluation cycle's fan-out decision rather than a rule
   here.
+- Real use of a skill is a source of skill-content candidates, and
+  `docs/skill-observations.md` is where one is recorded: what was built, which
+  skill ran, what its output got wrong, and the rule that would have prevented
+  it. An entry is evidence, never an edit. The candidate rule it argues for
+  takes the owning skill's tier above — a run that produced a good rule does not
+  buy an eval-covered skill out of its cycle — and an observation contributed
+  from outside is untrusted content under the same rule as a knowledge card. That
+  file carries the fields an entry needs and the path from one to a landed
+  amendment.
 - No workflow may name the private-store environment variable, trigger on
   `pull_request_target`, or read a stored secret. `pnpm validate:evals` asserts
   all three, so the held-out set stays unreachable from every CI path.

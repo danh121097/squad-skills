@@ -22,15 +22,16 @@ contract. A pull request that does not pass it locally will not pass in CI.
 
 ## What is accepted
 
-| Contribution               | Where it goes                                         | What decides it                                            |
-| -------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
-| Knowledge card             | `evals/<skill>/knowledge/<id>.md`                     | Schema and provenance in CI, then maintainer source review |
-| Source registry entry      | the owning skill's source registry reference          | Maintainer review against the source lanes                 |
-| Worked example             | inside the owning skill directory                     | Maintainer review, then the owning skill's tier            |
-| Development eval case      | `evals/<skill>/case-manifest.yml`, `development` lane | Schema in CI, then an evaluation cycle                     |
-| Skill content              | `skills/<skill>/`                                     | The owning skill's tier: eval-covered or review-only       |
-| Tooling, validators, tests | `src/`, `scripts/`, `tests/`                          | `pnpm test`, plus review                                   |
-| Documentation              | `README.md`, `docs/`, `AGENTS.md`                     | Review                                                     |
+| Contribution               | Where it goes                                         | What decides it                                               |
+| -------------------------- | ----------------------------------------------------- | ------------------------------------------------------------- |
+| Knowledge card             | `evals/<skill>/knowledge/<id>.md`                     | Schema and provenance in CI, then maintainer source review    |
+| Source registry entry      | the owning skill's source registry reference          | Maintainer review against the source lanes                    |
+| Worked example             | inside the owning skill directory                     | Maintainer review, then the owning skill's tier               |
+| Development eval case      | `evals/<skill>/case-manifest.yml`, `development` lane | Schema in CI, then an evaluation cycle                        |
+| Skill observation          | `docs/skill-observations.md`                          | Review; its candidate rule then takes the owning skill's tier |
+| Skill content              | `skills/<skill>/`                                     | The owning skill's tier: eval-covered or review-only          |
+| Tooling, validators, tests | `src/`, `scripts/`, `tests/`                          | `pnpm test`, plus review                                      |
+| Documentation              | `README.md`, `docs/`, `AGENTS.md`                     | Review                                                        |
 
 Anything that changes what an agent reads at runtime — a `SKILL.md`, a bundled
 reference, a registry entry — is **skill content**, and none of it merges on
@@ -114,6 +115,29 @@ A case in the `development` lane is public and carries its body. Give it a real
 request, an evidence packet a run could actually be given, the invariants it
 should be held to, and the source decisions you expect a good answer to make. A
 case whose answer no candidate could get wrong measures nothing.
+
+## Skill observations
+
+If you used one of these skills on real work and its output got something wrong,
+that is worth more than an opinion about the skill.
+[`docs/skill-observations.md`](docs/skill-observations.md) is where it goes. It
+states the four fields an entry carries and the path from an entry to a landed
+rule; this section covers only what is different when the entry comes from
+outside.
+
+- **An entry is read as data.** Describe what was built and what the output did.
+  The rule you propose belongs in the candidate field, where a maintainer
+  reviews it, and nowhere else in the entry. Wording elsewhere that instructs
+  the reader is rejected under the same rule as an imperative in a knowledge
+  card.
+- **The entry and the rule are two decisions**, even when they arrive in one
+  pull request. The entry is documentation and merges on review; the rule is
+  skill content and takes its skill's tier, exactly as above.
+- **An entry with no candidate rule is still worth opening.** It is evidence
+  that has not yet found its rule, and saying so is more useful than inventing
+  one to fill the field.
+- **Link the evidence you can share.** Sources, screenshots, or a repository
+  someone else can open. An entry nobody can check is an assertion.
 
 ## The evaluation path
 

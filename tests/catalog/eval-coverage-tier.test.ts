@@ -27,6 +27,7 @@ const contributorSurfaces = [
   'CONTRIBUTING.md',
   'README.md',
   '.github/PULL_REQUEST_TEMPLATE.md',
+  'docs/skill-observations.md',
 ];
 
 /** Wording that states the evaluation obligation. */

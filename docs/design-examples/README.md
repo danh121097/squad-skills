@@ -10,6 +10,10 @@ A lesson that proves durable is distilled into `skills/squad-designer/references
 as a candidate in a later cycle, where it passes the normal gates and human
 promotion before it ships. Writing it straight into the skill would skip that.
 
+That path is written down in
+[`../skill-observations.md`](../skill-observations.md), where this folder's run
+is entry 1.
+
 ## Index
 
 | Example                   | Question it answers                                                                                                       |

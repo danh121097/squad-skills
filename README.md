@@ -97,6 +97,10 @@ review-only skill — one with no evaluation lane yet — it ships on the
 deterministic gate plus maintainer review, recorded as such. [AGENTS.md](AGENTS.md)
 defines both tiers and which one a skill is in.
 
+If you used one of these skills on real work and its output got something wrong,
+[`docs/skill-observations.md`](docs/skill-observations.md) is where that is
+recorded and how it becomes a rule.
+
 ## Skill format
 
 Each skill directory must contain a `SKILL.md` whose YAML `name` matches the
