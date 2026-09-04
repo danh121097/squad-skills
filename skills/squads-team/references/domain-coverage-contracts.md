@@ -1,7 +1,24 @@
 # Domain coverage contracts
 
 Use only when a named `squad-*` role skill is missing or when auditing role completeness. This provides
-minimum deep coverage; the role still inspects the repository and current primary documentation.
+minimum deep coverage; the role still inspects the repository and current primary documentation. Framing
+below is the exception: it belongs to the lead in every mode, because no role skill covers it.
+
+## Framing
+
+Read when the request arrives as an idea or an outcome rather than acceptance criteria, or when the
+repository is empty. Produce before spawning any role: the outcome in the user's own terms, the constraints
+that bind it, explicit non-goals, and acceptance criteria a run can actually check. A criterion nothing can
+check is not one — replace it or record it as unverified.
+
+Resolve what the user already decided — stack, hosting, deadline, compliance, budget — before proposing
+anything. Ask only about a fork that changes the work; state an assumption for the rest and let the user
+correct it.
+
+An empty repository has nothing to scout, so the stack stops being a fact to discover and becomes a framing
+output. Name target platforms, the runtime and framework per platform, and the deployment target, then hand
+each to the role that owns it; the build roles carry the greenfield foundations for their own layer. Record
+it as a decision with its reason, so a later role reads a choice rather than an inherited default.
 
 ## Designer
 

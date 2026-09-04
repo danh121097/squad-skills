@@ -49,8 +49,9 @@ by the task. Reuse safe project processes, and stop only task-owned resources wh
 - For Figma/Designer routing, platform UX states, offline/sync, secure storage, push/deep links, IAP and
   performance gates, read
   [references/design-platform-and-lifecycle-gates.md](references/design-platform-and-lifecycle-gates.md).
-- For React Native/Expo, Flutter, Swift/iOS, Kotlin/Android, KMP/Compose Multiplatform, .NET MAUI,
-  Capacitor, app architecture, state, navigation, networking and offline data, read
+- For existing-versus-new-app stack selection, React Native/Expo, Flutter, Swift/iOS, Kotlin/Android,
+  KMP/Compose Multiplatform, .NET MAUI, Capacitor, app architecture, state, navigation, networking and
+  offline data, read
   [references/mobile-stack-architecture-and-data.md](references/mobile-stack-architecture-and-data.md).
 - For mobile threat model, privacy, performance, test layers, release/store and observability, read
   [references/mobile-security-performance-testing-and-release.md](references/mobile-security-performance-testing-and-release.md).
@@ -102,7 +103,7 @@ implemented. Before handing over, run the self-review in
 ## Completion checklist
 
 - [ ] Every reference the router pointed at was loaded, or the report says why it was skipped
-- [ ] Existing app stack and platform patterns are preserved
+- [ ] Existing app stack and platform patterns are preserved, or a new-app stack was selected explicitly
 - [ ] Material UI/UX has accepted design mapping and all applicable states
 - [ ] Backend contract is consumed without adding server ownership
 - [ ] Offline, retry, stale data, conflicts, lifecycle and interrupted navigation are defined

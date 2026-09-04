@@ -137,6 +137,19 @@ private_store:
 # standards at the Confluence wiki, which no longer answers; the standards moved
 # to cmu-sei.github.io and the entry follows them. squad-code-review carries no
 # figures here, so nothing in this manifest moves for it.
+#
+# Re-measured a seventh time, still the same cycle, and squad-designer untouched
+# again. A greenfield audit found the catalog uneven about a project that does
+# not exist yet: squad-designer, squad-frontend and squad-devops each route an
+# existing-versus-greenfield decision, squad-backend routes it as runtime
+# selection, and squad-mobile carried the selection criteria in its reference
+# while its router named only stacks and architecture — so a role starting a new
+# app never saw the trigger, and its checklist item "existing app stack is
+# preserved" passed vacuously with nothing decided. The router now names the
+# decision and the checklist carries the other branch, which is the whole of
+# squad-mobile's ten-word entrypoint move; no reference word moves with it.
+# squads-team gained the framing contract the same audit found missing, but it
+# carries no figures here.
 skills:
   squad-designer:
     version: 2.3.0
@@ -156,12 +169,12 @@ skills:
     total_payload_words: 5224
   squad-mobile:
     version: 1.8.0
-    payload_hash: sha256:3549b6c5eeff8810e63ab3182a92378421208cb34ef298f746ac288d1c51e71a
+    payload_hash: sha256:f8cc2b15d2c6dde172b99b472be0dd5186a5b0d320ec62627a0def3a269caed0
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 957
+    entrypoint_words: 967
     reference_count: 8
     reference_words: 2919
-    total_payload_words: 3876
+    total_payload_words: 3886
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of

@@ -41,7 +41,17 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-devops': 5255,
   'squad-fix': 4284,
   'squad-frontend': 5224,
-  'squad-mobile': 3876,
+  // Raised by ten words: the router now names existing-versus-new-app stack
+  // selection, and the checklist carries the branch where nothing exists to
+  // preserve. The reference already held the selection criteria; only the
+  // entrypoint that routes to them moved.
+  'squad-mobile': 3886,
   'squad-qa': 4075,
-  'squads-team': 3808,
+  // Raised by 225 words for the framing contract. The lead is told to lock
+  // outcome, constraints, non-goals and acceptance in step one, and no role
+  // skill covers how — an empty repository returns nothing to scout, so the
+  // stack has to be framed as a decision rather than discovered as a fact.
+  // Growth this size is what the ceiling exists to put in front of a reviewer,
+  // and it is approved here rather than absorbed.
+  'squads-team': 4033,
 };

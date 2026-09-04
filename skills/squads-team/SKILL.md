@@ -67,8 +67,9 @@ PR, deploy, mutate data or change external services unless requested or required
 - For a concrete bug/regression/failing test whose root cause or owner is not yet proven, use an installed
   `squad-fix` as the diagnosis/routing stage, or apply its evidence-first contract inline. Do not create a
   nested orchestrator when this lead already owns execution.
-- When a named squad role skill is unavailable, or when auditing whether a role covered its full domain,
-  read [references/domain-coverage-contracts.md](references/domain-coverage-contracts.md).
+- When a named squad role skill is unavailable, when the request carries no acceptance criteria, when the
+  repository is empty, or when auditing whether a role covered its full domain, read
+  [references/domain-coverage-contracts.md](references/domain-coverage-contracts.md).
 - When routing, ownership, execution mode or a gate outcome is ambiguous, read
   [references/coordination-worked-decisions.md](references/coordination-worked-decisions.md).
 
@@ -76,7 +77,8 @@ PR, deploy, mutate data or change external services unless requested or required
 
 1. **Frame** — lock outcome, constraints, non-goals, acceptance, authority and required environments.
 2. **Scout/diagnose** — read project guidance, repository state, stack, modules, contracts, tests and
-   existing plan. For a concrete failure, prove root cause and blast radius before role assignment.
+   existing plan. An empty repository returns nothing here, so frame the stack as a decision instead of
+   inferring one. For a concrete failure, prove root cause and blast radius before role assignment.
 3. **Route and own** — select roles, split independent slices, assign files and dependencies, then select
    team/subagent/single execution mode from live capabilities.
 4. **Design/plan gates** — run Designer for material UI/UX; collect build plans when approval is enabled.
