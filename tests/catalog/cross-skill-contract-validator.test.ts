@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -259,6 +259,7 @@ describe('validateCrossSkillContract', () => {
       'HANDOFF-DEPLOY-001': [codeReviewSkill, devopsSkill],
       'HANDOFF-GATE-001': [...rolesWithAnImplementationSlice, teamSkill].sort(),
       'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],
+      'HANDOFF-GATE-003': [fixSkill, teamSkill],
       'HANDOFF-SOLO-001': [
         ...rolesWithAnImplementationSlice,
         codeReviewSkill,
@@ -283,9 +284,11 @@ describe('validateCrossSkillContract', () => {
 });
 
 /**
- * The HANDOFF-* family binds the two ends of a stage boundary — what a role
- * hands over and what the next role is told to expect — so both sides are
- * entrypoints a reader reaches without loading a reference.
+ * The HANDOFF-* family binds the two ends of a stage boundary — what crosses one
+ * and what closes one — so both sides are entrypoints a reader reaches without
+ * loading a reference. The GATE-* and SOLO-* members carry no artifact across a
+ * boundary: they bind who owns a stage and what verdict ends it, which is the
+ * same contract seen from the pipeline rather than from the handover.
  *
  * squad-designer is absent from the family on purpose. Its SKILL.md is
  * eval-covered, so an edit there runs the evaluation cycle rather than this
@@ -345,6 +348,67 @@ describe('handoff contract family', () => {
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0]).toContain(frontendSkill);
     expect(result.errors[0]).toContain(backendSkill);
+  });
+
+  // The gate sequence was unbound until the handoff-artifact decision looked for
+  // what protected it and found nothing did. GATE-001 binds that both gates are
+  // mandatory; this binds who issues the pass, which verdict closes each gate,
+  // and in what order.
+  //
+  // The shipped set is already validated against the working tree above, so
+  // these cases pin the two drifts the clause exists to stop: a reorder, and the
+  // deletion of the hard gate that states the rule. The deletion case reads the
+  // real `squads-team` entrypoint rather than a fixture, because what makes it
+  // pass is a property of that file — the completion-checklist line repeats the
+  // gates in different words and must not rescue a deleted hard gate 4.
+  it('fails when the lead deletes the hard gate that states the sequence', async () => {
+    const sequence = boundaryClauses.find((clause) => clause.id === 'HANDOFF-GATE-003');
+    if (!sequence) throw new Error('HANDOFF-GATE-003 is missing from the shipped clauses.');
+
+    expect([...sequence.files].sort()).toEqual([fixSkill, teamSkill]);
+
+    const team = await readFile(path.join(process.cwd(), teamSkill), 'utf8');
+    const withoutHardGate = team.replace(
+      /^4\. \*\*No done without gates\*\*[\s\S]*?(?=^5\. )/m,
+      ''
+    );
+
+    // The strip has to have removed something, or the case would pass for the
+    // wrong reason on any future renumbering of the hard gates.
+    expect(withoutHardGate).not.toEqual(team);
+    expect(normalizeProse(withoutHardGate)).toContain('qa pass then code review approve');
+
+    const projectRoot = await createProject({
+      [teamSkill]: withoutHardGate,
+      [fixSkill]: await readFile(path.join(process.cwd(), fixSkill), 'utf8'),
+    });
+
+    const result = await validateCrossSkillContract(projectRoot, {
+      clauses: [sequence],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(teamSkill);
+  });
+
+  it('fails when one side reorders the mandatory gates', async () => {
+    const sequence = boundaryClauses.find((clause) => clause.id === 'HANDOFF-GATE-003');
+    if (!sequence) throw new Error('HANDOFF-GATE-003 is missing from the shipped clauses.');
+
+    const projectRoot = await createProject({
+      [teamSkill]: `# Team\n\nEvery slice must receive QA ${sequence.statement}.\n`,
+      [fixSkill]: '# Fix\n\nEvery fix slice must receive Code Review `APPROVE`, then QA `PASS`.\n',
+    });
+
+    const result = await validateCrossSkillContract(projectRoot, {
+      clauses: [sequence],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(fixSkill);
+    expect(result.errors[0]).toContain(teamSkill);
   });
 
   // Carried in from the quality-bar phase: seven roles were given this line

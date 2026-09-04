@@ -200,6 +200,33 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [codeReviewSkill, qaSkill],
   },
   {
+    id: 'HANDOFF-GATE-003',
+    // GATE-001 and GATE-002 bind who owns a gate when a peer is missing. Neither
+    // binds what closes a stage, so `squads-team` hard gate 4 and the
+    // `squad-fix` gate that restates it were free to disagree on the verdict
+    // names, the order, or who issues the pass — a review-before-QA rewrite, or
+    // an implementer self-certifying its own `PASS`, both left the gate green.
+    //
+    // The statement therefore carries four things and each is load-bearing:
+    // `must receive` (the slice does not issue its own verdict), `QA` (the
+    // producer, which a subjectless fragment left open), the order, and the two
+    // verdict names. An earlier draft bound only "`PASS`, then Code Review
+    // `APPROVE`"; a probe rewriting `squad-fix` to "the owning role must return
+    // `PASS`" passed it, which is the independence GATE-001 and GATE-002 exist
+    // to protect.
+    //
+    // `squad-fix` was reworded to match `squads-team` rather than the reverse:
+    // the lead owns the pipeline rule, and `squad-fix` restates it. Neither file
+    // is recorded in `evals/squad-designer/baseline-manifest.yml`, so no payload
+    // figure moves with this wording.
+    //
+    // Only these two entrypoints state the sequence. The five implementing roles
+    // carry HANDOFF-GATE-001 instead, which binds that both gates are mandatory
+    // rather than which verdict closes each one.
+    statement: 'must receive QA `PASS`, then Code Review `APPROVE`',
+    files: [fixSkill, teamSkill],
+  },
+  {
     id: 'HANDOFF-SOLO-001',
     // The squad-peer analog of PAIRING-SAFETY-001, which covers an absent
     // `ak:*` skill rather than an absent role. "where this role's boundary

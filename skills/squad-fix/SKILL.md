@@ -57,8 +57,9 @@ Git remotes or external services without explicit authority and required recover
 5. **Route by cause, not surface** — assign non-overlapping ownership to the role whose contract is broken.
 6. **Fix and prevent** — make the smallest cause-aligned change; add regression evidence and verify the
    original symptom plus affected dependents and public contracts.
-7. **No done without gates** — QA must return `PASS`, then Code Review `APPROVE`. Respect
-   `NEEDS_ENVIRONMENT` and `NEEDS_EVIDENCE`; disclose reduced independence in a single-session loop.
+7. **No done without gates** — every fix slice must receive QA `PASS`, then Code Review `APPROVE`.
+   Respect `NEEDS_ENVIRONMENT` and `NEEDS_EVIDENCE`; disclose reduced independence in a single-session
+   loop.
 
 ## Conditional references
 
