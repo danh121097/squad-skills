@@ -1,0 +1,14 @@
+id: pagination-clamp
+class: boundary-condition
+summary: >-
+  The page number is clamped to the upper bound but not the lower one, so a page
+  of 0 or below produces a negative slice offset and serves the wrong window.
+file: buggy.ts
+symbol: paginate
+detected_by:
+  - page-zero-clamps-to-first
+  - negative-page-clamps-to-first
+survives:
+  - first-page
+  - last-page-partial
+  - page-above-range-clamps-to-last

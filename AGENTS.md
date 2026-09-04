@@ -103,6 +103,19 @@
   distribution path, and `evals/squad-designer/eval-contract.md` is the human
   authority its manifests must agree with. Never record a held-out case body
   there; private lanes carry an id and a content hash only.
+- A directory under `evals/` is a lane when a skill of that name ships in
+  `skills/`, and shared material when `sharedDirectoryNames` in
+  `src/eval/manifest-validator.ts` declares it. Anything else fails validation,
+  naming both possibilities: a lane directory whose name is misspelt would
+  otherwise stop being a lane in silence, and the eval-covered tier is derived
+  from that directory existing.
+- `evals/fixtures/gate-corpus/` is the first shared directory. It holds paired
+  sources with one seeded defect each and the checks that separate them, for the
+  two roles whose output has ground truth — QA is graded on whether its test
+  fails against `buggy.ts` and passes against `fixed.ts`, Code Review on whether
+  it names the defect the answer key records. `pnpm test` runs the reference
+  checks against both sides of every case, because a seeded defect nothing
+  detects is not a defect and an answer key that drifts is worse than none.
 
 ## Contribution boundary
 

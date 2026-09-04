@@ -1,0 +1,12 @@
+id: transfer-rollback
+class: unawaited-promise
+summary: >-
+  The rollback is called without being awaited, so its rejection is lost and the
+  function reports a clean decline for a rollback that never landed.
+file: buggy.ts
+symbol: transfer
+detected_by:
+  - failed-rollback-surfaces
+survives:
+  - sufficient-funds-transfer
+  - insufficient-funds-declined

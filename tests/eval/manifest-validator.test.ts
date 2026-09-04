@@ -67,21 +67,52 @@ describe('validateEvalManifests', () => {
     const project = await createProject();
     await cp(
       path.join(project.root, evalDirectory),
-      path.join(project.root, 'evals', 'another-skill'),
+      path.join(project.root, 'evals', 'secondary-skill'),
       { recursive: true }
     );
     await writeFile(
-      path.join(project.root, 'evals', 'another-skill', 'baseline-manifest.yml'),
+      path.join(project.root, 'evals', 'secondary-skill', 'baseline-manifest.yml'),
       'schema_version: 2\n',
       'utf8'
     );
 
     const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
 
-    expect(result.directories).toEqual(['another-skill', budgetSkillName]);
+    expect(result.directories).toEqual([budgetSkillName, 'secondary-skill']);
     expect(
       result.errors.some((error) =>
-        error.startsWith(path.join('evals', 'another-skill', 'baseline-manifest.yml'))
+        error.startsWith(path.join('evals', 'secondary-skill', 'baseline-manifest.yml'))
+      )
+    ).toBe(true);
+  });
+
+  it('reads shared material under evals/ as shared rather than as a lane', async () => {
+    const project = await createProject();
+    await mkdir(path.join(project.root, 'evals', 'fixtures', 'gate-corpus'), { recursive: true });
+    await writeFile(
+      path.join(project.root, 'evals', 'fixtures', 'gate-corpus', 'buggy.ts'),
+      'export const value = 1;\n',
+      'utf8'
+    );
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    expect(result.directories).toEqual([budgetSkillName]);
+    expect(result.errors).toEqual([]);
+  });
+
+  it('refuses a directory that is neither a shipped skill nor declared shared', async () => {
+    const project = await createProject();
+    await mkdir(path.join(project.root, 'evals', 'squad-desginer'), { recursive: true });
+
+    const result = await validateEvalManifests(project.root, { privatePath: project.privateRoot });
+
+    expect(result.directories).toEqual([budgetSkillName]);
+    expect(
+      result.errors.some(
+        (error) =>
+          error.startsWith(path.join('evals', 'squad-desginer')) &&
+          error.includes('neither a shipped skill')
       )
     ).toBe(true);
   });

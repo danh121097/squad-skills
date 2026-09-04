@@ -1,0 +1,15 @@
+id: document-authorization
+class: broken-object-level-authorization
+summary: >-
+  The write path checks that an actor is present rather than that the actor owns
+  the document, so any authenticated actor who knows the identifier can overwrite
+  another owner's document. The read path beside it checks ownership correctly,
+  which is what makes the omission easy to read past.
+file: buggy.ts
+symbol: updateDocument
+detected_by:
+  - stranger-cannot-update
+survives:
+  - owner-reads-own-document
+  - owner-updates-own-document
+  - stranger-cannot-read

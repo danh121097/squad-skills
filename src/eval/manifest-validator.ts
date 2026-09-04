@@ -47,7 +47,7 @@ export async function validateEvalManifests(
   // Resolved before any manifest is read: a misplaced holdout is a setup fault
   // that must be reported even when a manifest fails to parse.
   const resolvedPrivatePath = await resolvePrivatePath(privatePath, projectRoot, errors, notes);
-  const directories = await findEvalDirectories(projectRoot, notes);
+  const directories = await findEvalDirectories(projectRoot, notes, errors);
   const privateStoreEnvVars = new Set<string>();
 
   for (const directory of directories) {
@@ -217,7 +217,32 @@ function readPrivateStoreCommit(baseline: Record<string, unknown> | undefined): 
   return typeof commit === 'string' ? commit : null;
 }
 
-async function findEvalDirectories(projectRoot: string, notes: string[]): Promise<string[]> {
+/**
+ * Directories under `evals/` that hold material shared between lanes rather than
+ * a lane of their own.
+ *
+ * A list rather than "anything that is not a skill name": a lane directory whose
+ * name is misspelled would otherwise stop being a lane silently, and the tier in
+ * `AGENTS.md` is derived from that directory existing. With the list, a misspelt
+ * lane is an error naming both possibilities.
+ */
+const sharedDirectoryNames = new Set(['fixtures']);
+
+async function shippedSkillNames(projectRoot: string): Promise<Set<string>> {
+  try {
+    const entries = await readdir(path.join(projectRoot, 'skills'), { withFileTypes: true });
+
+    return new Set(entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name));
+  } catch {
+    return new Set();
+  }
+}
+
+async function findEvalDirectories(
+  projectRoot: string,
+  notes: string[],
+  errors: string[]
+): Promise<string[]> {
   let entries;
 
   try {
@@ -227,10 +252,25 @@ async function findEvalDirectories(projectRoot: string, notes: string[]): Promis
     return [];
   }
 
-  const directories = entries
+  const found = entries
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
     .sort();
+  const skills = await shippedSkillNames(projectRoot);
+  const directories: string[] = [];
+
+  for (const name of found) {
+    if (skills.has(name)) {
+      directories.push(name);
+      continue;
+    }
+
+    if (sharedDirectoryNames.has(name)) continue;
+
+    errors.push(
+      `${evalsRoot}/${name}/: is neither a shipped skill's lane nor declared shared material. Rename it to the skill it evaluates, or declare it in sharedDirectoryNames with a reason.`
+    );
+  }
 
   if (directories.length === 0) {
     notes.push(`${evalsRoot}/: no evaluation contracts found.`);
