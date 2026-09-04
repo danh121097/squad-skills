@@ -170,11 +170,34 @@ export const boundaryClauses: BoundaryClause[] = [
   },
   {
     id: 'HANDOFF-FINDINGS-001',
-    // squad-fix is the consuming side that acts on findings; the lead's copy of
-    // the same rule lives in the team pipeline reference in its own words.
+    // Every role that produces a slice is a consuming side here, not only
+    // squad-fix: `CHANGES_REQUESTED` returns to whoever owns the diff. The lead's
+    // copy of the same rule lives in the team pipeline reference in its own words.
     statement:
       'severity-ranked findings carrying file:line, failure condition, impact and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`',
-    files: [codeReviewSkill, fixSkill],
+    files: [codeReviewSkill, ...rolesWithAnImplementationSlice],
+  },
+  {
+    id: 'HANDOFF-REPRO-001',
+    // The forward edges were stated at both ends and bound; the return edges were
+    // stated only by the gate that issues them. A role that has never been told
+    // what a `FAIL` contains has nothing in its own contract to refuse a bare
+    // "it does not work" with, and the FAIL loop is where a squad spends its
+    // iterations. Bound from the shared fragment: QA addresses it to the owning
+    // role, the owning role states it as what a FAIL brings back.
+    statement: 'the minimal repro, expected versus actual, and the redacted artifacts',
+    files: [qaSkill, ...rolesWithAnImplementationSlice],
+  },
+  {
+    id: 'HANDOFF-RUNTIME-001',
+    // squad-backend published its data changes to nobody in particular while
+    // squad-devops — the role that has to order a migration against a deploy —
+    // named nothing it receives. A deploy that runs a migration in the wrong
+    // order against a live database is the failure this edge exists to prevent,
+    // and it was the one stage boundary in the pipeline stated at neither end.
+    statement:
+      'what the change needs to run: the runtime version and service configuration by reference rather than by value, the migration ordering against the deploy, and the health signal that proves the service started',
+    files: [backendSkill, devopsSkill],
   },
   {
     id: 'HANDOFF-DEPLOY-001',

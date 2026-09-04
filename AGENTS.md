@@ -65,7 +65,11 @@
   and that it may never report an absent skill as run. `HANDOFF-*` covers a stage boundary in the
   squad pipeline — what shape crosses it, who owns a mandatory gate when the
   peer skill is not installed, which verdict closes a stage, and what a role
-  does when a named squad peer is absent. `QUALITY-PREFLIGHT-*` binds the
+  does when a named squad peer is absent. A stage boundary is stated by both
+  the sending and the receiving role, in both directions: an edge only its
+  sender describes leaves the receiver no contract to refuse a handoff that
+  arrives incomplete, which is how every return edge stood before
+  `HANDOFF-REPRO-001`. `QUALITY-PREFLIGHT-*` binds the
   pre-flight line the roles share. The same file also carries `RETIRED-SPEC-*`,
   which works the other way: wording the contract retired, failed wherever it
   survives. Bind a sentence when it exists in two files and their drifting apart

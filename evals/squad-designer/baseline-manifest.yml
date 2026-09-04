@@ -150,6 +150,19 @@ private_store:
 # squad-mobile's ten-word entrypoint move; no reference word moves with it.
 # squads-team gained the framing contract the same audit found missing, but it
 # carries no figures here.
+#
+# Re-measured an eighth time, same cycle, squad-designer untouched again. A
+# handoff audit found the pipeline asymmetric: every forward edge was stated at
+# both ends and bound, while every return edge — a QA `FAIL`, a Code Review
+# `CHANGES_REQUESTED` — was stated only by the gate issuing it, so a role that
+# owns the diff had nothing in its own contract saying what came back. The same
+# audit found one edge stated at neither end: squad-backend published its data
+# changes to nobody in particular, and squad-devops, which has to order a
+# migration against a deploy, named nothing it receives. Both ends are now
+# written and bound as HANDOFF-REPRO-001 and HANDOFF-RUNTIME-001, and
+# HANDOFF-FINDINGS-001 widened from squad-fix to every role that owns a slice.
+# squad-frontend and squad-mobile each move by the two receiving bullets and
+# nothing else; their references are untouched, so only entrypoint words move.
 skills:
   squad-designer:
     version: 2.3.0
@@ -161,20 +174,20 @@ skills:
     total_payload_words: 7497
   squad-frontend:
     version: 1.8.0
-    payload_hash: sha256:3df3eade19d013e2ce879517b48749c9095e4ade6506a1f3b1ba8ba8bfdc67d8
+    payload_hash: sha256:38f80c72f0b42b062aa9bd4928e38edb028edb7c527fa4f3e396746e24c63db1
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 1101
+    entrypoint_words: 1137
     reference_count: 9
     reference_words: 4123
-    total_payload_words: 5224
+    total_payload_words: 5260
   squad-mobile:
     version: 1.8.0
-    payload_hash: sha256:f8cc2b15d2c6dde172b99b472be0dd5186a5b0d320ec62627a0def3a269caed0
+    payload_hash: sha256:f9637c14cf9f96192ff11726e62b099961a148da4b57370cfa8417b391661cf1
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 967
+    entrypoint_words: 1003
     reference_count: 8
     reference_words: 2919
-    total_payload_words: 3886
+    total_payload_words: 3922
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of

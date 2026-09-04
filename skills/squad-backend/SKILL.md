@@ -99,8 +99,14 @@ self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflig
 - Compatibility impact on existing consumers, and the migration or version path off an intentional break.
 - Data changes as shipped: migration direction, rollback boundary, backfill state, and the environment
   each one ran against.
+- To DevOps, what the change needs to run: the runtime version and service configuration by
+  reference rather than by value, the migration ordering against the deploy, and the health
+  signal that proves the service started.
 - To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
   that exercise it, and the checks already run.
+- On a QA `FAIL`, the minimal repro, expected versus actual, and the redacted artifacts.
+- From Code Review, severity-ranked findings carrying file:line, failure condition, impact and
+  remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
   logical passes and labels them non-independent.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's

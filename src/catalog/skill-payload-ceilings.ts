@@ -32,20 +32,32 @@
  * cycle is trimming the skill to fit.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 4994,
+  // Raised for the return path: what a QA `FAIL` and a Code Review verdict
+  // bring back, stated on the receiving end where only the sender had it.
+  // Also the runtime and migration-ordering edge it now hands DevOps.
+  'squad-backend': 5066,
   'squad-code-review': 3275,
   // The largest payload in the catalog, and the only one whose size is also
   // governed by a measured loaded-set budget. This ceiling is the outer bound;
   // the manifest's median-loaded figure is the one that binds in practice.
   'squad-designer': 7497,
-  'squad-devops': 5255,
-  'squad-fix': 4284,
-  'squad-frontend': 5224,
+  // Raised for the return path: what a QA `FAIL` and a Code Review verdict
+  // bring back, stated on the receiving end where only the sender had it.
+  // Also the same edge, stated as what it receives from Backend.
+  'squad-devops': 5327,
+  // Raised for the return path: what a QA `FAIL` and a Code Review verdict
+  // bring back, stated on the receiving end where only the sender had it.
+  'squad-fix': 4299,
+  // Raised for the return path: what a QA `FAIL` and a Code Review verdict
+  // bring back, stated on the receiving end where only the sender had it.
+  'squad-frontend': 5260,
   // Raised by ten words: the router now names existing-versus-new-app stack
   // selection, and the checklist carries the branch where nothing exists to
   // preserve. The reference already held the selection criteria; only the
   // entrypoint that routes to them moved.
-  'squad-mobile': 3886,
+  // Raised for the return path: what a QA `FAIL` and a Code Review verdict
+  // bring back, stated on the receiving end where only the sender had it.
+  'squad-mobile': 3922,
   'squad-qa': 4075,
   // Raised by 225 words for the framing contract. The lead is told to lock
   // outcome, constraints, non-goals and acceptance in step one, and no role

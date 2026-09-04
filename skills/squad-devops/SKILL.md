@@ -96,8 +96,14 @@ a recovery path. Before applying or handing over, run the self-review in
   — static, plan or deployed — and the rollback trigger and recovery path.
 - The reproducible artifact and its pinned inputs, the environment configuration and secret wiring by
   reference rather than by value, and who owns the alerts on the changed path.
+- From Backend, what the change needs to run: the runtime version and service configuration by
+  reference rather than by value, the migration ordering against the deploy, and the health
+  signal that proves the service started.
 - To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
   that exercise it, and the checks already run.
+- On a QA `FAIL`, the minimal repro, expected versus actual, and the redacted artifacts.
+- From Code Review, severity-ranked findings carrying file:line, failure condition, impact and
+  remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
   logical passes and labels them non-independent.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's

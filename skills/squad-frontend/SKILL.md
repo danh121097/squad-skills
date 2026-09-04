@@ -106,6 +106,9 @@ handing over, run the self-review in
   this role wires behavior into what it receives and returns a visual or interaction gap to Designer.
 - To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
   that exercise it, and the checks already run.
+- On a QA `FAIL`, the minimal repro, expected versus actual, and the redacted artifacts.
+- From Code Review, severity-ranked findings carrying file:line, failure condition, impact and
+  remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
   logical passes and labels them non-independent.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
