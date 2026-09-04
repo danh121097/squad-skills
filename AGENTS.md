@@ -35,6 +35,16 @@
   adding `evals/<skill>/`, not editing `src/eval/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
   so every `SKILL.md` change must pass the repository gate.
+- Every skill carries a total-payload ceiling in
+  `src/catalog/skill-payload-ceilings.ts`, checked by `pnpm validate`. It exists
+  because the manifest budget reaches three skills and binds a loaded-set figure
+  for one, which left eight able to grow with nothing objecting — and they grew
+  by 12% to 42% of their reference words in a single upgrade that believed a
+  budget governed it. A change that pushes a skill past its ceiling cuts content
+  first; raising the figure is a reviewed number in the same diff, which is the
+  whole point of recording it. Total payload is the coarse metric deliberately:
+  where a skill declares task types the loaded set is the honest budget, but a
+  skill that declares none has no loaded set to measure.
 - Keep durable user guidance in `README.md` or `docs/`. `plans/` is ignored local
   execution state and must not become product authority.
 - Squad handoffs are contracts stated in prose, not records written to disk. No

@@ -242,19 +242,34 @@ loads for a web task, and a total-payload cap would punish exactly the routing
 that keeps a run cheap. Words are whitespace-delimited tokens over the whole
 file, matching `wc -w`, so any recorded figure can be checked by hand.
 
-Two rules follow from it, and both bite in ordinary work:
+That figure only exists for a skill that declares its task types, and only one
+does. So a second, coarser bound covers the rest: every skill carries a
+**total-payload ceiling** in `src/catalog/skill-payload-ceilings.ts`, checked by
+`pnpm validate` rather than `pnpm validate:evals`, because six of the nine
+skills appear in no manifest and the eval gate would never reach them. Read it
+as a proxy that catches unnoticed growth, not as a claim about what a run loads —
+where the median-loaded figure exists, it is the one that binds.
+
+Three rules follow, and all three bite in ordinary work:
 
 - **Re-measure in the same change.** A change that moves a payload hash a
   baseline manifest records re-measures it in that commit, never in a follow-up,
   and says which cycle in flight that frozen baseline belongs to. Re-measurement
   is part of what a maintainer approves.
-- **Cut the content, never raise the ceiling.** There are two ceilings, both
-  enforced by `pnpm validate:evals`: the per-skill entrypoint and median-loaded
-  figures recorded for the measured skills, and a single cap on how long any one
-  reference file may be. Raising either is a deliberate, reviewed contract
+- **Cut the content, never raise the ceiling.** Two ceilings are enforced by
+  `pnpm validate:evals`: the per-skill entrypoint and median-loaded figures
+  recorded for the measured skills, and a cap on how long any one reference file
+  of the governing skill may be — it reads that skill's references only, so a
+  long reference elsewhere in the catalog is bounded by the total-payload
+  ceiling and by review, not by this cap. Raising either is a deliberate, reviewed contract
   change — and for the reference cap the manifest additionally requires it to be
   recorded in the eval contract. Neither is a step in landing a change that did
   not fit.
+- **Every skill has a size bound, not only the measured ones.** The
+  total-payload ceiling above covers all nine and fails in `pnpm validate` on
+  the first word past it. Raising one is legitimate where the content earns it;
+  what the ceiling buys is that the increase appears as a reviewed number in the
+  diff instead of as a side effect nobody sized.
 
 There is a stated limit here worth repeating: the routing table and the skill it
 measures are edited by the same party, so the gate proves the recorded numbers
