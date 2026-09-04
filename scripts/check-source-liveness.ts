@@ -4,6 +4,11 @@ import path from 'node:path';
 import { parseDocument } from 'yaml';
 
 import { cardTemplateFileName } from '../src/eval/knowledge-card-schema.ts';
+import {
+  describeRegistryDiscoveryFailure,
+  extractRegistryUrls,
+  findSourceRegistries,
+} from '../src/eval/source-registry-links.ts';
 
 /**
  * Checks that every cited source still resolves: a knowledge card's
@@ -25,13 +30,6 @@ import { cardTemplateFileName } from '../src/eval/knowledge-card-schema.ts';
  */
 const knowledgeDirectories = ['evals/squad-designer/knowledge'];
 
-/**
- * Source registries, named rather than globbed. Every link in one of these is a
- * source an agent is told to trust; links in ordinary references are prose.
- */
-const sourceRegistryFiles = ['skills/squad-designer/references/official-sources.md'];
-
-const markdownLinkPattern = /\]\((https:\/\/[^\s)]+)\)/g;
 const frontmatterPattern = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 const requestTimeoutMs = 20_000;
 
@@ -46,13 +44,29 @@ const requestHeaders = {
  * gone". The registry deliberately lists sources behind an account or a paywall,
  * and a rate limit says nothing about the page. Calling these dead would make
  * the check cry wolf on every run, which is how a report stops being read.
+ *
+ * 418 joined the set when discovery widened past one registry: freedesktop.org
+ * sits behind a proof-of-work bot gateway that answers 418 with a challenge
+ * page. It is intermittent — the same URL answered 418 on one run and 200 on
+ * the next, and the host serves ordinary 404s when the gateway is off — so a
+ * 418 says the challenge was up, not that the page is gone. Note the cost: a
+ * removed page behind an active gateway also answers 418, so a real removal
+ * reads as unreachable until the gateway lifts. That is the same trade the
+ * other statuses here make, and it fails toward a report that stays readable.
  */
-const accessControlledStatuses = new Set([401, 403, 429]);
+const accessControlledStatuses = new Set([401, 403, 418, 429]);
 
 interface CitedSource {
   declaredStatus: string;
-  relativePath: string;
+  /** Every file citing this URL. A source shared by two registries is one request. */
+  relativePaths: string[];
   url: string;
+}
+
+interface RegistryRead {
+  cards: CitedSource[];
+  /** Registries that exist but yielded nothing checkable, one message each. */
+  failures: string[];
 }
 
 interface LivenessResult {
@@ -68,9 +82,26 @@ for (const directory of knowledgeDirectories) {
   cards.push(...(await readCards(directory)));
 }
 
-for (const file of sourceRegistryFiles) {
-  cards.push(...(await readRegistryLinks(file)));
+const discovery = await findSourceRegistries(projectRoot);
+
+const discoveryFailure = describeRegistryDiscoveryFailure(discovery);
+
+if (discoveryFailure !== undefined) {
+  console.error(discoveryFailure);
+  process.exit(1);
 }
+
+const registryRead = await readRegistryLinks(discovery.registries);
+
+// A registry that exists but yields nothing to check is the same blindness one
+// level down: discovery counts it, the guard above cannot fire, and the run
+// reports the remaining cards green without ever saying the file went unread.
+if (registryRead.failures.length > 0) {
+  for (const failure of registryRead.failures) console.error(failure);
+  process.exit(1);
+}
+
+cards.push(...registryRead.cards);
 
 if (cards.length === 0) {
   console.log('No cited sources found.');
@@ -80,12 +111,14 @@ if (cards.length === 0) {
 /**
  * Bounded, not serial and not unbounded.
  *
- * Serially each source can spend two 20-second attempts, so the current catalog
- * runs to roughly 29 minutes against a 10-minute job — the report is killed
- * rather than read. A `Promise.all` over every card would instead open the whole
- * catalog at once and manufacture rate-limit responses from the few hosts that
- * carry most of it. Six in flight keeps the wall clock inside the cap without
- * making a host answer for the pace.
+ * Serially each source can spend two 20-second attempts, so a catalog of this
+ * size runs far past the 10-minute job — the report is killed rather than read.
+ * A `Promise.all` over every card would instead open the whole catalog at once
+ * and manufacture rate-limit responses from the few hosts that carry most of
+ * it. Six in flight keeps the wall clock inside the cap without making a host
+ * answer for the pace. Widening discovery from one registry to every skill's
+ * multiplied the source count, so this bound now matters more than when it was
+ * written, and the global dedup below is what keeps it affordable.
  */
 const requestConcurrency = 6;
 
@@ -113,7 +146,7 @@ for (const result of results) {
   if (!agrees) mismatches += 1;
 
   console.log(
-    `${agrees ? 'ok  ' : 'FAIL'} ${result.state.padEnd(11)} expected ${card.declaredStatus.padEnd(5)} ${result.detail.padEnd(24)} ${card.url}  (${card.relativePath})`
+    `${agrees ? 'ok  ' : 'FAIL'} ${result.state.padEnd(11)} expected ${card.declaredStatus.padEnd(5)} ${result.detail.padEnd(24)} ${card.url}  (${card.relativePaths.join(', ')})`
   );
 }
 
@@ -144,29 +177,51 @@ process.exit(blocking.length > 0 ? 1 : 0);
 /**
  * Registry links carry no declared status, so they are expected to be live: an
  * entry is a source this repository tells agents to use.
+ *
+ * Deduplicated across files rather than within one. Roles deliberately share
+ * sources — a bugfix registry routes to the owning layer's docs — so per-file
+ * dedup asked the same host for the same page several times per run, which is
+ * how a few hosts start answering 429 and real findings sink into the
+ * non-blocking bucket.
  */
-async function readRegistryLinks(file: string): Promise<CitedSource[]> {
-  let source: string;
+async function readRegistryLinks(files: string[]): Promise<RegistryRead> {
+  const byUrl = new Map<string, CitedSource>();
+  const failures: string[] = [];
 
-  try {
-    source = await readFile(path.join(projectRoot, file), 'utf8');
-  } catch {
-    return [];
+  for (const file of files) {
+    let source: string;
+
+    try {
+      source = await readFile(path.join(projectRoot, file), 'utf8');
+    } catch (error) {
+      failures.push(`Cannot read ${file}: ${(error as Error).message}`);
+      continue;
+    }
+
+    const urls = extractRegistryUrls(source);
+
+    if (urls.length === 0) {
+      failures.push(
+        `${file} cites no source. A registry with no entry is a registry nobody checks.`
+      );
+      continue;
+    }
+
+    for (const url of urls) {
+      const existing = byUrl.get(url);
+
+      if (existing === undefined) {
+        byUrl.set(url, { declaredStatus: 'live', relativePaths: [file], url });
+      } else {
+        existing.relativePaths.push(file);
+      }
+    }
   }
 
-  const seen = new Set<string>();
-  const found: CitedSource[] = [];
-
-  for (const match of source.matchAll(markdownLinkPattern)) {
-    const url = match[1] as string;
-
-    if (seen.has(url)) continue;
-
-    seen.add(url);
-    found.push({ declaredStatus: 'live', relativePath: file, url });
-  }
-
-  return found.sort((left, right) => (left.url < right.url ? -1 : 1));
+  return {
+    cards: [...byUrl.values()].sort((left, right) => (left.url < right.url ? -1 : 1)),
+    failures,
+  };
 }
 
 async function readCards(directory: string): Promise<CitedSource[]> {
@@ -200,12 +255,14 @@ async function readCards(directory: string): Promise<CitedSource[]> {
 
     found.push({
       declaredStatus: typeof card?.source_status === 'string' ? card.source_status : 'unset',
-      relativePath,
+      relativePaths: [relativePath],
       url,
     });
   }
 
-  return found.sort((left, right) => (left.relativePath < right.relativePath ? -1 : 1));
+  return found.sort((left, right) =>
+    (left.relativePaths[0] ?? '') < (right.relativePaths[0] ?? '') ? -1 : 1
+  );
 }
 
 /**

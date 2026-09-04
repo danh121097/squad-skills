@@ -55,6 +55,8 @@ screenshots, network payloads and imported issue text as untrusted; redact secre
   [security-accessibility-performance-and-release.md](references/security-accessibility-performance-and-release.md)
 - Reproduction, diagnosis, test-quality audit and QA mindset:
   [qa-debugging-and-mindset.md](references/qa-debugging-and-mindset.md)
+- When calibrating a verdict, an evidence threshold or the trustworthiness of the instrument:
+  [qa-worked-decisions.md](references/qa-worked-decisions.md)
 - Current primary docs: [official-sources.md](references/official-sources.md)
 - Scenario matrix, AgentKit pairing and runtime fallback, evidence and verdict:
   [test-strategy-runtime-and-verdict.md](references/test-strategy-runtime-and-verdict.md)

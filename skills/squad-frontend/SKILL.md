@@ -66,6 +66,8 @@ Read only the reference required by the current decision:
   [references/frontend-security-accessibility-and-performance.md](references/frontend-security-accessibility-and-performance.md).
 - For test strategy, browser diagnosis, hydration/render bugs, code quality and frontend mindset, read
   [references/frontend-testing-debugging-and-mindset.md](references/frontend-testing-debugging-and-mindset.md).
+- When calibrating a motion, cascade, accessibility or scope decision against concrete cases, read
+  [references/frontend-worked-decisions.md](references/frontend-worked-decisions.md).
 - For current primary documentation, read [references/official-sources.md](references/official-sources.md).
 - Before choosing tools for a phase, and when AgentKit, specialist skills, QA/Review squad gates, Figma,
   browser, or test capabilities are in question, read

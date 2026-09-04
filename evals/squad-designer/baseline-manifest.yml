@@ -60,14 +60,17 @@ private_store:
 # budget.median_loaded_words stays 1959: the growth was sized to keep
 # motion-direction and the two 1760 task types below degraded-runtime-fallback,
 # which is the median-setting path and was deliberately not touched.
+# Standing note for the squad-parity re-measures that follow: squad-designer is
+# untouched throughout them, so its payload hash, routing table, budget, pinned
+# models and acceptance set are unchanged and the frozen baseline remains
+# designer-presentational-code-2026-08-27. Each paragraph below records only
+# what moved and why.
+#
 # Re-measured a fourth time as the squad-parity upgrade gives each non-designer
 # role its own quality bar and pre-flight reference, derived from that role's
 # recorded failure modes rather than translated from the designer's. This is
-# still the same cycle: squad-designer is untouched, so its payload hash,
-# routing table, budget, pinned models and acceptance set are all unchanged, and
-# the frozen baseline this re-measure belongs to remains
-# designer-presentational-code-2026-08-27. Only the two review-only skills this
-# manifest also records move — squad-frontend and squad-mobile — each by one
+# still the same cycle. Only the two review-only skills this manifest also
+# records move — squad-frontend and squad-mobile — each by one
 # added reference plus the entrypoint section that routes to it. Neither carries
 # task_types here, so no loaded-words figure moves and the phase_1_reference
 # ceiling on the governing budget is untouched.
@@ -80,10 +83,8 @@ private_store:
 # `pnpm validate` fails. Still the same cycle, and squad-designer is untouched
 # again — deliberately, because its entrypoint is eval-covered and an edit there
 # would owe the evaluation cycle rather than this gate; its side of the design
-# handoff is already bound by BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001. So
-# its payload hash, routing table, budget, pinned models and acceptance set are
-# unchanged, and the frozen baseline remains
-# designer-presentational-code-2026-08-27. squad-frontend and squad-mobile move
+# handoff is already bound by BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001.
+# squad-frontend and squad-mobile move
 # by the added entrypoint section alone: reference_count and reference_words are
 # unchanged, neither carries task_types here, so no loaded-words figure moves
 # and the phase_1_reference ceiling on the governing budget is untouched.
@@ -96,6 +97,46 @@ private_store:
 # their entrypoints. Version numbers stay where the previous amendment put them,
 # because nothing between the two was published. Still the same cycle, and
 # squad-designer is still untouched.
+#
+# Re-measured a sixth time as the same upgrade fills the two mechanical gaps:
+# worked examples for squad-devops, squad-frontend, squad-mobile, squad-qa and
+# squads-team, and a source registry for squad-fix. Every example carries its
+# provenance, because a constructed example that never happened teaches a
+# pattern nobody validated: squad-frontend's and squad-qa's are drawn from the
+# recorded design runs in docs/design-examples/, squad-devops's from this
+# repository's own release and CI history, and squad-mobile's and squads-team's
+# are marked constructed throughout — squad-mobile deliberately gets four rather
+# than six, since no recorded mobile run exists to draw on. squads-team gets the
+# examples but no registry: it consults no external primary source that is not
+# already in the registry of a role it routes to, so one there would duplicate
+# or invent. squad-fix's registry adds no source of its own; every link in it is
+# already carried by a sibling registry the maintainer reviewed. Still the same
+# cycle, and squad-designer is untouched again for the same reason as before.
+# squad-frontend and squad-mobile each
+# move by one added reference plus the one entrypoint line that routes to it,
+# and neither carries task_types here, so no loaded-words figure moves and the
+# phase_1_reference ceiling on the governing budget is untouched. Version
+# numbers stay where the quality-bar amendment put them: nothing in this set has
+# been published.
+#
+# Widening the source-liveness check to every registry, in the same change,
+# found one dead entry: the Apple app-lifecycle page had moved from an
+# underscored path to a hyphenated one and returned 404. It is corrected in
+# squad-mobile's registry and in the new squad-fix one. That correction is a
+# second, separate cause moving squad-mobile's payload hash in this change; the
+# replacement URL is one word either way, so no word count moves with it. The
+# word counts recorded below moved for the other reason: the added reference.
+#
+# A third cause moves the same hash and no word count with it. Review found the
+# SwiftUI root cited two ways across the catalog — with a trailing slash in
+# squad-mobile and squad-fix, without one in squad-designer — which is two keys
+# for one page and one wasted request per run. The two review-only registries
+# were normalised to the designer's spelling rather than the reverse, so the
+# eval-covered skill stays untouched and owes the evaluation cycle nothing.
+# Reviewed in the same pass: squad-code-review cited CERT's secure-coding
+# standards at the Confluence wiki, which no longer answers; the standards moved
+# to cmu-sei.github.io and the entry follows them. squad-code-review carries no
+# figures here, so nothing in this manifest moves for it.
 skills:
   squad-designer:
     version: 2.3.0
@@ -107,20 +148,20 @@ skills:
     total_payload_words: 7497
   squad-frontend:
     version: 1.8.0
-    payload_hash: sha256:395c99f3c430bdaa650c3c25f9ddc12b4b89b6b1f24c29fb2dd4ab99df818dd6
+    payload_hash: sha256:3df3eade19d013e2ce879517b48749c9095e4ade6506a1f3b1ba8ba8bfdc67d8
     boundary_hash: sha256:51b66992369e0164396a787e1b24e4b5500022eb6f3544eff10fd8614825fc57
-    entrypoint_words: 1086
-    reference_count: 8
-    reference_words: 3504
-    total_payload_words: 4590
+    entrypoint_words: 1101
+    reference_count: 9
+    reference_words: 4123
+    total_payload_words: 5224
   squad-mobile:
     version: 1.8.0
-    payload_hash: sha256:623c297b0c5f58311d84e8ebc63645fb4c7f4902944d84e1e8d9729397666ea5
+    payload_hash: sha256:3549b6c5eeff8810e63ab3182a92378421208cb34ef298f746ac288d1c51e71a
     boundary_hash: sha256:fd120467ba947e99a11fda8482d6332c6678e9be8b506a62e4a983de5799fdad
-    entrypoint_words: 942
-    reference_count: 7
-    reference_words: 2482
-    total_payload_words: 3424
+    entrypoint_words: 957
+    reference_count: 8
+    reference_words: 2919
+    total_payload_words: 3876
 
 # Transcribed from the platform and source routers in
 # skills/squad-designer/SKILL.md. Each task type names the references a run of

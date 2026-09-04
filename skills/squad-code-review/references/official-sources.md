@@ -9,7 +9,7 @@ replace exact version documentation.
 - OWASP MASVS/MASTG: https://mas.owasp.org/
 - OWASP Cheat Sheets: https://cheatsheetseries.owasp.org/
 - CWE: https://cwe.mitre.org/
-- CERT secure coding: https://wiki.sei.cmu.edu/confluence/display/seccode/
+- CERT secure coding: https://cmu-sei.github.io/secure-coding-standards/
 - NIST SSDF: https://csrc.nist.gov/Projects/ssdf
 - SLSA: https://slsa.dev/
 - WCAG 2.2: https://www.w3.org/TR/WCAG22/

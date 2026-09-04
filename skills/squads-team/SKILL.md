@@ -69,6 +69,8 @@ PR, deploy, mutate data or change external services unless requested or required
   nested orchestrator when this lead already owns execution.
 - When a named squad role skill is unavailable, or when auditing whether a role covered its full domain,
   read [references/domain-coverage-contracts.md](references/domain-coverage-contracts.md).
+- When routing, ownership, execution mode or a gate outcome is ambiguous, read
+  [references/coordination-worked-decisions.md](references/coordination-worked-decisions.md).
 
 ## Workflow
 

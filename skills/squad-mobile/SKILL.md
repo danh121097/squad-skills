@@ -56,6 +56,8 @@ by the task. Reuse safe project processes, and stop only task-owned resources wh
   [references/mobile-security-performance-testing-and-release.md](references/mobile-security-performance-testing-and-release.md).
 - For crash/ANR/render/network/build diagnosis and mobile engineering mindset, read
   [references/mobile-debugging-and-mindset.md](references/mobile-debugging-and-mindset.md).
+- When calibrating a lifecycle, offline, permission or evidence decision against concrete cases, read
+  [references/mobile-worked-decisions.md](references/mobile-worked-decisions.md).
 - For current primary documentation, read [references/official-sources.md](references/official-sources.md).
 - Before choosing tools for a phase, and when AgentKit, mobile specialists, devices, QA, Review, or
   browser/docs tools are in question, read

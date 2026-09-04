@@ -17,9 +17,9 @@ SDK/store dates from an older skill.
 ## Apple
 
 - Swift: https://www.swift.org/documentation/
-- SwiftUI/UIKit: https://developer.apple.com/documentation/swiftui/ and https://developer.apple.com/documentation/uikit/
+- SwiftUI/UIKit: https://developer.apple.com/documentation/swiftui and https://developer.apple.com/documentation/uikit
 - HIG: https://developer.apple.com/design/human-interface-guidelines/
-- App lifecycle/background: https://developer.apple.com/documentation/uikit/app_and_environment/
+- App lifecycle/background: https://developer.apple.com/documentation/uikit/app-and-environment
 - Security/Keychain: https://developer.apple.com/documentation/security/
 - StoreKit: https://developer.apple.com/documentation/storekit/
 - App Store Review: https://developer.apple.com/app-store/review/guidelines/

@@ -77,6 +77,8 @@ Read only what the current bug requires:
   [verification-qa-review-and-reporting.md](references/verification-qa-review-and-reporting.md).
 - When a concrete routing, severity or scope example will improve judgment, read
   [worked-bugfix-examples.md](references/worked-bugfix-examples.md).
+- When platform, contract or tooling behavior must be verified rather than remembered, read
+  [official-sources.md](references/official-sources.md).
 
 ## Quality bar
 

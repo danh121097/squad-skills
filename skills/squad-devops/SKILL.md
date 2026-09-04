@@ -62,6 +62,8 @@ task. Reuse safe project-owned processes; stop only task-owned resources at comp
   [sre-observability-resilience-and-cost.md](references/sre-observability-resilience-and-cost.md)
 - Infra tests, pipeline/deploy debugging, release evidence and DevOps mindset:
   [devops-testing-debugging-and-mindset.md](references/devops-testing-debugging-and-mindset.md)
+- When calibrating a delivery, pipeline-trust or supply-path decision against concrete cases:
+  [devops-worked-decisions.md](references/devops-worked-decisions.md)
 - Current primary docs: [official-sources.md](references/official-sources.md)
 - AgentKit pairing, or a missing provider CLI/access/QA/Review capability:
   [runtime-and-safe-delivery-fallbacks.md](references/runtime-and-safe-delivery-fallbacks.md)
