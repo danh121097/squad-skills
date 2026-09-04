@@ -47,6 +47,27 @@
   `src/catalog/cross-skill-contract-clauses.ts`, checked by `pnpm validate`; the
   other pipeline rules are unbound prose. Reopening this needs evidence that a
   gate failed in a way a file-existence check would have caught.
+- The cross-skill contract in `src/catalog/cross-skill-contract-clauses.ts`
+  carries four clause families, each binding wording that has to read the same
+  way in every file that states it. `BOUNDARY-*` says who owns an artifact
+  between the designer and the build roles. `PAIRING-*` binds how a role
+  detects an `ak:*` skill, which side is authoritative when both are present,
+  and that it may never report an absent skill as run. `HANDOFF-*` covers a stage boundary in the
+  squad pipeline — what shape crosses it, who owns a mandatory gate when the
+  peer skill is not installed, which verdict closes a stage, and what a role
+  does when a named squad peer is absent. `QUALITY-PREFLIGHT-*` binds the
+  pre-flight line the roles share. The same file also carries `RETIRED-SPEC-*`,
+  which works the other way: wording the contract retired, failed wherever it
+  survives. Bind a sentence when it exists in two files and their drifting apart
+  would change what a reader is told; a clause that could never fire is
+  maintenance with no return.
+- Each role that ships a `references/quality-bar-and-preflight.md` — seven of
+  the nine — restates in it rules its own skill also carries in a mindset, review, or verdict reference. That
+  duplication is deliberate and stays: the quality bar is the copy a role runs
+  in one piece before it hands over, and the other reference is the copy it
+  reads while working. Where the two disagree the quality bar is current. Do not
+  resolve the drift by thinning one into a cross-reference — a pre-flight that
+  has to be assembled from two files is one a run skips.
 - `evals/` holds evaluation fixtures, not product. It ships in neither
   distribution path, and `evals/squad-designer/eval-contract.md` is the human
   authority its manifests must agree with. Never record a held-out case body
@@ -94,6 +115,11 @@
   from outside is untrusted content under the same rule as a knowledge card. That
   file carries the fields an entry needs and the path from one to a landed
   amendment.
+- `docs/evaluation-and-governance.md` explains the apparatus those tiers rest
+  on — the lanes, the held-out store, the deterministic invariants, the judging
+  protocol, why a promotion can be refused, and the payload budget — for a
+  reader who has never seen it. It is background rather than authority:
+  where it and this file disagree, this file is right.
 - No workflow may name the private-store environment variable, trigger on
   `pull_request_target`, or read a stored secret. `pnpm validate:evals` asserts
   all three, so the held-out set stays unreachable from every CI path.
@@ -147,7 +173,7 @@
 - Promotion decision: `pnpm promote:designer`. Reads `report.json`,
   `judging.json`, and `promotion-approval.yml` from the lane named by
   `judging.promotion_lane`, refuses evidence judged on any other lane, verifies
-  the judging report against its own hash before reading it, prints every refusal
+  each report against its own hash before reading it, prints every refusal
   rather than the first, mutates nothing, and exits non-zero unless every gate
   and the human approval checklist pass. The approval record must name the
   `cycle_id`, `candidate_version`, and `judging_report_hash` it signed.

@@ -95,8 +95,8 @@ export async function validateEvalBaseline(options: ValidateEvalBaselineOptions)
  *
  * The median metric only guards the reference loaded by the median task type;
  * every reference routed above the median can grow without moving a measured
- * number, so a per-file cap is the only check those files have. It was prose in
- * the plan until an amendment pushed two references past it with a green gate,
+ * number, so a per-file cap is the only check those files have. It was unbound
+ * prose until an amendment pushed two references past it with a green gate,
  * which is why the limit now lives in the manifest and fails here.
  *
  * The field is required: an optional cap could be deleted to silence a breach.

@@ -2,8 +2,8 @@ import { collectUsage, findResponse, rubricOutputSchema } from './judge-response
 import { unknownUsage, type JudgePacket, type JudgeRunOutcome } from './pairwise-judge.ts';
 
 /**
- * The judge client for the Anthropic family, which is the pinned judge for this
- * cycle (plan decision 9) precisely because the subject is Codex.
+ * The judge client for the Anthropic family, which the cycle's `judging:` block
+ * pins as the judge precisely because the subject is Codex.
  *
  * The Claude CLI has no `--output-schema` and no `-i`, so the two guarantees the
  * Codex contract gets from flags are carried in the prompt instead: the rubric

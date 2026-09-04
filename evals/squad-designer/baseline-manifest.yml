@@ -256,7 +256,7 @@ task_types:
       - platform-adaptive-layout-and-input.md
     loaded_words: 1376
 
-# Pinned judging contract for the paid lanes (plan decision 9, phase 5).
+# Pinned judging contract for the paid lanes.
 # `pnpm validate:evals` refuses a judge in the subject's provider family, a case
 # that pins a model this block does not, and a paid-lane list that disagrees
 # with case-manifest.yml. Nothing here makes a call; the runner reads it.
@@ -317,7 +317,7 @@ judging:
     minimum_calibration_pairs: 6
     bootstrap_seed: 1
 
-# The governing budget for later phases (plan decision 5).
+# The governing budget.
 budget:
   skill: squad-designer
   entrypoint_words: 1014

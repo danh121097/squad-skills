@@ -411,8 +411,8 @@ describe('handoff contract family', () => {
     expect(result.errors[0]).toContain(teamSkill);
   });
 
-  // Carried in from the quality-bar phase: seven roles were given this line
-  // word for word with nothing holding them to it.
+  // Seven roles were given this line word for word with nothing holding them
+  // to it until the clause existed.
   it('binds the quality-bar pre-flight line to every role that runs one', async () => {
     const preflight = boundaryClauses.find((clause) => clause.id === 'QUALITY-PREFLIGHT-001');
     if (!preflight) throw new Error('QUALITY-PREFLIGHT-001 is missing from the shipped clauses.');
@@ -435,7 +435,7 @@ describe('normalizeProse', () => {
     );
   });
 
-  // The three holes the Phase 3 review named in this matcher.
+  // The three holes a review of this matcher named.
   it('removes fenced blocks so a clause stated only in a code sample does not count', () => {
     expect(normalizeProse('before\n\n```text\nthe shared boundary clause\n```\n\nafter')).toBe(
       'before after'

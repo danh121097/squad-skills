@@ -5,6 +5,16 @@ const inlineLinkPattern = /!?\[[^\]]*\]\(((?:[^()]|\([^()]*\))*)\)/g;
 /** A definition line: up to three spaces of indent, then `[label]: target`. */
 const referenceDefinitionPattern = /^[ \t]{0,3}\[([^\]]+)\]:[ \t]*(\S+)/gm;
 
+/**
+ * Resolves every relative Markdown link a skill states in prose, and refuses
+ * one that escapes the skill directory.
+ *
+ * Both halves matter at install time rather than here: a skill is installed one
+ * directory at a time, so a link to a sibling skill resolves in this repository
+ * and not in an installation that took only this skill. A broken in-skill link
+ * is the same failure one directory down. Called per skill by `validateSkills`,
+ * which is what `pnpm validate` runs.
+ */
 export async function validateMarkdownLinks(
   skillRoot: string,
   projectRoot: string,

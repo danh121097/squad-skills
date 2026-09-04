@@ -9,6 +9,14 @@ Read [AGENTS.md](AGENTS.md) first — it is the binding contract for the
 toolchain, the directory boundaries, and the verification commands. This guide
 covers only what is different when the change comes from outside.
 
+If you have not seen the evaluation apparatus before, read
+[docs/evaluation-and-governance.md](docs/evaluation-and-governance.md) once. It
+explains the lanes, why one of them is held out, what the deterministic
+invariants do and do not prove, how judging is protected against its own known
+biases, why a promotion can be refused, and what the payload budget means for a
+change. Nothing below assumes you have read it, but every rule below makes more
+sense with it.
+
 ## Before you open a pull request
 
 ```sh
@@ -17,8 +25,8 @@ pnpm test
 ```
 
 `pnpm test` is offline, deterministic, and the definition of done. It runs type
-checking, formatting, unit tests, catalog validation, and the evaluation
-contract. A pull request that does not pass it locally will not pass in CI.
+checking, formatting, unit tests, catalog validation, the evaluation contract,
+and catalog discovery through the pinned Skills CLI. A pull request that does not pass it locally will not pass in CI.
 
 ## What is accepted
 
@@ -148,6 +156,9 @@ contributor PR
    |- maintainer: source review (rights, authority, applicability)
    `- evaluation cycle -> promotion decision (acceptance set stays private)
 ```
+
+[docs/evaluation-and-governance.md](docs/evaluation-and-governance.md) walks
+through each stage of this path and the refusals the last one can produce.
 
 This path is what eval-covered skill content takes. Its content is compared
 against the frozen baseline, graded by deterministic gates, and only then

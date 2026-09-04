@@ -5,9 +5,13 @@ Human authority for the fixtures in this directory. Machine files
 where they disagree, this document is wrong until it is updated deliberately.
 
 Scope: the evaluation cycle that moves `squad-designer` from a spec-only role to
-a presentational-code role. Phase 1 defines the contract and freezes the
-baseline. Phase 2 performs the role change itself and re-measures. Neither runs
-models nor makes paid calls.
+a presentational-code role. "Phase" below always means a phase of that cycle,
+numbered in the order they ran and described where they are first mentioned, so
+this document reads without any other file: 1 defines the contract and freezes
+the baseline; 2 performs the role change and re-measures; 3 consolidates the
+reference set and expands platform coverage; 4 builds the render and compile
+harness; 5 builds judging and promotion; 6 opens the contribution path. Phases 1
+and 2 run no models and make no paid calls.
 
 ## Cycle rules
 
@@ -145,7 +149,7 @@ so one blocking failure cannot be averaged away by passes elsewhere.
 | `INV-SOURCE-001`   | sources are fetched from the registry, never bundled     | critical | static            |
 | `INV-TOKEN-001`    | styling resolves to semantic tokens, not raw literals    | medium   | static            |
 
-Verification tiers follow plan decision 10: web and adaptive are render-gated,
+Verification tiers are set per platform: web and adaptive are render-gated,
 React Native and Flutter are compile plus partial render, SwiftUI and Compose
 are compile plus human review. Native limits are stated, not implied.
 
@@ -153,7 +157,7 @@ Phase 4 implements the compile half of every native tier and the render tier for
 web and adaptive only. The partial render for React Native and Flutter is not
 built: those platforms currently receive the static gates plus `tsc --noEmit` or
 `flutter analyze`, and no rendered gate result is produced for them at all.
-That is a smaller claim than decision 10 describes, and it is recorded here
+That is a smaller claim than the tiers above describe, and it is recorded here
 rather than left to be inferred from an absent row in a report.
 
 A case's `hard_invariants` list declares which gates that case was written to
@@ -246,11 +250,13 @@ is a response whose every rubric names one entry while the overall call names
 the other: rubrics may be weighed unequally, but any weighting leaves at least
 one criterion agreeing with the result.
 
-**An inconclusive pair says why.** `inconclusive` covers four different events:
-the judge flipped between orders, the deterministic gates blocked an arm so the
-pair was never sent, a render could not be staged, or the budget stop halted the
-run before the case. Each outcome carries the reason, so a maintainer is not sent
-to debug judge instability for a case no judge ever saw.
+**An inconclusive pair says why.** Three causes carry a reason of their own: the
+deterministic gates blocked an arm so the pair was never sent, a render could not
+be staged, or the budget stop halted the run before the case. A maintainer is
+therefore never sent to debug judge instability for a case no judge ever saw.
+Everything that happened at the judge itself — a flip between orders, a judge
+that returned nothing, an answer that failed the rubric schema — reports under
+the fourth reason, and the outcome's `detail` is what separates them.
 
 **Length control.** Verbosity is a known confound: judges prefer longer answers
 independently of quality. A length-matched rewording of one arm is judged
@@ -353,7 +359,7 @@ substitute for that attestation, and no flag skips it.
 ## Budget metric
 
 The governing budget is **entrypoint words plus the median words loaded per task
-type**, not total payload (plan decision 5). Progressive disclosure means a
+type**, not total payload. Progressive disclosure means a
 native reference never loads for a web task, so a total-payload cap would punish
 correct platform routing.
 
@@ -416,9 +422,9 @@ registry; `design-mindset-evaluation-and-official-sources.md` and
 `runtime-capability-fallbacks.md` merged into their owning references and were
 deleted; `ui-foundation-and-motion-selection.md` became
 `platform-web-foundations-and-motion.md`; native cross-platform, Apple/Android,
-and adaptive references were added with tiered verification (plan decision 10).
+and adaptive references were added under the tiered verification above.
 Total payload grew to 6,813 words — deliberately unbounded, because the loaded
-set per task, not the payload, is the governed budget (plan decision 5).
+set per task, not the payload, is the governed budget.
 
 The routing table changed with the consolidation; the manifest annotates each
 routing edit with the consolidation that justifies it, and the diff review
@@ -523,7 +529,7 @@ the store is not parked on that commit.
 ## Boundary statements
 
 Captured at baseline so Phase 2 can detect drift when the three skills change
-their shared handoff contract in the same cycle (plan decision 7). The manifest
+their shared handoff contract in the same cycle. The manifest
 records a hash of each skill's `## Scope and boundary` section; the statements
 themselves stay in the skills, which remain the single source.
 
@@ -547,7 +553,7 @@ any one side of the handoff is edited alone.
 - No model runs, no judging, no scoring.
 - No change to any skill's content or version.
 - No render harness; that is Phase 4.
-- No public `learn-skill` package (plan decision 4).
+- No public `learn-skill` package.
 
 ## What Phase 2 deliberately does not do
 

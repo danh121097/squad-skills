@@ -171,8 +171,8 @@ cases:
       subject: { provider: codex, model: gpt-5.6-sol, effort: default }
       judge: { provider: anthropic, model: claude-opus-5, effort: default }
 
-  # The two cases below exist to falsify the queryable-reference-data lane
-  # (plan decision 12). The four cases above cannot: none of them has a wrong
+  # The two cases below exist to falsify the queryable-reference-data lane.
+  # The four cases above cannot: none of them has a wrong
   # answer that a style catalog would produce, so an A/B over them would measure
   # aggregate preference, which is the signal a polished template wins. Both
   # evidence packets carry an established token file and component inventory —

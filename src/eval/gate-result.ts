@@ -26,11 +26,11 @@ export interface GateResult {
 
 export interface GateSummary {
   /**
-   * Whether this run may be promoted. `critical` blocks alone, `high` blocks in
-   * aggregate, and a gate that never ran blocks too — an unchecked run is not a
-   * clean one. `medium` is reported and never blocks, because a raw literal is
-   * a coherence smell and failing correct work on one is the gate theater this
-   * phase was written to avoid.
+   * Whether this run may be promoted. One `critical` blocks, one `high` blocks,
+   * and a gate that never ran blocks too — an unchecked run is not a clean one.
+   * `medium` is reported and never blocks, because a raw literal is a coherence
+   * smell, and failing correct work on one is the gate theater this registry
+   * exists to avoid.
    */
   blocking: boolean;
   criticalFailures: number;

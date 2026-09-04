@@ -4,10 +4,20 @@ import path from 'node:path';
 import { boundaryClauses, retiredPhrases } from './cross-skill-contract-clauses.ts';
 
 /**
- * One sentence that must read the same way in every file that describes the
- * shared designer/build-role handoff. A handoff contract has two ends, so a
- * clause is declared once and required verbatim on both of them; editing one
- * side alone is the drift this validator exists to catch.
+ * One sentence that must read the same way in every file that states it.
+ *
+ * The name is narrower than what it now carries. Alongside the designer and
+ * build-role artifact boundary it began as, a clause here binds the AgentKit
+ * pairing rules, the squad-pipeline handoffs — what shape crosses a stage
+ * boundary, who owns a mandatory gate when its peer skill is absent, which
+ * verdict closes a stage, what a role does when a named peer is missing — and
+ * the pre-flight line every role with a quality bar states.
+ *
+ * What all of them share is that a clause is declared once and then required
+ * verbatim in every file the clause lists, so editing one of those files alone
+ * is the drift this validator exists to catch. How many files a clause reaches
+ * is the clause's own business: two for most stage boundaries, eight for the
+ * solo-fallback sentence.
  */
 export interface BoundaryClause {
   files: string[];
@@ -38,7 +48,8 @@ export interface ValidateCrossSkillContractOptions {
  * and code spans are presentation, so a clause stays satisfied when a file
  * rewraps or bolds part of it, and fails only when the wording itself changes.
  *
- * Three narrowings, carried from the Phase 3 review of this matcher:
+ * Three narrowings, each carried from a review that caught this matcher
+ * reaching the wrong verdict on a real file:
  *
  * - Fenced blocks and HTML comments are removed first. A boundary clause is a
  *   claim the skill makes to its reader; one that survives only inside a code

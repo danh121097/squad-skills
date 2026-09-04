@@ -39,14 +39,17 @@ export interface NativeCompileOptions {
 interface ToolchainSpec {
   args: string[];
   command: string;
-  /** Whether decision 10 additionally requires a human to look at the result. */
+  /** Whether the contract additionally requires a human to read the result. */
   humanReview: boolean;
 }
 
 /**
- * Per-platform verification depth, transcribed from plan decision 10. Web and
- * adaptive are absent on purpose: they are render-gated, and routing them here
- * would report a weaker tier than the one that actually ran.
+ * Per-platform verification depth, transcribed from the tiers in
+ * `evals/squad-designer/eval-contract.md` that are built — for React Native and
+ * Flutter the contract also states a partial render this gate does not run, and
+ * records that gap itself. Web and adaptive are absent on purpose: they are
+ * render-gated, and routing them here would report a weaker tier than the one
+ * that actually ran.
  */
 const toolchains: Record<string, ToolchainSpec> = {
   compose: { args: ['compileDebugKotlin', '--offline'], command: 'gradle', humanReview: true },
@@ -65,7 +68,7 @@ const manualReviewFields = ['reviewer', 'reviewed_on', 'verdict', 'notes'];
  * The one rule this gate exists to hold: an absent toolchain is reported as
  * unverified, never as passing. A native run that nothing could check has to
  * look different in the report from one that compiled, or the tiered
- * verification the plan accepted becomes a claim nobody can audit.
+ * verification the contract states becomes a claim nobody can audit.
  */
 export async function runNativeCompileGate(options: NativeCompileOptions): Promise<GateResult[]> {
   const { run, runDirectory, targetPlatform } = options;

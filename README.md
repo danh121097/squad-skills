@@ -75,7 +75,8 @@ pnpm release:check
 ```
 
 `pnpm test` runs TypeScript type checking, formatting verification, Vitest,
-skill-contract validation, and catalog discovery through the pinned Skills CLI.
+skill-contract validation, the evaluation-fixture contract, and catalog
+discovery through the pinned Skills CLI.
 
 Read [AGENTS.md](AGENTS.md) before contributing with a coding agent.
 Use [the publishing guide](docs/publishing.md) when the local repository and npm
@@ -96,6 +97,12 @@ frozen baseline and promoted only with a recorded human approval, and for a
 review-only skill — one with no evaluation lane yet — it ships on the
 deterministic gate plus maintainer review, recorded as such. [AGENTS.md](AGENTS.md)
 defines both tiers and which one a skill is in.
+
+[The evaluation and governance guide](docs/evaluation-and-governance.md)
+explains that apparatus for a reader who has never seen it: the lanes and the
+held-out set, the deterministic invariants over emitted output, how judging is
+kept honest, why a promotion can be refused, and the payload budget the
+measured skills are sized against.
 
 If you used one of these skills on real work and its output got something wrong,
 [`docs/skill-observations.md`](docs/skill-observations.md) is where that is

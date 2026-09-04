@@ -57,7 +57,7 @@ export interface EvalRunReport {
  * Aggregation is a max over severity, never a mean over scores: the contract
  * makes a critical invariant blocking on its own, so a run that improved
  * everywhere else still fails. That is the whole point of separating
- * deterministic gates from Phase 5 judging.
+ * deterministic gates from judging.
  */
 export function buildEvalRunReport(
   environment: EvalRunEnvironment,

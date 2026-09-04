@@ -78,9 +78,18 @@ const everyRoleWithAPreflight = [
 const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.md';
 
 /**
- * The role boundary as it stands after the designer moved from spec-only to
- * presentational code. Every skill that names the boundary carries the same
- * sentence so a reader of any one of them learns the same contract.
+ * Every sentence the catalog binds, in four families.
+ *
+ * `BOUNDARY-*` says who owns what between the designer and the build roles, as
+ * it stands after the designer moved from spec-only to presentational code.
+ * `PAIRING-*` binds how a role detects an `ak:*` skill, which side is
+ * authoritative when both are present, and that it may never report an absent
+ * skill as run.
+ * `HANDOFF-*` covers a stage boundary in the squad pipeline. And
+ * `QUALITY-PREFLIGHT-*` binds the pre-flight line the roles share.
+ *
+ * Every skill that states one of these carries the same wording, so a reader of
+ * any one of them learns the same contract.
  */
 export const boundaryClauses: BoundaryClause[] = [
   {
@@ -243,8 +252,8 @@ export const boundaryClauses: BoundaryClause[] = [
   },
   {
     id: 'QUALITY-PREFLIGHT-001',
-    // Carried in from the quality-bar phase, which gave seven roles this line
-    // word for word and left the sameness enforced by nothing.
+    // Seven roles were given this line word for word, with the sameness
+    // enforced by nothing until it was bound here.
     statement: 'The quality-bar pre-flight ran; failed checks were fixed or reported',
     files: everyRoleWithAPreflight,
   },

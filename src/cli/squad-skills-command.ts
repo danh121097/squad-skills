@@ -1,3 +1,10 @@
+/**
+ * Maps `squad-skills` argv to one action: delegate to the official `skills`
+ * runtime, or print. Nothing here reimplements discovery or installation.
+ *
+ * A delegated installation forces `--copy`, because a symlinked install into an
+ * `npx` package cache stops resolving as soon as that cache is cleaned.
+ */
 export type CliAction =
   { kind: 'delegate'; arguments: string[] } | { kind: 'print'; message: string; exitCode: number };
 
