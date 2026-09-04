@@ -212,4 +212,49 @@ describe('eval coverage tiers', () => {
 
     expect(await deriveEvalCoveredSkills(root)).toEqual([]);
   });
+
+  /**
+   * The tier a pull request declares is a checkbox, so the rule leans on a
+   * property nothing states: an eval-covered skill's payload cannot move
+   * silently, because `pnpm validate:evals` recomputes its recorded hash and
+   * fails on the mismatch. Editing `squad-designer/SKILL.md` without
+   * re-measuring reds the gate today.
+   *
+   * That property is what makes a mis-ticked checkbox low-stakes, and it holds
+   * only while every covered skill actually has a hash recorded somewhere. A
+   * lane added without a manifest entry — which is exactly what evaluation
+   * fan-out produces — would remove it for that skill with nothing to say so.
+   */
+  it('records a payload hash for every eval-covered skill, so its payload cannot move unnoticed', async () => {
+    const covered = await deriveEvalCoveredSkills(projectRoot);
+
+    expect(covered.length).toBeGreaterThan(0);
+
+    const laneNames = (await readdir(path.join(projectRoot, 'evals'), { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+    const manifests: string[] = [];
+
+    for (const lane of laneNames) {
+      try {
+        manifests.push(await read(path.join('evals', lane, 'baseline-manifest.yml')));
+      } catch {
+        // A lane need not carry a baseline manifest; only the covered skills it
+        // records matter here.
+      }
+    }
+
+    for (const skillName of covered) {
+      // A recorded hash is `skills.<name>` followed by a `payload_hash` line
+      // before the next skill entry, which is the shape the manifest writes.
+      const recorded = manifests.some((manifest) =>
+        new RegExp(`\\n  ${skillName}:\\n(?:    .*\\n)*?    payload_hash:`).test(manifest)
+      );
+
+      expect(
+        recorded,
+        `${skillName} is eval-covered but no baseline manifest records its payload hash`
+      ).toBe(true);
+    }
+  });
 });

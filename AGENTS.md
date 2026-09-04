@@ -115,7 +115,10 @@
 - A review-only skill becomes eval-covered by adding `evals/<skill>/` with its
   case manifest — the same file the tier is derived from. Which skills get a
   lane, and when, is the evaluation cycle's fan-out decision rather than a rule
-  here.
+  here. Adding the lane also records that skill's payload hash in a baseline
+  manifest, and `pnpm test` fails until it does: the hash is what makes an
+  eval-covered payload unable to move unnoticed, so a lane without one would
+  leave the tier resting on the pull-request checkbox alone.
 - Real use of a skill is a source of skill-content candidates, and
   `docs/skill-observations.md` is where one is recorded: what was built, which
   skill ran, what its output got wrong, and the rule that would have prevented
