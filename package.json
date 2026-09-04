@@ -40,6 +40,7 @@
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "build": "obuild",
+    "coverage": "vitest run --coverage --coverage.include='src/**/*.ts'",
     "eval:designer": "node scripts/run-squad-designer-eval.ts",
     "eval:judge": "node scripts/run-squad-designer-eval.ts --judge",
     "evals:links": "node scripts/check-source-liveness.ts",
@@ -61,6 +62,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "axe-core": "^4.13.0",
     "obuild": "^0.4.22",
     "playwright": "^1.62.1",

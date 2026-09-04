@@ -232,6 +232,15 @@
   network, so it is not part of `pnpm test`; it runs on pull requests as its own
   non-blocking job so a slow third-party host cannot fail the deterministic
   gate.
+- Coverage: `pnpm coverage`. On demand, never a gate and never a threshold.
+  Coverage records what the test process executed, which is not what the tests
+  verified: `src/cli/cli.ts` is exercised end to end by four subprocess tests and
+  still measures zero, because the coverage is collected in the child. Pinning a
+  floor would score the faithful test below a shallow in-process one. Read the
+  per-file report to find code nothing reaches; do not read the total as quality.
+  The browser layer — `playwright-render-harness.ts`, `static-file-server.ts`,
+  `rendered-ui-*.ts` — sits near zero for the same structural reason and is
+  covered by `pnpm eval:designer` instead.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
 
