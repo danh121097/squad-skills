@@ -8,7 +8,7 @@ keywords: [code-review, security, owasp, correctness, performance, contracts, ma
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
   author: Harry Nguyen
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Squad — Code Review
@@ -56,6 +56,9 @@ Never expose secrets or private payloads in findings.
   [review-methodology-debugging-and-mindset.md](references/review-methodology-debugging-and-mindset.md)
 - When calibrating severity, evidence thresholds or anti-slop judgment against concrete cases:
   [code-review-worked-decisions.md](references/code-review-worked-decisions.md)
+- Per-ecosystem defect signatures and their confirmation move when the diff's language or runtime is one
+  this review has no defect model for:
+  [language-runtime-review-signatures.md](references/language-runtime-review-signatures.md)
 - Current primary standards/docs: [official-sources.md](references/official-sources.md)
 - AgentKit pairing, runtime fallback, severity, finding format and verdict:
   [review-runtime-and-verdict.md](references/review-runtime-and-verdict.md)
@@ -99,6 +102,7 @@ finding. Before issuing a verdict, run the self-review in
 - [ ] Exact target/base, acceptance and QA evidence are resolved
 - [ ] Contracts, consumers, data/auth paths and operational blast radius were inspected
 - [ ] Each finding is reproducible or supported by authoritative evidence
+- [ ] A finding in an unfamiliar runtime cites that ecosystem's current documentation or an executed check
 - [ ] Severity matches realistic impact and likelihood
 - [ ] Findings include tight file:line, failure condition, impact and concrete remediation
 - [ ] Tests/docs/rollout/migration implications are covered where applicable

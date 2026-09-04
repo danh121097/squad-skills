@@ -38,10 +38,13 @@
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-backend': 2186,
-  // The least selective router in the catalog after squads-team: a typical
-  // review opens two-thirds of the skill, so depth added here is paid for by
-  // every review unless it is routed to a specific one.
-  'squad-code-review': 2157,
+  // Raised from 2157 when language-runtime-review-signatures.md landed. The
+  // file is 621 words but the median moved 82, because it routes to one task
+  // and the entrypoint grew by a router line and a checklist item. The task
+  // that loads it sits at 2778, third-heaviest in the catalog, and that is the
+  // point of the median regime: the run that needs the depth pays for it, and
+  // the four that do not are unchanged.
+  'squad-code-review': 2239,
   // Bounded on total payload, not the median: its task types live in
   // evals/squad-designer/baseline-manifest.yml, whose `median_loaded_words` is
   // the figure that binds in practice. This is the outer bound behind it.

@@ -133,6 +133,19 @@ const codeReview: SkillTaskType[] = [
     id: 'standard-lookup',
     references: ['official-sources.md', 'review-runtime-and-verdict.md'],
   },
+  // The heaviest task in the catalog after squads-team's planning task, and
+  // deliberately so: reviewing a runtime the reviewer has no defect model for
+  // needs the generic lenses and the per-ecosystem signatures together, or the
+  // review is generic where it most needs not to be.
+  {
+    id: 'unfamiliar-runtime-review',
+    references: [
+      'cross-stack-review-dimensions.md',
+      'language-runtime-review-signatures.md',
+      'quality-bar-and-preflight.md',
+      'review-runtime-and-verdict.md',
+    ],
+  },
 ];
 
 const devops: SkillTaskType[] = [
