@@ -232,6 +232,17 @@
   network, so it is not part of `pnpm test`; it runs on pull requests as its own
   non-blocking job so a slow third-party host cannot fail the deterministic
   gate.
+- Report contract: `pnpm check:report <role> <report.md>`. Checks whether a QA or
+  Code Review report states what that role's completion checklist requires — a
+  verdict from its own vocabulary, acceptance traceability, determinism,
+  environment and commands, residual risk, and execution mode. It exists because
+  the deterministic gate the roadmap planned could not fire: six A/B runs of
+  `squad-qa`, three with the skill loaded and three without, all caught their
+  seeded defect, and only the reports differed. It detects presence, not truth,
+  and a miss can be its own wording rather than the report's omission, so it is
+  advisory and always exits zero. `evals/fixtures/report-contract/` holds the six
+  verbatim reports it was validated against; they are evidence, are never edited
+  or reformatted, and their hashes are pinned in the test.
 - Coverage: `pnpm coverage`. On demand, never a gate and never a threshold.
   Coverage records what the test process executed, which is not what the tests
   verified: `src/cli/cli.ts` is exercised end to end by four subprocess tests and

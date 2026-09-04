@@ -40,6 +40,7 @@
   "packageManager": "pnpm@10.17.1",
   "scripts": {
     "build": "obuild",
+    "check:report": "node scripts/check-role-report.ts",
     "coverage": "vitest run --coverage --coverage.include='src/**/*.ts'",
     "eval:designer": "node scripts/run-squad-designer-eval.ts",
     "eval:judge": "node scripts/run-squad-designer-eval.ts --judge",

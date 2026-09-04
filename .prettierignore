@@ -1,0 +1,6 @@
+# Verbatim model output kept as evaluation evidence. Reformatting would edit the
+# very thing these fixtures exist to preserve, and their value depends on nothing
+# in them having been shaped after the fact.
+# See evals/fixtures/report-contract/README.md.
+evals/fixtures/report-contract/*.skill.md
+evals/fixtures/report-contract/*.control.md
