@@ -37,6 +37,16 @@
   so every `SKILL.md` change must pass the repository gate.
 - Keep durable user guidance in `README.md` or `docs/`. `plans/` is ignored local
   execution state and must not become product authority.
+- Squad handoffs are contracts stated in prose, not records written to disk. No
+  skill writes a QA verdict, review findings, or an API snapshot into a user's
+  repository _as a handoff record_, and no hook enforces a gate — a file records
+  a claim rather than the pass behind it, and a hook binds to one runtime while
+  the GitHub distribution path ships no `dist/`. Output a user asked for is not
+  a handoff record and is unaffected. The mandatory QA and Code Review gates and
+  their sequence are bound instead as clauses in
+  `src/catalog/cross-skill-contract-clauses.ts`, checked by `pnpm validate`; the
+  other pipeline rules are unbound prose. Reopening this needs evidence that a
+  gate failed in a way a file-existence check would have caught.
 - `evals/` holds evaluation fixtures, not product. It ships in neither
   distribution path, and `evals/squad-designer/eval-contract.md` is the human
   authority its manifests must agree with. Never record a held-out case body
