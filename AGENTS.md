@@ -91,6 +91,14 @@
   reads while working. Where the two disagree the quality bar is current. Do not
   resolve the drift by thinning one into a cross-reference — a pre-flight that
   has to be assembled from two files is one a run skips.
+- Each role that can be handed an empty repository — frontend, backend, mobile
+  and devops — names the existing-versus-greenfield fork in its own router line
+  and its own completion checklist, in its own domain's words. No cross-skill
+  clause binds this, and deliberately so: a clause requires one sentence stated
+  verbatim everywhere, and forcing four roles onto shared wording would cost
+  each of them the specific noun that makes the line actionable. It drifted once
+  already — frontend and mobile carried the fork while backend and devops did
+  not — so check it by hand when adding a role or rewriting a router.
 - `evals/` holds evaluation fixtures, not product. It ships in neither
   distribution path, and `evals/squad-designer/eval-contract.md` is the human
   authority its manifests must agree with. Never record a held-out case body

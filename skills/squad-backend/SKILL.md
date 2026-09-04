@@ -8,7 +8,7 @@ keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, mig
 argument-hint: "[api or data task]"
 metadata:
   author: Harry Nguyen
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Squad — Backend
@@ -52,7 +52,7 @@ a pointless point-in-time backup. Never mutate production or external systems wi
 Read the references required by the task before pairing any skill; they are also the native knowledge
 layer when AgentKit is absent:
 
-- Language/framework/runtime selection or unfamiliar backend stack:
+- Existing-versus-greenfield language/framework/runtime selection, or an unfamiliar backend stack:
   [backend-stack-and-runtime-matrix.md](references/backend-stack-and-runtime-matrix.md)
 - Architecture, scaling, distributed systems, consistency or failure design:
   [backend-system-design-and-distributed-systems.md](references/backend-system-design-and-distributed-systems.md)
@@ -123,5 +123,6 @@ self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflig
 - [ ] Threat and secrets/dependency checks cover the changed surface
 - [ ] Unit/integration/contract/migration tests and build checks actually run are reported
 - [ ] Frontend/Mobile/DevOps receive the real contract and operational requirements
+- [ ] The existing runtime and framework were preserved, or a greenfield stack was selected explicitly
 - [ ] No UI or deployment ownership was absorbed
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

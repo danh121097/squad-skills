@@ -37,7 +37,12 @@
  * cycle is trimming the skill to fit.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2186,
+  // Raised 2186 to 2205, and squad-devops 2147 to 2168, by naming the
+  // existing-versus-greenfield fork in both entrypoints. Nineteen and
+  // twenty-one entrypoint words each, which is why both moved the median one
+  // for one: a router line is read by every task, and that is the cost the
+  // total-payload regime never made visible.
+  'squad-backend': 2205,
   // Raised from 2157 when language-runtime-review-signatures.md landed. The
   // file is 621 words but the median moved 82, because it routes to one task
   // and the entrypoint grew by a router line and a checklist item. The task
@@ -49,7 +54,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // evals/squad-designer/baseline-manifest.yml, whose `median_loaded_words` is
   // the figure that binds in practice. This is the outer bound behind it.
   'squad-designer': 7497,
-  'squad-devops': 2147,
+  'squad-devops': 2168,
   'squad-fix': 2101,
   'squad-frontend': 2095,
   'squad-mobile': 1836,

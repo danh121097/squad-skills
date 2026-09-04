@@ -8,7 +8,7 @@ keywords: [devops, docker, kubernetes, helm, cicd, terraform, cloudflare, aws, g
 argument-hint: "[infra or deploy task]"
 metadata:
   author: Harry Nguyen
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Squad — DevOps
@@ -51,7 +51,8 @@ task. Reuse safe project-owned processes; stop only task-owned resources at comp
 
 ## Deep domain references
 
-- Cloud/provider/runtime, containers, Kubernetes, serverless, CI/CD, GitOps and IaC selection:
+- Existing-versus-greenfield cloud/provider/runtime, containers, Kubernetes, serverless, CI/CD, GitOps
+  and IaC selection:
   [platform-iac-and-delivery-matrix.md](references/platform-iac-and-delivery-matrix.md)
 - Self-hosted/VPS hosts, reverse proxy choice, ACME/TLS, systemd and Compose, single-host zero-downtime,
   self-hosted PaaS, and backup/restore without managed snapshots:
@@ -121,5 +122,7 @@ a recovery path. Before applying or handing over, run the self-review in
 - [ ] Logs/metrics/traces and alert ownership cover the changed path
 - [ ] IAM/secrets/supply-chain risks were checked without leaking values
 - [ ] Static, plan and deployed verification levels are reported separately
+- [ ] The deployed platform, pipeline and state ownership were preserved, or a greenfield delivery path
+      was selected explicitly
 - [ ] No feature code or unauthorized external mutation was performed
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported
