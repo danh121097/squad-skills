@@ -22,8 +22,13 @@ skills-lock.json
 
 pnpm-debug.log*
 
-# Local AgentKit execution records are not repository documentation.
-plans/
+# Local AgentKit execution records are not repository documentation. The
+# feedback loop is the narrow exception: its inbox and weekly reports contain
+# only redacted, publication-safe evidence that should survive across machines.
+plans/*
+!plans/feedback/
+!plans/feedback/**
+plans/feedback/private/
 
 # Candidate evaluation runs are generated artifacts, never repository state.
 .eval-runs/
