@@ -2,6 +2,10 @@ import { parseDocument } from 'yaml';
 
 import type { AgreementResult, ConfidenceInterval, RegressionEntry } from './eval-statistics.ts';
 import type { PairwiseOutcome } from './pairwise-judge.ts';
+import {
+  evidenceBindingRefusals,
+  type PromotionEvidenceBinding,
+} from './promotion-evidence-binding.ts';
 
 /**
  * The promotion decision, as a pure function over recorded evidence.
@@ -40,6 +44,7 @@ export interface PromotionInput {
   cycleId: string;
   /** Verdict of the deterministic gates over the candidate arm. */
   deterministicBlocking: boolean;
+  evidence: PromotionEvidenceBinding;
   /** Distance from zero the lower bound must clear to count as an improvement. */
   equivalenceBoundary: number;
   interval: ConfidenceInterval;
@@ -78,6 +83,15 @@ export const requiredApprovalChecklist = [
 export function evaluatePromotion(input: PromotionInput): PromotionDecision {
   const refusals: string[] = [];
   const notes: string[] = [];
+
+  refusals.push(
+    ...evidenceBindingRefusals({
+      cycleId: input.cycleId,
+      evidence: input.evidence,
+      outcomes: input.outcomes,
+      promotionLane: input.promotionLane,
+    })
+  );
 
   // Read first: every number below describes one lane's evidence, and a
   // calibration run writes the same report shape an acceptance run does.

@@ -13,6 +13,14 @@ export interface CandidateFile {
   source: string;
 }
 
+export interface SourceCopyEvidence {
+  /** Candidate file whose text was compared with a reviewed source snapshot. */
+  candidatePath: string;
+  /** Checkable description of the comparison, never source-page content. */
+  detail: string;
+  sourceUrl: string;
+}
+
 export interface StaticGateOptions {
   /**
    * Package roots the evidence packet already contains. Anything else is a new
@@ -25,8 +33,10 @@ export interface StaticGateOptions {
    */
   approvedDependencies?: readonly string[] | null;
   files: readonly CandidateFile[];
-  /** Words above which a bundled document counts as a copied source page. */
+  /** Threshold used only to disclose heuristic suspicion; it never proves copying. */
   maxBundledDocumentWords?: number;
+  /** Evidence produced outside this text-only gate from a reviewed source comparison. */
+  sourceCopyEvidence?: readonly SourceCopyEvidence[];
   tokenFilePatterns?: readonly RegExp[];
 }
 
@@ -69,7 +79,11 @@ export function runPresentationalStaticGates(options: StaticGateOptions): GateRe
       files,
       options.approvedDependencies === undefined ? [] : options.approvedDependencies
     ),
-    checkBundledSources(files, options.maxBundledDocumentWords ?? 200),
+    checkBundledSources(
+      files,
+      options.sourceCopyEvidence ?? [],
+      options.maxBundledDocumentWords ?? 200
+    ),
     checkTokenUsage(files, options.tokenFilePatterns ?? defaultTokenFilePatterns),
   ];
 }
@@ -161,11 +175,29 @@ function checkDependencies(
 
 /**
  * `INV-SOURCE-001`: sources are fetched from the registry at the moment of use,
- * never copied into output. A long prose document carrying source URLs is what
- * a copied page looks like once it lands in a run directory.
+ * never copied into output. Length plus a URL is only a reason to review a
+ * document; it is not evidence that any source text was copied.
  */
-function checkBundledSources(files: readonly CandidateFile[], maxWords: number): GateResult {
-  const evidence: string[] = [];
+function checkBundledSources(
+  files: readonly CandidateFile[],
+  copyEvidence: readonly SourceCopyEvidence[],
+  suspicionWords: number
+): GateResult {
+  const candidatePaths = new Set(files.map((file) => file.path));
+  const verified = copyEvidence.filter((entry) => candidatePaths.has(entry.candidatePath));
+
+  if (verified.length > 0) {
+    return gateResult(
+      'INV-SOURCE-001',
+      'critical',
+      'static',
+      'fail',
+      `${verified.length} document(s) contain source-copy evidence; register an abstraction instead of bundling source text.`,
+      verified.map((entry) => `${entry.candidatePath}: ${entry.detail}; source ${entry.sourceUrl}`)
+    );
+  }
+
+  const suspicious: string[] = [];
 
   for (const file of files) {
     if (!documentExtensions.some((extension) => file.path.toLowerCase().endsWith(extension))) {
@@ -174,33 +206,27 @@ function checkBundledSources(files: readonly CandidateFile[], maxWords: number):
 
     const words = file.source.split(/[ \t\n\r\f\v]+/).filter((word) => word.length > 0).length;
 
-    if (words <= maxWords) continue;
+    if (words <= suspicionWords) continue;
 
     const urls = [...new Set(file.source.match(urlPattern) ?? [])];
 
     if (urls.length === 0) continue;
 
-    evidence.push(
+    suspicious.push(
       `${file.path}: ${words} words carrying ${urls.length} source URL(s), first ${urls[0]}`
     );
   }
 
-  return evidence.length === 0
-    ? gateResult(
-        'INV-SOURCE-001',
-        'critical',
-        'static',
-        'pass',
-        'No source page content was bundled into the output.'
-      )
-    : gateResult(
-        'INV-SOURCE-001',
-        'critical',
-        'static',
-        'fail',
-        `${evidence.length} document(s) look like copied source pages; register the source instead of bundling it.`,
-        evidence
-      );
+  return gateResult(
+    'INV-SOURCE-001',
+    'critical',
+    'static',
+    'pass',
+    suspicious.length === 0
+      ? 'No verified source-copy evidence was supplied.'
+      : `No verified source-copy evidence was supplied. Length and citation heuristics cannot determine copying for ${suspicious.length} document(s); substantive provenance review remains required.`,
+    suspicious
+  );
 }
 
 /** `INV-TOKEN-001`: styling resolves to semantic tokens rather than raw literals. */

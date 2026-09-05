@@ -11,10 +11,12 @@ import { rubricOutputSchema } from '../src/eval/judge-response-parser.ts';
 import { validateJudgingContract } from '../src/eval/judging-contract-validator.ts';
 import {
   buildDivergenceReport,
+  portabilityReviewBlocks,
   renderDivergenceReport,
   type RuntimeObservation,
 } from '../src/eval/cross-runtime-divergence-report.ts';
 import { approvedDependenciesFor } from '../src/eval/approved-dependency-registry.ts';
+import { hashCandidateArtifact } from '../src/eval/candidate-artifact-hash.ts';
 import { buildRegressionLedger } from '../src/eval/eval-statistics.ts';
 import { resolveHeldOutCaseFile } from '../src/eval/held-out-store-access.ts';
 import {
@@ -195,7 +197,7 @@ console.log(renderMarkdownReport(report));
 
 if (comparing) console.log(renderComparison());
 
-const judgingBlocked = judgeConfig ? await judgeGradedPairs(judgeConfig) : false;
+const judgingBlocked = judgeConfig ? await judgeGradedPairs(judgeConfig, report) : false;
 
 console.log(`Artifacts: ${path.relative(projectRoot, reportDirectory)}`);
 
@@ -324,6 +326,7 @@ async function gradeInto(options: {
 
   const caseResult: CaseRunResult = {
     ...(arm ? { arm } : {}),
+    artifactHash: await hashCandidateArtifact(runDirectory),
     caseId: entry.id,
     category: entry.category,
     lane: laneName,
@@ -470,11 +473,7 @@ async function runPortability(sides: readonly RuntimeSide[]): Promise<boolean> {
     const review = decide(() => buildDivergenceReport({ caseId: entry.id, observations }));
 
     reviews.push(review);
-    blocking ||=
-      review.partial ||
-      review.divergences.some(
-        (divergence) => divergence.severity && divergence.severity !== 'medium'
-      );
+    blocking ||= portabilityReviewBlocks(review, observations);
 
     console.log(renderDivergenceReport(review));
   }
@@ -576,7 +575,10 @@ function resolveLengthControlCase(): ResolvedCase | null {
 }
 
 /** Returns whether judging produced a result that must block promotion. */
-async function judgeGradedPairs(config: JudgeContract): Promise<boolean> {
+async function judgeGradedPairs(
+  config: JudgeContract,
+  deterministicReport: ReturnType<typeof buildEvalRunReport>
+): Promise<boolean> {
   const judgeDirectory = path.join(reportDirectory, 'judge');
   const schemaDirectory = path.join(judgeDirectory, 'schema');
 
@@ -609,6 +611,18 @@ async function judgeGradedPairs(config: JudgeContract): Promise<boolean> {
     calibrationLabels: await readCalibrationLabels(),
     cases: judgingCases,
     cycleId: caseManifest.cycle_id,
+    evidence: {
+      candidateArtifacts: deterministicReport.cases
+        .filter((entry) => entry.arm === 'candidate')
+        .map((entry) => ({
+          artifactHash: entry.artifactHash ?? null,
+          caseId: entry.caseId,
+          runDirectory: entry.runDirectory,
+        })),
+      caseManifestHash: deterministicReport.environment.caseManifestHash,
+      deterministicReportHash: deterministicReport.reportHash,
+      payloadHash: deterministicReport.environment.payloadHash,
+    },
     hardStopUsd: config.hardStopUsd,
     lane: laneName,
     lengthControl: lengthControlCase

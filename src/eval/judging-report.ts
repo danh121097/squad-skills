@@ -31,6 +31,7 @@ export interface JudgingModels {
 export interface JudgingReportInput {
   calibration: AgreementResult | null;
   cycleId: string;
+  evidence: JudgingEvidenceIdentity;
   lane: string;
   /** Named by the caller; this engine never knows which skill it is grading. */
   skill: string;
@@ -46,6 +47,7 @@ export interface JudgingReportInput {
 export interface JudgingReport {
   calibration: AgreementResult | null;
   cycleId: string;
+  evidence: JudgingEvidenceIdentity;
   /** Judge calls actually made, which is not `tally.total * 2` once a case is
    * skipped for blocking gates or a budget stop. */
   judgeCalls: number;
@@ -65,6 +67,18 @@ export interface JudgingReport {
   variance: number | null;
 }
 
+/** Identity that binds qualitative judging to the deterministic candidate artifacts. */
+export interface JudgingEvidenceIdentity {
+  candidateArtifacts: Array<{
+    artifactHash: string | null;
+    caseId: string;
+    runDirectory: string;
+  }>;
+  caseManifestHash: string;
+  deterministicReportHash: string;
+  payloadHash: string;
+}
+
 export function buildJudgingReport(input: JudgingReportInput): JudgingReport {
   const outcomes = [...input.outcomes].sort((left, right) =>
     left.caseId < right.caseId ? -1 : left.caseId > right.caseId ? 1 : 0
@@ -80,6 +94,13 @@ export function buildJudgingReport(input: JudgingReportInput): JudgingReport {
   const body = {
     calibration: input.calibration,
     cycleId: input.cycleId,
+    evidence: {
+      ...input.evidence,
+      candidateArtifacts: [...input.evidence.candidateArtifacts].sort(
+        (left, right) =>
+          compare(left.caseId, right.caseId) || compare(left.runDirectory, right.runDirectory)
+      ),
+    },
     interval: bootstrapMeanInterval(scores, { seed: input.seed }),
     judgeCalls: usages.length,
     lane: input.lane,
@@ -119,6 +140,9 @@ export function renderJudgingReport(report: JudgingReport): string {
     '',
     `- cycle: \`${report.cycleId}\``,
     `- lane: \`${report.lane}\``,
+    `- deterministic report: \`${report.evidence.deterministicReportHash}\``,
+    `- candidate payload: \`${report.evidence.payloadHash}\``,
+    `- case manifest: \`${report.evidence.caseManifestHash}\``,
     `- subject: \`${report.models.subject}\``,
     `- judge: \`${report.models.judge}\``,
     `- authoring assistance: \`${report.models.authoringAssistance}\``,
@@ -167,6 +191,10 @@ export function renderJudgingReport(report: JudgingReport): string {
   }
 
   return `${lines.join('\n').trimEnd()}\n`;
+}
+
+function compare(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
 }
 
 /**

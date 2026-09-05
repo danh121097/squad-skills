@@ -8,6 +8,8 @@ export interface CaseRunResult {
    * unique and the report has to say which artifact each row measured.
    */
   arm?: 'baseline' | 'candidate';
+  /** Digest of candidate-authored files and generated screenshots, or null if absent. */
+  artifactHash?: string | null;
   caseId: string;
   category: string;
   lane: string;
@@ -128,7 +130,7 @@ export function renderMarkdownReport(report: EvalRunReport): string {
     lines.push(
       `## ${entry.caseId}${entry.arm ? ` (${entry.arm})` : ''} — ${caseSummary.status}`,
       '',
-      `lane \`${entry.lane}\` · category \`${entry.category}\` · platform \`${entry.targetPlatform}\` · artifacts \`${entry.runDirectory}\``,
+      `lane \`${entry.lane}\` · category \`${entry.category}\` · platform \`${entry.targetPlatform}\` · artifacts \`${entry.runDirectory}\` · artifact hash \`${entry.artifactHash ?? 'absent'}\``,
       '',
       '| Invariant | Severity | Tier | Status | Detail |',
       '| --- | --- | --- | --- | --- |'
@@ -142,9 +144,11 @@ export function renderMarkdownReport(report: EvalRunReport): string {
 
     lines.push('');
 
-    const evidence = entry.results.filter(
-      (result) => result.status !== 'pass' && result.evidence.length > 0
-    );
+    // Passing rows are included when they carry evidence. A gate that can only
+    // report what it could not determine — `INV-SOURCE-001` names the documents
+    // whose provenance a human still has to read — writes that list here, and
+    // filtering it out left the reader a count with no way to act on it.
+    const evidence = entry.results.filter((result) => result.evidence.length > 0);
 
     if (evidence.length === 0) continue;
 

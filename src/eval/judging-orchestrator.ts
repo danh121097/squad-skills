@@ -1,5 +1,10 @@
 import { judgeHumanAgreement, type RegressionEntry } from './eval-statistics.ts';
-import { buildJudgingReport, type JudgingModels, type JudgingReport } from './judging-report.ts';
+import {
+  buildJudgingReport,
+  type JudgingEvidenceIdentity,
+  type JudgingModels,
+  type JudgingReport,
+} from './judging-report.ts';
 import {
   buildJudgePackets,
   judgePair,
@@ -46,6 +51,7 @@ export interface RunJudgingOptions {
   calibrationLabels?: ReadonlyMap<string, PairwiseWinner>;
   cases: readonly JudgingCaseInput[];
   cycleId: string;
+  evidence: JudgingEvidenceIdentity;
   /**
    * Known spend at which the run stops making calls. Null disables it; an
    * unknown cost never counts toward it, because a stop that fires on an
@@ -80,6 +86,7 @@ export async function runJudging(options: RunJudgingOptions): Promise<JudgingRep
   return buildJudgingReport({
     calibration: calibrationAgreement(outcomes, options.calibrationLabels),
     cycleId: options.cycleId,
+    evidence: options.evidence,
     lane: options.lane,
     lengthControl,
     models: options.models,

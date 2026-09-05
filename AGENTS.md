@@ -27,7 +27,14 @@
   match the directory, and `description` must state what the skill does and when
   to use it.
 - Keep references and other support files inside their owning skill directory.
-  Cross-skill relative links are rejected by the validator.
+  Cross-skill relative links are rejected by the validator, and so is a symlink
+  anywhere in a skill payload: archive semantics let a pack store the link's
+  target and drop the link, so a reference that resolves in the source tree can
+  be missing from an installed skill. `pnpm validate` rejects one at authoring
+  time and names the replacement. A valid source tree is not evidence that the
+  package preserved it, so `pnpm pack:check` also compares every packaged
+  payload file with the authored one by path and exact bytes, and resolves the
+  in-skill links again inside the extracted tarball.
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
   `catalog/` for skill-catalog checks, `eval/` for the evaluation contract — and
   mirror that layout in `tests/`. The evaluation engine reads which skills a
@@ -202,12 +209,14 @@
   from a designer run and is the only paid, nondeterministic entry point; it is
   never reachable from `pnpm test`. It requires a lane listed in the manifest's
   `judging.paid_lanes`, refuses a judge in the subject's provider family, and
-  needs `EVAL_PRIVATE_PATH` for a held-out lane. Artifacts are lane-scoped: it
-  expects, under `.eval-runs/<cycle>/<lane>/`, `<case>.baseline/` and
-  `<case>.candidate/` per case, the same pair under `length-control.*` for the
-  lane's length-matched control (named by `judging.length_control.<lane>`), and
-  `calibration-labels.yml` for the human-scored subset. It exits non-zero when a
-  gate blocks or any pair is inconclusive.
+  needs `EVAL_PRIVATE_PATH` for a held-out lane. Which cases it grades is
+  lane-scoped; where their artifacts sit is not. A case's two arms are siblings
+  of the lane directory, at `.eval-runs/<cycle>/<case>.baseline/` and
+  `<case>.candidate/`, with the same pair under `length-control.*` for the
+  lane's length-matched control (named by `judging.length_control.<lane>`).
+  Only the reports and `calibration-labels.yml` are inside
+  `.eval-runs/<cycle>/<lane>/`. It exits non-zero when a gate blocks or any pair
+  is inconclusive.
 - Deterministic A/B: `pnpm eval:designer --compare`. Grades `<case>.baseline/` and
   `<case>.candidate/` for every case in the lane and prints the per-case move plus
   the regression ledger, without calling a judge. Free and offline apart from the
@@ -216,14 +225,25 @@
   promoted skill on both pinned runtimes at high reasoning effort over one lane,
   runs the deterministic gates on both outputs, and writes a divergence report.
   Paid and nondeterministic, so it is never reachable from `pnpm test`. Neither
-  runtime may write into `skills/` during the run.
+  runtime may write into `skills/` during the run. It exits non-zero on a
+  divergence above `medium`, on a partial review, and on either runtime's own
+  blocking or unverified gates — agreement is not a result. Two runs that both
+  produced nothing agree perfectly, and reading that as portability is the
+  inversion this exit rule exists to prevent.
 - Promotion decision: `pnpm promote:designer`. Reads `report.json`,
   `judging.json`, and `promotion-approval.yml` from the lane named by
   `judging.promotion_lane`, refuses evidence judged on any other lane, verifies
   each report against its own hash before reading it, prints every refusal
   rather than the first, mutates nothing, and exits non-zero unless every gate
   and the human approval checklist pass. The approval record must name the
-  `cycle_id`, `candidate_version`, and `judging_report_hash` it signed.
+  `cycle_id`, `candidate_version`, and `judging_report_hash` it signed. A report
+  hashes its own body, which establishes that nobody edited it afterwards and
+  says nothing about what it describes, so promotion also binds both reports to
+  the working tree: the current candidate payload and case-manifest hashes, the
+  promotion lane's exact required case set across both arms, and every candidate
+  artifact's path and recomputed content digest. Evidence that is self-valid but
+  stale, mixed, duplicated, or addressed elsewhere is refused, and a report
+  written before that identity existed is regenerated rather than trusted.
 - Cited source liveness: `pnpm evals:links`. Requests each knowledge card's
   `source_url` and every link in a skill's source registry, reading the status
   code only — the body is never consumed — so a moved source is caught without

@@ -111,6 +111,77 @@ describe('validateSkills', () => {
     expect(result.errors.some((error) => error.includes('escapes its skill directory'))).toBe(true);
   });
 
+  it('does not close a four-backtick block on a triple-backtick example', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'nested-fence-skill', {
+      body: [
+        '````md',
+        '```md',
+        '[Example](references/missing-example.md)',
+        '```',
+        '````',
+        '[Real](references/missing-real.md)',
+      ].join('\n'),
+    });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.some((error) => error.includes('missing-example.md'))).toBe(false);
+    expect(result.errors.some((error) => error.includes('missing-real.md'))).toBe(true);
+  });
+
+  it('keeps tilde and unclosed fenced examples out of link validation', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'tilde-fence-skill', {
+      body: '~~~~md\n[Example](references/missing-example.md)\n~~~\n[Still code](missing.md)',
+    });
+
+    await expect(validateSkills(projectRoot)).resolves.toEqual({
+      errors: [],
+      skillNames: ['tilde-fence-skill'],
+    });
+  });
+
+  it('strips fenced examples in a CRLF document as it does in an LF one', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'crlf-fence-skill', {
+      body: ['```md', '[Example](references/missing-example.md)', '```', 'Prose.'].join('\r\n'),
+    });
+
+    await expect(validateSkills(projectRoot)).resolves.toEqual({
+      errors: [],
+      skillNames: ['crlf-fence-skill'],
+    });
+  });
+
+  it('still reports a broken link after a closing CRLF fence', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'crlf-live-link-skill', {
+      body: [
+        '```md',
+        '[Example](references/missing-example.md)',
+        '```',
+        '[Real](refs/gone.md)',
+      ].join('\r\n'),
+    });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.some((error) => error.includes('missing-example.md'))).toBe(false);
+    expect(result.errors.some((error) => error.includes('gone.md'))).toBe(true);
+  });
+
+  it('does not treat a backtick inside a backtick fence info string as an opener', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'invalid-fence-skill', {
+      body: '```foo`bar\n[Missing](references/missing.md)',
+    });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.join(' ')).toContain('broken local link');
+  });
+
   it('reads a destination past a balanced parenthesis', async () => {
     const projectRoot = await createProject();
     await createSkill(projectRoot, 'paren-skill', {
@@ -155,7 +226,9 @@ describe('validateSkills', () => {
     const result = await validateSkills(projectRoot);
 
     expect(
-      result.errors.some((error) => error.includes('symlink resolves outside its skill directory'))
+      result.errors.some((error) =>
+        error.includes('packaged skill payloads cannot contain symlinks')
+      )
     ).toBe(true);
   });
 
@@ -201,6 +274,22 @@ describe('validateSkills', () => {
     expect(
       result.errors.some((error) => error.includes('resolves outside its skill directory'))
     ).toBe(true);
+  });
+
+  it('rejects an internal payload symlink that package managers can omit', async () => {
+    const projectRoot = await createProject();
+    await createSkill(projectRoot, 'internal-symlink-skill', {
+      body: '[Guide](references/guide.md)',
+      references: { 'actual.md': '# Actual guide\n' },
+    });
+    await symlink(
+      'actual.md',
+      path.join(projectRoot, 'skills', 'internal-symlink-skill', 'references', 'guide.md')
+    );
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors.join(' ')).toContain('packaged skill payloads cannot contain symlinks');
   });
 });
 

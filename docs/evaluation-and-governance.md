@@ -25,6 +25,15 @@ validators, the cross-skill role contract, in-skill Markdown link resolution,
 the evaluation-fixture contract, and catalog discovery through the pinned Skills
 CLI.
 
+Distribution fidelity is checked again at the publication boundary because a
+valid source tree is not proof that an extracted package preserved it. The
+release check compares every regular file under `skills/` with the extracted
+tarball by path and exact bytes, then validates links in both trees. Source
+payload symlinks are rejected because package-manager archive semantics can
+omit them while retaining their targets. `scripts/check-package-contents.ts`,
+`src/catalog/package-payload-validator.ts`, and
+`src/catalog/markdown-link-validator.ts` own these checks.
+
 **The evaluation cycle** is everything else on this page: lanes, a frozen
 baseline, deterministic invariants over emitted output, cross-provider judging,
 and a promotion decision. It is paid, nondeterministic, and never reachable from
@@ -118,7 +127,31 @@ Three properties of the registry are worth knowing before reading a report:
 - **Verification depth differs by platform, and is stated rather than implied.**
   Web and adaptive are render-gated. React Native and Flutter currently receive
   the static gates plus a type or analyzer pass, with no rendered gate result at
-  all. SwiftUI and Compose are compile plus human review.
+  all. SwiftUI and Compose are compile plus human review. Swift compilation
+  resolves the candidate's actual `.swift` inputs; no source files means
+  `unverified`, not an empty successful invocation, and library parsing keeps
+  normal `@main` application entrypoints type-checkable. Their review record is
+  parsed as YAML and accepts only explicit `accept`/`pass` or `reject`/`fail`
+  verdicts, exactly the required string fields, and a real ISO calendar date;
+  extra keys and impossible dates invalidate the record. The SwiftUI cases
+  target iOS, so the compile step names its platform instead of inheriting the
+  host one: it resolves the `iphonesimulator` SDK and passes an iOS target, and
+  a machine without that SDK reports `unverified` rather than the compile
+  failures a macOS SDK would raise on correct iOS code. Compilation and review
+  remain separate because successful compilation does not establish visual
+  quality. `src/eval/native-compile-gate.ts` owns both boundaries.
+- **Source-copy suspicion is not source-copy proof.** A long document carrying
+  a URL can warrant provenance review, but it cannot by itself trigger the
+  critical source-copy failure. That failure requires explicit evidence from a
+  reviewed source comparison, and no harness step produces that evidence today
+  — an eval run holds no source snapshot to compare against — so a passing row
+  means copying was not established, never that it was ruled out. What rules it
+  out is the `source_provenance_reviewed` attestation promotion already
+  requires; the gate records the heuristic limit and names the documents a
+  reviewer still has to read. The deterministic gate does not ingest network
+  bodies. Its executable owner is
+  `src/eval/presentational-output-static-gates.ts`; the separate liveness check
+  in `scripts/check-source-liveness.ts` reads response status only.
 
 What the registry cannot do is tell two passing artifacts apart. Every gate here
 answers a yes/no question about correctness; none of them answers whether the
@@ -222,14 +255,25 @@ refusal rather than a warning. No flag skips it and no measurement substitutes
 for it.
 
 Both reports are verified before a single number is read from either. Each
-hashes its own body when it is written, and `pnpm promote:designer` recomputes
-that hash for the deterministic gate report and for the judging report, and
-checks that each names the cycle being promoted. A report edited after its run,
-or carried over from another cycle, ends the command before the gate is reached
-— so those four exits are not collected alongside the refusals above. Neither
-are the earlier ones: a missing or unparseable `report.json` or `judging.json`,
-or a flag given without a value, ends the command before any of this. A run that
-printed almost nothing and exited 1 failed at one of those, not at the gate.
+hashes its own body when it is written, but that proves integrity rather than
+freshness. Promotion therefore also checks the judging report against the
+deterministic report hash, the working tree's current candidate payload and
+case-manifest hashes, the promotion lane's exact required case set, both arms,
+and each candidate artifact path and content digest. That digest covers
+candidate-authored files plus generated screenshots; promotion recomputes it
+from the expected run directory, so a missing or mutated artifact is refused. A
+self-consistent report from an older payload is still refused, and a report that
+predates this evidence identity must be regenerated rather than silently
+upgraded. `src/eval/candidate-artifact-hash.ts` owns the digest and
+`src/eval/promotion-evidence-binding.ts` owns the cross-report rules; the report
+producers own the recorded identity.
+
+A report edited after its run, or carried over from another cycle, ends the
+command before the gate is reached, so those exits are not collected alongside
+the refusals above. Neither are the earlier ones: a missing or unparseable
+`report.json` or `judging.json`, or a flag given without a value, ends the command
+before any of this. A run that printed almost nothing and exited 1 failed at one
+of those, not at the gate.
 
 ## The payload budget
 

@@ -1,4 +1,4 @@
-import type { GateResult, GateSeverity } from './gate-result.ts';
+import { summarizeGateResults, type GateResult, type GateSeverity } from './gate-result.ts';
 
 /**
  * Compares one skill version's behavior across two runtimes and names where they
@@ -81,6 +81,18 @@ export interface FixReview {
   accepted: boolean;
   /** Populated whenever `accepted` is false; the reason is always stated. */
   refusal: string | null;
+}
+
+/** Agreement never overrides either runtime's own blocking or unverified gates. */
+export function portabilityReviewBlocks(
+  review: DivergenceReport,
+  observations: readonly RuntimeObservation[]
+): boolean {
+  return (
+    review.partial ||
+    observations.some((observation) => summarizeGateResults(observation.gates).blocking) ||
+    review.divergences.some((divergence) => divergence.severity && divergence.severity !== 'medium')
+  );
 }
 
 /** The boundary invariant. A divergence on it is a role failure, not a gate nit. */

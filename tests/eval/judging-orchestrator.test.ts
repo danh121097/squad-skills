@@ -55,6 +55,18 @@ const runner = (costUsd: number | null = null): JudgeRunner =>
 const options = (overrides: Partial<Parameters<typeof runJudging>[0]> = {}) => ({
   cases: [input('dev-one')],
   cycleId: 'cycle-1',
+  evidence: {
+    candidateArtifacts: [
+      {
+        artifactHash: 'sha256:dev-one',
+        caseId: 'dev-one',
+        runDirectory: '.eval-runs/dev-one.candidate',
+      },
+    ],
+    caseManifestHash: 'sha256:manifest',
+    deterministicReportHash: 'sha256:deterministic',
+    payloadHash: 'sha256:payload',
+  },
   lane: 'calibration',
   models,
   regressions: [],

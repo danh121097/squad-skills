@@ -1,11 +1,14 @@
 import { execFile } from 'node:child_process';
-import { mkdtemp, readdir, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
+import { validatePackagedSkillPayload } from '../src/catalog/package-payload-validator.ts';
+
 interface PackResult {
+  filename: string;
   files: Array<{ path: string }>;
   name: string;
   version: string;
@@ -14,6 +17,7 @@ interface PackResult {
 const execFileAsync = promisify(execFile);
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporaryDirectory = await mkdtemp(join(tmpdir(), 'squad-skills-pack-'));
+const extractionDirectory = join(temporaryDirectory, 'extracted');
 const sourceSkillNames = (await readdir(resolve(projectRoot, 'skills'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
@@ -49,6 +53,18 @@ try {
     throw new Error(
       `Packaged skills do not match the source catalog: ${packagedSkillNames.join(', ')}.`
     );
+  }
+
+  await mkdir(extractionDirectory, { recursive: true });
+  const archive = resolve(temporaryDirectory, packResult.filename);
+  await execFileAsync('tar', ['-xzf', archive, '-C', extractionDirectory]);
+  const payloadErrors = await validatePackagedSkillPayload({
+    packagedProjectRoot: join(extractionDirectory, 'package'),
+    sourceProjectRoot: projectRoot,
+  });
+
+  if (payloadErrors.length > 0) {
+    throw new Error(`Packaged skill payload mismatch:\n- ${payloadErrors.join('\n- ')}`);
   }
 
   console.log(

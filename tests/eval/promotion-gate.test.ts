@@ -6,6 +6,8 @@ import {
   requiredApprovalChecklist,
   type PromotionInput,
 } from '../../src/eval/promotion-gate.ts';
+import { buildEvalRunReport, type CaseRunResult } from '../../src/eval/eval-run-report.ts';
+import { gateResult } from '../../src/eval/gate-result.ts';
 import type { PairwiseOutcome } from '../../src/eval/pairwise-judge.ts';
 
 /**
@@ -16,6 +18,8 @@ import type { PairwiseOutcome } from '../../src/eval/pairwise-judge.ts';
  * uncalibrated judge, an unsigned checklist, a version that does not move.
  */
 const reportHash = 'sha256:1111';
+const caseManifestHash = 'sha256:case-manifest';
+const payloadHash = 'sha256:candidate-payload';
 const approval = [
   'reviewer: Harry Nguyen',
   'reviewed_on: 2026-08-28',
@@ -35,6 +39,64 @@ const outcome = (caseId: string, verdict: PairwiseOutcome['verdict']): PairwiseO
   verdict,
 });
 
+const row = (caseId: string, arm: 'baseline' | 'candidate'): CaseRunResult => ({
+  arm,
+  artifactHash: `${caseId}-${arm}-artifact`,
+  caseId,
+  category: 'fixture',
+  lane: 'acceptance',
+  results: [gateResult('INV-BUILD-001', 'critical', 'render-gated', 'pass', 'passed')],
+  runDirectory: `.eval-runs/cycle/${caseId}.${arm}`,
+  targetPlatform: 'web',
+});
+
+const deterministicReport = (
+  rows: CaseRunResult[] = [
+    row('a', 'baseline'),
+    row('a', 'candidate'),
+    row('b', 'baseline'),
+    row('b', 'candidate'),
+  ]
+) =>
+  buildEvalRunReport(
+    {
+      caseManifestHash,
+      cycleId: 'designer-2026-08-27',
+      nodeVersion: '22.20.0',
+      payloadHash,
+      renderer: 'fixture',
+    },
+    rows
+  );
+
+const evidence = (report = deterministicReport()) => ({
+  currentCaseManifestHash: caseManifestHash,
+  currentCandidateArtifacts: report.cases
+    .filter((entry) => entry.arm === 'candidate')
+    .map((entry) => ({
+      artifactHash: entry.artifactHash ?? null,
+      caseId: entry.caseId,
+      runDirectory: entry.runDirectory,
+    })),
+  currentPayloadHash: payloadHash,
+  deterministicReport: report,
+  judgedSkill: 'squad-designer',
+  judging: {
+    candidateArtifacts: report.cases
+      .filter((entry) => entry.arm === 'candidate')
+      .map((entry) => ({
+        artifactHash: entry.artifactHash ?? null,
+        caseId: entry.caseId,
+        runDirectory: entry.runDirectory,
+      })),
+    caseManifestHash,
+    deterministicReportHash: report.reportHash,
+    payloadHash,
+  },
+  requiredCaseIds: ['a', 'b'],
+  skill: 'squad-designer',
+});
+
 const promotable = (overrides: Partial<PromotionInput> = {}): PromotionInput => ({
   approvalSource: approval,
   baselineVersion: '2.2.0',
@@ -45,6 +107,7 @@ const promotable = (overrides: Partial<PromotionInput> = {}): PromotionInput => 
   candidateVersion: '3.0.0',
   cycleId: 'designer-2026-08-27',
   deterministicBlocking: false,
+  evidence: evidence(),
   equivalenceBoundary: 0,
   interval: { confidence: 0.95, iterations: 2000, lower: 0.3, mean: 0.6, samples: 6, upper: 0.9 },
   judgedLane: 'acceptance',
@@ -64,6 +127,119 @@ describe('evaluatePromotion', () => {
 
     expect(decision.approved).toBe(false);
     expect(decision.refusals.join(' ')).toContain('"calibration" lane');
+  });
+
+  it('refuses a hash-valid deterministic report for a stale candidate payload', () => {
+    const decision = evaluatePromotion(
+      promotable({ evidence: { ...evidence(), currentPayloadHash: 'sha256:new-payload' } })
+    );
+
+    expect(decision.refusals.join(' ')).toContain('current candidate payload');
+  });
+
+  it('refuses missing or mismatched judging evidence identity', () => {
+    const missing = evaluatePromotion(promotable({ evidence: { ...evidence(), judging: null } }));
+    const mismatched = evaluatePromotion(
+      promotable({
+        evidence: {
+          ...evidence(),
+          judging: { ...evidence().judging!, deterministicReportHash: 'sha256:other-report' },
+        },
+      })
+    );
+
+    expect(missing.refusals.join(' ')).toContain('no deterministic evidence identity');
+    expect(mismatched.refusals.join(' ')).toContain('different deterministic report');
+  });
+
+  it('refuses mixed arms, omitted cases, duplicate cases, and unexpected cases', () => {
+    const variants = [
+      deterministicReport([row('a', 'baseline'), row('a', 'candidate'), row('b', 'candidate')]),
+      deterministicReport([
+        row('a', 'baseline'),
+        row('a', 'candidate'),
+        row('b', 'baseline'),
+        row('b', 'candidate'),
+        row('b', 'candidate'),
+      ]),
+      deterministicReport([
+        row('a', 'baseline'),
+        row('a', 'candidate'),
+        row('b', 'baseline'),
+        row('b', 'candidate'),
+        row('c', 'baseline'),
+        row('c', 'candidate'),
+      ]),
+    ];
+
+    for (const report of variants) {
+      expect(evaluatePromotion(promotable({ evidence: evidence(report) })).approved).toBe(false);
+    }
+  });
+
+  it('refuses omitted, duplicate, or unexpected judging outcomes', () => {
+    for (const outcomes of [
+      [outcome('a', 'candidate')],
+      [outcome('a', 'candidate'), outcome('a', 'tie'), outcome('b', 'candidate')],
+      [outcome('a', 'candidate'), outcome('b', 'tie'), outcome('c', 'candidate')],
+    ]) {
+      expect(evaluatePromotion(promotable({ outcomes })).approved).toBe(false);
+    }
+  });
+
+  it('refuses a candidate artifact identity that points at the baseline arm', () => {
+    const current = evidence();
+    const decision = evaluatePromotion(
+      promotable({
+        evidence: {
+          ...current,
+          judging: {
+            ...current.judging!,
+            candidateArtifacts: [
+              {
+                artifactHash: 'a-candidate-artifact',
+                caseId: 'a',
+                runDirectory: '.eval-runs/cycle/a.baseline',
+              },
+              {
+                artifactHash: 'b-candidate-artifact',
+                caseId: 'b',
+                runDirectory: '.eval-runs/cycle/b.candidate',
+              },
+            ],
+          },
+        },
+      })
+    );
+
+    expect(decision.refusals.join(' ')).toContain('different candidate artifact');
+  });
+
+  it('refuses a missing or changed current candidate artifact', () => {
+    const current = evidence();
+    const missing = evaluatePromotion(
+      promotable({
+        evidence: {
+          ...current,
+          currentCandidateArtifacts: current.currentCandidateArtifacts.map((artifact, index) =>
+            index === 0 ? { ...artifact, artifactHash: null } : artifact
+          ),
+        },
+      })
+    );
+    const changed = evaluatePromotion(
+      promotable({
+        evidence: {
+          ...current,
+          currentCandidateArtifacts: current.currentCandidateArtifacts.map((artifact, index) =>
+            index === 0 ? { ...artifact, artifactHash: 'changed-content' } : artifact
+          ),
+        },
+      })
+    );
+
+    expect(missing.refusals.join(' ')).toContain('is missing');
+    expect(changed.refusals.join(' ')).toContain('current candidate artifact');
   });
 
   it('refuses an agreement figure resting on too few labelled pairs', () => {

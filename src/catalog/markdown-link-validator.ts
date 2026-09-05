@@ -1,4 +1,4 @@
-import { access, readFile, readdir, realpath, stat } from 'node:fs/promises';
+import { access, readFile, readdir, realpath } from 'node:fs/promises';
 import path from 'node:path';
 
 const inlineLinkPattern = /!?\[[^\]]*\]\(((?:[^()]|\([^()]*\))*)\)/g;
@@ -20,7 +20,7 @@ export async function validateMarkdownLinks(
   projectRoot: string,
   errors: string[]
 ): Promise<void> {
-  const markdownFiles = await findMarkdownFiles(skillRoot, skillRoot, projectRoot, errors);
+  const markdownFiles = await findMarkdownFiles(skillRoot, projectRoot, errors);
 
   for (const markdownFile of markdownFiles) {
     // Code is stripped first so a path written as an example, or an index
@@ -111,7 +111,38 @@ function escapes(root: string, targetPath: string): boolean {
  * particular — only the text matters here, not the positions.
  */
 function stripCode(source: string): string {
-  return source.replace(/^ {0,3}(```|~~~)[\s\S]*?^ {0,3}\1/gm, '').replace(/`[^`\n]*`/g, '');
+  const lines = source.split('\n');
+  let fence: { delimiter: '`' | '~'; length: number } | null = null;
+
+  const visible = lines.map((rawLine) => {
+    // A CRLF document arrives here with a trailing `\r` on every line, and `.`
+    // never matches one. Testing the raw line let no fence open at all, so a
+    // Windows-authored skill had every fenced example graded as live links.
+    const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
+
+    if (fence) {
+      const closing = line.match(/^ {0,3}(`+|~+)[ \t]*$/)?.[1];
+
+      if (closing && closing[0] === fence.delimiter && closing.length >= fence.length) {
+        fence = null;
+      }
+
+      return '';
+    }
+
+    const openingMatch = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
+    const opening = openingMatch?.[1];
+    const info = openingMatch?.[2] ?? '';
+
+    if (opening && !(opening[0] === '`' && info.includes('`'))) {
+      fence = { delimiter: opening[0] as '`' | '~', length: opening.length };
+      return '';
+    }
+
+    return line;
+  });
+
+  return visible.join('\n').replace(/(`+)[^\n]*?\1/g, '');
 }
 
 function resolveLocalTarget(
@@ -132,7 +163,6 @@ function resolveLocalTarget(
 
 async function findMarkdownFiles(
   directory: string,
-  skillRoot: string,
   projectRoot: string,
   errors: string[]
 ): Promise<string[]> {
@@ -152,47 +182,26 @@ async function findMarkdownFiles(
 
   for (const entry of entries) {
     const entryPath = path.join(directory, entry.name);
-    // `Dirent` answers from lstat, so a symlink is neither a file nor a
-    // directory to it. Asking only those two questions skipped a symlinked
-    // SKILL.md entirely: its frontmatter was read and its links never were.
-    const kind = entry.isSymbolicLink()
-      ? await resolveSymlink(entryPath, skillRoot, projectRoot, errors)
-      : entry;
+    // Package managers may omit symlinks while retaining their targets. Reject
+    // them at authoring time so source validation and the extracted payload see
+    // the same files.
+    if (entry.isSymbolicLink()) {
+      errors.push(
+        `${relative(projectRoot, entryPath)}: packaged skill payloads cannot contain symlinks; replace the link with a regular file or directory.`
+      );
+      continue;
+    }
 
-    if (kind === null) continue;
+    const kind = entry;
 
     if (kind.isDirectory()) {
-      files.push(...(await findMarkdownFiles(entryPath, skillRoot, projectRoot, errors)));
+      files.push(...(await findMarkdownFiles(entryPath, projectRoot, errors)));
     } else if (kind.isFile() && entry.name.endsWith('.md')) {
       files.push(entryPath);
     }
   }
 
   return files;
-}
-
-/** A symlink is followed only once it is known to land inside the skill. */
-async function resolveSymlink(
-  entryPath: string,
-  skillRoot: string,
-  projectRoot: string,
-  errors: string[]
-): Promise<{ isDirectory: () => boolean; isFile: () => boolean } | null> {
-  try {
-    if (escapes(await realpath(skillRoot), await realpath(entryPath))) {
-      errors.push(
-        `${relative(projectRoot, entryPath)}: symlink resolves outside its skill directory.`
-      );
-
-      return null;
-    }
-
-    return await stat(entryPath);
-  } catch {
-    errors.push(`${relative(projectRoot, entryPath)}: symlink could not be resolved.`);
-
-    return null;
-  }
 }
 
 function relative(projectRoot: string, filePath: string): string {

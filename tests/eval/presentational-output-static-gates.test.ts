@@ -120,9 +120,21 @@ describe('runPresentationalStaticGates', () => {
     expect(dependency.evidence[0]).toContain('@radix-ui/react-dialog');
   });
 
-  it('fails INV-SOURCE-001 when a source page is bundled into the output', () => {
+  it('fails INV-SOURCE-001 when verified evidence identifies copied source content', () => {
     const source = `${'word '.repeat(400)}\nhttps://www.w3.org/TR/WCAG22/`;
-    const bundled = find(run([{ path: 'docs/wcag.md', source }]), 'INV-SOURCE-001');
+    const bundled = find(
+      runPresentationalStaticGates({
+        files: [{ path: 'docs/wcag.md', source }],
+        sourceCopyEvidence: [
+          {
+            candidatePath: 'docs/wcag.md',
+            detail: 'matched the reviewed source snapshot',
+            sourceUrl: 'https://www.w3.org/TR/WCAG22/',
+          },
+        ],
+      }),
+      'INV-SOURCE-001'
+    );
 
     expect(bundled.status).toBe('fail');
     expect(bundled.evidence[0]).toContain('https://www.w3.org/TR/WCAG22/');
@@ -132,6 +144,25 @@ describe('runPresentationalStaticGates', () => {
     const source = 'Contrast follows https://www.w3.org/TR/WCAG22/ as registered.';
 
     expect(find(run([{ path: 'NOTES.md', source }]), 'INV-SOURCE-001').status).toBe('pass');
+  });
+
+  it('does not treat original long design notes with citations as proven copying', () => {
+    const source = `${'Original design rationale explains the local decision. '.repeat(60)}\nSources: https://www.w3.org/TR/WCAG22/`;
+    const result = find(run([{ path: 'DESIGN-NOTES.md', source }]), 'INV-SOURCE-001');
+
+    expect(result.status).toBe('pass');
+    expect(result.detail).toContain('cannot determine copying');
+  });
+
+  it('does not treat an authored page that links out as proven copying', () => {
+    const body = '<p>Authored copy describing this component in the product voice.</p>\n'.repeat(
+      40
+    );
+    const source = `<main>\n${body}<a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a>\n</main>`;
+    const result = find(run([{ path: 'preview.html', source }]), 'INV-SOURCE-001');
+
+    expect(result.status).toBe('pass');
+    expect(result.evidence[0]).toContain('preview.html');
   });
 
   it('fails INV-TOKEN-001 on raw literals outside a token file', () => {

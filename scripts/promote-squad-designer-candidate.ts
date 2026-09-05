@@ -4,13 +4,16 @@ import process from 'node:process';
 
 import { parseDocument } from 'yaml';
 
+import { hashCandidateArtifact } from '../src/eval/candidate-artifact-hash.ts';
+import { armDirectoryId } from '../src/eval/eval-run-orchestration.ts';
+import { resolveRunDirectory } from '../src/eval/eval-run-directory.ts';
 import { verifyJudgingReportHash, type JudgingReport } from '../src/eval/judging-report.ts';
 import {
   evaluatePromotion,
   renderPromotionDecision,
   type PromotionInput,
 } from '../src/eval/promotion-gate.ts';
-import { measureSkillPayload } from '../src/eval/skill-payload-measurement.ts';
+import { hashContent, measureSkillPayload } from '../src/eval/skill-payload-measurement.ts';
 import { verifyEvalRunReportHash, type EvalRunReport } from '../src/eval/eval-run-report.ts';
 
 /**
@@ -30,21 +33,21 @@ const baselineManifest = parseDocument(
   await readFile(path.join(projectRoot, evalDirectory, 'baseline-manifest.yml'), 'utf8')
 ).toJS() as Record<string, Record<string, any>>;
 
-const cycleId = String(
-  parseDocument(
-    await readFile(path.join(projectRoot, evalDirectory, 'case-manifest.yml'), 'utf8')
-  ).toJS().cycle_id
+const caseSource = await readFile(
+  path.join(projectRoot, evalDirectory, 'case-manifest.yml'),
+  'utf8'
 );
+const caseManifest = parseDocument(caseSource).toJS() as {
+  cases?: Array<Record<string, unknown>>;
+  cycle_id?: unknown;
+};
+const cycleId = String(caseManifest.cycle_id);
 
 // The held-out lane, from the contract. A calibration run writes the same
 // report shape, so the lane a promotion reads is named rather than inferred.
 const promotionLane = String(baselineManifest.judging?.promotion_lane ?? 'acceptance');
-const runDirectory = path.join(
-  projectRoot,
-  readFlag('--runs-root') ?? '.eval-runs',
-  cycleId,
-  promotionLane
-);
+const runsRoot = readFlag('--runs-root') ?? '.eval-runs';
+const runDirectory = path.join(projectRoot, runsRoot, cycleId, promotionLane);
 
 const gateReport = await readJson<EvalRunReport>(
   readFlag('--report') ?? path.join(runDirectory, 'report.json')
@@ -101,10 +104,16 @@ if (judgingReport.cycleId !== cycleId) {
 }
 
 const thresholds = baselineManifest.judging?.thresholds ?? {};
+const currentPayload = await measureSkillPayload({
+  skillRoot: path.join(projectRoot, 'skills', skill),
+});
+const requiredCaseIds = (caseManifest.cases ?? [])
+  .filter((entry) => entry.lane === promotionLane)
+  .map((entry) => String(entry.id));
 const input: PromotionInput = {
   approvalSource,
   baselineVersion: String(baselineManifest.skills?.[skill]?.version ?? ''),
-  budgetRegression: await measureBudgetRegression(),
+  budgetRegression: await measureBudgetRegression(currentPayload),
   calibration: judgingReport.calibration,
   // Defaults chosen so a malformed threshold refuses rather than passes: `NaN`
   // makes every comparison false, which would silently switch two gates off.
@@ -113,6 +122,31 @@ const input: PromotionInput = {
   candidateVersion: await readSkillVersion(),
   cycleId,
   deterministicBlocking: gateReport.summary.blocking,
+  evidence: {
+    currentCaseManifestHash: hashContent(caseSource),
+    currentCandidateArtifacts: await Promise.all(
+      requiredCaseIds.map(async (caseId) => {
+        const absolute = resolveRunDirectory({
+          caseId: armDirectoryId(caseId, 'candidate'),
+          cycleId,
+          projectRoot,
+          runsRoot,
+        });
+
+        return {
+          artifactHash: await hashCandidateArtifact(absolute),
+          caseId,
+          runDirectory: path.relative(projectRoot, absolute),
+        };
+      })
+    ),
+    currentPayloadHash: currentPayload.payloadHash,
+    deterministicReport: gateReport,
+    judgedSkill: judgingReport.skill,
+    judging: judgingReport.evidence ?? null,
+    requiredCaseIds,
+    skill,
+  },
   equivalenceBoundary: threshold('equivalence_boundary', Number.POSITIVE_INFINITY),
   interval: judgingReport.interval,
   judgedLane: judgingReport.lane,
@@ -144,12 +178,14 @@ function threshold(name: string, fallback: number): number {
  * the cost, not only the quality, so the ceiling is part of the promotion
  * decision rather than a separate report nobody reads at this moment.
  */
-async function measureBudgetRegression(): Promise<string | null> {
+async function measureBudgetRegression(
+  measurement: Awaited<ReturnType<typeof measureSkillPayload>>
+): Promise<string | null> {
   const reference = baselineManifest.phase_1_reference?.[skill];
 
   if (!reference) return null;
 
-  const measurement = await measureSkillPayload({
+  const loadedMeasurement = await measureSkillPayload({
     skillRoot: path.join(projectRoot, 'skills', skill),
     taskTypes:
       (baselineManifest.task_types as unknown as Array<{
@@ -160,7 +196,11 @@ async function measureBudgetRegression(): Promise<string | null> {
 
   const breaches = [
     ['entrypoint_words', measurement.entrypointWords, Number(reference.entrypoint_words)],
-    ['median_loaded_words', measurement.medianLoadedWords, Number(reference.median_loaded_words)],
+    [
+      'median_loaded_words',
+      loadedMeasurement.medianLoadedWords,
+      Number(reference.median_loaded_words),
+    ],
   ].filter(([, measured, ceiling]) => (measured as number) > (ceiling as number));
 
   return breaches.length === 0

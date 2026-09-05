@@ -165,6 +165,19 @@ exercise. It is not a filter: the runner executes every gate that applies to the
 case's platform, so a case cannot narrow what it is graded on by omitting a
 row.
 
+`INV-SOURCE-001` separates a reason to inspect from proof of copying. Document
+length plus a source URL may be surfaced as heuristic evidence for provenance
+review, but cannot fail the invariant by itself; a critical failure requires
+explicit evidence from a reviewed comparison with a source. The deterministic
+gate never fetches a source-page body to manufacture that evidence, and no
+harness step produces it today: an eval run holds no source snapshot to compare
+against, so the critical result is reachable only when a reviewer supplies the
+comparison. Read a passing row as "copying was not established here", never as
+"copying was ruled out" — what rules it out is the `source_provenance_reviewed`
+attestation the promotion checklist already requires. The executable boundary is
+`src/eval/presentational-output-static-gates.ts`, with source liveness kept
+separately in `scripts/check-source-liveness.ts`.
+
 `INV-KEYBOARD-001`, `INV-ANIMCOST-001`, and `INV-TOKEN-001` were added in Phase
 4 for the three rows of its gate table that Phase 1 had named as gates but not
 as invariants. Registering them makes each one addressable by a case and
@@ -182,6 +195,33 @@ An absent toolchain is reported as `unverified`, never as a pass. A run on a
 machine with no Flutter, no Kotlin, and no Xcode reports three unverified
 compiles, and a report where nothing was verified must not be readable as a
 report where everything passed.
+
+Swift compilation is meaningful only when `swiftc` receives the candidate's
+actual `.swift` files; an artifact containing none is `unverified`, not a
+successful empty invocation. Swift is parsed as a library so normal `@main`
+application entrypoints can be type-checked without launching an executable —
+which does mean a `main.swift` written as top-level statements is rejected,
+because these cases ship an app entrypoint rather than a script.
+
+The platform it is checked against is named rather than inherited. The SwiftUI
+cases target iOS, and a bare `swiftc -typecheck` resolves the host macOS SDK: an
+ordinary screen calling `navigationBarTitleDisplayMode` or importing `UIKit`
+then reports `'…' is unavailable in macOS`, and correct output is graded as a
+critical compile failure. The gate resolves the `iphonesimulator` SDK through
+`xcrun` and passes `-target arm64-apple-ios17.0-simulator`. A machine without
+that SDK reports `unverified`, for the same reason an absent toolchain does —
+falling back to the host SDK would fail correct output while looking like a
+result. Each source is passed as `./<path>` so a candidate-named file such as
+`-Xlinker.swift` stays an input rather than becoming a compiler argument.
+
+For SwiftUI and Compose, `manual-review.yml` is a YAML mapping with exactly the
+non-empty string fields `reviewer`, `reviewed_on`, `verdict`, and `notes`; the
+date must be a real ISO calendar date, `accept`/`pass` accept, and
+`reject`/`fail` reject. Malformed records, extra keys, unknown verdicts, wrong
+field types, and impossible dates remain `unverified`. Compilation and human
+review stay as separate results because compiling native code does not verify
+its visual quality. `src/eval/native-compile-gate.ts` owns this schema and the
+compiler input resolution.
 
 `INV-SCOPE-001` forbids _owning_ application state, data, routing, and platform
 lifecycle. It does not forbid presentation-local state — hover, expansion, focus
@@ -336,17 +376,31 @@ It collects every refusal rather than stopping at the first, so one run tells th
 maintainer everything that stands in the way. It mutates nothing: it prints a
 decision and exits non-zero.
 
-**Evidence is read from one lane, and the lane is named.** Run artifacts live
-under `.eval-runs/<cycle>/<lane>/`, and promotion reads the lane recorded as
+**Evidence is read from one lane, and the lane is named.** The lane directory
+`.eval-runs/<cycle>/<lane>/` holds the reports and the calibration labels; a
+case's own output is its sibling, at `.eval-runs/<cycle>/<case>.baseline/` and
+`<case>.candidate/`. Promotion recomputes an artifact digest from those sibling
+paths, so the distinction is load-bearing rather than cosmetic: evidence written
+under the lane directory is evidence promotion cannot find. Promotion reads the
+lane recorded as
 `judging.promotion_lane` — which must itself be a paid lane. A report judged on
 `calibration` is refused for promotion even when every threshold in it passes:
 the calibration lane exists to score the judge, not the candidate.
 
-**A report has to be the one the run produced.** `buildJudgingReport` hashes its
-own body, and promotion recomputes that hash before reading a single number. A
-report whose verdict, cost, or interval was edited afterwards no longer matches
-and is refused. Promotion also refuses a report from a different cycle than the
-one being promoted.
+**A report has to describe the current, exact evidence set.** Self-hashes prove
+that report bodies were not edited after they were written; they do not prove
+freshness. Promotion additionally binds the judging report to the deterministic
+report hash, the current candidate payload and case-manifest hashes, the
+promotion lane's exact required case set, both deterministic arms, and the
+candidate artifact path and content digest for every case. The digest covers
+candidate-authored files plus generated screenshots, and promotion recomputes
+it from the expected run directory rather than trusting the report. Missing,
+mutated, duplicate, unexpected, mixed, or differently addressed evidence is
+refused even when each report's own hash is valid. Reports written before this
+identity existed cannot be trusted by inference and must be regenerated. The
+executable owners are `src/eval/candidate-artifact-hash.ts`,
+`src/eval/promotion-evidence-binding.ts`, `src/eval/judging-report.ts`, and
+`scripts/promote-squad-designer-candidate.ts`.
 
 The approval record is the non-bypassable half. A maintainer must attest, in
 `promotion-approval.yml`, to having reviewed the diff, the transcripts, the

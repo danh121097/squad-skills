@@ -4,6 +4,7 @@ import {
   buildDivergenceReport,
   classifyDivergences,
   DivergenceReportError,
+  portabilityReviewBlocks,
   renderDivergenceReport,
   reviewProposedFix,
   type RuntimeObservation,
@@ -311,6 +312,71 @@ describe('buildDivergenceReport', () => {
     expect(rendered.indexOf('`boundary`')).toBeLessThan(rendered.indexOf('## Runtimes'));
     expect(rendered.indexOf('gpt-5.6-sol')).toBeGreaterThan(rendered.indexOf('## Runtimes'));
     expect(rendered).toContain('| `side-1` | codex | `gpt-5.6-sol` | high |');
+  });
+});
+
+describe('portabilityReviewBlocks', () => {
+  it('blocks when both sides are absent or one side is absent', () => {
+    const missing = observation({
+      gates: [
+        gateResult('INV-BUILD-001', 'critical', 'static', 'unverified', 'No candidate output.'),
+      ],
+    });
+    const passing = other();
+
+    expect(
+      portabilityReviewBlocks(
+        buildDivergenceReport({
+          caseId: 'both-missing',
+          observations: [missing, other({ gates: missing.gates })],
+        }),
+        [missing, other({ gates: missing.gates })]
+      )
+    ).toBe(true);
+    expect(
+      portabilityReviewBlocks(
+        buildDivergenceReport({ caseId: 'one-missing', observations: [missing, passing] }),
+        [missing, passing]
+      )
+    ).toBe(true);
+  });
+
+  it('blocks shared critical or high failures but preserves the medium-only contract', () => {
+    const sharedHigh = cleanGates().map((gate) =>
+      gate.invariant === 'INV-SCOPE-001'
+        ? gateResult('INV-SCOPE-001', 'high', 'static', 'fail', 'Shared boundary failure.')
+        : gate
+    );
+    const mediumOnly = [
+      gateResult('INV-TOKEN-001', 'medium', 'static', 'fail', 'Shared token smell.'),
+    ];
+
+    const highObservations = [observation({ gates: sharedHigh }), other({ gates: sharedHigh })];
+    const mediumObservations = [observation({ gates: mediumOnly }), other({ gates: mediumOnly })];
+
+    expect(
+      portabilityReviewBlocks(
+        buildDivergenceReport({ caseId: 'shared-high', observations: highObservations }),
+        highObservations
+      )
+    ).toBe(true);
+    expect(
+      portabilityReviewBlocks(
+        buildDivergenceReport({ caseId: 'medium-only', observations: mediumObservations }),
+        mediumObservations
+      )
+    ).toBe(false);
+  });
+
+  it('allows two complete passing sides with no blocking divergence', () => {
+    const observations = [observation(), other()];
+
+    expect(
+      portabilityReviewBlocks(
+        buildDivergenceReport({ caseId: 'passing', observations }),
+        observations
+      )
+    ).toBe(false);
   });
 });
 

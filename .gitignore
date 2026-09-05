@@ -19,6 +19,7 @@ yarn.lock
 .cursor/
 .opencode/
 skills-lock.json
+coverage/
 
 pnpm-debug.log*
 

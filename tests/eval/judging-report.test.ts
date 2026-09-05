@@ -41,6 +41,15 @@ const outcome = (
 const input = (overrides: Partial<JudgingReportInput> = {}): JudgingReportInput => ({
   calibration: null,
   cycleId: 'designer-2026-08-27',
+  evidence: {
+    candidateArtifacts: [
+      { artifactHash: 'sha256:a', caseId: 'a', runDirectory: '.eval-runs/a.candidate' },
+      { artifactHash: 'sha256:b', caseId: 'b', runDirectory: '.eval-runs/b.candidate' },
+    ],
+    caseManifestHash: 'sha256:manifest',
+    deterministicReportHash: 'sha256:deterministic',
+    payloadHash: 'sha256:payload',
+  },
   lane: 'acceptance',
   lengthControl: null,
   models: { authoringAssistance: 'maintainer', judge: 'judge-model', subject: 'subject-model' },
@@ -99,6 +108,18 @@ describe('buildJudgingReport', () => {
     );
 
     expect(reversed.reportHash).toBe(forward.reportHash);
+  });
+
+  it('binds the report hash to deterministic evidence and candidate artifacts', () => {
+    const report = buildJudgingReport(input());
+
+    expect(report.evidence.deterministicReportHash).toBe('sha256:deterministic');
+    expect(
+      verifyJudgingReportHash({
+        ...report,
+        evidence: { ...report.evidence, payloadHash: 'sha256:other' },
+      })
+    ).toBe(false);
   });
 
   it('keeps an unreported cost unknown across the whole run', () => {
