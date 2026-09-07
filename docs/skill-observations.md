@@ -191,3 +191,48 @@ written down here so the next one does not depend on anybody remembering it.
   each load-bearing one against the repository as it is now, and say which no
   longer holds, before planning against it.
 - **Outcome:** open
+
+## 3. Framing an empty repository whose stack is already decided — 2026-09-07
+
+- **Built:** A framing pass on `ecommerce-erp`, a real project of the maintainer
+  that is an empty directory — not even a git repository — carrying one
+  brainstorm document and no plan. Greenfield case, no plan file requested,
+  output stated in the conversation. Every constraint the brainstorm claimed was
+  checked against the template it names before being recorded as given: Next
+  16.2.7, React 19.1, Express 5.2.1, Tailwind 4.3, Zod 4, `mongoose` present and
+  `prisma` absent, `middleware/role.ts` present.
+- **Skill:** `squad-product` 1.0.0.
+- **Missed:** Two, both about shapes the skill treats as binary when they are
+  not.
+
+  A request can arrive **partly** framed, and the skill has no word for it. The
+  brainstorm carried outcome, constraints, non-goals and seven checkable criteria
+  — everything `HANDOFF-PLAN-001` asks for except the phases naming their owning
+  role, which is the half the lead's hard gate 1 refuses on. The stop condition
+  offers only "already framed with checkable criteria — say so and route it
+  onward", and the router only distinguishes a request that needs framing from
+  one that does not. Followed literally, a run either re-frames what the user
+  settled — which gate 2 forbids — or routes an incomplete frame onward for
+  `squads-team` to reject. The useful action was to complete the missing half and
+  name the clause the gap was measured against.
+
+  Second, `requirements-and-unknowns.md § An empty repository inverts that`
+  assumes an empty repository means an undecided stack. Here the stack was
+  decided in detail and nothing was built, and that shape has its own gap: no
+  role in the roster owns the first slice of scaffolding, which spans
+  `apps/web`, `apps/api`, `packages/db` and CI at once. The reference gave no
+  reading for it, so the phase went out as a reported coverage gap with a
+  recommended default rather than an owned phase.
+
+- **Candidate rule:** Two, by owning reference —
+  `skills/squad-product/references/framing-and-acceptance-criteria.md`: a request
+  can arrive partly framed. Record what is already framed as given, produce only
+  the missing part, and name the contract clause the gap was measured against.
+  Re-framing what the user settled and routing an incomplete frame onward are
+  both failures, and the stop condition as written allows only those two.
+  `skills/squad-product/references/scope-phasing-and-sequencing.md`: an empty
+  repository with a given stack still has no owner for the first slice that
+  brings it into existence, because scaffolding spans every layer at once. Name
+  that phase, give it a default owner, and report it as a coverage gap rather
+  than attaching it to whichever role the next phase belongs to.
+- **Outcome:** open
