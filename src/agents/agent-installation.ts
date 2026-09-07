@@ -16,6 +16,7 @@ import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path';
 
 import { registerCodexAgents } from './codex-config-registration.ts';
+import type { AgentPreferences } from './skill-agent-definition.ts';
 import {
   generatedMarker,
   readSkillAgentDefinition,
@@ -27,7 +28,11 @@ export type AgentScope = 'global' | 'project';
 
 export interface AgentInstallationRequest {
   agents: string[];
+  /** Written into a Claude Code agent file when the caller asked for it. */
+  effort?: string | null;
   force: boolean;
+  /** Written into a Claude Code agent file when the caller asked for it. */
+  model?: string | null;
   homeDirectory: string;
   packageRoot: string;
   projectRoot: string;
@@ -42,9 +47,15 @@ export interface AgentInstallationResult {
 
 interface AgentTarget {
   agentsDirectory: string;
+  /** Whether this format has somewhere to put a model and an effort. */
+  carriesPreferences: boolean;
   codexConfigFile?: string;
   extension: '.md' | '.toml';
-  render: (definition: Definition, installedSkillPath: string) => string;
+  render: (
+    definition: Definition,
+    installedSkillPath: string,
+    preferences: AgentPreferences
+  ) => string;
   /**
    * Where the Skills CLI may have put the skill, best candidate first. Codex
    * reads its skills from the shared `.agents/skills` directory rather than
@@ -81,6 +92,17 @@ export async function installAgentDefinitions(
     }
 
     await mkdir(target.agentsDirectory, { recursive: true });
+    const preferences: AgentPreferences = { effort: request.effort, model: request.model };
+    const asked = preferences.model != null || preferences.effort != null;
+
+    if (asked && !target.carriesPreferences) {
+      messages.push(
+        `Ignored --model and --effort for ${tool}: this CLI writes them into Claude Code agent files only. ` +
+          'Codex reads a subagent default from [agents] default_subagent_model and ' +
+          'default_subagent_reasoning_effort in config.toml.'
+      );
+    }
+
     const registered: string[] = [];
 
     for (const definition of definitions) {
@@ -98,7 +120,11 @@ export async function installAgentDefinitions(
         continue;
       }
 
-      await writeFile(agentFile, target.render(definition, installedSkillFile), 'utf8');
+      await writeFile(
+        agentFile,
+        target.render(definition, installedSkillFile, target.carriesPreferences ? preferences : {}),
+        'utf8'
+      );
       written.push(agentFile);
       registered.push(definition.name);
     }
@@ -162,6 +188,7 @@ function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTa
   if (tool === 'claude-code') {
     return {
       agentsDirectory: path.join(root, '.claude', 'agents'),
+      carriesPreferences: true,
       extension: '.md',
       render: renderClaudeAgentFile,
       skillsRoots: [path.join(root, '.claude', 'skills'), path.join(root, '.agents', 'skills')],
@@ -175,6 +202,9 @@ function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTa
 
   return {
     agentsDirectory: path.join(root, '.codex', 'agents'),
+    // Codex's agent table takes a description, a config file and nicknames; a
+    // model is a session-wide default in config.toml, not a per-agent field.
+    carriesPreferences: false,
     codexConfigFile: path.join(root, '.codex', 'config.toml'),
     extension: '.toml',
     render: renderCodexAgentFile,

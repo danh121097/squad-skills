@@ -129,6 +129,29 @@ describe('installAgentDefinitions', () => {
     expect((await request({ agents: ['codex'] })).written).toHaveLength(1);
   });
 
+  it("writes the caller's model into the Claude file and says why Codex has none", async () => {
+    await installSkillInto('.claude', 'squad-qa');
+    await installSkillInto('.agents', 'squad-qa');
+
+    const result = await request({ effort: 'medium', model: 'opus' });
+    const claude = await readFile(path.join(home, '.claude/agents/squad-qa.md'), 'utf8');
+    const codex = await readFile(path.join(home, '.codex/agents/squad-qa.toml'), 'utf8');
+
+    expect(claude).toContain('model: opus');
+    expect(claude).toContain('effort: medium');
+    expect(codex).not.toContain('model: opus');
+    expect(result.messages.join('\n')).toContain('Ignored --model and --effort for codex');
+  });
+
+  // The message is worth nothing if it fires when nobody asked.
+  it('says nothing about Codex preferences when none were given', async () => {
+    await installSkillInto('.agents', 'squad-qa');
+
+    const result = await request({ agents: ['codex'] });
+
+    expect(result.messages.join('\n')).not.toContain('Ignored --model');
+  });
+
   it('declines Codex at project scope rather than guessing its config location', async () => {
     const result = await request({ agents: ['codex'], scope: 'project' });
 

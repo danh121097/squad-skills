@@ -70,6 +70,24 @@ describe('rendering', () => {
     expect(renderCodexAgentFile(definition, skillPath)).toContain(generatedMarker);
   });
 
+  it('writes a model and an effort into the Claude Code file when asked for them', () => {
+    const file = renderClaudeAgentFile(definition, '/skills/squad-qa/SKILL.md', {
+      effort: 'medium',
+      model: 'opus',
+    });
+
+    expect(file).toContain('\nmodel: opus\neffort: medium\n---\n');
+  });
+
+  // The default has to stay clean: this package installs for everyone, and a
+  // model nobody asked for would be catalog content pretending to be a setting.
+  it('writes neither when the caller named neither', () => {
+    const file = renderClaudeAgentFile(definition, '/skills/squad-qa/SKILL.md');
+
+    expect(file).not.toContain('model:');
+    expect(file).not.toContain('effort:');
+  });
+
   it('wraps the same body in the TOML table Codex loads', () => {
     const rendered = renderCodexAgentFile(definition, skillPath);
 

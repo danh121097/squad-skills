@@ -38,10 +38,28 @@ export function readSkillAgentDefinition(source: string): SkillAgentDefinition |
 
 /** How a generated agent reaches its skill, and what rewrites the file. */
 export interface AgentBodyContext {
+  /**
+   * Extra frontmatter lines, already `key: value`. Only Claude Code's format
+   * takes them: the plugin ships to every user, and Codex's agent table has no
+   * model of its own. Empty for both.
+   */
+  frontmatter?: string[];
   /** The sentence telling the agent where its skill is. */
   instruction: string;
   /** What regenerates this file, for a reader who finds an edit gone. */
   origin: string;
+}
+
+/**
+ * A caller's own machine preferences. Nothing in `skills/` names a model: this
+ * package is installed by everyone, and the right model is a property of who is
+ * running it, not of the role. They reach a generated file only when the
+ * invocation that wrote it asked for them, which is what makes them survive the
+ * reinstall that regenerates everything else.
+ */
+export interface AgentPreferences {
+  effort?: string | null;
+  model?: string | null;
 }
 
 /**
@@ -56,9 +74,14 @@ export function renderAgentBody(
     .filter((part) => part.length > 0)
     .join(' ');
 
+  const frontmatter = [
+    `name: ${definition.name}`,
+    `description: ${JSON.stringify(description)}`,
+    ...(context.frontmatter ?? []),
+  ];
+
   return `---
-name: ${definition.name}
-description: ${JSON.stringify(description)}
+${frontmatter.join('\n')}
 ---
 
 <!-- ${generatedMarker} from ${definition.name}/SKILL.md. ${context.origin} -->
@@ -77,9 +100,27 @@ If that file cannot be read, say so and stop rather than improvising the role.
 
 export function renderClaudeAgentFile(
   definition: SkillAgentDefinition,
-  installedSkillPath: string
+  installedSkillPath: string,
+  preferences: AgentPreferences = {}
 ): string {
-  return renderAgentBody(definition, installedSkillContext(installedSkillPath));
+  return renderAgentBody(definition, {
+    ...installedSkillContext(installedSkillPath),
+    frontmatter: renderPreferenceLines(preferences),
+  });
+}
+
+function renderPreferenceLines(preferences: AgentPreferences): string[] {
+  const lines: string[] = [];
+
+  if (preferences.model !== undefined && preferences.model !== null) {
+    lines.push(`model: ${preferences.model}`);
+  }
+
+  if (preferences.effort !== undefined && preferences.effort !== null) {
+    lines.push(`effort: ${preferences.effort}`);
+  }
+
+  return lines;
 }
 
 /**

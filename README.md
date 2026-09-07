@@ -75,6 +75,19 @@ Use `--no-agents` to install skills alone. A catalog installed through
 npx squad-skills agents --global
 ```
 
+`--model` and `--effort` write those fields into each Claude Code subagent file,
+so a spawned role runs on the model you picked and survives the next reinstall:
+
+```sh
+npx squad-skills agents --global --model opus --effort medium
+```
+
+No skill in this catalog names a model. Which one to run is a property of your
+machine, not of the role, so it lives in the command that writes your files.
+Codex takes no per-agent model; set `[agents] default_subagent_model` in
+`~/.codex/config.toml` instead, and the CLI says so rather than dropping the
+flag silently.
+
 See [the installation guide](docs/installation.md) for local-checkout commands,
 installation scope, copy versus symlink behavior, and publishing notes.
 
