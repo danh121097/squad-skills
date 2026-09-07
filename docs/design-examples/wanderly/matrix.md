@@ -200,7 +200,7 @@ the skill did not help either runtime.
 Rubric judging on that round was swamped by position bias: both judges named
 `Design 1` the winner in both orders — a different design each time — so no
 overall verdict from it is usable. Only one finding survived its order swap and
-source confirmation, and it is `lessons.md` §8.
+source confirmation, and it is finding 8 in `lessons.md`.
 
 The two rounds are **not comparable to each other**. Different contract, different
 stack, different instrument. No number crosses between them.

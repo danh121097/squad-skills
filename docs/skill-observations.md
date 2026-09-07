@@ -87,7 +87,7 @@ reader could reasonably assume otherwise:
 - **Missed:** …
 - **Candidate rule:** … → `skills/<skill>/references/<file>.md`
 - **Outcome:** Second rule landed 2026-09-07 in
-  `framing-and-acceptance-criteria.md § Constraints`: evidence inside an earlier
+  `framing-and-acceptance-criteria.md`, under "Constraints": evidence inside an earlier
   plan is a claim with a date, re-check each load-bearing one and say which no
   longer holds. This repository supplied the proof while the rule was still open
   — the `squad-architect` plan's two load-bearing findings were recorded with
@@ -202,7 +202,7 @@ written down here so the next one does not depend on anybody remembering it.
   each load-bearing one against the repository as it is now, and say which no
   longer holds, before planning against it.
 - **Outcome:** Second rule landed 2026-09-07 in
-  `scope-phasing-and-sequencing.md § The first slice`: an empty repository's first
+  `scope-phasing-and-sequencing.md`, under "The first slice": an empty repository's first
   slice gets its own phase, the lead owns the workspace layout and each package
   goes to its layer's role. It became statable only once `squads-team` took
   ownership of that layout the same day — before that, product had a phase with
@@ -236,8 +236,8 @@ written down here so the next one does not depend on anybody remembering it.
   `squads-team` to reject. The useful action was to complete the missing half and
   name the clause the gap was measured against.
 
-  Second, `requirements-and-unknowns.md § An empty repository inverts that`
-  assumes an empty repository means an undecided stack. Here the stack was
+  Second, `requirements-and-unknowns.md`, under "An empty repository inverts
+  that", assumes an empty repository means an undecided stack. Here the stack was
   decided in detail and nothing was built, and that shape has its own gap: no
   role in the roster owns the first slice of scaffolding, which spans
   `apps/web`, `apps/api`, `packages/db` and CI at once. The reference gave no
@@ -269,7 +269,7 @@ written down here so the next one does not depend on anybody remembering it.
   new `## 8. Selection output` change what a selection pass produces, or only
   what it looks like.
 - **Skill:** `squad-frontend`, `frontend-stack-and-motion-selection.md`
-  §5 and §8, immediately after `DECISION-RECORD-001` landed.
+  sections 5 and 8, immediately after `DECISION-RECORD-001` landed.
 - **Missed:** The clause did what it was bound for, and the way it did it was
   not the way the plan predicted.
 
@@ -288,7 +288,7 @@ written down here so the next one does not depend on anybody remembering it.
 (HMAC-signed, bearer JWT) → Express`, and the reused template pieces include
   an axios interceptor with a browser-side refresh manager. An RSC render has
   no browser, so server-side data fetching either duplicates the auth and
-  refresh path or the shell carries no tenant-scoped data at all. §5 already
+  refresh path or the shell carries no tenant-scoped data at all. Section 5 already
   demanded auth behavior per route; what made the contradiction unavoidable was
   having to state the condition under which the shell/islands split stops
   holding, because the condition is true today.
@@ -327,8 +327,8 @@ written down here so the next one does not depend on anybody remembering it.
   `apps/web/Dockerfile` bakes `NEXT_PUBLIC_API_URL`, which the app never reads.
   DevOps never saw that flag, because role reports go to the lead and not to
   peers. The lead is the only place the two halves meet, and nothing in
-  `delivery-pipeline-and-roster.md` asks the lead to verify a handoff — §5
-  Integration says to run combined checks, and `coordination-contract.md` says
+  `delivery-pipeline-and-roster.md` asks the lead to verify a handoff — section 5,
+  Integration, says to run combined checks, and `coordination-contract.md` says
   the lead "never upgrades a gap into a result", which is a rule about honesty,
   not about checking. Grepping the two sides confirmed the intersection between
   supplied and consumed variable names was empty. Both slices were green on
@@ -358,7 +358,7 @@ written down here so the next one does not depend on anybody remembering it.
 
 - **Candidate rule:** Two, by owning reference —
 
-  `skills/squads-team/references/delivery-pipeline-and-roster.md` §5 —
+  `skills/squads-team/references/delivery-pipeline-and-roster.md` section 5 —
   integration verifies the seams between slices against the artifacts, not the
   reports: what one slice supplies is checked against what the other consumes.
   A handoff written in prose and confirmed by nobody is an untested contract.

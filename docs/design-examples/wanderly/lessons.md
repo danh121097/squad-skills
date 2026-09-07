@@ -200,7 +200,7 @@ design. Those runs are void.
 The discipline that follows: build the packet by walking the whole source tree,
 never a curated extension list; run the swap; and trust a rubric only when both
 orders agree _and_ the claim can be confirmed against the source. Two findings in
-this exercise met that bar — §1 and §8.
+this exercise met that bar — findings 1 and 8.
 
 ## 11. Two ways to organize tokens, and what each buys
 
