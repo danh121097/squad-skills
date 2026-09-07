@@ -64,7 +64,13 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // `median_loaded_words` the retired manifest recorded — the same number reached
   // by a second route. Its heaviest task loads 6132, which the median regime
   // deliberately does not tax: only the runs that need that depth pay for it.
-  'squad-designer': 1959,
+  // Raised 1959 to 1972 to settle a contradiction inside the entrypoint: the
+  // build step requires motion teardown to live in the component that animates,
+  // while the handoff checklist forbade emitting "lifecycle code" at all. The
+  // checklist now says product state and platform lifecycle, and names the
+  // animation's own bookkeeping as the exception. Thirteen entrypoint words, so
+  // every task pays; a checklist read on every handoff is where the cost belongs.
+  'squad-designer': 1972,
   'squad-devops': 2209,
   // Raised 2101 to 2624 as corrected accounting, not growth: total payload is
   // unchanged at 4299 words. The entrypoint reads

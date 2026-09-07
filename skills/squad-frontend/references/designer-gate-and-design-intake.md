@@ -9,7 +9,9 @@ The designer hands over presentational component code, not a written spec: files
 and slots left open for you to bind, plus the rationale behind them. Wire behavior into that code — do not
 re-implement the component from the rationale. Behavior is yours: state, data fetching, API integration,
 routing, forms submission, and platform lifecycle stay with the build role, so those seams arrive as
-props, slots, or callbacks for you to fill.
+props, slots, or callbacks for you to fill. One thing arrives already wired: a component that animates
+ships the bookkeeping and mount/unmount cleanup its own motion needs, because motion ownership follows
+authorship. That is not product state and does not move to you — remove it and the animation leaks.
 
 Change the presentational layer only where wiring genuinely requires it, and say what you changed. A
 visual or interaction gap goes back to the Designer stage instead of being redesigned inside the feature.

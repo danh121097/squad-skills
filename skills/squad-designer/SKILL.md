@@ -128,6 +128,7 @@ decoration; motion only with a spatial, feedback, state, or continuity purpose.
 - [ ] Components coherent, reusable, composed from real repository primitives
 - [ ] Motion ships its own teardown and reduced-motion behavior; accessibility and realistic
       content covered in the built output
-- [ ] No state, data fetching, API call, routing, or lifecycle code emitted
+- [ ] No product state, data fetching, API call, routing, or platform lifecycle emitted;
+      the bookkeeping and mount/unmount cleanup an animation needs is not that state
 - [ ] Verification tier, loaded and skipped references, capability gaps, and proposed
       dependencies stated
