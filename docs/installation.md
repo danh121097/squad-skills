@@ -80,6 +80,40 @@ squad-skills add --skill squads-team
 the packaged `skills/` directory as its source and adds `--copy` by default so
 the installation remains valid after an `npx` cache is cleaned.
 
+## Subagent definitions
+
+Each skill also has a role a coding agent can spawn by name. `squad-skills add`
+generates one definition per installed skill:
+
+| Tool        | Definition                  | Loaded by                                               |
+| ----------- | --------------------------- | ------------------------------------------------------- |
+| Claude Code | `.claude/agents/<name>.md`  | The file's presence                                     |
+| Codex       | `.codex/agents/<name>.toml` | A `config_file` entry under `[agents]` in `config.toml` |
+
+A definition carries the skill's own name and description and points at the
+installed `SKILL.md`; it never copies the role's content, so editing a skill
+changes what its agent does on the next install.
+
+```sh
+npx squad-skills add --skill squad-qa --global --agent claude-code --agent codex
+npx squad-skills agents --global      # for a catalog installed by `npx skills add`
+npx squad-skills add --no-agents      # skills only
+```
+
+Notes:
+
+- Only the npm CLI can do this. `npx skills add` runs the official Skills CLI,
+  which installs skills and has no concept of an agent definition, so a GitHub
+  installation needs the separate `agents` command.
+- Codex definitions are written at global scope only, because this CLI has not
+  verified where a project-scope Codex config lives. Claude Code supports both.
+- Registering a Codex agent edits `config.toml`. The CLI copies it to
+  `config.toml.squad-skills-backup` before its first edit in a run, appends only
+  entries that are missing, and never rewrites one that already exists.
+- A file the CLI did not generate is never replaced. It is reported and kept
+  unless `--force` is passed.
+- A definition is written only where the matching skill is actually installed.
+
 ## Available skills
 
 The machine-readable catalog is owned by the `skills/*/SKILL.md` files. Run

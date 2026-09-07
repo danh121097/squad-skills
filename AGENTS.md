@@ -37,7 +37,8 @@
   in-skill links again inside the extracted tarball.
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
   `catalog/` for skill-catalog checks, `eval/` for the knowledge-card schema and
-  the report contract — and mirror that layout in `tests/`. A skill's reviewed
+  the report contract, `agents/` for the subagent definitions generated from
+  installed skills — and mirror that layout in `tests/`. A skill's reviewed
   knowledge cards live in `evals/<skill>/knowledge/`, so adding them for another
   skill means adding that directory, not editing `src/eval/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
@@ -61,6 +62,15 @@
   reference the skill does not ship, on a reference no task type loads — that
   file would be payload the median never counts — and on fewer than three task
   types, which is too few for a median to mean anything.
+- A generated subagent definition points at the installed `SKILL.md` and never
+  restates a role. Copying the prose would create a second product surface
+  bound by no ceiling and no cross-skill clause, and the two would drift. The
+  published CLI cannot import `yaml`, which is a development dependency, so
+  `src/agents/` carries its own frontmatter reader; a test pins it against a
+  real YAML parse of every shipped skill, which is the only thing keeping the
+  shortcut honest. Generating definitions is the npm CLI's own step — `npx
+skills add` runs the official Skills CLI, which has no agent concept — so
+  `squad-skills agents` exists for the GitHub path.
 - Keep durable user guidance in `README.md` or `docs/`. `plans/` is ignored local
   execution state and must not become product authority.
 - Squad handoffs are contracts stated in prose, not records written to disk. No

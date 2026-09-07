@@ -61,6 +61,23 @@ The npm command delegates installation to the official `skills` package and
 defaults to copied files, so installed skills do not depend on an ephemeral
 `npx` package-cache path.
 
+### Each role as a subagent too
+
+`squad-skills add` also writes a subagent definition for every skill it
+installs, so a role can be spawned by name instead of only loaded as a skill.
+Claude Code reads `.claude/agents/<name>.md`; Codex reads
+`.codex/agents/<name>.toml` and loads it only once `config.toml` names the file,
+which the CLI registers after backing that config up. Each definition points at
+the `SKILL.md` just installed rather than copying it, so the skill stays the one
+source of truth.
+
+Use `--no-agents` to install skills alone. A catalog installed through
+`npx skills add` never runs this CLI, so generate the definitions afterwards:
+
+```sh
+npx squad-skills agents --global
+```
+
 See [the installation guide](docs/installation.md) for local-checkout commands,
 installation scope, copy versus symlink behavior, and publishing notes.
 
