@@ -395,8 +395,8 @@ written down here so the next one does not depend on anybody remembering it.
   The cause is a runtime property no skill in the catalog stated. A role spawned
   as a child agent has no channel to the user: the host's question UI belongs to
   the controller session, so a question a child writes into its report is read
-  by the lead and by nobody else. `requirements-and-unknowns.md § Ask once, ask
-concretely` is good advice that was, in that execution mode, unfollowable —
+  by the lead and by nobody else. `requirements-and-unknowns.md`, under "Ask once, ask
+  concretely", is good advice that was, in that execution mode, unfollowable —
   it says to ask, it gives the shape of a good question, and there was nothing
   to ask through. What the role did instead is the only thing left: label a
   default and keep going.
@@ -430,7 +430,7 @@ concretely` is good advice that was, in that execution mode, unfollowable —
   in `squad-product`'s handoff contract and `squads-team`'s hard gate 1,
   with the detail in `requirements-and-unknowns.md` (how to shape a fork, and
   what to do when this role has no channel) and
-  `coordination-contract.md § 5` (the lead puts it to the user; an unanswered
+  `coordination-contract.md` section 5 (the lead puts it to the user; an unanswered
   fork blocks its phase the way a `NEEDS_*` verdict does).
 
 - **Outcome:** Landed 2026-09-07 with every ceiling re-measured in the same
