@@ -39,7 +39,9 @@ Pass every applicable check honestly.
 
 - Input validated at the boundary; authorization enforced server-side on every changed path.
 - Injection, SSRF, tenant isolation, rate limits and secret exposure checked across the changed surface.
-- No secret, credential, token or internal error detail reaches a log, a response or a fixture.
+- Live secrets, credentials, tokens and internal error detail stay out of logs, out of responses to
+  callers not authorized for them, and out of committed fixtures. Issuing a credential to the client the
+  flow authorizes is that flow working.
 
 ### Code and tests
 

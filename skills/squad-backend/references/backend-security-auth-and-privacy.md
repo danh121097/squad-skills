@@ -39,7 +39,9 @@ assignment. Audit privileged actions and policy changes. Test negative cross-rol
 ## Secrets, keys, and supply chain
 
 Use managed secret storage and workload identity where available; scope, rotate and audit access. Never
-log values or expose them to client bundles. Pin/verify dependencies according to ecosystem, review install
+log values or expose them to client bundles. What is prohibited is unintended disclosure: a token minted
+for the caller that authenticated is the protocol; the same token in a log, an error body, a response to
+another caller or a committed fixture is a leak. Fixtures carry synthetic values. Pin/verify dependencies according to ecosystem, review install
 scripts, scan lockfiles/images and protect CI provenance/signing paths.
 
 ## Privacy and data lifecycle

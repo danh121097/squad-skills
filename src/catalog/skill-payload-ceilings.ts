@@ -43,7 +43,14 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // twenty-one entrypoint words each, which is why both moved the median one
   // for one: a router line is read by every task, and that is the cost the
   // total-payload regime never made visible.
-  'squad-backend': 2205,
+  // Raised 2205 to 2228 for a rule that was wrong as written: the pre-flight
+  // forbade a credential reaching "a response or a fixture", which prohibits
+  // the response an authentication endpoint exists to send and prohibits
+  // synthetic test data. Twenty-three median words to say the prohibition is
+  // unintended disclosure — a log, an error body, a response to another caller,
+  // a committed value — and both copies pay, because the pre-flight and the
+  // security reference each state it in their own voice on purpose.
+  'squad-backend': 2228,
   // Raised from 2157 when language-runtime-review-signatures.md landed. The
   // file is 621 words but the median moved 82, because it routes to one task
   // and the entrypoint grew by a router line and a checklist item. The task
