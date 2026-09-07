@@ -132,7 +132,10 @@ async function confirm(question: string): Promise<boolean> {
 // ---------------------------------------------------------------------------
 
 const originalManifest = await readFile(manifestPath, 'utf8');
-const currentVersion = (JSON.parse(originalManifest) as { version: string }).version;
+const { name: packageName, version: currentVersion } = JSON.parse(originalManifest) as {
+  name: string;
+  version: string;
+};
 
 let targetVersion = currentVersion;
 
@@ -192,12 +195,12 @@ try {
 // problem rather than a forgotten bump. This answers in a second, and says what
 // to do instead.
 try {
-  const published = await capture('npm', ['view', `squad-skills@${targetVersion}`, 'version']);
+  const published = await capture('npm', ['view', `${packageName}@${targetVersion}`, 'version']);
 
   if (published !== '') {
     fail(
-      `squad-skills@${targetVersion} is already published.\n` +
-        `Name the release to cut a new one: pnpm release ${releaseTypes.join(' | pnpm release ')}`
+      `${packageName}@${targetVersion} is already published.\n` +
+        `Name the bump to cut a new one: pnpm release <${releaseTypes.join('|')}|x.y.z>`
     );
   }
 } catch {
@@ -216,7 +219,7 @@ if (otp === undefined && !dryRun) {
 // ---------------------------------------------------------------------------
 
 console.log(
-  `\n${dryRun ? 'Rehearsing' : 'Releasing'} squad-skills ` +
+  `\n${dryRun ? 'Rehearsing' : 'Releasing'} ${packageName} ` +
     `${bumping ? `${currentVersion} → ${targetVersion}` : `${targetVersion} (the version package.json already carries)`}\n` +
     `  npm      publish ${targetVersion} to registry.npmjs.org${dryRun ? ' (dry run)' : ''}\n` +
     `  git      ${bumping ? 'commit package.json, ' : ''}tag ${tag}, push to origin/${publishBranch}\n` +
@@ -276,7 +279,7 @@ try {
   await runVisible('git push', 'git', ['push', '--follow-tags', 'origin', publishBranch]);
 } catch (error) {
   fail(
-    `squad-skills@${targetVersion} IS published, but git did not finish: ${describeFailure(error)}\n` +
+    `${packageName}@${targetVersion} IS published, but git did not finish: ${describeFailure(error)}\n` +
       `Check \`git log\` and \`git tag\`, then push ${publishBranch} and ${tag} by hand.`
   );
 }
@@ -292,14 +295,14 @@ try {
   ]);
 } catch (error) {
   fail(
-    `squad-skills@${targetVersion} is published and ${tag} is pushed, but the GitHub release was not created: ` +
+    `${packageName}@${targetVersion} is published and ${tag} is pushed, but the GitHub release was not created: ` +
       `${describeFailure(error)}\nRun: gh release create ${tag} --title ${tag} --generate-notes`
   );
 }
 
 console.log(
-  `\nReleased squad-skills@${targetVersion}.\n` +
-    `  npm      https://www.npmjs.com/package/squad-skills/v/${targetVersion}\n` +
+  `\nReleased ${packageName}@${targetVersion}.\n` +
+    `  npm      https://www.npmjs.com/package/${packageName}/v/${targetVersion}\n` +
     `  github   https://github.com/danh121097/squad-skills/releases/tag/${tag}\n\n` +
-    `Verify: npx squad-skills@${targetVersion} --version\n`
+    `Verify: npx ${packageName}@${targetVersion} --version\n`
 );
