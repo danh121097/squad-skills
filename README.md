@@ -14,33 +14,11 @@ skill under `skills/<skill-name>/SKILL.md`.
 
 ## Install
 
-Choose either distribution path. Both routes install the same skill directories
-through the upstream Skills CLI.
+Both paths install the same skill directories through the upstream Skills CLI.
+They differ in one way: only the npm command also generates a subagent
+definition per skill, in the same step.
 
-### From GitHub or skills.sh
-
-List the available skills directly from the public repository:
-
-```sh
-npx skills add danh121097/squad-skills --list
-```
-
-Install the squad orchestrator globally for selected agents:
-
-```sh
-npx skills add danh121097/squad-skills \
-  --skill squads-team --global \
-  --agent codex --agent claude-code --agent cursor --agent opencode
-```
-
-Install a single role:
-
-```sh
-npx skills add danh121097/squad-skills \
-  --skill squad-frontend --global --agent codex
-```
-
-### From the npm package
+### From the npm package (recommended)
 
 Run without a permanent CLI installation:
 
@@ -80,6 +58,36 @@ npx squad-skills agents --global
 
 See [the installation guide](docs/installation.md) for local-checkout commands,
 installation scope, copy versus symlink behavior, and publishing notes.
+
+### From GitHub or skills.sh
+
+List the available skills directly from the public repository:
+
+```sh
+npx skills add danh121097/squad-skills --list
+```
+
+Install the squad orchestrator globally for selected agents:
+
+```sh
+npx skills add danh121097/squad-skills \
+  --skill squads-team --global \
+  --agent codex --agent claude-code --agent cursor --agent opencode
+```
+
+Install a single role:
+
+```sh
+npx skills add danh121097/squad-skills \
+  --skill squad-frontend --global --agent codex
+```
+
+This route installs skills only. The upstream Skills CLI has no hook a source
+repository can use, so generate the subagent definitions after it:
+
+```sh
+npx squad-skills agents --global
+```
 
 ## Develop
 
