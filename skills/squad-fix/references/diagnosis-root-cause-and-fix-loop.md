@@ -22,7 +22,9 @@ Start at the earliest observable divergence, then trace backward through callers
 environment. Separate primary failure from cascading errors. Compare known-good and failing paths; inspect
 recent relevant change evidence when available, without assuming the newest commit is guilty.
 
-For each hypothesis state the predicted observation and run the narrowest safe check that can falsify it.
+Hold more than one candidate cause at a time, and prefer the check that tells them apart: a check both
+hypotheses predict confirms nothing whichever way it lands. For each hypothesis state the predicted
+observation and run the narrowest safe check that can falsify it.
 Do not edit code to “see if it helps.” If evidence is unavailable, request the smallest artifact/access
 needed or return `NEEDS_ENVIRONMENT` through QA when the missing target blocks verification.
 
