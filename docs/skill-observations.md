@@ -236,3 +236,58 @@ written down here so the next one does not depend on anybody remembering it.
   that phase, give it a default owner, and report it as a coverage gap rather
   than attaching it to whichever role the next phase belongs to.
 - **Outcome:** open
+
+## 4. The first run under DECISION-RECORD-001 — 2026-09-07
+
+- **Built:** A frontend stack and rendering-model selection for `apps/web` in
+  `ecommerce-erp`, a real project of the maintainer's, run against the
+  brainstorm contract it already carries — stack fixed to Next.js 16 App Router
+  / React 19, presentational layer reused from the `create-prism-app` `nextjs`
+  template without redesign, architecture noted as "RSC shell + TanStack Query
+  islands". Nothing was written into that repository. The run existed to answer
+  a question the gate cannot: does `frontend-stack-and-motion-selection.md`'s
+  new `## 8. Selection output` change what a selection pass produces, or only
+  what it looks like.
+- **Skill:** `squad-frontend`, `frontend-stack-and-motion-selection.md`
+  §5 and §8, immediately after `DECISION-RECORD-001` landed.
+- **Missed:** The clause did what it was bound for, and the way it did it was
+  not the way the plan predicted.
+
+  Producing "what would reopen it" for the rendering model forced the run to
+  name its preconditions, and one of them was already an open question in the
+  brainstorm: the deployment target. That question was logged there as a
+  backend concern — its stated effect is "Prisma driver choice and connection
+  pooling". It is equally a frontend blocker: an edge or non-Node target
+  changes what the RSC shell can do at all. Without the reopen condition the
+  run would have recorded "RSC shell + TanStack Query islands, preserved from
+  the template" and stopped, and the shared dependency between two roles'
+  decisions would have stayed invisible in a question filed under one of them.
+
+  The second thing it surfaced is a contradiction inside the accepted
+  architecture. The request path is drawn as `Next RSC/client → axios
+(HMAC-signed, bearer JWT) → Express`, and the reused template pieces include
+  an axios interceptor with a browser-side refresh manager. An RSC render has
+  no browser, so server-side data fetching either duplicates the auth and
+  refresh path or the shell carries no tenant-scoped data at all. §5 already
+  demanded auth behavior per route; what made the contradiction unavoidable was
+  having to state the condition under which the shell/islands split stops
+  holding, because the condition is true today.
+
+  What the clause did **not** do is anything for the two clauses that were cut
+  from it in phase 1. "Options rejected" and "the deciding constraint" produced
+  nothing here, because the framework fork was closed before the run started —
+  which is the case the narrowing was for, and one run is not evidence that it
+  generalises.
+
+- **Candidate rule:** None yet for `squad-frontend`. One run is not enough to
+  argue a rule, and the reference change under test is one commit old.
+
+  What this argues for instead is a claim about the clause's placement:
+  `squad-product`'s unknown register requires each unknown to name "what it
+  would change", and here an unknown named one consequence and had two, in two
+  different roles. If a second run reproduces that shape, the rule to write is
+  on `skills/squad-product/references/requirements-and-unknowns.md` — an
+  unknown records every role its answer changes, not the first one that
+  noticed it — and not on the frontend reference at all.
+
+- **Outcome:** open
