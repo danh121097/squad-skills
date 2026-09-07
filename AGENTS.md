@@ -38,8 +38,8 @@
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
   `catalog/` for skill-catalog checks, `eval/` for the knowledge-card schema and
   the report contract, `agents/` for the subagent definitions generated from
-  installed skills, `release/` for the version arithmetic `scripts/release.ts`
-  imports — and mirror that layout in `tests/`. A skill's reviewed
+  installed skills, `release/` for the version arithmetic the publish
+  preflight imports — and mirror that layout in `tests/`. A skill's reviewed
   knowledge cards live in `evals/<skill>/knowledge/`, so adding them for another
   skill means adding that directory, not editing `src/eval/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
@@ -219,17 +219,20 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   per-file report to find code nothing reaches; do not read the total as quality.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
-- Release: `pnpm release [<patch|minor|major|x.y.z>] [--otp <code>]`. Publishes,
-  tags `main`, then opens the GitHub release — in that order because only the
-  publish is irreversible. With no version argument it publishes what
-  `package.json` already carries and picks none of its own, because a script
-  cannot tell a patch from a break and one that guessed would ship a major as a
-  minor. Everything before the publish is a preflight that mutates nothing, a
-  failed publish is undone by restoring `package.json`, and a failure after it
-  is reported with the state it left rather than rewritten away. Its version
-  arithmetic lives in `src/release/` so a test can reach it without importing a
-  script that releases on import. `--dry-run` rehearses the whole path and
-  publishes nothing.
+- Release: `pnpm release [--otp <code>]`. Asserts the manifest's version is not
+  already on npm, then publishes — which runs `prepublishOnly` and so repeats
+  the full gate. It picks no version: a script cannot tell a patch from a break,
+  and one that guessed would ship a major as a minor, so the version is set by
+  hand in `package.json` and committed with the change that earned it. The
+  refusal prints the three candidates, computed by `src/release/next-version.ts`
+  so a test can reach that arithmetic without importing a script that queries the
+  registry on import.
+- The tag and the GitHub release are not created locally. The `release` job in
+  the workflow tags `main` and opens the release once `package.json` carries a
+  version no tag matches. It runs only on a push to `main` — never on a pull
+  request, because it holds `contents: write` and a fork must not reach it — and
+  uses the runner's own `gh` with the automatic `GITHUB_TOKEN` rather than a
+  third-party action. It writes no commit.
 
 Do not weaken tests, skip a failing gate, or hand-edit generated dependency
 state to make verification pass.

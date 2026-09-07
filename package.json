@@ -47,7 +47,7 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" \"evals/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" \".github/**/*.md\" README.md AGENTS.md CLAUDE.md CONTRIBUTING.md \"docs/**/*.md\" \"evals/**/*.md\" \"evals/**/*.yml\"",
     "pack:check": "node scripts/check-package-contents.ts",
     "prepublishOnly": "pnpm release:check",
-    "release": "node scripts/release.ts",
+    "release": "node scripts/assert-version-unpublished.ts && pnpm publish --access public",
     "release:check": "pnpm test && pnpm build && node scripts/check-release-readiness.ts && pnpm pack:check",
     "skills:list": "skills add . --list",
     "test": "pnpm type-check && pnpm format:check && pnpm test:unit && pnpm validate && pnpm validate:evals && pnpm skills:list",

@@ -55,52 +55,44 @@ npm login
 npm whoami
 ```
 
-Then cut the release:
+Set the version in `package.json` by hand, commit it alongside the change that
+earned it, then publish:
 
 ```sh
 pnpm release --otp 123456
 ```
 
-With no version argument this publishes the version `package.json` already
-carries, after checking the registry does not have it. It picks no version of
-its own: a script cannot know whether a change is a patch or a break, and one
-that guessed would eventually ship a major as a minor. To bump as part of the
-release, name the level:
-
-```sh
-pnpm release patch --otp 123456
-pnpm release 1.0.0 --otp 123456
-```
+That runs two steps. The first refuses the publish if npm already has the
+version, in a second and before anything is built — npm would reject it anyway,
+but only after `prepublishOnly` has run the whole gate and the one-time password
+has been entered, and its E403 reads like a permissions problem rather than a
+forgotten bump. The second is `pnpm publish --access public`, which runs
+`prepublishOnly` and so repeats `pnpm release:check`.
 
 `--otp` carries the npm one-time password and is required whenever the account
-has two-factor auth on writes; `--yes` skips the confirmation prompt, and
-`--dry-run` rehearses the whole path without publishing.
-
-The command does, in this order:
-
-1. **Preflight**, mutating nothing — on `main`, clean tree, in sync with
-   `origin/main`, npm and `gh` authenticated, the target version free on the
-   registry, and the tag free both locally and on `origin`.
-2. **Write the new version** into `package.json`, when a bump was named.
-3. **Publish**, which runs `prepublishOnly` and so repeats the full
-   `pnpm release:check` gate against the bumped version.
-4. **Commit the bump, tag and push** `main` with the tag.
-5. **Open the GitHub release** for the tag with generated notes.
-
-The order is what makes it safe to automate. Only step 3 is irreversible, and
-everything that could fail cheaply happens before it. A publish that fails
-restores `package.json` and leaves no commit, tag or release behind. A failure
-after the publish is reported with the exact state it left — published, tagged
-locally, not pushed — and is never undone by rewriting history, because the
-version is already public by then.
-
-To do it by hand instead:
+has two-factor auth on writes. To rehearse without publishing:
 
 ```sh
-pnpm publish --access public --otp 123456
-git tag -a v0.1.0 -m v0.1.0 && git push --follow-tags origin main
-gh release create v0.1.0 --title v0.1.0 --generate-notes
+pnpm release --dry-run
 ```
+
+Nothing here picks the version. A script cannot know whether a change is a patch
+or a break, and one that guessed would eventually ship a major as a minor, so
+the refusal prints the three candidates and leaves the choice with you.
+
+## Tag and GitHub release
+
+Neither is created locally. Once the version commit reaches `main` and the
+validation gate passes, the `release` job in
+[`.github/workflows/validate-skills.yml`](../.github/workflows/validate-skills.yml)
+tags that commit and opens the GitHub release with generated notes — but only
+when no tag matches the version yet, so a push that did not change the version
+does nothing.
+
+That job runs on a push to `main` and never on a pull request, because it holds
+`contents: write` and a fork's pull request must not reach it. It uses the
+runner's own `gh` with the automatic `GITHUB_TOKEN` rather than a third-party
+action, and it writes no commit.
 
 After publishing, verify both entry points:
 

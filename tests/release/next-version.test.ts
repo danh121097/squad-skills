@@ -1,31 +1,20 @@
 import { describe, expect, it } from 'vitest';
 
-import { compareVersions, nextVersion, parseVersion } from '../../src/release/next-version.ts';
+import { nextVersion, parseVersion } from '../../src/release/next-version.ts';
 
 describe('parseVersion', () => {
   it('reads the three components', () => {
     expect(parseVersion('1.2.3')).toEqual([1, 2, 3]);
   });
 
+  it('reads them as numbers, so 10 is not compared as a string', () => {
+    expect(parseVersion('0.10.0')).toEqual([0, 10, 0]);
+  });
+
   it('rejects anything that is not major.minor.patch', () => {
-    for (const value of ['1.2', '1.2.3.4', 'v1.2.3', '1.2.x', '']) {
+    for (const value of ['1.2', '1.2.3.4', 'v1.2.3', '1.2.x', '1.0.0-beta.1', '']) {
       expect(() => parseVersion(value)).toThrow(/not a major\.minor\.patch version/);
     }
-  });
-});
-
-describe('compareVersions', () => {
-  it('orders by major, then minor, then patch', () => {
-    expect(compareVersions('1.0.0', '2.0.0')).toBeLessThan(0);
-    expect(compareVersions('1.2.0', '1.1.9')).toBeGreaterThan(0);
-    expect(compareVersions('0.1.1', '0.1.0')).toBeGreaterThan(0);
-    expect(compareVersions('0.1.0', '0.1.0')).toBe(0);
-  });
-
-  it('compares numerically, not as strings', () => {
-    // '0.10.0' < '0.9.0' under a string sort, which would let a release script
-    // wave through a version npm then rejects at the end of the full gate.
-    expect(compareVersions('0.10.0', '0.9.0')).toBeGreaterThan(0);
   });
 });
 
@@ -36,20 +25,8 @@ describe('nextVersion', () => {
     expect(nextVersion('1.2.3', 'major')).toBe('2.0.0');
   });
 
-  it('accepts an explicit version that skips ahead', () => {
-    expect(nextVersion('0.1.0', '1.0.0')).toBe('1.0.0');
-  });
-
-  it('refuses to move backwards or stand still', () => {
-    expect(() => nextVersion('0.2.0', '0.1.0')).toThrow(/does not follow/);
-    expect(() => nextVersion('0.2.0', '0.2.0')).toThrow(/does not follow/);
-  });
-
-  it('refuses a prerelease and says which dist-tag problem it is', () => {
-    expect(() => nextVersion('0.1.0', '1.0.0-beta.1')).toThrow(/dist-tag/);
-  });
-
-  it('names the valid arguments when the request is a typo', () => {
-    expect(() => nextVersion('0.1.0', 'pathc')).toThrow(/major, minor, patch/);
+  it('carries double digits rather than concatenating them', () => {
+    expect(nextVersion('0.9.9', 'patch')).toBe('0.9.10');
+    expect(nextVersion('0.9.9', 'minor')).toBe('0.10.0');
   });
 });

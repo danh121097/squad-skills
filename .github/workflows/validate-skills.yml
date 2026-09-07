@@ -42,6 +42,54 @@ jobs:
       - name: Validate catalog and package release
         run: pnpm release:check
 
+  # Tags `main` and opens the GitHub release once `package.json` carries a
+  # version no tag matches. The version itself is never chosen here — it is
+  # committed by hand alongside the change that earned it, and `pnpm release`
+  # refuses to publish a version npm already has.
+  #
+  # Runs only on a push to `main`, never on a pull request: a fork's pull
+  # request must not reach a job holding write permission. It uses the
+  # automatic `GITHUB_TOKEN` through the runner's own `gh`, rather than a
+  # third-party action, so nothing outside this repository is trusted with that
+  # permission, and it writes no commit — only a tag and a release.
+  release:
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Read the version from package.json
+        id: version
+        run: echo "tag=v$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether the tag already exists
+        id: tag
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create the tag and GitHub release
+        if: steps.tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --target "$GITHUB_SHA" \
+            --generate-notes
+
   # Reports a knowledge card whose source has moved or gone. Kept out of the
   # gate above because it depends on third-party hosts: a slow documentation
   # site must not fail a contributor's pull request, and `pnpm test` stays
