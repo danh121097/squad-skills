@@ -38,7 +38,8 @@
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
   `catalog/` for skill-catalog checks, `eval/` for the knowledge-card schema and
   the report contract, `agents/` for the subagent definitions generated from
-  installed skills — and mirror that layout in `tests/`. A skill's reviewed
+  installed skills, `release/` for the version arithmetic `scripts/release.ts`
+  imports — and mirror that layout in `tests/`. A skill's reviewed
   knowledge cards live in `evals/<skill>/knowledge/`, so adding them for another
   skill means adding that directory, not editing `src/eval/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
@@ -218,6 +219,14 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   per-file report to find code nothing reaches; do not read the total as quality.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
+- Release: `pnpm release -- <patch|minor|major|x.y.z> [--otp <code>]`. Bumps the
+  version, publishes, tags `main`, then opens the GitHub release — in that order
+  because only the publish is irreversible. Everything before it is a preflight
+  that mutates nothing, a failed publish is undone by restoring `package.json`,
+  and a failure after it is reported with the state it left rather than rewritten
+  away. Its version arithmetic lives in `src/release/` so a test can reach it
+  without importing a script that releases on import. `--dry-run` rehearses the
+  whole path and publishes nothing.
 
 Do not weaken tests, skip a failing gate, or hand-edit generated dependency
 state to make verification pass.
