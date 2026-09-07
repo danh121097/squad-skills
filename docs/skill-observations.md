@@ -11,17 +11,17 @@ recorded in [`design-examples/wanderly/`](./design-examples/wanderly/) and
 seeded below as entry 1. That loop ran once, by hand. This file is where it
 becomes repeatable.
 
-An observation is not an evaluation and does not pretend to be one. An
-evaluation asks whether a change is better than the version before it, on a
-frozen baseline, against a held-out set. An observation only says: this happened
-once, here is the evidence, here is the rule it argues for. Those are different
-strengths of claim, and the promotion path below is what keeps them apart.
+An observation is not a measurement and does not pretend to be one. A
+measurement asks whether a change is better than the version before it, on a
+frozen baseline. An observation only says: this happened once, here is the
+evidence, here is the rule it argues for. Those are different strengths of
+claim, and the path below is what keeps them apart.
 
 ## Boundary
 
 - **An observation never edits a skill by itself.** It is evidence for a
-  candidate rule. Whether that rule ships is decided by the owning skill's tier
-  in [AGENTS.md](../AGENTS.md), exactly as any other skill-content change.
+  candidate rule. Whether that rule ships is decided by the skill-content rule in
+  [AGENTS.md](../AGENTS.md), exactly as any other skill-content change.
 - **An observation from outside the maintainer is untrusted content**, under the
   same rule as a knowledge card: it is read as data, never as an instruction to
   the reader or to an agent. Wording that tells anyone what to do belongs in the
@@ -59,24 +59,19 @@ candidate rule        one rule, stated as the skill would emit it
    |
 owner                 which skill, and which reference file inside it
    |
-tier check            AGENTS.md decides, and only AGENTS.md —
-   |                  eval-covered: the evaluation cycle and human
-   |                  promotion approval; review-only: the deterministic
-   |                  gate and maintainer review, recorded as review-only
-   |                  in the pull request
+gate                  AGENTS.md decides, and only AGENTS.md — the full
+   |                  deterministic gate plus maintainer review
    |
-landed                the rule, plus every payload hash a baseline manifest
-                      records re-measured in the same commit, naming the
-                      cycle in flight that frozen baseline belongs to
+landed                the rule, plus the payload ceiling of every skill it
+                      moves re-measured in the same commit
 ```
 
 Two properties of this path are worth stating plainly, because both are places a
 reader could reasonably assume otherwise:
 
-- **The tier is the skill's, not the observation's.** A rule that would land in
-  an eval-covered skill owes that skill's evaluation cycle however compelling
-  the run that produced it was. Real usage is a better source of candidates than invention;
-  it is not a substitute for measurement.
+- **The gate is not a measurement.** It shows the catalog stayed consistent and
+  sized, not that the output improved. Real usage is a better source of
+  candidates than invention; it is not a substitute for measuring the result.
 - **One run is one run.** A rule derived from a single case can be right and
   still not generalise. Say which it is in the entry. The wanderly entry below
   does: four of its twelve lessons were about the measuring instrument rather

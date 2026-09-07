@@ -93,6 +93,6 @@ have a matching lowercase kebab-case `name`, a non-empty `description`, and
 valid relative links to any bundled references. Run `pnpm test` before sharing
 the repository.
 
-A change to what an agent reads at runtime carries more than `pnpm test`. See
-[the evaluation and governance guide](evaluation-and-governance.md) for the
-evidence behind that, and [AGENTS.md](../AGENTS.md) for the rule itself.
+A change to what an agent reads at runtime carries maintainer review as well as
+`pnpm test`. See [AGENTS.md](../AGENTS.md) for that rule and what the gate does
+and does not establish.

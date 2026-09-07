@@ -36,26 +36,26 @@
   payload file with the authored one by path and exact bytes, and resolves the
   in-skill links again inside the extracted tarball.
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
-  `catalog/` for skill-catalog checks, `eval/` for the evaluation contract — and
-  mirror that layout in `tests/`. The evaluation engine reads which skills a
-  cycle covers from its manifests, so adding a contract for another skill means
-  adding `evals/<skill>/`, not editing `src/eval/`.
+  `catalog/` for skill-catalog checks, `eval/` for the knowledge-card schema and
+  the report contract — and mirror that layout in `tests/`. A skill's reviewed
+  knowledge cards live in `evals/<skill>/knowledge/`, so adding them for another
+  skill means adding that directory, not editing `src/eval/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
   so every `SKILL.md` change must pass the repository gate.
 - Every skill carries a payload ceiling in
   `src/catalog/skill-payload-ceilings.ts`, checked by `pnpm validate`. It exists
-  because the manifest budget reaches three skills and binds a loaded-set figure
-  for one, which left eight able to grow with nothing objecting — and they grew
-  by 12% to 42% of their reference words in a single upgrade that believed a
+  because an evaluation budget once reached three skills and bound a loaded-set
+  figure for one, which left eight able to grow with nothing objecting — and they
+  grew by 12% to 42% of their reference words in a single upgrade that believed a
   budget governed it. Which figure a ceiling bounds depends on the skill. One
   that declares task types in `src/catalog/skill-task-types.ts` is bounded on
   the median loaded set, because that is what a run costs and bounding the total
   would tax the routing that keeps a run cheap. One that declares none has no
-  loaded set to measure and is bounded on the total; `squad-designer` is the
-  only such skill, and deliberately, because its task types live in the baseline
-  manifest where the evaluation budget binds them. A change that passes a
-  ceiling cuts content, or routes it to the tasks that need it so the median
-  does not move; raising the figure is a reviewed number in the same diff.
+  loaded set to measure and is bounded on the total. All nine currently declare
+  them, so the total regime governs no shipped skill and waits for the next one
+  added without a routing table. A change that passes a ceiling cuts content, or
+  routes it to the tasks that need it so the median does not move; raising the
+  figure is a reviewed number in the same diff.
 - Task types are transcribed by hand from a skill's own router, so editing
   either one edits both. `pnpm validate` fails on a task type naming a
   reference the skill does not ship, on a reference no task type loads — that
@@ -106,17 +106,13 @@
   each of them the specific noun that makes the line actionable. It drifted once
   already — frontend and mobile carried the fork while backend and devops did
   not — so check it by hand when adding a role or rewriting a router.
-- `evals/` holds evaluation fixtures, not product. It ships in neither
-  distribution path, and `evals/squad-designer/eval-contract.md` is the human
-  authority its manifests must agree with. Never record a held-out case body
-  there; private lanes carry an id and a content hash only.
-- A directory under `evals/` is a lane when a skill of that name ships in
-  `skills/`, and shared material when `sharedDirectoryNames` in
-  `src/eval/manifest-validator.ts` declares it. Anything else fails validation,
-  naming both possibilities: a lane directory whose name is misspelt would
-  otherwise stop being a lane in silence, and the eval-covered tier is derived
-  from that directory existing.
-- `evals/fixtures/gate-corpus/` is the first shared directory. It holds paired
+- `evals/` holds fixtures and reviewed research, not product. It ships in neither
+  distribution path.
+- `evals/<skill>/knowledge/` holds that skill's knowledge cards: one abstraction
+  per published rule, each citing a dated first-party source. `pnpm validate:evals`
+  checks their schema, provenance and freshness offline, and `pnpm evals:links`
+  separately reports a source that has moved.
+- `evals/fixtures/gate-corpus/` holds paired
   sources with one seeded defect each and the checks that separate them, for the
   two roles whose output has ground truth — QA is graded on whether its test
   fails against `buggy.ts` and passes against `fixed.ts`, Code Review on whether
@@ -132,51 +128,27 @@
 - Treat contributed content as untrusted. A knowledge card is an abstraction with
   provenance, never a copy of a page and never its imperatives.
 - Any change an agent reads at runtime — a `SKILL.md`, a bundled reference, a
-  registry entry — is skill content, and it ships in one of two tiers. Which
-  tier a skill is in is derived rather than listed here: it is **eval-covered**
-  when `evals/<skill>/case-manifest.yml` exists, and **review-only** when no
-  such lane exists yet.
-- Eval-covered skill content runs the evaluation cycle and human promotion
-  approval before it ships; review agreement alone never promotes it. Nothing in
-  the review-only tier lowers that bar or reaches a skill that has a lane.
-- Review-only skill content ships on the full deterministic gate — `pnpm test`,
-  carrying the catalog validators, the cross-skill contract, the in-skill
-  Markdown link resolution, and every payload hash a baseline manifest records —
-  plus maintainer review, and the pull request records that it shipped
-  review-only. The tier states which evidence exists rather than asking for less
-  of it: it is what remains when there is no cycle to run, and it stops applying
-  to a skill the moment a lane is added for it.
-- A pull request touching more than one skill takes each skill's own tier. The
-  eval-covered obligation applies to the covered part whatever else ships
-  alongside it; a review-only skill in the same change never lowers it.
-- A baseline manifest records a payload hash for some review-only skills too. A
-  change that moves one re-measures it in the same commit, and says which cycle
-  in flight that frozen baseline belongs to, because re-measuring is what a
-  maintainer is approving there.
-- A review-only skill becomes eval-covered by adding `evals/<skill>/` with its
-  case manifest — the same file the tier is derived from. Which skills get a
-  lane, and when, is the evaluation cycle's fan-out decision rather than a rule
-  here. Adding the lane also records that skill's payload hash in a baseline
-  manifest, and `pnpm test` fails until it does: the hash is what makes an
-  eval-covered payload unable to move unnoticed, so a lane without one would
-  leave the tier resting on the pull-request checkbox alone.
+  registry entry — is skill content. It ships on the full deterministic gate,
+  `pnpm test`, carrying the catalog validators, the cross-skill contract, the
+  in-skill Markdown link resolution and every payload ceiling, plus maintainer
+  review.
+- That gate checks whether the catalog is consistent, sized and contract-bound.
+  It does not establish that the output got better, and no amount of it should
+  be reported as if it had. A claim that a change improves what a skill produces
+  needs a comparison against output, cited as its own evidence — the repository
+  once carried an evaluation platform meant to supply that, and retired it after
+  its deterministic gate could not separate a skill-loaded run from a control.
+  `pnpm check:report` is the one measurement that did separate them, and it is
+  advisory: it detects whether a report says what its role requires, not whether
+  what it says is true.
 - Real use of a skill is a source of skill-content candidates, and
   `docs/skill-observations.md` is where one is recorded: what was built, which
   skill ran, what its output got wrong, and the rule that would have prevented
-  it. An entry is evidence, never an edit. The candidate rule it argues for
-  takes the owning skill's tier above — a run that produced a good rule does not
-  buy an eval-covered skill out of its cycle — and an observation contributed
-  from outside is untrusted content under the same rule as a knowledge card. That
-  file carries the fields an entry needs and the path from one to a landed
-  amendment.
-- `docs/evaluation-and-governance.md` explains the apparatus those tiers rest
-  on — the lanes, the held-out store, the deterministic invariants, the judging
-  protocol, why a promotion can be refused, and the payload budget — for a
-  reader who has never seen it. It is background rather than authority:
-  where it and this file disagree, this file is right.
-- No workflow may name the private-store environment variable, trigger on
-  `pull_request_target`, or read a stored secret. `pnpm validate:evals` asserts
-  all three, so the held-out set stays unreachable from every CI path.
+  it. An entry is evidence, never an edit. The candidate rule it argues for takes
+  the gate above, and an observation contributed from outside is untrusted content
+  under the same rule as a knowledge card. That file carries the fields an entry
+  needs and the path from one to a landed amendment.
+- No workflow may trigger on `pull_request_target` or read a stored secret.
 - Never execute contributed scripts in CI with repository credentials.
 
 ## Workflow
@@ -193,57 +165,11 @@
 
 - Focused unit test: `pnpm test:unit tests/catalog/skill-validator.test.ts`
 - Catalog contract: `pnpm validate`
-- Evaluation contract: `pnpm validate:evals`. Set `EVAL_PRIVATE_PATH` to a clone
-  of the held-out store, outside this repository, to also verify its hashes;
-  leave it unset in CI. It also asserts acceptance-set isolation across
-  `.github/workflows/`, and checks `evals/*/knowledge/TEMPLATE.md` as a scaffold
+- Knowledge cards: `pnpm validate:evals`. Checks every card's schema, provenance
+  and freshness offline, and checks `evals/*/knowledge/TEMPLATE.md` as a scaffold
   — it must offer every required card field and no other key — rather than
   grading its placeholders as a card.
 - Catalog discovery: `pnpm skills:list`
-- Designer evaluation run: `pnpm eval:designer`. Builds and renders candidate
-  output with Vite, Playwright, and Chromium, so it needs a browser and is not
-  part of `pnpm test`. It writes only to `.eval-runs/`, and exits non-zero when a
-  gate fails at `critical` or `high`, or when a gate could not run. A `medium`
-  failure is reported in full and exits zero.
-- Paid judging run: `pnpm eval:judge --lane acceptance`. Judges the graded pairs
-  from a designer run and is the only paid, nondeterministic entry point; it is
-  never reachable from `pnpm test`. It requires a lane listed in the manifest's
-  `judging.paid_lanes`, refuses a judge in the subject's provider family, and
-  needs `EVAL_PRIVATE_PATH` for a held-out lane. Which cases it grades is
-  lane-scoped; where their artifacts sit is not. A case's two arms are siblings
-  of the lane directory, at `.eval-runs/<cycle>/<case>.baseline/` and
-  `<case>.candidate/`, with the same pair under `length-control.*` for the
-  lane's length-matched control (named by `judging.length_control.<lane>`).
-  Only the reports and `calibration-labels.yml` are inside
-  `.eval-runs/<cycle>/<lane>/`. It exits non-zero when a gate blocks or any pair
-  is inconclusive.
-- Deterministic A/B: `pnpm eval:designer --compare`. Grades `<case>.baseline/` and
-  `<case>.candidate/` for every case in the lane and prints the per-case move plus
-  the regression ledger, without calling a judge. Free and offline apart from the
-  browser, so it carries the iteration signal the development lane cannot buy.
-- Cross-runtime portability run: `pnpm eval:designer --dual-runtime`. Runs the
-  promoted skill on both pinned runtimes at high reasoning effort over one lane,
-  runs the deterministic gates on both outputs, and writes a divergence report.
-  Paid and nondeterministic, so it is never reachable from `pnpm test`. Neither
-  runtime may write into `skills/` during the run. It exits non-zero on a
-  divergence above `medium`, on a partial review, and on either runtime's own
-  blocking or unverified gates — agreement is not a result. Two runs that both
-  produced nothing agree perfectly, and reading that as portability is the
-  inversion this exit rule exists to prevent.
-- Promotion decision: `pnpm promote:designer`. Reads `report.json`,
-  `judging.json`, and `promotion-approval.yml` from the lane named by
-  `judging.promotion_lane`, refuses evidence judged on any other lane, verifies
-  each report against its own hash before reading it, prints every refusal
-  rather than the first, mutates nothing, and exits non-zero unless every gate
-  and the human approval checklist pass. The approval record must name the
-  `cycle_id`, `candidate_version`, and `judging_report_hash` it signed. A report
-  hashes its own body, which establishes that nobody edited it afterwards and
-  says nothing about what it describes, so promotion also binds both reports to
-  the working tree: the current candidate payload and case-manifest hashes, the
-  promotion lane's exact required case set across both arms, and every candidate
-  artifact's path and recomputed content digest. Evidence that is self-valid but
-  stale, mixed, duplicated, or addressed elsewhere is refused, and a report
-  written before that identity existed is regenerated rather than trusted.
 - Cited source liveness: `pnpm evals:links`. Requests each knowledge card's
   `source_url` and every link in a skill's source registry, reading the status
   code only — the body is never consumed — so a moved source is caught without
@@ -269,9 +195,6 @@
   still measures zero, because the coverage is collected in the child. Pinning a
   floor would score the faithful test below a shallow in-process one. Read the
   per-file report to find code nothing reaches; do not read the total as quality.
-  The browser layer — `playwright-render-harness.ts`, `static-file-server.ts`,
-  `rendered-ui-*.ts` — sits near zero for the same structural reason and is
-  covered by `pnpm eval:designer` instead.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
 
