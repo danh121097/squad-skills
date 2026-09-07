@@ -23,6 +23,10 @@ risky assumption. Those pull in different directions often enough to name:
 
 Say which of the two it buys. A plan that does not know tends to build the easy part first.
 
+On an empty repository the first slice is the one that brings the repository into existence, and it spans
+every layer at once. Give it its own phase: the lead owns the workspace layout, each package the role that
+owns its layer.
+
 ## Phases follow dependency
 
 A phase exists because something must be true before the next thing can start — not because the work is

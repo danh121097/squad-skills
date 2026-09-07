@@ -118,7 +118,24 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // That is the heaviest median in the catalog, above squads-team at 2680, and
   // it is recorded rather than engineered away: the alternative on the table
   // was a cheaper number that described a run nobody makes.
-  'squad-product': 2740,
+  // Raised 2740 to 2801 promoting two candidate rules out of
+  // docs/skill-observations.md entries 2 and 3, 61 words for both.
+  //
+  // The first has live proof in this repository: the squad-architect plan's two
+  // load-bearing findings were recorded with evidence and no expiry, one died
+  // and one turned out to have been wrong from the start, and nothing noticed
+  // until a second walk re-checked them. Framing that plans against an earlier
+  // plan's evidence inherits that failure.
+  //
+  // The second closes the other half of a loop landed the same day: squads-team
+  // now owns the root workspace layout, so the first slice of an empty
+  // repository finally has an owner to name — before this, product had a phase
+  // it could only report as a coverage gap.
+  //
+  // This keeps squad-product the heaviest median in the catalog, above
+  // squads-team at 2737. Both rules come from a single run each, which the
+  // entries say; the gate below proves neither of them improves a plan.
+  'squad-product': 2801,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
   // failing. Sixty words, and all six task types load that file, so the median

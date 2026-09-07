@@ -22,6 +22,10 @@ instead of read.
 Separate a real constraint from an inherited default. "We use Postgres" is a constraint. "We have always
 done it this way" is a default, and naming it as one is often the most useful line in a plan.
 
+Evidence inside an earlier plan is a claim with a date. Re-check each load-bearing one against the
+repository as it stands and say which no longer holds; an expired fact looks certain in a way an unknown
+never does.
+
 ## Non-goals
 
 Non-goals are output. An unstated non-goal is scope that returns later as a surprise, usually mid-build and

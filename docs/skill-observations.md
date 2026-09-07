@@ -86,7 +86,18 @@ reader could reasonably assume otherwise:
 - **Skill:** `<skill>` <version>
 - **Missed:** …
 - **Candidate rule:** … → `skills/<skill>/references/<file>.md`
-- **Outcome:** open
+- **Outcome:** Second rule landed 2026-09-07 in
+  `framing-and-acceptance-criteria.md § Constraints`: evidence inside an earlier
+  plan is a claim with a date, re-check each load-bearing one and say which no
+  longer holds. This repository supplied the proof while the rule was still open
+  — the `squad-architect` plan's two load-bearing findings were recorded with
+  evidence and no expiry; one died and one had been wrong from the start, and
+  nothing caught it until a second walk months of context later.
+
+  First rule still open. "The best plan is no plan carries the same evidence
+  standard as a plan" held true when that same architect plan was abandoned — but
+  its own phase-1 stop condition already carried it, so it is not yet clear the
+  rule adds anything a well-written stop condition does not.
 ```
 
 Append entries in order; the newest is at the bottom. The number is assigned on
@@ -190,7 +201,16 @@ written down here so the next one does not depend on anybody remembering it.
   inside a plan written earlier is a claim with a date, not a given. Re-check
   each load-bearing one against the repository as it is now, and say which no
   longer holds, before planning against it.
-- **Outcome:** open
+- **Outcome:** Second rule landed 2026-09-07 in
+  `scope-phasing-and-sequencing.md § The first slice`: an empty repository's first
+  slice gets its own phase, the lead owns the workspace layout and each package
+  goes to its layer's role. It became statable only once `squads-team` took
+  ownership of that layout the same day — before that, product had a phase with
+  no owner to name and could only report the gap.
+
+  First rule still open. "A request can arrive partly framed" is right, but one
+  run did not produce the test for _which_ half is missing, and a rule that
+  cannot say that is one a run cannot apply.
 
 ## 3. Framing an empty repository whose stack is already decided — 2026-09-07
 
