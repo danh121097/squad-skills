@@ -12,6 +12,13 @@ const designerNativeCross = 'skills/squad-designer/references/platform-native-cr
 const designerNativeAppleAndroid =
   'skills/squad-designer/references/platform-native-apple-android.md';
 const designerAdaptive = 'skills/squad-designer/references/platform-adaptive-layout-and-input.md';
+// The DECISION-RECORD-001 files below are the four selection references plus the
+// lead's framing fallback: the places a choice is made that another role then
+// builds on. They are references, not entrypoints, so the clause costs a median
+// only where the reference sits inside a skill's median loaded set.
+const backendMatrix = 'skills/squad-backend/references/backend-stack-and-runtime-matrix.md';
+const devopsMatrix = 'skills/squad-devops/references/platform-iac-and-delivery-matrix.md';
+const mobileStack = 'skills/squad-mobile/references/mobile-stack-architecture-and-data.md';
 const frontendIntake = 'skills/squad-frontend/references/designer-gate-and-design-intake.md';
 const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-motion-selection.md';
 const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
@@ -116,6 +123,18 @@ export const boundaryClauses: BoundaryClause[] = [
       frontendMotion,
       mobileGates,
     ],
+  },
+  {
+    id: 'DECISION-RECORD-001',
+    // Deliberately carries only the half no file had. Backend and devops already
+    // record the rejected options and the deciding constraint in their own
+    // domain vocabulary; binding those words too would state one obligation
+    // twice in the same section and flatten wording that is correctly
+    // layer-specific. What no role recorded is the condition that ends the
+    // choice, so that is what must not drift.
+    statement:
+      'a decision another role implements records what would reopen it, not only what was chosen',
+    files: [backendMatrix, devopsMatrix, frontendMotion, mobileStack, teamContracts],
   },
   {
     id: 'PAIRING-DETECT-001',

@@ -57,3 +57,9 @@ during sync, duplicate delivery and old-client/new-server compatibility.
 Wrap push, deep links, camera/files, location, biometrics, background tasks, health/Bluetooth and analytics
 behind narrow platform contracts. Model permission/restriction and unavailable hardware. Respect platform
 background execution limits; do not keep services alive without a product requirement.
+
+## Selection output
+
+Record the app stack chosen or preserved, the architecture, state and navigation model, the offline
+posture decided above, the alternatives rejected, and the constraint that decided each. A decision
+another role implements records what would reopen it, not only what was chosen.

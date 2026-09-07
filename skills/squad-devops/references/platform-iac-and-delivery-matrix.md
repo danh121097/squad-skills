@@ -67,4 +67,5 @@ retention and environment approvals.
 ## Selection output
 
 Record current topology, chosen/preserved services, constraints, failure/cost/security impact, state and
-ownership, migration/rollback, rejected options and proof from current provider docs/plan.
+ownership, migration/rollback, rejected options and proof from current provider docs/plan. A decision
+another role implements records what would reopen it, not only what was chosen.

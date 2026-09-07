@@ -255,6 +255,13 @@ describe('validateCrossSkillContract', () => {
         frontendMotion,
         mobileGates,
       ],
+      'DECISION-RECORD-001': [
+        'skills/squad-backend/references/backend-stack-and-runtime-matrix.md',
+        'skills/squad-devops/references/platform-iac-and-delivery-matrix.md',
+        frontendMotion,
+        'skills/squad-mobile/references/mobile-stack-architecture-and-data.md',
+        'skills/squads-team/references/domain-coverage-contracts.md',
+      ].sort(),
       'PAIRING-DETECT-001': [designerSources, ...roleRuntimes, teamCoordination].sort(),
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,

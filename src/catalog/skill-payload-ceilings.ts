@@ -77,7 +77,11 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // design-intelligence skill, resolved from the live catalog, and names the
   // installed one as today's answer.
   'squad-designer': 1991,
-  'squad-devops': 2209,
+  // Raised 2209 to 2216 by DECISION-RECORD-001: the 15-word clause landing in
+  // platform-iac-and-delivery-matrix.md's `Selection output`, which the median
+  // delivery task loads. Measured, not budgeted — the four other bound files
+  // took the same sentence and only squads-team moved with it.
+  'squad-devops': 2216,
   // Raised 2101 to 2624 as corrected accounting, not growth: total payload is
   // unchanged at 4299 words. The entrypoint reads
   // runtime-capability-fallbacks.md before choosing tools for any repair, so
@@ -145,5 +149,10 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // report rather than one to assign — so a Product phase was unownable by the
   // roster's own text. Every team task loads that reference, so the median pays
   // all 61 words.
-  'squads-team': 2680,
+  // Raised 2680 to 2695 by DECISION-RECORD-001. domain-coverage-contracts.md is
+  // in every team task's load, so the median pays the clause in full. The lead
+  // carries it because it runs the framing fallback when squad-product is
+  // absent, and a record rule that lapses exactly when the roster is thinnest is
+  // the case it exists for.
+  'squads-team': 2695,
 };

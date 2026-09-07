@@ -91,3 +91,9 @@ then the repository's existing system.
 Port the UX contract, component state, keyboard/focus behavior, layout continuity, timing, reduced motion,
 and tokens through the target framework's native composition model. Never paste React components into Vue
 or Vue components into React.
+
+## 8. Selection output
+
+Record the framework and rendering model chosen or preserved, each UI or motion dependency added with
+the gap it closes, the alternatives rejected, and the constraint that decided each. A decision another
+role implements records what would reopen it, not only what was chosen.

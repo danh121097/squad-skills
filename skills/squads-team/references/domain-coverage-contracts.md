@@ -18,7 +18,8 @@ correct it.
 An empty repository has nothing to scout, so the stack stops being a fact to discover and becomes a framing
 output. Name target platforms, the runtime and framework per platform, and the deployment target, then hand
 each to the role that owns it; the build roles carry the greenfield foundations for their own layer. Record
-it as a decision with its reason, so a later role reads a choice rather than an inherited default.
+it as a decision with its reason, so a later role reads a choice rather than an inherited default. A
+decision another role implements records what would reopen it, not only what was chosen.
 
 ## Designer
 

@@ -64,4 +64,5 @@ layers that merely duplicate the framework without protecting a real domain boun
 
 Record chosen/preserved stack, rejected alternatives, decisive constraints, operational impact, unknowns,
 prototype evidence, compatibility and rollback/migration cost. Avoid unsourced benchmark percentages and
-time-sensitive adoption claims.
+time-sensitive adoption claims. A decision another role implements records what would reopen it, not only
+what was chosen.
