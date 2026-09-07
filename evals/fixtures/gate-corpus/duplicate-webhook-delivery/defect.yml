@@ -1,0 +1,14 @@
+id: duplicate-webhook-delivery
+class: check-then-act-race
+summary: >-
+  The handler reads whether the event was processed and records it as processed
+  in two separate awaits, so two deliveries in flight both pass the read and
+  both charge. The store offers an atomic claim the handler never uses.
+file: buggy.ts
+symbol: handleWebhook
+detected_by:
+  - concurrent-redelivery-charges-once
+survives:
+  - first-delivery-charges
+  - sequential-redelivery-charges-once
+  - distinct-events-both-charge

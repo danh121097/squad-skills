@@ -1,0 +1,17 @@
+id: display-name-truncation
+class: encoding-unit-mismatch
+summary: >-
+  Length and slicing are measured in UTF-16 code units rather than in the
+  characters a reader counts, so a name carrying an emoji or a combining mark is
+  reported as longer than it is and is cut through the middle of a character.
+file: buggy.ts
+symbol: truncate
+detected_by:
+  - astral-name-that-fits-is-unchanged
+  - astral-name-cut-between-characters
+  - combining-mark-name-that-fits-is-unchanged
+  - combining-mark-name-cut-between-characters
+survives:
+  - short-name-unchanged
+  - name-at-the-limit-unchanged
+  - long-ascii-name-truncated
