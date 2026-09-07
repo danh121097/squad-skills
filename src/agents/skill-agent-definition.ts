@@ -36,13 +36,21 @@ export function readSkillAgentDefinition(source: string): SkillAgentDefinition |
   return { description, name, whenToUse: readScalar(frontmatter, 'when_to_use') ?? '' };
 }
 
+/** How a generated agent reaches its skill, and what rewrites the file. */
+export interface AgentBodyContext {
+  /** The sentence telling the agent where its skill is. */
+  instruction: string;
+  /** What regenerates this file, for a reader who finds an edit gone. */
+  origin: string;
+}
+
 /**
- * The body both formats share. Codex embeds this verbatim inside its TOML, the
- * same way the agent files it already ships do.
+ * The body every format shares. Codex embeds it verbatim inside its TOML, the
+ * same way the agent files it already ships do, and the plugin commits it as-is.
  */
 export function renderAgentBody(
   definition: SkillAgentDefinition,
-  installedSkillPath: string
+  context: AgentBodyContext
 ): string {
   const description = [definition.description, definition.whenToUse]
     .filter((part) => part.length > 0)
@@ -53,9 +61,9 @@ name: ${definition.name}
 description: ${JSON.stringify(description)}
 ---
 
-<!-- ${generatedMarker} from ${definition.name}/SKILL.md. Reinstalling regenerates it. -->
+<!-- ${generatedMarker} from ${definition.name}/SKILL.md. ${context.origin} -->
 
-Read \`${installedSkillPath}\` and follow it for this task.
+${context.instruction}
 
 That file, together with the references it routes to, is the authoritative
 definition of this role — its scope, its ownership boundaries, its handoff
@@ -71,7 +79,26 @@ export function renderClaudeAgentFile(
   definition: SkillAgentDefinition,
   installedSkillPath: string
 ): string {
-  return renderAgentBody(definition, installedSkillPath);
+  return renderAgentBody(definition, installedSkillContext(installedSkillPath));
+}
+
+/**
+ * The plugin variant names the skill instead of a path: a plugin installs its
+ * skills and its agents together, so the agent can reach the skill by name and
+ * the file stays valid wherever the plugin is unpacked.
+ */
+export function renderPluginAgentFile(definition: SkillAgentDefinition): string {
+  return renderAgentBody(definition, {
+    instruction: `Load the \`${definition.name}\` skill bundled with this plugin and follow it for this task.`,
+    origin: 'Regenerated from that file; edits here are overwritten.',
+  });
+}
+
+function installedSkillContext(installedSkillPath: string): AgentBodyContext {
+  return {
+    instruction: `Read \`${installedSkillPath}\` and follow it for this task.`,
+    origin: 'Reinstalling regenerates it.',
+  };
 }
 
 /**
@@ -84,7 +111,7 @@ export function renderCodexAgentFile(
   definition: SkillAgentDefinition,
   installedSkillPath: string
 ): string {
-  const body = renderAgentBody(definition, installedSkillPath);
+  const body = renderAgentBody(definition, installedSkillContext(installedSkillPath));
 
   if (body.includes("'''")) {
     throw new Error(

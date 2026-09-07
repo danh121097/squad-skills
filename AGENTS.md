@@ -62,6 +62,16 @@
   reference the skill does not ship, on a reference no task type loads — that
   file would be payload the median never counts — and on fewer than three task
   types, which is too few for a median to mean anything.
+- The repository is also a Claude Code plugin: `.claude-plugin/plugin.json` and
+  `.claude-plugin/marketplace.json` declare it, and Claude Code loads `skills/`
+  and `agents/` from the checkout. That is the only distribution path where
+  skills and subagents arrive in one step, because the upstream Skills CLI
+  exposes no hook a source repository can use. The nine files in `agents/` are
+  committed rather than generated at install time, so a test regenerates each
+  from its `SKILL.md` and fails on any drift — repair a failure by regenerating,
+  never by editing the agent. Neither directory is packaged for npm, so the
+  three-place `files` assertion is unaffected. Adding `.claude-plugin/` does not
+  change what the Skills CLI discovers; `pnpm skills:list` still reports nine.
 - A generated subagent definition points at the installed `SKILL.md` and never
   restates a role. Copying the prose would create a second product surface
   bound by no ceiling and no cross-skill clause, and the two would drift. The

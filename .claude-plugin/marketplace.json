@@ -1,0 +1,15 @@
+{
+  "name": "squad-skills",
+  "owner": { "name": "danh121097", "url": "https://github.com/danh121097" },
+  "plugins": [
+    {
+      "name": "squad-skills",
+      "source": "./",
+      "description": "Nine engineering roles as skills, each also installed as a subagent in the same step.",
+      "homepage": "https://github.com/danh121097/squad-skills",
+      "repository": "https://github.com/danh121097/squad-skills",
+      "license": "MIT",
+      "category": "development"
+    }
+  ]
+}

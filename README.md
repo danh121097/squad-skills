@@ -14,9 +14,27 @@ skill under `skills/<skill-name>/SKILL.md`.
 
 ## Install
 
-Both paths install the same skill directories through the upstream Skills CLI.
-They differ in one way: only the npm command also generates a subagent
-definition per skill, in the same step.
+Every path installs the same nine skills. They differ in how the matching
+subagents arrive.
+
+| Path               | Skills | Subagents        | Tools                               |
+| ------------------ | ------ | ---------------- | ----------------------------------- |
+| Claude Code plugin | ✅     | ✅ same step     | Claude Code                         |
+| npm CLI            | ✅     | ✅ same step     | Claude Code, Codex                  |
+| `npx skills add`   | ✅     | one more command | every agent the Skills CLI supports |
+
+### As a Claude Code plugin
+
+The plugin ships the skills and the subagents together, so one command installs
+both:
+
+```sh
+/plugin marketplace add danh121097/squad-skills
+/plugin install squad-skills@squad-skills
+```
+
+Each role then exists twice over: as a skill you invoke, and as a subagent you
+spawn by name.
 
 ### From the npm package (recommended)
 

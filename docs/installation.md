@@ -80,6 +80,24 @@ squad-skills add --skill squads-team
 the packaged `skills/` directory as its source and adds `--copy` by default so
 the installation remains valid after an `npx` cache is cleaned.
 
+## As a Claude Code plugin
+
+Claude Code loads a plugin's `skills/` and `agents/` directories together, which
+makes this the only single-command route to both:
+
+```sh
+/plugin marketplace add danh121097/squad-skills
+/plugin install squad-skills@squad-skills
+```
+
+The nine agent definitions are committed at `agents/`, and a plugin agent
+reaches its role by skill name because a plugin installs both halves at once.
+`pnpm test` regenerates each one from its `SKILL.md` and fails if the committed
+file has fallen behind, so a skill description never drifts away from the agent
+that carries it.
+
+Codex has no equivalent plugin format; use the npm CLI for it.
+
 ## Subagent definitions
 
 Each skill also has a role a coding agent can spawn by name. `squad-skills add`
