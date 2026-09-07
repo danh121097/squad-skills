@@ -18,9 +18,13 @@ with its reason. Two owners in one file is a merge conflict the pipeline cannot 
 
 **Context:** No delegation engine is available, so the lead would carry every role itself.
 
-**Decision:** Say so before starting, get acceptance for the changed shape, and label every gate as a
-logical pass rather than an independent one. A self-review reported as an independent QA or Review verdict
-is the failure this pipeline exists to prevent.
+**Decision:** What the missing engine changes is the reporting, not the permission to start. In `auto`,
+name the missing capability and the resulting shape before starting, then run: the mode was selected from
+what exists, so there is nothing for the user to decide. Ask for direction only when the user forced a
+mode that is unavailable, because then the request and the runtime disagree and the lead cannot resolve
+that alone. Either way, label every gate a logical pass rather than an independent one. A self-review
+reported as an independent QA or Review verdict is the failure this pipeline exists to prevent, and it is
+the reason the shape is announced at all.
 
 ## 3. `NEEDS_ENVIRONMENT` is neither a failure nor a pass
 
