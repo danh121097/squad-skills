@@ -70,7 +70,12 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // checklist now says product state and platform lifecycle, and names the
   // animation's own bookkeeping as the exception. Thirteen entrypoint words, so
   // every task pays; a checklist read on every handoff is where the cost belongs.
-  'squad-designer': 1972,
+  // Then 1972 to 1991 to name the helper by capability rather than by memory.
+  // The old paragraph made `ui-ux-pro-max` the rule and its old alias the
+  // caveat, which is a rule that expires when the catalog changes. It now says
+  // design-intelligence skill, resolved from the live catalog, and names the
+  // installed one as today's answer.
+  'squad-designer': 1991,
   'squad-devops': 2209,
   // Raised 2101 to 2624 as corrected accounting, not growth: total payload is
   // unchanged at 4299 words. The entrypoint reads
@@ -100,6 +105,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-qa': 2296,
   // The flattest router in the catalog, in the skill that runs on every squad
   // task: its median is 64% of its total, so routing buys it little. Worth the
-  // next routing pass.
-  'squads-team': 2595,
+  // next routing pass. Raised three words by the same capability-resolved
+  // helper wording recorded under squad-designer.
+  'squads-team': 2598,
 };

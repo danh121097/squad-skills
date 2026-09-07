@@ -59,10 +59,10 @@ phase-matched `ak:*` skill so it accelerates that phase; this skill's boundary, 
 and quality bar stay authoritative wherever the two disagree. When absent, run the native
 fallback at the same standard.
 
-`ui-ux-pro-max` is the exception to pairing: read it as reference data — styles, palettes, type
-pairings, UX guidelines, stack notes — and never hand it the task. This skill keeps ownership of the
-direction, the components, and the report. Use the current `ui-ux-pro-max`, not the older
-`ak:ui-ux-pro-max` alias.
+A design-intelligence skill is the exception to pairing: read it as reference data — styles, palettes,
+type pairings, UX guidelines, stack notes — for a gap it covers, and never hand it the task. Resolve it by
+that capability in the live catalog and use the name listed there; `ui-ux-pro-max` is the one installed
+here. This skill keeps ownership of the direction, the components, and the report.
 
 Never invoke a missing command, pretend a capability ran, auto-install anything, or lower the
 handoff standard. Report a gap only when it limits evidence or the requested output.

@@ -18,8 +18,8 @@ Named `squad-*` skills are preferred when installed. The role must load its `SKI
 deep references; merely naming the skill is not enough. When absent, the lead gives the role this matrix,
 the acceptance/ownership/evidence contract and the relevant section of `domain-coverage-contracts.md`.
 Pair installed AgentKit `ak:*` skills with the role that needs them; AgentKit is not required. Designer
-and the build roles consult `ui-ux-pro-max` as reference data for UI/UX decisions — the current skill,
-not the older `ak:ui-ux-pro-max` alias — and never delegate a screen to it.
+and the build roles consult a design-intelligence skill as reference data for UI/UX decisions, resolved by
+capability from the live catalog — `ui-ux-pro-max` here — and never delegate a screen to it.
 
 ### Designer-to-build handoff
 
