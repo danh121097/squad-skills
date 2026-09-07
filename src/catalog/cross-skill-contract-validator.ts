@@ -7,8 +7,8 @@ import { boundaryClauses, retiredPhrases } from './cross-skill-contract-clauses.
  * One sentence that must read the same way in every file that states it.
  *
  * The name is narrower than what it now carries. Alongside the designer and
- * build-role artifact boundary it began as, a clause here binds the AgentKit
- * pairing rules, the squad-pipeline handoffs — what shape crosses a stage
+ * build-role artifact boundary it began as, a clause here binds the specialist
+ * skill pairing rules, the squad-pipeline handoffs — what shape crosses a stage
  * boundary, who owns a mandatory gate when its peer skill is absent, which
  * verdict closes a stage, what a role does when a named peer is missing — and
  * the pre-flight line every role with a quality bar states.

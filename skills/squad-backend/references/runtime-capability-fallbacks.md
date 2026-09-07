@@ -1,19 +1,19 @@
 # Runtime capability pairing and fallbacks
 
-Read before selecting tools for a phase, and whenever AgentKit or a preferred backend/data/security
-capability is in question.
+Read before selecting tools for a phase, and whenever a preferred backend/data/security capability
+is in question.
 
-## AgentKit pairing
+## Specialist skill pairing
 
-Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
-`ak` CLI.
+Detect specialist skills once per task by inspecting the live skill catalog for the capabilities
+below.
 
-- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
-  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
-  rules stay authoritative wherever the two disagree.
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched
+  specialist skill with this role's contract so it accelerates the phase. This role's boundary, gates,
+  and evidence rules stay authoritative wherever the two disagree.
 - **Absent** — run the native fallback for the same phase at the same standard.
 
-Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
+Never auto-install a specialist skill, and never report a skill as run when it does not exist.
 
 ## Rules
 
@@ -27,14 +27,14 @@ Never auto-install AgentKit or any skill, and never report a skill as run when i
 
 | Phase | Pair when installed | Native fallback |
 |---|---|---|
-| Frame/scout | `ak:brainstorm`, `ak:scout` | Search repository modules, configs, schemas, consumers, and tests |
-| Plan/scenarios | `ak:plan`, `ak:scenario` | Write a proportional plan and enumerate failure/edge cases directly |
-| API/server | `ak:backend-development` | Follow the repository framework and current official docs |
-| Data | `ak:databases`, MongoDB specialists | Inspect schema/query plans; use native DB/ORM tooling and explain evidence |
+| Frame/scout | Brainstorm/scout skills | Search repository modules, configs, schemas, consumers, and tests |
+| Plan/scenarios | Plan/scenario skills | Write a proportional plan and enumerate failure/edge cases directly |
+| API/server | Backend framework specialist | Follow the repository framework and current official docs |
+| Data | Database specialists | Inspect schema/query plans; use native DB/ORM tooling and explain evidence |
 | Auth | Auth specialist | Follow existing auth/session architecture and provider official docs |
 | Security | Security skills/scanners | Manual threat pass plus repository secret/dependency scanners when present |
-| Debug | `ak:debug`, `ak:fix` | Reproduce from request/log/test path, isolate cause, and fix directly |
-| Verify | `ak:test` | Run repository unit/integration/contract/migration/type/build commands |
+| Debug | Debug/fix skills | Reproduce from request/log/test path, isolate cause, and fix directly |
+| Verify | Test skills | Run repository unit/integration/contract/migration/type/build commands |
 | Review gates | `squad-qa`, `squad-code-review` | Run separate native QA and diff-review passes; report reduced independence |
 
 ## Data tooling unavailable

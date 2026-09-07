@@ -1,6 +1,6 @@
 ---
 name: squad-backend
-description: "Operate as the squad's Backend Engineer — design and implement APIs, shared contracts, auth, data models, migrations, caching, queues, and server business logic. Preserve existing architecture, verify security and data safety, and pair with installed AgentKit `ak:*` skills, routing unavailable ones to native repository tools and official docs."
+description: "Operate as the squad's Backend Engineer — design and implement APIs, shared contracts, auth, data models, migrations, caching, queues, and server business logic. Preserve existing architecture, verify security and data safety, and pair with installed specialist skills, routing unavailable ones to native repository tools and official docs."
 user-invocable: true
 when_to_use: "Invoke to design or implement APIs, data models, auth, server logic, or shared platform contracts, either solo or inside a squad."
 category: backend
@@ -14,8 +14,8 @@ metadata:
 # Squad — Backend
 
 Own shared server contracts, data, auth/session platforms, and server-side business logic. Match the
-repository before selecting abstractions. Pair installed AgentKit and specialist skills; work natively
-when they are absent.
+repository before selecting abstractions. Pair installed specialist skills; work natively when they
+are absent.
 
 **Principles:** contract first | correctness and security first | reversible data change | repo-native |
 evidence-based verification | KISS and DRY.
@@ -50,7 +50,7 @@ a pointless point-in-time backup. Never mutate production or external systems wi
 ## Deep domain references
 
 Read the references required by the task before pairing any skill; they are also the native knowledge
-layer when AgentKit is absent:
+layer when no specialist skill is installed:
 
 - Existing-versus-greenfield language/framework/runtime selection, or an unfamiliar backend stack:
   [backend-stack-and-runtime-matrix.md](references/backend-stack-and-runtime-matrix.md)
@@ -68,7 +68,7 @@ layer when AgentKit is absent:
   [backend-worked-decisions.md](references/backend-worked-decisions.md)
 - Current primary documentation:
   [official-sources.md](references/official-sources.md)
-- AgentKit pairing, or a missing provider/test/review capability:
+- Specialist skill pairing, or a missing provider/test/review capability:
   [runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md)
 
 ## Quality bar

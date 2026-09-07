@@ -17,8 +17,8 @@ const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-moti
 const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
 const teamPipeline = 'skills/squads-team/references/delivery-pipeline-and-roster.md';
 const teamCoordination = 'skills/squads-team/references/coordination-contract.md';
-// Each role states the AgentKit pairing contract in the reference its own
-// router points at for tool selection, so the file names differ by role.
+// Each role states the specialist skill pairing contract in the reference its
+// own router points at for tool selection, so the file names differ by role.
 const backendRuntime = 'skills/squad-backend/references/runtime-capability-fallbacks.md';
 const codeReviewRuntime = 'skills/squad-code-review/references/review-runtime-and-verdict.md';
 const devopsRuntime = 'skills/squad-devops/references/runtime-and-safe-delivery-fallbacks.md';
@@ -80,8 +80,8 @@ const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.m
  *
  * `BOUNDARY-*` says who owns what between the designer and the build roles, as
  * it stands after the designer moved from spec-only to presentational code.
- * `PAIRING-*` binds how a role detects an `ak:*` skill, which side is
- * authoritative when both are present, and that it may never report an absent
+ * `PAIRING-*` binds how a role detects an installed specialist skill, which side
+ * is authoritative when both are present, and that it may never report an absent
  * skill as run.
  * `HANDOFF-*` covers a stage boundary in the squad pipeline. And
  * `QUALITY-PREFLIGHT-*` binds the pre-flight line the roles share.
@@ -270,7 +270,7 @@ export const boundaryClauses: BoundaryClause[] = [
   {
     id: 'HANDOFF-SOLO-001',
     // The squad-peer analog of PAIRING-SAFETY-001, which covers an absent
-    // `ak:*` skill rather than an absent role. "where this role's boundary
+    // specialist skill rather than an absent role. "where this role's boundary
     // allows" is load-bearing: QA may not carry an implementer's stage, and no
     // role may absorb one the boundary clauses put somewhere else.
     //

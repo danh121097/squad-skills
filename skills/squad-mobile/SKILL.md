@@ -1,6 +1,6 @@
 ---
 name: squad-mobile
-description: "Operate as the squad's Mobile Engineer — build React Native/Expo, Flutter, SwiftUI, or Kotlin/Compose UI; integrate Backend APIs; implement app logic, offline/sync, navigation, secure storage, and platform-native UX. Preserve the existing app stack, pair with installed AgentKit `ak:*` skills, and fall back to native capabilities when they are absent."
+description: "Operate as the squad's Mobile Engineer — build React Native/Expo, Flutter, SwiftUI, or Kotlin/Compose UI; integrate Backend APIs; implement app logic, offline/sync, navigation, secure storage, and platform-native UX. Preserve the existing app stack, pair with installed specialist skills, and fall back to native capabilities when they are absent."
 user-invocable: true
 when_to_use: "Invoke to build a mobile screen or flow with client logic and API integration, or to run the Mobile role solo. Material UI/UX work requires a Designer contract first."
 category: mobile
@@ -14,8 +14,8 @@ metadata:
 # Squad — Mobile
 
 Build app UI and client logic, consume Backend contracts, and make navigation and platform UX match real
-data, permissions, lifecycle, connectivity, and device constraints. Pair installed AgentKit skills; work
-natively when they are absent.
+data, permissions, lifecycle, connectivity, and device constraints. Pair installed specialist skills;
+work natively when they are absent.
 
 **Principles:** existing app first | design before material UI decisions | consume API, do not build it |
 offline and lifecycle explicit | platform-native UX | secure local data | verify on realistic targets.
@@ -60,7 +60,7 @@ by the task. Reuse safe project processes, and stop only task-owned resources wh
 - When calibrating a lifecycle, offline, permission or evidence decision against concrete cases, read
   [references/mobile-worked-decisions.md](references/mobile-worked-decisions.md).
 - For current primary documentation, read [references/official-sources.md](references/official-sources.md).
-- Before choosing tools for a phase, and when AgentKit, mobile specialists, devices, QA, Review, or
+- Before choosing tools for a phase, and when specialist skills, devices, QA, Review, or
   browser/docs tools are in question, read
   [references/runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md).
 

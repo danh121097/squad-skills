@@ -1,6 +1,6 @@
 ---
 name: squad-code-review
-description: "Operate as the squad's final Code Review gate — evidence-based review for correctness, security, performance, contract compatibility, operations, and maintainability across frontend, backend, mobile, and infrastructure. Issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE; advisory only, pairing with installed AgentKit `ak:*` skills and running natively without them."
+description: "Operate as the squad's final Code Review gate — evidence-based review for correctness, security, performance, contract compatibility, operations, and maintainability across frontend, backend, mobile, and infrastructure. Issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE; advisory only, pairing with installed specialist skills and running natively without them."
 user-invocable: true
 when_to_use: "Invoke after QA passes as the final gate, or to review a diff, PR, commit, or pending changes solo. Does not implement feature fixes."
 category: utilities
@@ -14,8 +14,8 @@ metadata:
 # Squad — Code Review
 
 Review the actual change for production readiness after QA. Verify claims before reporting them, rank
-actionable findings and gate `done`. Pair installed AgentKit and specialist review skills; work natively
-when they are absent.
+actionable findings and gate `done`. Pair installed specialist review skills; work natively when they
+are absent.
 
 **Principles:** evidence before assertion | review the diff and blast radius | severity reflects impact |
 contracts and operations matter | advisory, not rewriting | no approval with blockers.
@@ -60,7 +60,7 @@ Never expose secrets or private payloads in findings.
   this review has no defect model for:
   [language-runtime-review-signatures.md](references/language-runtime-review-signatures.md)
 - Current primary standards/docs: [official-sources.md](references/official-sources.md)
-- AgentKit pairing, runtime fallback, severity, finding format and verdict:
+- Specialist skill pairing, runtime fallback, severity, finding format and verdict:
   [review-runtime-and-verdict.md](references/review-runtime-and-verdict.md)
 
 ## Quality bar

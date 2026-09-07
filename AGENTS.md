@@ -97,8 +97,8 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   carries four clause families, each binding wording that has to read the same
   way in every file that states it. `BOUNDARY-*` says who owns an artifact
   between the designer and the build roles. `PAIRING-*` binds how a role
-  detects an `ak:*` skill, which side is authoritative when both are present,
-  and that it may never report an absent skill as run. `HANDOFF-*` covers a stage boundary in the
+  detects an installed specialist skill, which side is authoritative when both
+  are present, and that it may never report an absent skill as run. `HANDOFF-*` covers a stage boundary in the
   squad pipeline — what shape crosses it, who owns a mandatory gate when the
   peer skill is not installed, which verdict closes a stage, and what a role
   does when a named squad peer is absent. A stage boundary is stated by both

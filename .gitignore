@@ -23,7 +23,7 @@ coverage/
 
 pnpm-debug.log*
 
-# Local AgentKit execution records are not repository documentation. The
+# Local execution records are not repository documentation. The
 # feedback loop is the narrow exception: its inbox and weekly reports contain
 # only redacted, publication-safe evidence that should survive across machines.
 plans/*

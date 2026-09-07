@@ -70,8 +70,8 @@ is never implied render-gated.
 
 ## Source router
 
-- When choosing, trusting, or fetching an external source, or before pairing an installed
-  `ak:*` skill or consulting `ui-ux-pro-max`, read
+- When choosing, trusting, or fetching an external source, or before pairing an installed skill
+  or consulting `ui-ux-pro-max`, read
   [references/official-sources.md](references/official-sources.md) — the single registry;
   agent-ready sources are fetched, never bundled.
 - When no accepted Figma exists and the task materially creates or redesigns UI/UX, read

@@ -1,19 +1,19 @@
 # Runtime capability pairing and fallbacks
 
-Read before selecting tools for a phase, and whenever AgentKit, a mobile specialist, Designer,
+Read before selecting tools for a phase, and whenever a mobile specialist, Designer,
 device/emulator, docs lookup, QA, or Review is in question.
 
-## AgentKit pairing
+## Specialist skill pairing
 
-Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
-`ak` CLI.
+Detect specialist skills once per task by inspecting the live skill catalog for the capabilities
+below.
 
-- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
-  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
-  rules stay authoritative wherever the two disagree.
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched
+  specialist skill with this role's contract so it accelerates the phase. This role's boundary, gates,
+  and evidence rules stay authoritative wherever the two disagree.
 - **Absent** — run the native fallback for the same phase at the same standard.
 
-Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
+Never auto-install a specialist skill, and never report a skill as run when it does not exist.
 
 ## Rules
 
@@ -27,7 +27,7 @@ Never auto-install AgentKit or any skill, and never report a skill as run when i
 
 | Phase | Pair when installed | Native fallback |
 |---|---|---|
-| Scout/plan | `ak:scout`, `ak:plan`, `ak:scenario` | Inspect app files/configs/tests and model edge cases directly |
+| Scout/plan | Scout/plan/scenario skills | Inspect app files/configs/tests and model edge cases directly |
 | Design | `squad-designer`; `ui-ux-pro-max` as reference data only | Use accepted source or build the presentational layer inline before wiring behavior |
 | Build | Mobile specialist | Follow repository framework and platform-native APIs |
 | Contract | `squad-backend`, docs specialist | Inspect API schema/client and official docs; report mismatch |

@@ -1,6 +1,6 @@
 ---
 name: squad-devops
-description: "Operate as the squad's DevOps Engineer — containers, CI/CD, IaC, cloud and self-hosted/VPS delivery, reverse proxy and TLS, observability, secrets, rollout and rollback. Preserve existing infrastructure, require explicit deployment scope, and deliver reproducible reversible changes, pairing with installed AgentKit `ak:*` skills and falling back to native provider and repository tooling."
+description: "Operate as the squad's DevOps Engineer — containers, CI/CD, IaC, cloud and self-hosted/VPS delivery, reverse proxy and TLS, observability, secrets, rollout and rollback. Preserve existing infrastructure, require explicit deployment scope, and deliver reproducible reversible changes, pairing with installed specialist skills and falling back to native provider and repository tooling."
 user-invocable: true
 when_to_use: "Invoke for CI/CD, containers, Kubernetes/Helm, Terraform/Pulumi, cloud or self-hosted VPS delivery, nginx/Caddy/Traefik and TLS, observability, release, or deployment work, solo or inside a squad."
 category: dev-tools
@@ -14,8 +14,8 @@ metadata:
 # Squad — DevOps
 
 Build and operate the delivery path around the app. Preserve existing topology and provider conventions;
-make infrastructure reproducible, observable, least-privileged and reversible. Pair installed AgentKit
-skills; work natively when they are absent.
+make infrastructure reproducible, observable, least-privileged and reversible. Pair installed
+specialist skills; work natively when they are absent.
 
 **Principles:** explicit environment | plan before apply | reproducible artifacts | least privilege |
 observable rollout | tested rollback | no secrets | evidence over assumed success.
@@ -66,7 +66,7 @@ task. Reuse safe project-owned processes; stop only task-owned resources at comp
 - When calibrating a delivery, pipeline-trust or supply-path decision against concrete cases:
   [devops-worked-decisions.md](references/devops-worked-decisions.md)
 - Current primary docs: [official-sources.md](references/official-sources.md)
-- AgentKit pairing, or a missing provider CLI/access/QA/Review capability:
+- Specialist skill pairing, or a missing provider CLI/access/QA/Review capability:
   [runtime-and-safe-delivery-fallbacks.md](references/runtime-and-safe-delivery-fallbacks.md)
 
 ## Quality bar

@@ -17,7 +17,7 @@ Read before routing roles or advancing any slice through Design, QA, Review, int
 Named `squad-*` skills are preferred when installed. The role must load its `SKILL.md` plus task-relevant
 deep references; merely naming the skill is not enough. When absent, the lead gives the role this matrix,
 the acceptance/ownership/evidence contract and the relevant section of `domain-coverage-contracts.md`.
-Pair installed AgentKit `ak:*` skills with the role that needs them; AgentKit is not required. Designer
+Pair installed specialist skills with the role that needs them; none of them are required. Designer
 and the build roles consult a design-intelligence skill as reference data for UI/UX decisions, resolved by
 capability from the live catalog — `ui-ux-pro-max` here — and never delegate a screen to it.
 

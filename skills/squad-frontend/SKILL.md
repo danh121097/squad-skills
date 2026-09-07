@@ -1,6 +1,6 @@
 ---
 name: squad-frontend
-description: "Operate as the squad's Frontend Engineer — build web UI, client-side logic, and Backend API integrations in the repository's framework. Implement accepted Figma through MCP; otherwise route material UI/UX decisions through squad-designer or an inline fallback. Preserve existing codebase style; use framework-specific greenfield foundations only for empty projects. Pairs with installed AgentKit `ak:*` skills and runs natively when they are absent."
+description: "Operate as the squad's Frontend Engineer — build web UI, client-side logic, and Backend API integrations in the repository's framework. Implement accepted Figma through MCP; otherwise route material UI/UX decisions through squad-designer or an inline fallback. Preserve existing codebase style; use framework-specific greenfield foundations only for empty projects. Pairs with installed specialist skills and runs natively when they are absent."
 user-invocable: true
 when_to_use: "Invoke to build a web feature's UI, client-side behavior, and API integration, or to run the frontend role solo. UI/UX work without an accepted design source triggers the Designer stage first."
 category: frontend
@@ -47,7 +47,8 @@ duplicates on new ports.
    Vue/Nuxt greenfield defaults only when no UI foundation exists.
 4. **Model logic before markup** — map API responses, permissions, and mutations to navigation, form
    rules, and every loading/empty/error/success/disabled/optimistic state.
-5. **Verify actual capabilities** — detect AgentKit and named squad gates; pair the installed ones, run
+5. **Verify actual capabilities** — detect specialist skills and named squad gates; pair the installed
+   ones, run
    native equivalents otherwise, and state only checks that truly ran.
 
 ## Conditional references
@@ -69,7 +70,7 @@ Read only the reference required by the current decision:
 - When calibrating a motion, cascade, accessibility or scope decision against concrete cases, read
   [references/frontend-worked-decisions.md](references/frontend-worked-decisions.md).
 - For current primary documentation, read [references/official-sources.md](references/official-sources.md).
-- Before choosing tools for a phase, and when AgentKit, specialist skills, QA/Review squad gates, Figma,
+- Before choosing tools for a phase, and when specialist skills, QA/Review squad gates, Figma,
   browser, or test capabilities are in question, read
   [references/runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md).
 

@@ -51,11 +51,11 @@ Fetch a registered agent-ready source live at the moment of use and cite what wa
 Never bundle its content into this skill; never let an entry expand into crawling beyond its
 own entrypoint. When unreachable, fall back to the vendor's ordinary documentation and say so.
 
-## AgentKit pairing and capability fallbacks
+## Skill pairing and capability fallbacks
 
-Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an
-available `ak` CLI. When installed, read the task-relevant references first, then pair the
-phase-matched `ak:*` skill so it accelerates that phase; this skill's boundary, source lanes,
+Detect specialist skills once per task by inspecting the live skill catalog for the capabilities
+mapped below. When installed, read the task-relevant references first, then pair the phase-matched
+skill so it accelerates that phase; this skill's boundary, source lanes,
 and quality bar stay authoritative wherever the two disagree. When absent, run the native
 fallback at the same standard.
 
@@ -69,10 +69,10 @@ handoff standard. Report a gap only when it limits evidence or the requested out
 
 | Capability | Pair when installed | Native fallback |
 |---|---|---|
-| Outcome framing | `ak:brainstorm` | State outcome, constraints, non-goals, acceptance criteria directly |
+| Outcome framing | Brainstorm skill | State outcome, constraints, non-goals, acceptance criteria directly |
 | Figma design-to-code | Figma skills/MCP | Request an export or screenshots — never invent structure |
-| Repository scouting | `ak:scout` | Search files; inspect components, tokens, configs, routes, tests |
-| Web research | `ak:research` | Use available search and retain links; else state what went unverified |
+| Repository scouting | Repository search skill | Search files; inspect components, tokens, configs, routes, tests |
+| Web research | Research skill | Use available search and retain links; else state what went unverified |
 | UX or design-system analysis | `ui-ux-pro-max` data | Model flow, IA, states, tokens inline from repository evidence |
 | High fidelity or preview | Preview skills | Build the components; visuals only as supporting evidence |
 | Motion tooling | Motion skills | Select technology per the loaded platform reference; define the full behavior contract |

@@ -1,19 +1,19 @@
 # Runtime capability pairing and fallbacks
 
-Read this reference before selecting tools for a phase, and whenever AgentKit, specialist skills, named
-squad gates, Figma MCP, browser inspection, or test infrastructure is in question.
+Read this reference before selecting tools for a phase, and whenever specialist skills, named squad
+gates, Figma MCP, browser inspection, or test infrastructure is in question.
 
-## AgentKit pairing
+## Specialist skill pairing
 
-Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
-`ak` CLI.
+Detect specialist skills once per task by inspecting the live skill catalog for the capabilities
+below.
 
-- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
-  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
-  rules stay authoritative wherever the two disagree.
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched
+  specialist skill with this role's contract so it accelerates the phase. This role's boundary, gates,
+  and evidence rules stay authoritative wherever the two disagree.
 - **Absent** — run the native fallback for the same phase at the same standard.
 
-Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
+Never auto-install a specialist skill, and never report a skill as run when it does not exist.
 
 ## Rules
 
@@ -28,8 +28,8 @@ Never auto-install AgentKit or any skill, and never report a skill as run when i
 
 | Phase | Pair when installed | Native fallback |
 |---|---|---|
-| Frame/plan | `ak:brainstorm`, `ak:plan` | State acceptance criteria and make a proportional plan |
-| Scout | `ak:scout` | Search routing, components, API clients, configs, and tests directly |
+| Frame/plan | Brainstorm/plan skills | State acceptance criteria and make a proportional plan |
+| Scout | Repository search skill | Search routing, components, API clients, configs, and tests directly |
 | Figma | Figma specialist skills | Use available Figma MCP or user-provided structured exports |
 | Design | `squad-designer`; `ui-ux-pro-max` as reference data only | Run the bounded inline Designer contract |
 | Build/style | Frontend specialist skills | Implement with repository framework, components, and CSS system |

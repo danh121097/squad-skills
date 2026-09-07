@@ -458,7 +458,7 @@ describe('normalizeProse', () => {
 
 describe('retired-phrase detection', () => {
   const retired: RetiredPhrase[] = [
-    { files: ['a.md'], id: 'RETIRED-FIXTURE', phrase: 'AgentKit is optional' },
+    { files: ['a.md'], id: 'RETIRED-FIXTURE', phrase: 'pairing is optional' },
   ];
 
   const check = async (contents: string) =>
@@ -468,19 +468,19 @@ describe('retired-phrase detection', () => {
     });
 
   it('fails when the retired wording is stated as the live rule', async () => {
-    expect((await check('AgentKit is optional for this role.')).errors).toHaveLength(1);
+    expect((await check('pairing is optional for this role.')).errors).toHaveLength(1);
   });
 
   it('passes wording that no longer contains the retired phrase', async () => {
     // "is no longer optional" does not contain "is optional"; the phrase is
     // gone, so nothing is being suppressed here.
-    expect((await check('AgentKit is no longer optional for this role.')).errors).toEqual([]);
+    expect((await check('pairing is no longer optional for this role.')).errors).toEqual([]);
   });
 
   it.each([
-    ['a trailing retirement note', 'The stance that AgentKit is optional was retired.'],
-    ['an ordinary sentence containing "cannot"', 'A run cannot start while AgentKit is optional.'],
-    ['a nearby negation', 'This is not a suggestion. AgentKit is optional only in theory.'],
+    ['a trailing retirement note', 'The stance that pairing is optional was retired.'],
+    ['an ordinary sentence containing "cannot"', 'A run cannot start while pairing is optional.'],
+    ['a nearby negation', 'This is not a suggestion. pairing is optional only in theory.'],
   ])('still fails on %s without an explicit opt-out', async (_label, contents) => {
     // Nearby English is not consent. Inferring it from a marker list silenced
     // the gate on ordinary prose, which is the failure direction that matters:
@@ -489,7 +489,7 @@ describe('retired-phrase detection', () => {
   });
 
   it('names the opt-out in the failure so the fix is discoverable', async () => {
-    const result = await check('AgentKit is optional for this role.');
+    const result = await check('pairing is optional for this role.');
 
     expect(result.errors[0]).toContain('retired-phrase-ok: RETIRED-FIXTURE');
   });
@@ -498,7 +498,7 @@ describe('retired-phrase detection', () => {
     const contents = [
       '<!-- retired-phrase-ok: RETIRED-FIXTURE -->',
       '',
-      'The retired wording was "AgentKit is optional"; pairing is now detected per task.',
+      'The retired wording was "pairing is optional"; pairing is now detected per task.',
     ].join('\n');
 
     expect((await check(contents)).errors).toEqual([]);
@@ -506,14 +506,14 @@ describe('retired-phrase detection', () => {
 
   it("does not let one file's opt-out cover another", async () => {
     const projectRoot = await createProject({
-      'a.md': 'AgentKit is optional here.',
+      'a.md': 'pairing is optional here.',
       'b.md': '<!-- retired-phrase-ok: RETIRED-FIXTURE -->',
     });
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [],
       retiredPhrases: [
-        { files: ['a.md', 'b.md'], id: 'RETIRED-FIXTURE', phrase: 'AgentKit is optional' },
+        { files: ['a.md', 'b.md'], id: 'RETIRED-FIXTURE', phrase: 'pairing is optional' },
       ],
     });
 
@@ -524,7 +524,7 @@ describe('retired-phrase detection', () => {
   it('reads retired wording inside a fenced block, which a clause check would skip', async () => {
     // A fenced handoff template is shipped instruction text, not an
     // illustrative sample, so the two checks normalize differently.
-    const contents = ['Use this template:', '', '```md', 'AgentKit is optional', '```'].join('\n');
+    const contents = ['Use this template:', '', '```md', 'pairing is optional', '```'].join('\n');
 
     expect((await check(contents)).errors).toHaveLength(1);
   });

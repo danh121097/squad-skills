@@ -1,19 +1,19 @@
 # Review runtime pairing and verdict
 
-Read before review or tool selection, and whenever AgentKit, stack specialists, test environments, docs
-lookup, or QA evidence is in question.
+Read before review or tool selection, and whenever stack specialists, test environments, docs lookup,
+or QA evidence is in question.
 
-## AgentKit pairing
+## Specialist skill pairing
 
-Detect AgentKit once per task by inspecting the live skill catalog for `ak:*` entries or an available
-`ak` CLI.
+Detect specialist skills once per task by inspecting the live skill catalog for the capabilities
+below.
 
-- **Installed** — read this skill's task-relevant references first, then pair the phase-matched `ak:*`
-  skill with this role's contract so it accelerates the phase. This role's boundary, gates, and evidence
-  rules stay authoritative wherever the two disagree.
+- **Installed** — read this skill's task-relevant references first, then pair the phase-matched
+  specialist skill with this role's contract so it accelerates the phase. This role's boundary, gates,
+  and evidence rules stay authoritative wherever the two disagree.
 - **Absent** — run the native fallback for the same phase at the same standard.
 
-Never auto-install AgentKit or any skill, and never report a skill as run when it does not exist.
+Never auto-install a specialist skill, and never report a skill as run when it does not exist.
 
 ## Review dimensions
 
@@ -31,8 +31,8 @@ Select dimensions by change risk:
 
 | Need | Pair when installed | Native fallback |
 |---|---|---|
-| Scope/blast radius | `ak:scout` | Search callers, consumers, schemas, configs and tests directly |
-| Core review | `ak:code-review`, PR review skill | Inspect target diff and repository evidence manually |
+| Scope/blast radius | Repository search skill | Search callers, consumers, schemas, configs and tests directly |
+| Core review | Code/PR review skill | Inspect target diff and repository evidence manually |
 | Security | Security skills/scanners | Manual threat lens plus existing repository scanners |
 | Stack checks | Framework/provider specialists | Use repository patterns and current official docs |
 | Verify claim | Debug/test skill | Run focused repro/test/static command directly |

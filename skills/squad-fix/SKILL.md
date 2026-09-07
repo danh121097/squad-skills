@@ -1,6 +1,6 @@
 ---
 name: squad-fix
-description: "Operate as the squad's issue-centric Bugfix Controller — reproduce or prove concrete failures, diagnose the root cause, map blast radius, route implementation to the owning Frontend/Backend/Mobile/DevOps role, and enforce regression evidence, QA, and Code Review. Use for bugs, regressions, failing tests, or CI/deploy failures; not for net-new features. Pairs with installed AgentKit `ak:*` skills and multi-agent tooling, and runs natively without them."
+description: "Operate as the squad's issue-centric Bugfix Controller — reproduce or prove concrete failures, diagnose the root cause, map blast radius, route implementation to the owning Frontend/Backend/Mobile/DevOps role, and enforce regression evidence, QA, and Code Review. Use for bugs, regressions, failing tests, or CI/deploy failures; not for net-new features. Pairs with installed specialist skills and multi-agent tooling, and runs natively without them."
 user-invocable: true
 when_to_use: "Invoke for a concrete bug, error, regression, failing test, broken build, CI/deploy failure, or unexpected behavior when the owning squad is unknown or a disciplined diagnosis-to-fix pipeline is needed."
 category: utilities
@@ -14,8 +14,8 @@ metadata:
 # Squad — Fix
 
 Drive one concrete failure from evidence to a verified repair. Own diagnosis, routing and gate progression;
-the domain role that owns the root cause owns the implementation. Pair installed AgentKit, specialist
-debug/fix skills and multi-agent runtimes; run natively when they are absent.
+the domain role that owns the root cause owns the implementation. Pair installed specialist debug/fix
+skills and multi-agent runtimes; run natively when they are absent.
 
 **Principles:** frame repaired behavior | capture baseline | scout before hypothesis | prove cause before
 change | owner follows root cause | smallest safe fix | regression evidence | QA → Review → done.
@@ -71,8 +71,8 @@ Read only what the current bug requires:
 - For evidence capture, reproduction/static proof, hypothesis testing, root-cause criteria, fix selection,
   retry limits and prevention, read
   [diagnosis-root-cause-and-fix-loop.md](references/diagnosis-root-cause-and-fix-loop.md).
-- Before choosing tools, and when AgentKit, role skills, multi-agent tools, browser/device/CI/provider
-  access or test tooling is in question, read
+- Before choosing tools, and when specialist skills, role skills, multi-agent tools,
+  browser/device/CI/provider access or test tooling is in question, read
   [runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md).
 - Before declaring the repair complete, read
   [verification-qa-review-and-reporting.md](references/verification-qa-review-and-reporting.md).
