@@ -154,5 +154,13 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // carries it because it runs the framing fallback when squad-product is
   // absent, and a record rule that lapses exactly when the roster is thinnest is
   // the case it exists for.
-  'squads-team': 2695,
+  // Raised 2695 to 2737 to name an owner for the one artifact nothing owned.
+  // `grep -rinE "monorepo|workspace|scaffold" skills/` returned 0 across all
+  // ten skills: on an empty repository every app and package had a role, and
+  // the layout that decides which packages exist had none. It is the lead's
+  // because "one owner per file" is the lead's own principle and the layout is
+  // what makes it assignable — not a new judgment, a stated precondition of an
+  // existing one. This is the whole surviving output of the abandoned
+  // squad-architect plan: 42 words in place of an eleventh skill.
+  'squads-team': 2737,
 };

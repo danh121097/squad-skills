@@ -97,7 +97,9 @@ These summaries are routing reminders, not sufficient domain knowledge. Read the
 ## 5. Integration
 
 The lead resolves contract and merge conflicts under explicit ownership, runs combined relevant checks,
-and distinguishes per-slice success from integrated success. Update durable docs only for user-visible
+and distinguishes per-slice success from integrated success. On an empty repository the lead owns the root
+workspace layout — package boundaries, task runner, shared TS and lint base — since that is what makes one
+owner per file assignable; each package inside it is scaffolded by its layer's role. Update durable docs only for user-visible
 behavior, setup/commands, configuration, contracts, architecture, security or operations changes.
 
 Commit, push, PR, deploy and external tracking are separate authorizations. Do not infer them from a
