@@ -110,8 +110,15 @@ never bundled into a skill.
 ## Skill observations
 
 If you used one of these skills on real work and its output got something wrong,
-that is worth more than an opinion about the skill.
-[`docs/skill-observations.md`](docs/skill-observations.md) is where it goes. It
+that is worth more than an opinion about the skill. The
+[skill output problem](https://github.com/danh121097/squad-skills/issues/new?template=skill-feedback.yml)
+form takes it without a clone or a pull request, and
+[`docs/feedback-and-weekly-improvement.md`](docs/feedback-and-weekly-improvement.md)
+says what happens to it once a week. A defect in this repository's own tooling
+is an ordinary issue instead.
+
+[`docs/skill-observations.md`](docs/skill-observations.md) is where a verified
+entry goes. It
 states the four fields an entry carries and the path from an entry to a landed
 rule; this section covers only what is different when the entry comes from
 outside.

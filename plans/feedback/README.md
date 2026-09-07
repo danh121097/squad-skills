@@ -11,6 +11,10 @@ cases, full conversations, or machine-specific paths in tracked files. A public
 record links an issue or uses a stable local observation ID and summarizes only
 the evidence needed to reproduce the behavior safely.
 
-An inbox item is evidence, not permission to change a skill. A weekly report may
-propose an issue. Implementation starts only after the maintainer approves the
-exact proposal revision, and merge/release remain separate decisions.
+An inbox item is evidence, not permission to change a skill. The weekly read
+picks at most two items worth acting on and hands each to the maintainer as an
+ordinary task; nothing here dispatches work or approves it. Shipping is decided
+by the gate and maintainer review, as for any other change.
+
+[`docs/feedback-and-weekly-improvement.md`](../../docs/feedback-and-weekly-improvement.md)
+is the full intake and cadence.

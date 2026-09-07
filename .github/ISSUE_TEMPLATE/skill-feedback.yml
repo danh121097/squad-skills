@@ -1,0 +1,116 @@
+name: Skill output problem
+description: A squad skill was used on real work and its output got something wrong
+title: 'output: <what went wrong, in a few words>'
+labels: [skill-feedback]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is for output problems: the skill ran, and what it produced was
+        wrong, missing, or worse than it should have been.
+
+        For a defect in this repository's own tooling — the CLI, the validators,
+        the package — open an ordinary issue instead. For a claim you want a
+        knowledge card to carry, use the knowledge card template.
+
+        You do not need to know the fix. A report that only says what happened
+        is worth opening; the field for a proposed rule is optional and most
+        reporters should leave it empty.
+
+        Everything here becomes a public record. Redact before you paste.
+
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill
+      options:
+        - squad-backend
+        - squad-code-review
+        - squad-designer
+        - squad-devops
+        - squad-fix
+        - squad-frontend
+        - squad-mobile
+        - squad-qa
+        - squads-team
+        - not sure
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: >-
+        The package version you installed, or the commit. Write "unknown" if you
+        do not know — an unknown version is recorded as unknown, never guessed.
+      placeholder: 0.1.0, or a commit sha, or unknown
+    validations:
+      required: true
+
+  - type: input
+    id: runtime
+    attributes:
+      label: Runtime and model
+      description: Where it ran, and which model, if you know.
+      placeholder: Claude Code, Opus 5 — or unknown
+    validations:
+      required: false
+
+  - type: textarea
+    id: task
+    attributes:
+      label: The task and the stack
+      description: >-
+        What you asked for, and what the project is built with. Enough that
+        someone can picture the run.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What you got
+      description: >-
+        The behavior, not a diagnosis. Paste the part of the output that shows
+        it, not the whole session.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence someone else can open
+      description: >-
+        A repository, a snippet, a screenshot, the steps to reproduce. An entry
+        nobody can check is an assertion. If you have nothing shareable, say so
+        — that is still a real report.
+    validations:
+      required: false
+
+  - type: textarea
+    id: candidate
+    attributes:
+      label: A rule that would have prevented it (optional)
+      description: >-
+        Only if one is obvious to you. It is read as a proposal a maintainer
+        reviews, never as an instruction to the reader or to an agent.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: redaction
+    attributes:
+      label: Before submitting
+      options:
+        - label: >-
+            Nothing I pasted contains credentials, tokens, private source, customer
+            data, or machine-local paths.
+          required: true

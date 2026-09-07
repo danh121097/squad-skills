@@ -98,8 +98,12 @@ as showing the output got better, so a claim that it did needs its own evidence.
 [AGENTS.md](AGENTS.md) states the rule.
 
 If you used one of these skills on real work and its output got something wrong,
-[`docs/skill-observations.md`](docs/skill-observations.md) is where that is
-recorded and how it becomes a rule.
+open the [skill output problem](https://github.com/danh121097/squad-skills/issues/new?template=skill-feedback.yml)
+form. You do not need to know the fix.
+[`docs/feedback-and-weekly-improvement.md`](docs/feedback-and-weekly-improvement.md)
+is what happens to a report after that, and
+[`docs/skill-observations.md`](docs/skill-observations.md) is how one becomes a
+rule.
 
 ## Skill format
 
