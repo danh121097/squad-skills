@@ -13,16 +13,17 @@
  * set**: entrypoint words plus the references the median task actually opens.
  * That is what a run costs. Bounding the total instead would tax the routing
  * that keeps a run cheap, which is backwards for a catalog of deep specialists —
- * and the measurements say so plainly. Totals across these eight range from
- * 3,275 to 5,327 words while their medians sit between 1,836 and 2,595: the
- * roles already cost about the same per run, and the total was measuring
- * something no run pays.
+ * and the measurements say so plainly. Totals across the nine range from 3,938
+ * to 7,497 words while their medians sit between 1,959 and 2,624: the roles
+ * already cost about the same per run, and the total was measuring something no
+ * run pays. The skill with the largest total has the smallest median.
  *
  * A skill that declares no task types has no loaded set to measure, so its
  * ceiling bounds the **total payload** because that is the only bound available.
- * `squad-designer` is the one such skill today, and deliberately: its task types
- * live in the baseline manifest where the evaluation budget binds them, and a
- * second copy here would drift from the one that governs.
+ * No shipped skill is in that position today: all nine declare task types and
+ * all nine are bounded on the median. The fallback stays because a new skill
+ * arrives without a routing table, and a skill with no declared routes must not
+ * land under the loosest bound in the catalog by default.
  *
  * Each value is the measurement at the time it was recorded, with no headroom,
  * so the first word past it fails the gate. Raising one is the point rather than
@@ -58,12 +59,22 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // deliberately does not tax: only the runs that need that depth pay for it.
   'squad-designer': 1959,
   'squad-devops': 2209,
-  'squad-fix': 2101,
-  // Frontend, mobile and devops each rose about forty words in the same change:
-  // HANDOFF-BUILD-001 is one sentence stated at three entrypoints, and an
-  // entrypoint sentence is read by every task of that skill.
-  'squad-frontend': 2134,
-  'squad-mobile': 1875,
+  // Raised 2101 to 2624 as corrected accounting, not growth: total payload is
+  // unchanged at 4299 words. The entrypoint reads
+  // runtime-capability-fallbacks.md before choosing tools for any repair, so
+  // every task loads it, but only one task declared it. The same omission was
+  // corrected in squad-frontend and squad-mobile, whose entrypoints carry the
+  // same unconditional line. squad-backend and squad-devops were left alone:
+  // their routers name a condition ("a missing provider/test/review
+  // capability"), so a single declaring task is the honest count there.
+  'squad-fix': 2624,
+  // Frontend, mobile and devops each rose about forty words in an earlier
+  // change: HANDOFF-BUILD-001 is one sentence stated at three entrypoints, and
+  // an entrypoint sentence is read by every task of that skill. Frontend then
+  // moved 2134 to 2572 and mobile 1875 to 2226 for the runtime-fallback
+  // accounting described above; both totals are unchanged.
+  'squad-frontend': 2572,
+  'squad-mobile': 2226,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
   // failing. Sixty words, and all six task types load that file, so the median
@@ -74,7 +85,8 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // this exit. No checklist item accompanies it, deliberately: an entrypoint
   // line would be read by every task to repeat what every task already loads.
   'squad-qa': 2296,
-  // The highest median in the catalog and the flattest router, in the skill
-  // that runs on every squad task. Worth the next routing pass.
+  // The flattest router in the catalog, in the skill that runs on every squad
+  // task: its median is 64% of its total, so routing buys it little. Worth the
+  // next routing pass.
   'squads-team': 2595,
 };

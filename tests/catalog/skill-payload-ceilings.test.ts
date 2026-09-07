@@ -194,18 +194,24 @@ describe('skill payload ceilings', () => {
     const skillName = 'squad-mobile';
     const taskTypes = skillTaskTypes[skillName] as NonNullable<(typeof skillTaskTypes)[string]>;
     const files = [...new Set(taskTypes.flatMap((taskType) => taskType.references))];
-    // A file only one task type opens, in the task type that opens the fewest.
-    // Words added there cannot reach the median unless that task overtakes it.
-    const narrowest = [...taskTypes].sort(
-      (left, right) => left.references.length - right.references.length
-    )[0] as (typeof taskTypes)[number];
-    const exclusive = narrowest.references.find(
+    // A file only one task type opens, in the narrowest task that owns one.
+    // Not simply the narrowest task: the narrowest here loads a single file
+    // every other task loads too, because the entrypoint reads it before
+    // choosing tools for any run. Words added to a shared file reach the median
+    // by design, so such a task cannot demonstrate anything about routing.
+    const owner = [...taskTypes]
+      .sort((left, right) => left.references.length - right.references.length)
+      .find((taskType) =>
+        taskType.references.some(
+          (file) => taskTypes.filter((other) => other.references.includes(file)).length === 1
+        )
+      ) as (typeof taskTypes)[number];
+
+    expect(owner, `${skillName} has no task type with a reference of its own`).toBeTypeOf('object');
+
+    const exclusive = owner.references.find(
       (file) => taskTypes.filter((taskType) => taskType.references.includes(file)).length === 1
     ) as string;
-
-    expect(exclusive, `${skillName} has no task type with a reference of its own`).toBeTypeOf(
-      'string'
-    );
 
     const root = await scratchCatalog({ [skillName]: 'entrypoint' });
     const references = path.join(root, 'skills', skillName, 'references');
@@ -213,11 +219,16 @@ describe('skill payload ceilings', () => {
     await mkdir(references, { recursive: true });
 
     // Staggered on purpose: with every file the same size the task loads sit a
-    // word apart, and any growth at all reorders them.
+    // word apart, and any growth at all reorders them. The filler is also
+    // larger than the growth below, which is what keeps the owning task below
+    // the median rather than overtaking it — a task carrying one grown
+    // exclusive file still loads less than a task carrying one more filler.
+    const filler = 900;
+
     for (const file of files) {
       await writeFile(
         path.join(references, file),
-        file === exclusive ? 'word' : 'word '.repeat(300),
+        file === exclusive ? 'word' : 'word '.repeat(filler),
         'utf8'
       );
     }

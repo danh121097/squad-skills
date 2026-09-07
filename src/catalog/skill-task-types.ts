@@ -198,25 +198,41 @@ const devops: SkillTaskType[] = [
 const fix: SkillTaskType[] = [
   {
     id: 'diagnose-and-route',
-    references: ['bug-routing-and-ownership.md', 'diagnosis-root-cause-and-fix-loop.md'],
+    references: [
+      'bug-routing-and-ownership.md',
+      'diagnosis-root-cause-and-fix-loop.md',
+      'runtime-capability-fallbacks.md',
+    ],
   },
   {
     id: 'root-cause-to-fix',
     references: [
       'diagnosis-root-cause-and-fix-loop.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
       'verification-qa-review-and-reporting.md',
     ],
   },
   {
     id: 'regression-evidence',
-    references: ['quality-bar-and-preflight.md', 'verification-qa-review-and-reporting.md'],
+    references: [
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+      'verification-qa-review-and-reporting.md',
+    ],
   },
   {
     id: 'bugfix-calibration',
-    references: ['quality-bar-and-preflight.md', 'worked-bugfix-examples.md'],
+    references: [
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+      'worked-bugfix-examples.md',
+    ],
   },
-  { id: 'source-lookup', references: ['official-sources.md'] },
+  {
+    id: 'source-lookup',
+    references: ['official-sources.md', 'runtime-capability-fallbacks.md'],
+  },
   { id: 'degraded-runtime-fallback', references: ['runtime-capability-fallbacks.md'] },
 ];
 
@@ -227,17 +243,23 @@ const frontend: SkillTaskType[] = [
       'designer-gate-and-design-intake.md',
       'frontend-architecture-state-data-and-forms.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'state-data-and-forms',
-    references: ['frontend-architecture-state-data-and-forms.md', 'quality-bar-and-preflight.md'],
+    references: [
+      'frontend-architecture-state-data-and-forms.md',
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+    ],
   },
   {
     id: 'accessibility-security-performance',
     references: [
       'frontend-security-accessibility-and-performance.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
     ],
   },
   {
@@ -246,19 +268,32 @@ const frontend: SkillTaskType[] = [
       'frontend-stack-and-motion-selection.md',
       'official-sources.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'motion-implementation',
-    references: ['frontend-stack-and-motion-selection.md', 'quality-bar-and-preflight.md'],
+    references: [
+      'frontend-stack-and-motion-selection.md',
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+    ],
   },
   {
     id: 'test-and-debug',
-    references: ['frontend-testing-debugging-and-mindset.md', 'quality-bar-and-preflight.md'],
+    references: [
+      'frontend-testing-debugging-and-mindset.md',
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+    ],
   },
   {
     id: 'frontend-decision-calibration',
-    references: ['frontend-worked-decisions.md', 'quality-bar-and-preflight.md'],
+    references: [
+      'frontend-worked-decisions.md',
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+    ],
   },
   { id: 'degraded-runtime-fallback', references: ['runtime-capability-fallbacks.md'] },
 ];
@@ -270,6 +305,7 @@ const mobile: SkillTaskType[] = [
       'design-platform-and-lifecycle-gates.md',
       'mobile-stack-architecture-and-data.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
     ],
   },
   {
@@ -278,6 +314,7 @@ const mobile: SkillTaskType[] = [
       'design-platform-and-lifecycle-gates.md',
       'mobile-stack-architecture-and-data.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
     ],
   },
   {
@@ -286,6 +323,7 @@ const mobile: SkillTaskType[] = [
       'mobile-stack-architecture-and-data.md',
       'official-sources.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
     ],
   },
   {
@@ -293,15 +331,24 @@ const mobile: SkillTaskType[] = [
     references: [
       'mobile-security-performance-testing-and-release.md',
       'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'crash-and-jank-diagnosis',
-    references: ['mobile-debugging-and-mindset.md', 'quality-bar-and-preflight.md'],
+    references: [
+      'mobile-debugging-and-mindset.md',
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+    ],
   },
   {
     id: 'mobile-decision-calibration',
-    references: ['mobile-worked-decisions.md', 'quality-bar-and-preflight.md'],
+    references: [
+      'mobile-worked-decisions.md',
+      'quality-bar-and-preflight.md',
+      'runtime-capability-fallbacks.md',
+    ],
   },
   { id: 'degraded-runtime-fallback', references: ['runtime-capability-fallbacks.md'] },
 ];
