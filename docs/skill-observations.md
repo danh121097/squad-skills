@@ -311,3 +311,64 @@ written down here so the next one does not depend on anybody remembering it.
   noticed it — and not on the frontend reference at all.
 
 - **Outcome:** open
+
+## 5. Three parallel role slices on one empty repository — 2026-09-07
+
+- **Built:** The scaffolding slice of `ecommerce-erp` — the slice that brings an
+  empty repository into existence — run through `squads-team` as lead with
+  `squad-backend`, `squad-frontend` and `squad-devops` executing concurrently
+  under non-overlapping file ownership. The repository was never the goal; it
+  was the vehicle for a multi-role run, and the maintainer stopped it once the
+  observations were in hand.
+- **Skill:** `squads-team` 1.0.0, `squad-qa` 1.1.0, and the three build roles.
+- **Missed:** Two, both about what happens between slices rather than inside one.
+
+  **A handoff nobody is required to check.** Frontend's report flagged that
+  `apps/web/Dockerfile` bakes `NEXT_PUBLIC_API_URL`, which the app never reads.
+  DevOps never saw that flag, because role reports go to the lead and not to
+  peers. The lead is the only place the two halves meet, and nothing in
+  `delivery-pipeline-and-roster.md` asks the lead to verify a handoff — §5
+  Integration says to run combined checks, and `coordination-contract.md` says
+  the lead "never upgrades a gap into a result", which is a rule about honesty,
+  not about checking. Grepping the two sides confirmed the intersection between
+  supplied and consumed variable names was empty. Both slices were green on
+  their own gates, and every combined check the pipeline names would also have
+  passed: the values are inlined at build time, so the failure is a silently
+  wrong origin in the browser, not a build error.
+
+  What makes this a skill gap rather than one role's mistake is that the same
+  pipeline produced the opposite outcome twice on the same run. Backend moved
+  its health route to `${apiPrefix}/health` to match a path it found hardcoded
+  in DevOps's compose file, and DevOps removed `env_file: .env` from the web
+  service after reading its own rendered `docker compose config`. Both
+  corrections came from reading an artifact rather than a report. The roles
+  that read files caught their seams; the seam that was only ever described in
+  prose survived three green gates.
+
+  **A skipped test is green.** `packages/db/src/__tests__/tenant-context.integration.test.ts`
+  is guarded by `describe.skipIf(!DATABASE_URL)`, and it is the only thing that
+  would prove tenant isolation — acceptance criterion 1. It has never executed.
+  `squad-qa`'s gate 4 governs determinism and now covers stochastic subjects,
+  but nothing in the skill says a criterion whose evidence did not run is
+  unevidenced. A suite that reports "0 failed" while its load-bearing case never
+  entered the runner reads as a pass at every level above it. DevOps caught this
+  one and refused to paper over it with a Postgres service container, on the
+  correct ground that the default `postgres` superuser holds `BYPASSRLS` and
+  would make the suite pass while proving nothing.
+
+- **Candidate rule:** Two, by owning reference —
+
+  `skills/squads-team/references/delivery-pipeline-and-roster.md` §5 —
+  integration verifies the seams between slices against the artifacts, not the
+  reports: what one slice supplies is checked against what the other consumes.
+  A handoff written in prose and confirmed by nobody is an untested contract.
+
+  `skills/squad-qa/SKILL.md` or its test-architecture reference — a criterion
+  whose evidence did not execute is unevidenced, not passed. A skipped test is
+  a gap to report at the same volume as a failure.
+
+  Both need a second run before they land. The first is the stronger of the
+  two: it has a positive control in the same run, since two seams that were
+  checked against artifacts held and the one checked against prose did not.
+
+- **Outcome:** open
