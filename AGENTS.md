@@ -219,14 +219,17 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   per-file report to find code nothing reaches; do not read the total as quality.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
-- Release: `pnpm release -- <patch|minor|major|x.y.z> [--otp <code>]`. Bumps the
-  version, publishes, tags `main`, then opens the GitHub release — in that order
-  because only the publish is irreversible. Everything before it is a preflight
-  that mutates nothing, a failed publish is undone by restoring `package.json`,
-  and a failure after it is reported with the state it left rather than rewritten
-  away. Its version arithmetic lives in `src/release/` so a test can reach it
-  without importing a script that releases on import. `--dry-run` rehearses the
-  whole path and publishes nothing.
+- Release: `pnpm release [<patch|minor|major|x.y.z>] [--otp <code>]`. Publishes,
+  tags `main`, then opens the GitHub release — in that order because only the
+  publish is irreversible. With no version argument it publishes what
+  `package.json` already carries and picks none of its own, because a script
+  cannot tell a patch from a break and one that guessed would ship a major as a
+  minor. Everything before the publish is a preflight that mutates nothing, a
+  failed publish is undone by restoring `package.json`, and a failure after it
+  is reported with the state it left rather than rewritten away. Its version
+  arithmetic lives in `src/release/` so a test can reach it without importing a
+  script that releases on import. `--dry-run` rehearses the whole path and
+  publishes nothing.
 
 Do not weaken tests, skip a failing gate, or hand-edit generated dependency
 state to make verification pass.

@@ -55,26 +55,36 @@ npm login
 npm whoami
 ```
 
-Then cut the release with one command:
+Then cut the release:
 
 ```sh
-pnpm release -- patch --otp 123456
+pnpm release --otp 123456
 ```
 
-The argument is `patch`, `minor`, `major`, or an explicit `x.y.z` that skips
-ahead. `--otp` carries the npm one-time password and is required whenever the
-account has two-factor auth on writes; `--yes` skips the confirmation prompt,
-and `--dry-run` rehearses the whole path without publishing.
+With no version argument this publishes the version `package.json` already
+carries, after checking the registry does not have it. It picks no version of
+its own: a script cannot know whether a change is a patch or a break, and one
+that guessed would eventually ship a major as a minor. To bump as part of the
+release, name the level:
+
+```sh
+pnpm release patch --otp 123456
+pnpm release 1.0.0 --otp 123456
+```
+
+`--otp` carries the npm one-time password and is required whenever the account
+has two-factor auth on writes; `--yes` skips the confirmation prompt, and
+`--dry-run` rehearses the whole path without publishing.
 
 The command does, in this order:
 
 1. **Preflight**, mutating nothing — on `main`, clean tree, in sync with
    `origin/main`, npm and `gh` authenticated, the target version free on the
    registry, and the tag free both locally and on `origin`.
-2. **Write the new version** into `package.json`.
+2. **Write the new version** into `package.json`, when a bump was named.
 3. **Publish**, which runs `prepublishOnly` and so repeats the full
    `pnpm release:check` gate against the bumped version.
-4. **Commit, tag and push** `main` with the tag.
+4. **Commit the bump, tag and push** `main` with the tag.
 5. **Open the GitHub release** for the tag with generated notes.
 
 The order is what makes it safe to automate. Only step 3 is irreversible, and
@@ -88,8 +98,8 @@ To do it by hand instead:
 
 ```sh
 pnpm publish --access public --otp 123456
-git tag -a v0.1.1 -m v0.1.1 && git push --follow-tags origin main
-gh release create v0.1.1 --title v0.1.1 --generate-notes
+git tag -a v0.1.0 -m v0.1.0 && git push --follow-tags origin main
+gh release create v0.1.0 --title v0.1.0 --generate-notes
 ```
 
 After publishing, verify both entry points:
