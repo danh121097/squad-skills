@@ -32,6 +32,11 @@ order dependence, real third-party calls and uncontrolled network/time. Diagnose
 - nondeterministic ordering/time/randomness;
 - runner/cache/build configuration.
 
+A stochastic subject is not a flaky test. Variance in a model's output or a randomized algorithm is a
+property of what is under test, not a flake to fix. Evidence for it is a distribution: pin what can be
+pinned, state the sample size, and assert a threshold on the aggregate, recording both. One pass proves
+nothing; one failure is not yet a FAIL.
+
 Reproduce with repeat/shuffle/parallel/stress and capture artifact. Fix cause; quarantine only with owner,
 tracking, expiry and preserved visibility. Do not retry a deterministic product failure into green.
 

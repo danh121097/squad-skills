@@ -128,7 +128,15 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // seeded-defect corpus, where a produced test's own double leaked exactly
   // this exit. No checklist item accompanies it, deliberately: an entrypoint
   // line would be read by every task to repeat what every task already loads.
-  'squad-qa': 2296,
+  // Raised 2296 to 2350 to give the determinism gate a reading for a subject
+  // that is stochastic by construction. Every mention of nondeterminism in this
+  // skill treated it as a flake category to diagnose and fix, and gate 4 bars
+  // "uncontrolled remote data" outright — so a QA run against a model, a
+  // randomized algorithm or a load generator had to either refuse the work or
+  // classify the subject's own variance as a defect. That is a contradiction in
+  // shipped text, found by reading it; the gate below proves the catalog stays
+  // consistent and sized, not that any verdict got better.
+  'squad-qa': 2350,
   // The flattest router in the catalog, in the skill that runs on every squad
   // task: its median is 64% of its total, so routing buys it little. Worth the
   // next routing pass. Raised three words by the same capability-resolved
