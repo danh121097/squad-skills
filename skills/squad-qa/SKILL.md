@@ -94,6 +94,8 @@ verdict, run the self-review in
   action. It never becomes an inferred pass.
 - QA and Code Review are both mandatory: when the peer gate's skill is absent, this role runs that
   pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned.
+- To the lead, each open fork as named options with their consequences, put to the user from the
+  session that can ask and never answered by the role that raised it.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
   boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
 

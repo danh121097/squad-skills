@@ -39,6 +39,20 @@
  * cycle is trimming the skill to fit.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
+  // HANDOFF-DECISION-001 raised all ten figures below in one change, by 25 to 32
+  // words each. It is a handoff-contract bullet at every role entrypoint, so
+  // every task of every skill pays it, and no routing lever exists: a role
+  // cannot have a task type that opts out of knowing it may not answer the
+  // user's question on their behalf.
+  //
+  // Ten entrypoints is the widest any clause has reached, and the cost was
+  // argued before it was measured. The narrow version bound only squad-product
+  // and squads-team, on the reasoning that the framing edge is where forks
+  // surface. That reasoning does not survive the observation behind it: the
+  // missing channel is a property of running as a child agent, which every role
+  // does, so QA meeting an absent credential and Designer meeting an undecided
+  // brand direction would have kept assuming under the narrow clause. Per-role
+  // deltas are recorded at each key.
   // Raised 2186 to 2205, and squad-devops 2147 to 2168, by naming the
   // existing-versus-greenfield fork in both entrypoints. Nineteen and
   // twenty-one entrypoint words each, which is why both moved the median one
@@ -51,14 +65,16 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // unintended disclosure — a log, an error body, a response to another caller,
   // a committed value — and both copies pay, because the pre-flight and the
   // security reference each state it in their own voice on purpose.
-  'squad-backend': 2228,
+  // Then 2228 to 2260 by HANDOFF-DECISION-001.
+  'squad-backend': 2260,
   // Raised from 2157 when language-runtime-review-signatures.md landed. The
   // file is 621 words but the median moved 82, because it routes to one task
   // and the entrypoint grew by a router line and a checklist item. The task
   // that loads it sits at 2778, third-heaviest in the catalog, and that is the
   // point of the median regime: the run that needs the depth pays for it, and
   // the four that do not are unchanged.
-  'squad-code-review': 2239,
+  // Then 2239 to 2266 by HANDOFF-DECISION-001.
+  'squad-code-review': 2266,
   // Was bounded on total payload while the retired evaluation lane held its task
   // types. Those moved to `skill-task-types.ts` when the lane was removed, so the
   // median binds here now. 1959 is the measured figure, and it reproduces the
@@ -76,12 +92,14 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // caveat, which is a rule that expires when the catalog changes. It now says
   // design-intelligence skill, resolved from the live catalog, and names the
   // installed one as today's answer.
-  'squad-designer': 1991,
+  // Then 1991 to 2023 by HANDOFF-DECISION-001.
+  'squad-designer': 2023,
   // Raised 2209 to 2216 by DECISION-RECORD-001: the 15-word clause landing in
   // platform-iac-and-delivery-matrix.md's `Selection output`, which the median
   // delivery task loads. Measured, not budgeted — the four other bound files
   // took the same sentence and only squads-team moved with it.
-  'squad-devops': 2216,
+  // Then 2216 to 2248 by HANDOFF-DECISION-001.
+  'squad-devops': 2248,
   // Raised 2101 to 2624 as corrected accounting, not growth: total payload is
   // unchanged at 4299 words. The entrypoint reads
   // runtime-capability-fallbacks.md before choosing tools for any repair, so
@@ -90,14 +108,17 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // same unconditional line. squad-backend and squad-devops were left alone:
   // their routers name a condition ("a missing provider/test/review
   // capability"), so a single declaring task is the honest count there.
-  'squad-fix': 2624,
+  // Then 2624 to 2651 by HANDOFF-DECISION-001.
+  'squad-fix': 2651,
   // Frontend, mobile and devops each rose about forty words in an earlier
   // change: HANDOFF-BUILD-001 is one sentence stated at three entrypoints, and
   // an entrypoint sentence is read by every task of that skill. Frontend then
   // moved 2134 to 2572 and mobile 1875 to 2226 for the runtime-fallback
   // accounting described above; both totals are unchanged.
-  'squad-frontend': 2572,
-  'squad-mobile': 2226,
+  // Then 2572 to 2601 by HANDOFF-DECISION-001.
+  'squad-frontend': 2601,
+  // Then 2226 to 2251 by HANDOFF-DECISION-001.
+  'squad-mobile': 2251,
   // Recorded on the skill's first landing at 2233 and corrected to 2740 in
   // review, which is the more useful half of the story.
   //
@@ -145,7 +166,8 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // this role, and the run that skipped it was a run that never opened the
   // reference — a plan handed over with its four material forks resolved by the
   // role that found them, which is the one place a checklist cannot recover
-  // from later.
+  // from later. This figure is unchanged by the clause widening to all ten
+  // entrypoints: product already stated it.
   'squad-product': 2829,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
@@ -164,7 +186,8 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // classify the subject's own variance as a defect. That is a contradiction in
   // shipped text, found by reading it; the gate below proves the catalog stays
   // consistent and sized, not that any verdict got better.
-  'squad-qa': 2350,
+  // Then 2350 to 2382 by HANDOFF-DECISION-001.
+  'squad-qa': 2382,
   // The flattest router in the catalog, in the skill that runs on every squad
   // task: its median is 64% of its total, so routing buys it little. Worth the
   // next routing pass. Raised three words by the same capability-resolved

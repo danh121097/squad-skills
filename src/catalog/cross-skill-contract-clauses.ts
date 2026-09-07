@@ -54,10 +54,12 @@ const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const productSkill = 'skills/squad-product/SKILL.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
-// squad-designer is deliberately absent from every clause below. Its side of the
-// design handoff is already bound by BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001,
-// stated on the build roles that consume it, so repeating it here would give the
-// same boundary two owners that can disagree.
+// squad-designer is deliberately absent from every handoff clause below but one.
+// Its side of the design handoff is already bound by BOUNDARY-ARTIFACT-001 and
+// BOUNDARY-LOGIC-001, stated on the build roles that consume it, so repeating it
+// here would give the same boundary two owners that can disagree. The exception
+// is HANDOFF-DECISION-001, which binds who may answer a user's question rather
+// than who owns an artifact, so the reasoning above does not reach it.
 // Not `buildRoles`: "the build role" is already a term of art in this contract
 // layer, meaning squad-frontend on web and squad-mobile on native — the phrase
 // BOUNDARY-LOGIC-001 is bound on. These five are simply the roles that produce
@@ -68,6 +70,21 @@ const rolesWithAnImplementationSlice = [
   fixSkill,
   frontendSkill,
   mobileSkill,
+];
+// Ten of ten. HANDOFF-DECISION-001 is the only clause that reaches every
+// entrypoint, because it binds a runtime property every role runs under rather
+// than a stage only some of them touch.
+const everyRoleEntrypoint = [
+  backendSkill,
+  codeReviewSkill,
+  designerSkill,
+  devopsSkill,
+  fixSkill,
+  frontendSkill,
+  mobileSkill,
+  productSkill,
+  qaSkill,
+  teamSkill,
 ];
 const everyRoleWithAPreflight = [
   backendSkill,
@@ -191,9 +208,20 @@ export const boundaryClauses: BoundaryClause[] = [
     // their consequences" is the load-bearing half rather than decoration: prose
     // is what a controller cannot put to a user without composing the choice
     // itself, which is the authorship this clause moves back to the user.
+    //
+    // Every role entrypoint, which is unusual for a HANDOFF clause and is the
+    // point: the missing channel is a property of how a role is executed, not
+    // of which stage it sits at. QA hitting an absent credential and Designer
+    // hitting an undecided brand direction are the same failure as the framing
+    // case that produced this clause, and a contract that bound only the two
+    // ends of the plan edge would have left the other eight roles free to keep
+    // assuming. squad-designer is otherwise absent from the handoff family — its
+    // boundary is bound on the build roles by BOUNDARY-ARTIFACT-001 — and is
+    // named here anyway, because this clause binds who may answer a question
+    // rather than who owns an artifact.
     statement:
       'each open fork as named options with their consequences, put to the user from the session that can ask and never answered by the role that raised it',
-    files: [productSkill, teamSkill],
+    files: everyRoleEntrypoint,
   },
   {
     id: 'HANDOFF-API-001',

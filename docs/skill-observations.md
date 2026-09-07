@@ -420,14 +420,22 @@ concretely` is good advice that was, in that execution mode, unfollowable —
   `HANDOFF-DECISION-001` in `src/catalog/cross-skill-contract-clauses.ts`:
   each open fork as named options with their consequences, put to the user from
   the session that can ask and never answered by the role that raised it.
-  Bound on `squad-product`'s handoff contract and `squads-team`'s hard gate 1,
+  Bound at all ten role entrypoints — the widest reach any clause in this
+  catalog has, and deliberately so. The narrow version bound only the two ends
+  of the plan edge, on the reasoning that framing is where forks surface; that
+  reasoning does not survive the observation, because the missing channel is a
+  property of running as a child agent rather than of sitting at a particular
+  stage. Under the narrow clause, QA meeting an absent credential and Designer
+  meeting an undecided brand direction would have gone on assuming. It is stated
+  in `squad-product`'s handoff contract and `squads-team`'s hard gate 1,
   with the detail in `requirements-and-unknowns.md` (how to shape a fork, and
   what to do when this role has no channel) and
   `coordination-contract.md § 5` (the lead puts it to the user; an unanswered
   fork blocks its phase the way a `NEEDS_*` verdict does).
 
-- **Outcome:** Landed 2026-09-07 with the ceilings re-measured in the same
-  change — `squad-product` 2801 → 2829, `squads-team` 2737 → 2771. One run of
+- **Outcome:** Landed 2026-09-07 with every ceiling re-measured in the same
+  change — ten skills, 25 to 32 median words each, recorded per key in
+  `skill-payload-ceilings.ts`. One run of
   evidence, from one plan, and the gate proves only that the catalog stays
   consistent and sized: it does not establish that any plan got better. The
   claim worth testing on the next multi-role run is narrow — that a fork the

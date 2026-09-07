@@ -103,6 +103,8 @@ implemented. Before handing over, run the self-review in
   remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
   logical passes and labels them non-independent.
+- To the lead, each open fork as named options with their consequences, put to the user from the
+  session that can ask and never answered by the role that raised it.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
   boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
 

@@ -266,7 +266,18 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
       'HANDOFF-PLAN-001': [productSkill, teamSkill],
-      'HANDOFF-DECISION-001': [productSkill, teamSkill],
+      'HANDOFF-DECISION-001': [
+        backendSkill,
+        codeReviewSkill,
+        designerEntrypoint,
+        devopsSkill,
+        fixSkill,
+        frontendSkill,
+        mobileSkill,
+        productSkill,
+        qaSkill,
+        teamSkill,
+      ].sort(),
       'HANDOFF-API-001': [backendSkill, frontendSkill, mobileSkill],
       'HANDOFF-QA-001': [...rolesWithAnImplementationSlice, qaSkill].sort(),
       'HANDOFF-VERDICT-001': [codeReviewSkill, qaSkill],
@@ -310,7 +321,10 @@ describe('validateCrossSkillContract', () => {
  *
  * squad-designer is absent from the family on purpose: its side of the design
  * handoff is already bound by BOUNDARY-*, and a boundary with two owners in two
- * clause families is a boundary they can disagree about.
+ * clause families is a boundary they can disagree about. HANDOFF-DECISION-001 is
+ * the one member that reaches it anyway, and the exception is narrow enough to
+ * state: it binds who may answer a question the user owns, not who owns an
+ * artifact, so there is no second owner for BOUNDARY-* to disagree with.
  */
 describe('handoff contract family', () => {
   const handoffClauses = boundaryClauses.filter((clause) => clause.id.startsWith('HANDOFF-'));
@@ -324,8 +338,21 @@ describe('handoff contract family', () => {
     }
   });
 
-  it('keeps the designer entrypoint out of the family, since BOUNDARY-* owns it', () => {
-    expect(handoffClauses.some((clause) => clause.files.includes(designerEntrypoint))).toBe(false);
+  it('keeps the designer entrypoint out of every artifact-carrying handoff clause', () => {
+    const artifactClauses = handoffClauses.filter((clause) => clause.id !== 'HANDOFF-DECISION-001');
+
+    expect(artifactClauses.some((clause) => clause.files.includes(designerEntrypoint))).toBe(false);
+  });
+
+  // Pinned as its own case rather than folded into the one above, so that
+  // widening the exception to a second clause has to be argued in a diff instead
+  // of arriving as a filter that quietly grew.
+  it('lets only the decision clause reach the designer, and only at every entrypoint', () => {
+    const decision = handoffClauses.find((clause) => clause.id === 'HANDOFF-DECISION-001');
+    if (!decision) throw new Error('HANDOFF-DECISION-001 is missing from the shipped clauses.');
+
+    expect(decision.files).toContain(designerEntrypoint);
+    expect(decision.files).toHaveLength(10);
   });
 
   // The solo clause is the one every non-designer role carries, so it is the

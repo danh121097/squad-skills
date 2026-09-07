@@ -118,6 +118,8 @@ decoration; motion only with a spatial, feedback, state, or continuity purpose.
 - Accessibility as built: contrast, focus order, keyboard, labels, announcements, touch targets.
 - Verification run at the platform's tier, what a build role must still verify, any dependency
   awaiting approval.
+- To the lead, each open fork as named options with their consequences, put to the user from the
+  session that can ask and never answered by the role that raised it.
 
 ## Completion checklist
 
