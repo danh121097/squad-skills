@@ -109,7 +109,8 @@ the self-review in
 - To `squads-team` or the user, the outcome in the user's own terms, the constraints and explicit non-goals,
   acceptance criteria a run can actually check, and the phases with the role that owns each.
 - With it, the unknowns that could invalidate the plan, every assumption made in place of an answer, and the
-  decisions the user still owes.
+  decisions the user still owes: each open fork as named options with their consequences, put to the user
+  from the session that can ask and never answered by the role that raised it.
 - Technical decisions this role did not make are named as open with their owner. A plan whose phases
   silently assume an undecided stack is an unowned decision, not a plan.
 - A corrected assumption reopens framing rather than being patched into a plan that no longer follows from it.

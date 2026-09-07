@@ -372,3 +372,63 @@ written down here so the next one does not depend on anybody remembering it.
   checked against artifacts held and the one checked against prose did not.
 
 - **Outcome:** open
+
+---
+
+## 6. Four material forks arrived as four bullets — 2026-09-07
+
+- **Built:** A parity plan for a Vue map-component wrapper being brought up to
+  MapTiler SDK parity — phases, owners, acceptance criteria, and four decisions
+  the plan could not make: whether a MapTiler API key exists for QA's smoke
+  test, whether the release is `6.0.0` or `2.0.0`, whether two v1 APIs are
+  removed outright, and whether MapTiler's own Minimap/terrain/geocoding sit
+  outside scope. No plan file; the run was conversational.
+
+- **Skill:** `squad-product` 2.x, run as a child agent under a controller
+  session.
+
+- **Missed:** All four forks reached the user as four sentences at the end of a
+  report — no options, no consequences, no defaults — and the run had already
+  planned past them. The user's own words on seeing it: why does the squad ask
+  and then answer itself.
+
+  The cause is a runtime property no skill in the catalog stated. A role spawned
+  as a child agent has no channel to the user: the host's question UI belongs to
+  the controller session, so a question a child writes into its report is read
+  by the lead and by nobody else. `requirements-and-unknowns.md § Ask once, ask
+concretely` is good advice that was, in that execution mode, unfollowable —
+  it says to ask, it gives the shape of a good question, and there was nothing
+  to ask through. What the role did instead is the only thing left: label a
+  default and keep going.
+
+  What makes this a skill gap rather than a runtime limitation is that the
+  recovery was available and unstated. The lead could have put all four to the
+  user before the dependent phase started. Nothing told it to, because
+  `HANDOFF-PLAN-001` binds what an accepted plan contains and nothing bound what
+  happens to the choices the plan could not make. The return edge was missing,
+  the same way every return edge stood before `HANDOFF-REPRO-001`.
+
+  Two smaller things fell out of the same run. Prose is the wrong shape to hand
+  a controller: turning those four sentences into a picker meant composing the
+  options, which is authorship of the user's decision by whoever renders it. And
+  a fork with no options and no recommendation is the one a user postpones —
+  already this file's own advice, one section above where it was needed.
+
+- **Candidate rule:** Landed rather than left open, because the gap is
+  structural rather than a judgment call — the rule does not ask a role to
+  decide better, it names a channel that does not exist and routes around it.
+  `HANDOFF-DECISION-001` in `src/catalog/cross-skill-contract-clauses.ts`:
+  each open fork as named options with their consequences, put to the user from
+  the session that can ask and never answered by the role that raised it.
+  Bound on `squad-product`'s handoff contract and `squads-team`'s hard gate 1,
+  with the detail in `requirements-and-unknowns.md` (how to shape a fork, and
+  what to do when this role has no channel) and
+  `coordination-contract.md § 5` (the lead puts it to the user; an unanswered
+  fork blocks its phase the way a `NEEDS_*` verdict does).
+
+- **Outcome:** Landed 2026-09-07 with the ceilings re-measured in the same
+  change — `squad-product` 2801 → 2829, `squads-team` 2737 → 2771. One run of
+  evidence, from one plan, and the gate proves only that the catalog stays
+  consistent and sized: it does not establish that any plan got better. The
+  claim worth testing on the next multi-role run is narrow — that a fork the
+  controller can render is a fork the user actually answers.

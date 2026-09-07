@@ -26,6 +26,23 @@ answered; an open one gets postponed.
 Do not ask for what can be discovered. The stack, routes, test setup and conventions are in the repository.
 Asking the user to describe their own codebase is a framing failure.
 
+## Shape a fork so it can be answered, not composed
+
+A fork the user has to write prose to answer is one they postpone. Give each two to four named options,
+state under each what it changes about the work, and mark the one this role recommends. That is the shape
+an interactive picker takes and the shape a plain-text list reads well in, so it costs nothing to always
+use it.
+
+## When this role has no channel to ask
+
+A role running as a child agent has no way to reach the user: it can write a question into its report, but
+nothing renders it and nobody answers it. What that silence produces is a plan whose most consequential
+choices were made by whoever happened to run the phase.
+
+So when the session cannot ask, do not ask and do not decide. Return the fork upward as an open decision
+in the shape above, with the recommended option marked as the labeled default, and name the phase that
+cannot start until the user has picked. The controller session is the one that puts it to the user.
+
 ## An empty repository inverts that
 
 With nothing to read, the stack stops being a fact to discover and becomes a decision nobody has made. Do

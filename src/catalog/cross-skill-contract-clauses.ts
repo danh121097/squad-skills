@@ -176,6 +176,26 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [productSkill, teamSkill],
   },
   {
+    id: 'HANDOFF-DECISION-001',
+    // The return edge HANDOFF-PLAN-001 never described. That clause says what an
+    // accepted plan contains; this one says what happens to the choices the plan
+    // could not make, and it exists because the runtime silently removes the
+    // obvious answer. A role spawned as a child agent has no channel to the
+    // user: a question it writes into its report is read by the lead and by
+    // nobody else. Observed in this repository — four material forks (smoke-test
+    // credentials, version number, two breaking changes) reached the user as
+    // four bullets in a report, after the role that raised them had already
+    // planned past them.
+    //
+    // Bound on the producing side like HANDOFF-PLAN-001, and "named options with
+    // their consequences" is the load-bearing half rather than decoration: prose
+    // is what a controller cannot put to a user without composing the choice
+    // itself, which is the authorship this clause moves back to the user.
+    statement:
+      'each open fork as named options with their consequences, put to the user from the session that can ask and never answered by the role that raised it',
+    files: [productSkill, teamSkill],
+  },
+  {
     id: 'HANDOFF-API-001',
     // Written from the consumer's side: Frontend and Mobile cannot start until
     // they know the error shape and the auth rules, so those are the contract,

@@ -266,6 +266,7 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
       'HANDOFF-PLAN-001': [productSkill, teamSkill],
+      'HANDOFF-DECISION-001': [productSkill, teamSkill],
       'HANDOFF-API-001': [backendSkill, frontendSkill, mobileSkill],
       'HANDOFF-QA-001': [...rolesWithAnImplementationSlice, qaSkill].sort(),
       'HANDOFF-VERDICT-001': [codeReviewSkill, qaSkill],

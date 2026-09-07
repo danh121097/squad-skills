@@ -74,6 +74,13 @@ directly to another agent unless the runtime explicitly supports it.
 After each build result, the lead launches QA; after PASS, launches Code Review. Fixes return to the same
 owner when possible.
 
+A child agent has no channel to the user. A question it writes into its report is read by the lead and by
+nobody else, so a role that needs a user decision must return the fork rather than answer it, and the lead
+puts it to the user before the phase that depends on it starts. Two to four named options with their
+consequences is the shape that crosses this boundary; a fork that arrives as prose goes back for options.
+The lead never converts one into a decision on the user's behalf — an unanswered fork blocks its phase the
+way a `NEEDS_*` verdict does.
+
 ## 6. Single-session role loop
 
 Use one controller sequentially:

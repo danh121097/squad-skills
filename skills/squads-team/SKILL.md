@@ -48,7 +48,9 @@ PR, deploy, mutate data or change external services unless requested or required
 1. **Frame first** — reuse an accepted plan: the outcome in the user's own terms, the constraints and
    explicit non-goals, acceptance criteria a run can actually check, and the phases with the role that owns
    each. Without one, produce that here through `squad-product` when installed and inline otherwise, asking
-   only about material unresolved decisions.
+   only about material unresolved decisions. A plan reaches this gate carrying each open fork as named
+   options with their consequences, put to the user from the session that can ask and never answered by the
+   role that raised it.
 2. **Scout and split** — inspect project instructions, stack, relevant modules, contracts, tests and dirty
    state. Split by capability and assign non-overlapping file ownership. Serialize unavoidable overlap.
 3. **Design before UI build** — material UI/UX work receives accepted Figma/design or Designer contract.

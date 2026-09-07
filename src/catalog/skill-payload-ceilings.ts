@@ -135,7 +135,18 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // This keeps squad-product the heaviest median in the catalog, above
   // squads-team at 2737. Both rules come from a single run each, which the
   // entries say; the gate below proves neither of them improves a plan.
-  'squad-product': 2801,
+  // Raised 2801 to 2829 by the producing half of HANDOFF-DECISION-001, 28
+  // entrypoint words in the handoff contract, so every task pays. The two
+  // sections it adds to requirements-and-unknowns.md are free at the median:
+  // that file already sits inside the median load, and the median task is not
+  // the one that opens it.
+  //
+  // Paying at the entrypoint is the point here. The rule is about what leaves
+  // this role, and the run that skipped it was a run that never opened the
+  // reference — a plan handed over with its four material forks resolved by the
+  // role that found them, which is the one place a checklist cannot recover
+  // from later.
+  'squad-product': 2829,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
   // failing. Sixty words, and all six task types load that file, so the median
@@ -187,5 +198,12 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // what makes it assignable — not a new judgment, a stated precondition of an
   // existing one. This is the whole surviving output of the abandoned
   // squad-architect plan: 42 words in place of an eleventh skill.
-  'squads-team': 2737,
+  // Raised 2737 to 2771 by the receiving half of HANDOFF-DECISION-001: 34 words
+  // in hard gate 1, where the lead already learns what an accepted plan
+  // contains, plus the subagent-mode paragraph in coordination-contract.md,
+  // which every team task loads and which therefore pays in full. Both halves
+  // are entrypoint-or-median cost with no cheaper routing available — the lead
+  // has no task type that skips framing, and the mode paragraph is read before
+  // any spawn.
+  'squads-team': 2771,
 };
