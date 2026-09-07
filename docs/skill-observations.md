@@ -149,3 +149,45 @@ merge, so two entries opened at once do not have to race for it.
 
 This entry predates the process it seeds: the loop was run once by hand, then
 written down here so the next one does not depend on anybody remembering it.
+
+## 2. Should the catalog get a squad-architect role? — 2026-09-07
+
+- **Built:** A framing pass on a real pending decision in this repository:
+  whether to implement the `squad-architect` plan, whose own phase 1 carries a
+  stop condition — abandon the split if no role can carry the boundary sentence
+  without losing work it can honestly do alone. Existing-repository case, no
+  plan file requested, output stated in the conversation.
+- **Skill:** `squad-product` 1.0.0.
+- **Missed:** Two things, both structural rather than wrong-answer.
+
+  The skill has no path for a framing that concludes the work should not be
+  built. Its hard gates require phases that name an owner, the quality bar's
+  `### Phases` section checks properties of phases, and the completion checklist
+  has an item for each phase naming its role — all of which assume a plan
+  exists. `framing-and-acceptance-criteria.md` distinguishes deferred from
+  refused, but only for a non-goal inside a plan, never for the request itself.
+  The honest output here was "do not build the role, build the smaller thing it
+  bundled", and the skill offered no shape for that. A run following the
+  checklist literally would have invented phases to have something to hand over.
+
+  It also never says to re-verify the evidence in a plan it is handed. The
+  architect plan's G1 — that the lead decides the greenfield stack with nothing
+  behind it — was true when written and is no longer: `squad-backend`,
+  `squad-devops`, `squad-frontend` and `squad-mobile` each carry
+  existing-versus-greenfield selection in their own router line and checklist,
+  and `squad-product` now names platform choice as an open decision with an
+  owner. Workflow step 2 says to read enough of an existing repository to know
+  what the plan adds to; it does not say that a prior plan's evidence is a claim
+  with a date on it.
+
+- **Candidate rule:** Two, by owning reference —
+  `skills/squad-product/references/scope-phasing-and-sequencing.md`: framing may
+  conclude that the best plan is no plan, and that conclusion carries the same
+  evidence standard as one — what the request was reaching for, which cheaper
+  thing serves it, and what would reopen the question. It is a successful
+  framing, not a failed one, and it does not get phases invented for it.
+  `skills/squad-product/references/framing-and-acceptance-criteria.md`: evidence
+  inside a plan written earlier is a claim with a date, not a given. Re-check
+  each load-bearing one against the repository as it is now, and say which no
+  longer holds, before planning against it.
+- **Outcome:** open
