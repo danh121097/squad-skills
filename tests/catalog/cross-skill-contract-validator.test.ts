@@ -57,6 +57,7 @@ const devopsSkill = 'skills/squad-devops/SKILL.md';
 const fixSkill = 'skills/squad-fix/SKILL.md';
 const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
+const productSkill = 'skills/squad-product/SKILL.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
 const rolesWithAnImplementationSlice = [
@@ -66,7 +67,12 @@ const rolesWithAnImplementationSlice = [
   frontendSkill,
   mobileSkill,
 ];
-const preflightRoles = [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill].sort();
+const preflightRoles = [
+  ...rolesWithAnImplementationSlice,
+  codeReviewSkill,
+  productSkill,
+  qaSkill,
+].sort();
 
 // Fixture aliases: the temp-dir projects reuse two real paths as stand-ins.
 const designerFile = designerEntrypoint;
@@ -252,6 +258,7 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-DETECT-001': [designerSources, ...roleRuntimes, teamCoordination].sort(),
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
+      'HANDOFF-PLAN-001': [productSkill, teamSkill],
       'HANDOFF-API-001': [backendSkill, frontendSkill, mobileSkill],
       'HANDOFF-QA-001': [...rolesWithAnImplementationSlice, qaSkill].sort(),
       'HANDOFF-VERDICT-001': [codeReviewSkill, qaSkill],
@@ -415,7 +422,8 @@ describe('handoff contract family', () => {
   });
 
   // Seven roles were given this line word for word with nothing holding them
-  // to it until the clause existed.
+  // to it until the clause existed; squad-product made eight by copying the
+  // bound sentence rather than writing its own.
   it('binds the quality-bar pre-flight line to every role that runs one', async () => {
     const preflight = boundaryClauses.find((clause) => clause.id === 'QUALITY-PREFLIGHT-001');
     if (!preflight) throw new Error('QUALITY-PREFLIGHT-001 is missing from the shipped clauses.');

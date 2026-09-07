@@ -44,6 +44,7 @@ const devopsSkill = 'skills/squad-devops/SKILL.md';
 const fixSkill = 'skills/squad-fix/SKILL.md';
 const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
+const productSkill = 'skills/squad-product/SKILL.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
 // squad-designer is deliberately absent from every clause below. Its side of the
@@ -68,6 +69,7 @@ const everyRoleWithAPreflight = [
   fixSkill,
   frontendSkill,
   mobileSkill,
+  productSkill,
   qaSkill,
 ];
 
@@ -137,6 +139,22 @@ export const boundaryClauses: BoundaryClause[] = [
     // registry's own words rather than repeating this sentence.
     statement: 'never report a skill as run when it does not exist',
     files: roleRuntimes,
+  },
+  {
+    id: 'HANDOFF-PLAN-001',
+    // The first edge in the pipeline, and the last one to be stated at both
+    // ends. `squads-team` accepts `[goal | plan-path]` and hard gate 1 says to
+    // reuse an accepted plan, but nothing said what an accepted plan contains —
+    // so the lead had no wording to refuse a plan with no non-goals and no
+    // checkable criteria, which is the shape a vague request naturally produces.
+    //
+    // Bound on the producing side's sentence, the way HANDOFF-QA-001 was:
+    // squad-product states it as what it hands over, squads-team as what it
+    // takes in. "a run can actually check" is the load-bearing half — a plan
+    // whose criteria nothing can fail reads exactly like one whose criteria can.
+    statement:
+      "the outcome in the user's own terms, the constraints and explicit non-goals, acceptance criteria a run can actually check, and the phases with the role that owns each",
+    files: [productSkill, teamSkill],
   },
   {
     id: 'HANDOFF-API-001',
@@ -285,7 +303,10 @@ export const boundaryClauses: BoundaryClause[] = [
   {
     id: 'QUALITY-PREFLIGHT-001',
     // Seven roles were given this line word for word, with the sameness
-    // enforced by nothing until it was bound here.
+    // enforced by nothing until it was bound here. squad-product joined as the
+    // eighth, which is the clause paying for itself: the wording was copied from
+    // the bound sentence rather than reinvented, because the gate would have
+    // caught a paraphrase.
     statement: 'The quality-bar pre-flight ran; failed checks were fixed or reported',
     files: everyRoleWithAPreflight,
   },

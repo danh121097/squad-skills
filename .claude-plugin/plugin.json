@@ -1,7 +1,7 @@
 {
   "name": "squad-skills",
   "displayName": "Squad Skills",
-  "description": "A role-specialized engineering squad — Designer, Frontend, Backend, Mobile, DevOps, QA and Code Review — as skills, each also spawnable as a subagent.",
+  "description": "A role-specialized engineering squad — Product, Designer, Frontend, Backend, Mobile, DevOps, QA and Code Review — as skills, each also spawnable as a subagent.",
   "version": "0.1.0",
   "author": { "name": "danh121097", "url": "https://github.com/danh121097" },
   "homepage": "https://github.com/danh121097/squad-skills",

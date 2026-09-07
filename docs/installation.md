@@ -90,7 +90,7 @@ makes this the only single-command route to both:
 /plugin install squad-skills@squad-skills
 ```
 
-The nine agent definitions are committed at `agents/`, and a plugin agent
+The agent definitions are committed at `agents/`, one per skill, and a plugin agent
 reaches its role by skill name because a plugin installs both halves at once.
 `pnpm test` regenerates each one from its `SKILL.md` and fails if the committed
 file has fallen behind, so a skill description never drifts away from the agent

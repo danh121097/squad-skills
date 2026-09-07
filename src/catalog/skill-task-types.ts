@@ -488,6 +488,60 @@ const designer: SkillTaskType[] = [
   { id: 'adaptive-split-view', references: ['platform-adaptive-layout-and-input.md'] },
 ];
 
+// squad-product routes by what the request still lacks, not by domain: a request
+// with no checkable criteria is framed, one with criteria but no order is phased.
+// Every task loads the quality bar except the source lookup, which answers a
+// constraint question rather than handing over a plan — the entrypoint scopes
+// the pre-flight to a plan for the same reason, so the two agree.
+//
+// Two edges were dropped here on the skill's first landing and are restored:
+// `scope-cut-and-tradeoff` without the elicitation reference, and
+// `write-plan-document` without the phasing rules, each justified by the task
+// before it having already read them. A task type is an entry point, not a step.
+// A run that arrives asking for the plan file loads no phasing rules under that
+// reading, while plan-document-contract.md requires phases with owners and
+// preconditions — so the saving was real only when a prior task happened to run.
+// The median moved 2233 to 2740 restoring them, and that is the honest figure.
+const product: SkillTaskType[] = [
+  {
+    id: 'frame-a-new-request',
+    references: [
+      'framing-and-acceptance-criteria.md',
+      'quality-bar-and-preflight.md',
+      'requirements-and-unknowns.md',
+    ],
+  },
+  {
+    id: 'plan-phases-and-ownership',
+    references: [
+      'framing-and-acceptance-criteria.md',
+      'quality-bar-and-preflight.md',
+      'scope-phasing-and-sequencing.md',
+    ],
+  },
+  {
+    id: 'scope-cut-and-tradeoff',
+    references: [
+      'quality-bar-and-preflight.md',
+      'requirements-and-unknowns.md',
+      'scope-phasing-and-sequencing.md',
+    ],
+  },
+  {
+    id: 'write-plan-document',
+    references: [
+      'plan-document-contract.md',
+      'quality-bar-and-preflight.md',
+      'scope-phasing-and-sequencing.md',
+    ],
+  },
+  {
+    id: 'product-calibration',
+    references: ['product-worked-decisions.md', 'quality-bar-and-preflight.md'],
+  },
+  { id: 'source-lookup', references: ['official-sources.md'] },
+];
+
 /** Skills whose ceiling binds the median loaded set rather than the total. */
 export const skillTaskTypes: Readonly<Record<string, SkillTaskType[]>> = {
   'squad-backend': backend,
@@ -497,6 +551,7 @@ export const skillTaskTypes: Readonly<Record<string, SkillTaskType[]>> = {
   'squad-fix': fix,
   'squad-frontend': frontend,
   'squad-mobile': mobile,
+  'squad-product': product,
   'squad-qa': qa,
   'squads-team': team,
 };

@@ -6,15 +6,16 @@ Supports **OpenCode**, **Claude Code**, **Codex**, **Cursor**, and
 [**73 more**](https://www.npmjs.com/package/skills#supported-agents).
 
 Role-specialized engineering skills for AI coding agents. The collection covers
-product design, frontend, backend, mobile, DevOps, QA, code review, bug fixing,
-and coordinated squad delivery while preserving clear ownership boundaries.
+product framing, design, frontend, backend, mobile, DevOps, QA, code review, bug
+fixing, and coordinated squad delivery while preserving clear ownership
+boundaries.
 
 The repository follows the open Agent Skills format and keeps each installable
 skill under `skills/<skill-name>/SKILL.md`.
 
 ## Install
 
-Every path installs the same nine skills. They differ in how the matching
+Every path installs the same set of skills. They differ in how the matching
 subagents arrive.
 
 | Path               | Skills | Subagents        | Tools                               |

@@ -1,15 +1,15 @@
 # Domain coverage contracts
 
 Use only when a named `squad-*` role skill is missing or when auditing role completeness. This provides
-minimum deep coverage; the role still inspects the repository and current primary documentation. Framing
-below is the exception: it belongs to the lead in every mode, because no role skill covers it.
+minimum deep coverage; the role still inspects the repository and current primary documentation.
 
 ## Framing
 
-Read when the request arrives as an idea or an outcome rather than acceptance criteria, or when the
-repository is empty. Produce before spawning any role: the outcome in the user's own terms, the constraints
-that bind it, explicit non-goals, and acceptance criteria a run can actually check. A criterion nothing can
-check is not one — replace it or record it as unverified.
+`squad-product` owns framing. Read this when that skill is absent and the request arrives as an idea or an
+outcome rather than acceptance criteria, or when the repository is empty. Produce before spawning any role:
+the outcome in the user's own terms, the constraints that bind it, explicit non-goals, and acceptance
+criteria a run can actually check. A criterion nothing can check is not one — replace it or record it as
+unverified.
 
 Resolve what the user already decided — stack, hosting, deadline, compliance, budget — before proposing
 anything. Ask only about a fork that changes the work; state an assumption for the rest and let the user

@@ -2,10 +2,11 @@
  * A payload ceiling for every skill the catalog ships.
  *
  * An evaluation manifest used to bound size, but only for the one skill its
- * budget named. Six of the nine were recorded in no manifest at all, so eight
- * could grow with nothing objecting — and they did, by 12% to 42% of their
- * reference words in one upgrade, while the change that made them grow believed
- * a budget was governing it. That lane is retired; this file is the bound now.
+ * budget named. Of the nine that existed then, six were recorded in no manifest
+ * at all, so eight could grow with nothing objecting — and they did, by 12% to
+ * 42% of their reference words in one upgrade, while the change that made them
+ * grow believed a budget was governing it. That lane is retired; this file is
+ * the bound now.
  *
  * Which figure a ceiling bounds depends on what the skill declares.
  *
@@ -13,17 +14,17 @@
  * set**: entrypoint words plus the references the median task actually opens.
  * That is what a run costs. Bounding the total instead would tax the routing
  * that keeps a run cheap, which is backwards for a catalog of deep specialists —
- * and the measurements say so plainly. Totals across the nine range from 3,938
- * to 7,497 words while their medians sit between 1,959 and 2,624: the roles
- * already cost about the same per run, and the total was measuring something no
- * run pays. The skill with the largest total has the smallest median.
+ * and the measurements say so plainly. Totals range from 3,933 to 7,529 words
+ * while the medians sit between 1,991 and 2,619: the roles already cost about
+ * the same per run, and the total was measuring something no run pays. The skill
+ * with the largest total still has the smallest median.
  *
  * A skill that declares no task types has no loaded set to measure, so its
  * ceiling bounds the **total payload** because that is the only bound available.
- * No shipped skill is in that position today: all nine declare task types and
- * all nine are bounded on the median. The fallback stays because a new skill
- * arrives without a routing table, and a skill with no declared routes must not
- * land under the loosest bound in the catalog by default.
+ * No shipped skill is in that position today: every one declares task types and
+ * is bounded on the median. The fallback stays because a new skill arrives
+ * without a routing table, and a skill with no declared routes must not land
+ * under the loosest bound in the catalog by default.
  *
  * Each value is the measurement at the time it was recorded, with no headroom,
  * so the first word past it fails the gate. Raising one is the point rather than
@@ -93,6 +94,27 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // accounting described above; both totals are unchanged.
   'squad-frontend': 2572,
   'squad-mobile': 2226,
+  // Recorded on the skill's first landing at 2233 and corrected to 2740 in
+  // review, which is the more useful half of the story.
+  //
+  // The first measurement was 2981. Prose trimming moved it 255 and stalled, so
+  // two routing edges were dropped instead — `scope-cut-and-tradeoff` without
+  // the elicitation reference, `write-plan-document` without the phasing rules —
+  // on the argument that the task before each had already read them. That
+  // argument does not survive contact with what a task type is. It is an entry
+  // point, not a step: a run that arrives asking for the plan file is the whole
+  // run, and under the dropped edge it wrote phases with owners and
+  // preconditions having loaded no phasing rules. The 466 words were bought
+  // from runs that never happened.
+  //
+  // So the routing lever is real but not free, and the test for using it is
+  // whether the median task still loads what it needs when it is the only task
+  // that runs. Restoring both edges, plus the existing-versus-greenfield fork
+  // AGENTS.md requires in the router line and the checklist, lands at 2740.
+  // That is the heaviest median in the catalog, above squads-team at 2680, and
+  // it is recorded rather than engineered away: the alternative on the table
+  // was a cheaper number that described a run nobody makes.
+  'squad-product': 2740,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
   // failing. Sixty words, and all six task types load that file, so the median
@@ -107,5 +129,21 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // task: its median is 64% of its total, so routing buys it little. Worth the
   // next routing pass. Raised three words by the same capability-resolved
   // helper wording recorded under squad-designer.
-  'squads-team': 2598,
+  // Raised 2598 to 2619 by the receiving half of HANDOFF-PLAN-001. Hard gate 1
+  // said "capture outcome, constraints, non-goals and observable acceptance
+  // criteria" and left the lead nothing to refuse an incomplete plan with; it
+  // now states what an accepted plan contains, word for word with what
+  // squad-product hands over. Thirty-two entrypoint words, so every task pays,
+  // netting 21 after the framing fallback shed the sentence claiming no role
+  // skill covered framing. The gate that used to be the vaguest is the one
+  // deciding what the whole run is measured against, so this is the entrypoint
+  // line most worth its median.
+  // Then 2619 to 2680 for the Product row in the role boundary matrix and its
+  // automatic-routing line. Review caught the omission: hard gate 1 had started
+  // routing framing through a role the lead's own roster did not list, while
+  // both new files say a phase whose owner is absent from the roster is a gap to
+  // report rather than one to assign — so a Product phase was unownable by the
+  // roster's own text. Every team task loads that reference, so the median pays
+  // all 61 words.
+  'squads-team': 2680,
 };

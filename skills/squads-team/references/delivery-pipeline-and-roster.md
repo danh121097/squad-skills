@@ -6,6 +6,7 @@ Read before routing roles or advancing any slice through Design, QA, Review, int
 
 | Role | Delivers | Must not absorb |
 |---|---|---|
+| Product | Outcome, constraints, non-goals, checkable acceptance criteria, the scope cut, and phases that name their owner | Stack/architecture/UI decisions, implementation, role assignment, gates |
 | Designer | UX flow, IA, hierarchy, tokens, states, responsive, motion, accessibility, and the presentational components that render them | State, data, API, routing, platform lifecycle |
 | Frontend | Web UI, client state/forms/navigation, Backend API integration, a11y/performance | Server APIs, shared DB/business logic, infra |
 | Backend | Shared APIs/contracts, auth, DB/data access, server business logic, migrations | Web/mobile UI, deployment pipelines |
@@ -32,7 +33,9 @@ visual or interaction gap returns to Designer instead of being redesigned inside
 
 - Concrete bug/regression/failing test with unproven cause or owner → `squad-fix` diagnosis/routing stage
   when installed; otherwise perform the same baseline → scout → root-cause proof inline. `squad-fix` is a
-  workflow controller, not an eighth implementation role.
+  workflow controller, not an implementation role.
+- Idea, outcome or vague ask carrying no checkable acceptance criteria, or an empty repository → Product
+  before any other role. It returns the plan and stops; it never assigns a slice or advances a gate.
 - Material visual/UX/Figma work → Designer before Frontend/Mobile.
 - Web UI/client logic/API consumption → Frontend.
 - Server API/shared contract/auth/data/server logic → Backend.

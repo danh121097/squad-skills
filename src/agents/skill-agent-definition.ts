@@ -9,7 +9,7 @@
  * Frontmatter is read without the `yaml` package, which is a development
  * dependency the published CLI does not carry. The reader accepts the scalar
  * forms the skills actually use, and `tests/agents/skill-agent-definition.test.ts`
- * pins it against a real YAML parse of all nine.
+ * pins it against a real YAML parse of every shipped skill.
  */
 
 export interface SkillAgentDefinition {

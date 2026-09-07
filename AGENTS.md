@@ -52,8 +52,8 @@
   that declares task types in `src/catalog/skill-task-types.ts` is bounded on
   the median loaded set, because that is what a run costs and bounding the total
   would tax the routing that keeps a run cheap. One that declares none has no
-  loaded set to measure and is bounded on the total. All nine currently declare
-  them, so the total regime governs no shipped skill and waits for the next one
+  loaded set to measure and is bounded on the total. Every shipped skill declares
+  them today, so the total regime governs none of them and waits for the next one
   added without a routing table. A change that passes a ceiling cuts content, or
   routes it to the tasks that need it so the median does not move; raising the
   figure is a reviewed number in the same diff.
@@ -66,12 +66,12 @@
   `.claude-plugin/marketplace.json` declare it, and Claude Code loads `skills/`
   and `agents/` from the checkout. That is the only distribution path where
   skills and subagents arrive in one step, because the upstream Skills CLI
-  exposes no hook a source repository can use. The nine files in `agents/` are
+  exposes no hook a source repository can use. The files in `agents/`, one per skill, are
   committed rather than generated at install time, so a test regenerates each
   from its `SKILL.md` and fails on any drift — repair a failure by regenerating,
   never by editing the agent. Neither directory is packaged for npm, so the
   three-place `files` assertion is unaffected. Adding `.claude-plugin/` does not
-  change what the Skills CLI discovers; `pnpm skills:list` still reports nine.
+  change what the Skills CLI discovers; `pnpm skills:list` still reports what `skills/` holds.
 - A generated subagent definition points at the installed `SKILL.md` and never
   restates a role. Copying the prose would create a second product surface
   bound by no ceiling and no cross-skill clause, and the two would drift. The
@@ -111,19 +111,20 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   survives. Bind a sentence when it exists in two files and their drifting apart
   would change what a reader is told; a clause that could never fire is
   maintenance with no return.
-- Each role that ships a `references/quality-bar-and-preflight.md` — seven of
-  the nine — restates in it rules its own skill also carries in a mindset, review, or verdict reference. That
+- Each role that ships a `references/quality-bar-and-preflight.md` — every role
+  but `squad-designer` and `squads-team` — restates in it rules its own skill also
+  carries in a mindset, review, or verdict reference. That
   duplication is deliberate and stays: the quality bar is the copy a role runs
   in one piece before it hands over, and the other reference is the copy it
   reads while working. Where the two disagree the quality bar is current. Do not
   resolve the drift by thinning one into a cross-reference — a pre-flight that
   has to be assembled from two files is one a run skips.
-- Each role that can be handed an empty repository — frontend, backend, mobile
-  and devops — names the existing-versus-greenfield fork in its own router line
-  and its own completion checklist, in its own domain's words. No cross-skill
+- Each role that can be handed an empty repository — product, frontend, backend,
+  mobile and devops — names the existing-versus-greenfield fork in its own router
+  line and its own completion checklist, in its own domain's words. No cross-skill
   clause binds this, and deliberately so: a clause requires one sentence stated
-  verbatim everywhere, and forcing four roles onto shared wording would cost
-  each of them the specific noun that makes the line actionable. It drifted once
+  verbatim everywhere, and forcing every one of them onto shared wording would
+  cost each the specific noun that makes the line actionable. It drifted once
   already — frontend and mobile carried the fork while backend and devops did
   not — so check it by hand when adding a role or rewriting a router.
 - `evals/` holds fixtures and reviewed research, not product. It ships in neither
