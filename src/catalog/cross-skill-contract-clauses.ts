@@ -46,12 +46,10 @@ const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
-// squad-designer is deliberately absent from every clause below. Its SKILL.md is
-// eval-covered — `evals/squad-designer/case-manifest.yml` exists — so editing it
-// runs the evaluation cycle and human promotion approval, which no clause here
-// can substitute for. Its side of the design handoff is already bound by
-// BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001, stated on the build roles that
-// consume it.
+// squad-designer is deliberately absent from every clause below. Its side of the
+// design handoff is already bound by BOUNDARY-ARTIFACT-001 and BOUNDARY-LOGIC-001,
+// stated on the build roles that consume it, so repeating it here would give the
+// same boundary two owners that can disagree.
 // Not `buildRoles`: "the build role" is already a term of art in this contract
 // layer, meaning squad-frontend on web and squad-mobile on native — the phrase
 // BOUNDARY-LOGIC-001 is bound on. These five are simply the roles that produce
@@ -260,8 +258,8 @@ export const boundaryClauses: BoundaryClause[] = [
     //
     // `squad-fix` was reworded to match `squads-team` rather than the reverse:
     // the lead owns the pipeline rule, and `squad-fix` restates it. Neither file
-    // is recorded in `evals/squad-designer/baseline-manifest.yml`, so no payload
-    // figure moves with this wording.
+    // carries task types whose loaded set this wording changes, so no payload
+    // figure moves with it.
     //
     // Only these two entrypoints state the sequence. The five implementing roles
     // carry HANDOFF-GATE-001 instead, which binds that both gates are mandatory

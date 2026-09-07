@@ -6,6 +6,20 @@ import { findUnroutedReferences, measureSkillPayload } from '../eval/skill-paylo
 import { skillPayloadCeilings } from './skill-payload-ceilings.ts';
 import { minimumTaskTypes, skillTaskTypes } from './skill-task-types.ts';
 
+/**
+ * The recorded tables the validation reads, overridable so a regime with no
+ * shipped example can still be exercised.
+ *
+ * Every skill the catalog ships currently declares task types, so the total
+ * payload regime below governs none of them. It stays reachable for the next
+ * skill added without a routing table, and a rule that fires for nothing today
+ * is exactly the kind that rots unnoticed, so its case supplies its own tables.
+ */
+export interface PayloadCatalog {
+  ceilings?: Readonly<Record<string, number>>;
+  taskTypes?: Readonly<Record<string, readonly { id: string; references: string[] }[]>>;
+}
+
 export interface SkillPayloadValidationResult {
   /** Skills whose payload was measured and compared, in catalog order. */
   checkedSkills: string[];
@@ -35,8 +49,11 @@ export interface SkillPayloadValidationResult {
  * bound while the table still looked complete.
  */
 export async function validateSkillPayloads(
-  projectRoot: string
+  projectRoot: string,
+  catalog: PayloadCatalog = {}
 ): Promise<SkillPayloadValidationResult> {
+  const ceilings = catalog.ceilings ?? skillPayloadCeilings;
+  const taskTypeTable = catalog.taskTypes ?? skillTaskTypes;
   const skillsDirectory = path.join(projectRoot, 'skills');
   const errors: string[] = [];
   const checkedSkills: string[] = [];
@@ -55,7 +72,7 @@ export async function validateSkillPayloads(
     .sort();
 
   for (const skillName of skillNames) {
-    const ceiling = skillPayloadCeilings[skillName];
+    const ceiling = ceilings[skillName];
 
     if (ceiling === undefined) {
       errors.push(
@@ -70,7 +87,7 @@ export async function validateSkillPayloads(
       measured = await measureSkillPayload({
         skillRoot: path.join(skillsDirectory, skillName),
         taskTypes:
-          skillTaskTypes[skillName] === undefined ? undefined : [...skillTaskTypes[skillName]],
+          taskTypeTable[skillName] === undefined ? undefined : [...taskTypeTable[skillName]],
       });
     } catch (error) {
       errors.push(`skills/${skillName}: payload could not be measured — ${String(error)}`);
@@ -79,7 +96,7 @@ export async function validateSkillPayloads(
 
     checkedSkills.push(skillName);
 
-    const taskTypes = skillTaskTypes[skillName];
+    const taskTypes = taskTypeTable[skillName];
 
     if (taskTypes === undefined) {
       if (measured.totalPayloadWords > ceiling) {
@@ -118,7 +135,7 @@ export async function validateSkillPayloads(
     }
   }
 
-  for (const recordedSkill of Object.keys(skillPayloadCeilings)) {
+  for (const recordedSkill of Object.keys(ceilings)) {
     if (!skillNames.includes(recordedSkill)) {
       errors.push(
         `src/catalog/skill-payload-ceilings.ts records a ceiling for "${recordedSkill}", which the catalog does not ship. Remove it, or restore the skill it was measured against.`

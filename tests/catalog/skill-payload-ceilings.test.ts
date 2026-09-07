@@ -142,21 +142,25 @@ describe('skill payload ceilings', () => {
   });
 
   it('fails when a total-bounded payload grows past its ceiling', async () => {
-    // A skill declaring no task types, so the total is what its ceiling holds.
-    const skillName = Object.keys(skillPayloadCeilings).find(
-      (skill) => ceilingBoundFigure(skill) === 'total payload'
-    ) as string;
-    const ceiling = skillPayloadCeilings[skillName] as number;
+    // Every shipped skill declares task types, so no skill in the real catalog
+    // is bounded on its total any more. The regime still governs the next skill
+    // added without a routing table, so the case supplies its own tables rather
+    // than dropping the only coverage the fallback has.
+    const skillName = 'squad-unrouted';
+    const ceiling = 40;
     const root = await scratchCatalog({ [skillName]: 'word '.repeat(ceiling + 1) });
 
-    const result = await validateSkillPayloads(root);
-    // The scratch catalog ships one skill, so every other recorded name is also
-    // reported stale. Isolate the breach so those cannot satisfy this case.
+    const result = await validateSkillPayloads(root, { ceilings: { [skillName]: ceiling } });
     const breaches = result.errors.filter((error) => error.includes('total payload is'));
 
     expect(breaches).toHaveLength(1);
     expect(breaches[0]).toContain(`skills/${skillName}: total payload is ${ceiling + 1} words`);
     expect(breaches[0]).toContain(`over the recorded ceiling ${ceiling}`);
+  });
+
+  it('routes a skill with no task types to the total payload figure', () => {
+    expect(ceilingBoundFigure('squad-unrouted')).toBe('total payload');
+    expect(ceilingBoundFigure('squad-designer')).toBe('median loaded');
   });
 
   it('fails when the median task loads past its ceiling', async () => {

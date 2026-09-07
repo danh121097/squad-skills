@@ -21,10 +21,9 @@
  * task type that lists fewer references than the router would really open, so
  * treat a reference list as part of the router when editing either one.
  *
- * `squad-designer` is deliberately absent. Its task types live in
- * `evals/squad-designer/baseline-manifest.yml`, where the evaluation budget
- * binds them; a second copy here would drift from the one that governs. Its
- * catalog ceiling stays on total payload as the outer bound.
+ * `squad-designer` was once absent here because an evaluation budget bound its
+ * task types instead. That lane is retired, so its routing table lives here now
+ * and is the only record of it.
  */
 // Structurally the `TaskTypeDefinition` the measurement primitive takes, stated
 // here rather than imported so catalog data does not depend on `src/eval/`.
@@ -374,10 +373,79 @@ const team: SkillTaskType[] = [
   },
 ];
 
+// Recovered from the retired `evals/squad-designer/baseline-manifest.yml`, which
+// held these task types while an evaluation budget governed them. With that lane
+// gone the catalog is the only place that records them, so squad-designer is
+// measured on its median loaded set like every other skill instead of falling
+// back to the blunt total-payload bound.
+const designer: SkillTaskType[] = [
+  {
+    id: 'web-new-screen-greenfield',
+    references: [
+      'anti-slop-quality-review.md',
+      'design-system-ux-accessibility-and-handoff.md',
+      'official-sources.md',
+      'platform-web-foundations-and-motion.md',
+      'task-specific-ui-ux-research.md',
+    ],
+  },
+  {
+    id: 'web-redesign-existing-system',
+    references: [
+      'anti-slop-quality-review.md',
+      'codebase-first-examples.md',
+      'design-system-ux-accessibility-and-handoff.md',
+      'official-sources.md',
+      'platform-web-foundations-and-motion.md',
+      'task-specific-ui-ux-research.md',
+    ],
+  },
+  {
+    id: 'figma-accepted-handoff',
+    references: ['design-system-ux-accessibility-and-handoff.md'],
+  },
+  {
+    id: 'design-system-tokens',
+    references: [
+      'anti-slop-quality-review.md',
+      'design-system-ux-accessibility-and-handoff.md',
+      'official-sources.md',
+      'platform-web-foundations-and-motion.md',
+    ],
+  },
+  { id: 'motion-direction', references: ['platform-web-foundations-and-motion.md'] },
+  {
+    id: 'accessibility-audit',
+    references: ['design-system-ux-accessibility-and-handoff.md'],
+  },
+  { id: 'local-pattern-extension', references: ['codebase-first-examples.md'] },
+  { id: 'degraded-runtime-fallback', references: ['official-sources.md'] },
+  {
+    id: 'native-cross-platform-build',
+    references: [
+      'anti-slop-quality-review.md',
+      'design-system-ux-accessibility-and-handoff.md',
+      'official-sources.md',
+      'platform-native-cross-platform.md',
+    ],
+  },
+  {
+    id: 'native-apple-android-build',
+    references: [
+      'anti-slop-quality-review.md',
+      'design-system-ux-accessibility-and-handoff.md',
+      'official-sources.md',
+      'platform-native-apple-android.md',
+    ],
+  },
+  { id: 'adaptive-split-view', references: ['platform-adaptive-layout-and-input.md'] },
+];
+
 /** Skills whose ceiling binds the median loaded set rather than the total. */
 export const skillTaskTypes: Readonly<Record<string, SkillTaskType[]>> = {
   'squad-backend': backend,
   'squad-code-review': codeReview,
+  'squad-designer': designer,
   'squad-devops': devops,
   'squad-fix': fix,
   'squad-frontend': frontend,

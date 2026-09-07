@@ -1,11 +1,11 @@
 /**
  * A payload ceiling for every skill the catalog ships.
  *
- * `evals/squad-designer/baseline-manifest.yml` already bounds size, but only for
- * the skill its `budget.skill` names. Six of the nine skills are recorded in no
- * manifest at all, so eight could grow with nothing objecting — and they did, by
- * 12% to 42% of their reference words in one upgrade, while the change that made
- * them grow believed a budget was governing it.
+ * An evaluation manifest used to bound size, but only for the one skill its
+ * budget named. Six of the nine were recorded in no manifest at all, so eight
+ * could grow with nothing objecting — and they did, by 12% to 42% of their
+ * reference words in one upgrade, while the change that made them grow believed
+ * a budget was governing it. That lane is retired; this file is the bound now.
  *
  * Which figure a ceiling bounds depends on what the skill declares.
  *
@@ -50,10 +50,13 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // point of the median regime: the run that needs the depth pays for it, and
   // the four that do not are unchanged.
   'squad-code-review': 2239,
-  // Bounded on total payload, not the median: its task types live in
-  // evals/squad-designer/baseline-manifest.yml, whose `median_loaded_words` is
-  // the figure that binds in practice. This is the outer bound behind it.
-  'squad-designer': 7497,
+  // Was bounded on total payload while the retired evaluation lane held its task
+  // types. Those moved to `skill-task-types.ts` when the lane was removed, so the
+  // median binds here now. 1959 is the measured figure, and it reproduces the
+  // `median_loaded_words` the retired manifest recorded — the same number reached
+  // by a second route. Its heaviest task loads 6132, which the median regime
+  // deliberately does not tax: only the runs that need that depth pay for it.
+  'squad-designer': 1959,
   'squad-devops': 2209,
   'squad-fix': 2101,
   // Frontend, mobile and devops each rose about forty words in the same change:

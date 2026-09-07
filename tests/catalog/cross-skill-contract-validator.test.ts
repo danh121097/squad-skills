@@ -293,9 +293,9 @@ describe('validateCrossSkillContract', () => {
  * boundary: they bind who owns a stage and what verdict ends it, which is the
  * same contract seen from the pipeline rather than from the handover.
  *
- * squad-designer is absent from the family on purpose. Its SKILL.md is
- * eval-covered, so an edit there runs the evaluation cycle rather than this
- * gate, and its side of the design handoff is already bound by BOUNDARY-*.
+ * squad-designer is absent from the family on purpose: its side of the design
+ * handoff is already bound by BOUNDARY-*, and a boundary with two owners in two
+ * clause families is a boundary they can disagree about.
  */
 describe('handoff contract family', () => {
   const handoffClauses = boundaryClauses.filter((clause) => clause.id.startsWith('HANDOFF-'));
@@ -309,7 +309,7 @@ describe('handoff contract family', () => {
     }
   });
 
-  it('keeps the eval-covered designer entrypoint out of the family', () => {
+  it('keeps the designer entrypoint out of the family, since BOUNDARY-* owns it', () => {
     expect(handoffClauses.some((clause) => clause.files.includes(designerEntrypoint))).toBe(false);
   });
 
