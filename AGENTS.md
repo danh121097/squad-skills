@@ -26,6 +26,11 @@
 - Keep new skills at `skills/<kebab-case-name>/SKILL.md`. The YAML `name` must
   match the directory, and `description` must state what the skill does and when
   to use it.
+- Keep every `squad-*` and `squads-team` entrypoint in this order: `Usage`,
+  `Scope and safety`, `Core gates`, `Conditional references`, `Quality bar`,
+  `Workflow`, optional `Stop conditions`, `Handoff contract`, and `Completion
+checklist`. The catalog validator enforces the complete sequence so a role's
+  domain depth may differ without changing where an agent finds its contract.
 - Keep references and other support files inside their owning skill directory.
   Cross-skill relative links are rejected by the validator, and so is a symlink
   anywhere in a skill payload: archive semantics let a pack store the link's

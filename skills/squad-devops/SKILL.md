@@ -8,7 +8,7 @@ keywords: [devops, docker, kubernetes, helm, cicd, terraform, cloudflare, aws, g
 argument-hint: "[infra or deploy task]"
 metadata:
   author: Harry Nguyen
-  version: "1.9.0"
+  version: "1.9.1"
 ---
 
 # Squad — DevOps
@@ -20,7 +20,13 @@ specialist skills; work natively when they are absent.
 **Principles:** explicit environment | plan before apply | reproducible artifacts | least privilege |
 observable rollout | tested rollback | no secrets | evidence over assumed success.
 
-## Scope and boundary
+## Usage
+
+```text
+/squad-devops <infra or deploy task>
+```
+
+## Scope and safety
 
 Own Docker/images, CI/CD, Kubernetes/Helm, IaC, cloud and self-hosted host configuration, reverse proxy
 and TLS termination, process supervision, environment configuration, release automation, secrets wiring,
@@ -49,7 +55,7 @@ task. Reuse safe project-owned processes; stop only task-owned resources at comp
 5. **Verify live state honestly** — distinguish static validation, dry-run/plan, deployed smoke check and
    production observation. Report exactly which level ran.
 
-## Deep domain references
+## Conditional references
 
 - Existing-versus-greenfield cloud/provider/runtime, containers, Kubernetes, serverless, CI/CD, GitOps
   and IaC selection:

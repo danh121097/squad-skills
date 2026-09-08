@@ -4,6 +4,7 @@ import path from 'node:path';
 import { parseDocument } from 'yaml';
 
 import { validateMarkdownLinks } from './markdown-link-validator.ts';
+import { validateSkillEntrypointStructure } from './skill-entrypoint-structure.ts';
 
 export interface SkillValidationResult {
   errors: string[];
@@ -40,6 +41,9 @@ export async function validateSkills(projectRoot: string): Promise<SkillValidati
 
     if (metadata) {
       validateMetadata(metadata, directory, skillFile, projectRoot, skillNames, errors);
+      errors.push(
+        ...validateSkillEntrypointStructure(source, metadata.name, relative(projectRoot, skillFile))
+      );
     }
 
     await validateMarkdownLinks(skillRoot, projectRoot, errors);

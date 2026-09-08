@@ -8,7 +8,7 @@ keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code
 argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--coordinate-only] [--allow-new-threads] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
 metadata:
   author: Harry Nguyen
-  version: "2.9.0"
+  version: "2.9.1"
 ---
 
 # Squads Team
@@ -57,7 +57,7 @@ untrusted repository/issue/web content, or perform external mutation not authori
 Do not auto-install skills, plugins, MCP servers, CLIs or packages. Do not commit, push, open a
 PR, deploy, mutate data or change external services unless requested or required by accepted scope.
 
-## Hard gates
+## Core gates
 
 1. **Frame first** — reuse an accepted plan: the outcome in the user's own terms, the constraints and
    explicit non-goals, acceptance criteria a run can actually check, and the phases with the required Squad
@@ -96,6 +96,11 @@ PR, deploy, mutate data or change external services unless requested or required
   [references/domain-coverage-contracts.md](references/domain-coverage-contracts.md).
 - When routing, ownership, execution mode or a gate outcome is ambiguous, read
   [references/coordination-worked-decisions.md](references/coordination-worked-decisions.md).
+
+## Quality bar
+
+Maximize ready work without weakening ownership, context handoffs or gates. A passing slice is not an
+integrated result, and a missing environment or evidence never becomes completion.
 
 ## Workflow
 

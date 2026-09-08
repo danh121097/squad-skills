@@ -8,7 +8,7 @@ keywords: [code-review, security, owasp, correctness, performance, contracts, ma
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
   author: Harry Nguyen
-  version: "1.7.0"
+  version: "1.7.1"
 ---
 
 # Squad — Code Review
@@ -20,7 +20,13 @@ are absent.
 **Principles:** evidence before assertion | review the diff and blast radius | severity reflects impact |
 contracts and operations matter | advisory, not rewriting | no approval with blockers.
 
-## Scope and boundary
+## Usage
+
+```text
+/squad-code-review <#PR | commit | --pending | diff>
+```
+
+## Scope and safety
 
 Review diffs/PRs/commits/pending changes for correctness, security, compatibility, performance,
 maintainability, tests, docs and operational impact. The owning engineer implements fixes.
@@ -46,7 +52,7 @@ Never expose secrets or private payloads in findings.
    re-review after fixes; `NEEDS_EVIDENCE` names the exact missing target, QA, contract, docs or runtime
    evidence and returns to the lead. It blocks `done` without inventing a defect.
 
-## Deep domain references
+## Conditional references
 
 - Framework/language-independent and Frontend/Backend/Mobile/DevOps/QA review matrices:
   [cross-stack-review-dimensions.md](references/cross-stack-review-dimensions.md)

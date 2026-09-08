@@ -8,7 +8,7 @@ keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka,
 argument-hint: "[feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.9.0"
+  version: "1.9.1"
 ---
 
 # Squad — Frontend
@@ -20,7 +20,13 @@ standalone or as the Frontend stage inside `squads-team`.
 **Principles:** design before material UI decisions | existing codebase first | consume the API, do not
 build it | logic and UX agree | verify empirically | KISS and DRY.
 
-## Scope and boundary
+## Usage
+
+```text
+/squad-frontend <feature or screen>
+```
+
+## Scope and safety
 
 Build the **client side**: pages/components, routing, client state, forms/validation, permissions,
 navigation, and Backend API integration.

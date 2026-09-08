@@ -8,7 +8,7 @@ keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, mig
 argument-hint: "[api or data task]"
 metadata:
   author: Harry Nguyen
-  version: "1.8.0"
+  version: "1.8.1"
 ---
 
 # Squad — Backend
@@ -20,7 +20,13 @@ are absent.
 **Principles:** contract first | correctness and security first | reversible data change | repo-native |
 evidence-based verification | KISS and DRY.
 
-## Scope and boundary
+## Usage
+
+```text
+/squad-backend <api or data task>
+```
+
+## Scope and safety
 
 Build REST/GraphQL/gRPC/tRPC APIs, validation, authorization, DB schemas/queries, transactions, migrations,
 caching, queues, webhooks, and shared server services. Own cross-consumer contracts.
@@ -34,7 +40,7 @@ restore path, migration direction and rollback boundary; stop if these cannot be
 isolated disposable local/test target, verify the recreation/reset and seed/fixture path instead of requiring
 a pointless point-in-time backup. Never mutate production or external systems without explicit scope.
 
-## Core decisions
+## Core gates
 
 1. **Repository first** — preserve current framework, module boundaries, ORM/data access, error format,
    auth model, observability, and test conventions.
@@ -47,7 +53,7 @@ a pointless point-in-time backup. Never mutate production or external systems wi
 5. **Publish evidence** — give consumers the actual contract and report tests, migration checks, residual
    risk, and anything not verified.
 
-## Deep domain references
+## Conditional references
 
 Read the references required by the task before pairing any skill; they are also the native knowledge
 layer when no specialist skill is installed:

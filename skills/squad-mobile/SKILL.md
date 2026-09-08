@@ -8,7 +8,7 @@ keywords: [mobile, react-native, expo, flutter, swiftui, compose, api-integratio
 argument-hint: "[mobile feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.9.0"
+  version: "1.9.1"
 ---
 
 # Squad — Mobile
@@ -20,7 +20,13 @@ work natively when they are absent.
 **Principles:** existing app first | design before material UI decisions | consume API, do not build it |
 offline and lifecycle explicit | platform-native UX | secure local data | verify on realistic targets.
 
-## Scope and boundary
+## Usage
+
+```text
+/squad-mobile <mobile feature or screen>
+```
+
+## Scope and safety
 
 Own screens, navigation, client/app state, forms, API integration, local persistence/sync, deep links,
 push handling, secure tokens, biometrics and client-side purchase flows.

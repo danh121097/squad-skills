@@ -39,6 +39,12 @@
  * cycle is trimming the skill to fit.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
+  // ENTRYPOINT-IA-001 makes the public role files navigable through one section
+  // order and adds the missing Usage blocks. Exact median deltas are: backend
+  // 2260→2268, Code Review 2266→2277, Designer 2023→2064, DevOps 2248→2256,
+  // Frontend 2601→2609, Mobile 2251→2260, QA 2382→2392 and Team 3109→3139.
+  // Fix and Product already carried Usage and Stop conditions; their heading
+  // normalization did not raise the measured median.
   // HANDOFF-DECISION-001 raised all ten figures below in one change, by 25 to 32
   // words each. It is a handoff-contract bullet at every role entrypoint, so
   // every task of every skill pays it, and no routing lever exists: a role
@@ -66,7 +72,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // a committed value — and both copies pay, because the pre-flight and the
   // security reference each state it in their own voice on purpose.
   // Then 2228 to 2260 by HANDOFF-DECISION-001.
-  'squad-backend': 2260,
+  'squad-backend': 2268,
   // Raised from 2157 when language-runtime-review-signatures.md landed. The
   // file is 621 words but the median moved 82, because it routes to one task
   // and the entrypoint grew by a router line and a checklist item. The task
@@ -74,7 +80,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // point of the median regime: the run that needs the depth pays for it, and
   // the four that do not are unchanged.
   // Then 2239 to 2266 by HANDOFF-DECISION-001.
-  'squad-code-review': 2266,
+  'squad-code-review': 2277,
   // Was bounded on total payload while the retired evaluation lane held its task
   // types. Those moved to `skill-task-types.ts` when the lane was removed, so the
   // median binds here now. 1959 is the measured figure, and it reproduces the
@@ -93,13 +99,13 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // design-intelligence skill, resolved from the live catalog, and names the
   // installed one as today's answer.
   // Then 1991 to 2023 by HANDOFF-DECISION-001.
-  'squad-designer': 2023,
+  'squad-designer': 2064,
   // Raised 2209 to 2216 by DECISION-RECORD-001: the 15-word clause landing in
   // platform-iac-and-delivery-matrix.md's `Selection output`, which the median
   // delivery task loads. Measured, not budgeted — the four other bound files
   // took the same sentence and only squads-team moved with it.
   // Then 2216 to 2248 by HANDOFF-DECISION-001.
-  'squad-devops': 2248,
+  'squad-devops': 2256,
   // Raised 2101 to 2624 as corrected accounting, not growth: total payload is
   // unchanged at 4299 words. The entrypoint reads
   // runtime-capability-fallbacks.md before choosing tools for any repair, so
@@ -116,9 +122,9 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // moved 2134 to 2572 and mobile 1875 to 2226 for the runtime-fallback
   // accounting described above; both totals are unchanged.
   // Then 2572 to 2601 by HANDOFF-DECISION-001.
-  'squad-frontend': 2601,
+  'squad-frontend': 2609,
   // Then 2226 to 2251 by HANDOFF-DECISION-001.
-  'squad-mobile': 2251,
+  'squad-mobile': 2260,
   // Recorded on the skill's first landing at 2233 and corrected to 2740 in
   // review, which is the more useful half of the story.
   //
@@ -194,7 +200,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // shipped text, found by reading it; the gate below proves the catalog stays
   // consistent and sized, not that any verdict got better.
   // Then 2350 to 2382 by HANDOFF-DECISION-001.
-  'squad-qa': 2382,
+  'squad-qa': 2392,
   // The flattest router in the catalog, in the skill that runs on every squad
   // task: its median is 64% of its total, so routing buys it little. Worth the
   // next routing pass. Raised three words by the same capability-resolved
@@ -258,5 +264,5 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // known before routing or conditional references are selected.
   // Raised 3084 to 3109 to distinguish skill-level semantic controls from npm
   // CLI flags and to keep mandatory framing explicit when plan approval is off.
-  'squads-team': 3109,
+  'squads-team': 3139,
 };
