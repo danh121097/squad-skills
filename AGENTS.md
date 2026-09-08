@@ -219,14 +219,17 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   per-file report to find code nothing reaches; do not read the total as quality.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
-- Release: `pnpm release [--otp <code>]`. Asserts the manifest's version is not
-  already on npm, then publishes — which runs `prepublishOnly` and so repeats
-  the full gate. It picks no version: a script cannot tell a patch from a break,
-  and one that guessed would ship a major as a minor, so the version is set by
-  hand in `package.json` and committed with the change that earned it. The
-  refusal prints the three candidates, computed by `src/release/next-version.ts`
-  so a test can reach that arithmetic without importing a script that queries the
-  registry on import.
+- Release: `pnpm release [--release-type patch|minor|major] [--otp <code>]`.
+  The release script checks npm's latest published version, defaults to a patch
+  bump, updates `package.json` and `.claude-plugin/plugin.json` together, then
+  asserts the selected version is unpublished and publishes — which runs
+  `prepublishOnly` and so repeats the full gate. A manifest version already ahead
+  of npm is preserved so a failed publish can be retried without skipping a
+  version. `pnpm release --dry-run` reports the selected version without writing
+  or publishing. Registry failures fail closed; an E404 means the first publish
+  and keeps the manifest version. The arithmetic lives in
+  `src/release/next-version.ts` so tests can reach it without importing a script
+  that queries the registry on import.
 - The tag and the GitHub release are not created locally. The `release` job in
   the workflow tags `main` and opens the release once `package.json` carries a
   version no tag matches. It runs only on a push to `main` — never on a pull

@@ -1,13 +1,9 @@
 /**
- * Version arithmetic for the publish preflight.
+ * Version arithmetic for release selection and the publish preflight.
  *
- * It exists only to suggest the next versions when a publish is refused, and it
- * lives here rather than in the script so a test can reach it: the script runs
- * a registry query on import.
- *
- * Nothing here picks a version. A script cannot know whether a change is a
- * patch or a break, and one that guessed would eventually ship a major as a
- * minor, so the decision stays with the person editing `package.json`.
+ * Automatic release selection defaults to a patch bump because it is the
+ * narrowest safe change. Callers can request a minor or major bump explicitly;
+ * this module never infers a breaking change from the files being published.
  */
 
 export const releaseTypes = ['major', 'minor', 'patch'] as const;
@@ -32,4 +28,40 @@ export function nextVersion(current: string, type: ReleaseType): string {
   if (type === 'minor') return `${major}.${minor + 1}.0`;
 
   return `${major}.${minor}.${patch + 1}`;
+}
+
+/** Compare two numeric major.minor.patch versions. */
+export function compareVersions(left: string, right: string): number {
+  const leftParts = parseVersion(left);
+  const rightParts = parseVersion(right);
+
+  for (let index = 0; index < leftParts.length; index += 1) {
+    const leftPart = leftParts[index] ?? 0;
+    const rightPart = rightParts[index] ?? 0;
+    if (leftPart !== rightPart) return leftPart > rightPart ? 1 : -1;
+  }
+
+  return 0;
+}
+
+/**
+ * Select the next publishable version from the manifest and npm's latest.
+ *
+ * A manifest ahead of npm is preserved so a failed publish can be retried
+ * without skipping another version. Otherwise the latest published version is
+ * bumped by the requested release type. An unpublished package keeps its
+ * manifest version for its first release.
+ */
+export function selectReleaseVersion(
+  manifestVersion: string,
+  latestPublishedVersion: string | undefined,
+  type: ReleaseType = 'patch'
+): string {
+  parseVersion(manifestVersion);
+  if (latestPublishedVersion === undefined) return manifestVersion;
+
+  const relation = compareVersions(manifestVersion, latestPublishedVersion);
+  if (relation > 0) return manifestVersion;
+
+  return nextVersion(latestPublishedVersion, type);
 }

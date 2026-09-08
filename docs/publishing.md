@@ -55,19 +55,28 @@ npm login
 npm whoami
 ```
 
-Set the version in `package.json` by hand, commit it alongside the change that
-earned it, then publish:
+`pnpm release` checks npm's latest published version and defaults to the next
+patch. It updates `package.json` and `.claude-plugin/plugin.json` together,
+then runs the release gate and publishes:
 
 ```sh
 pnpm release --otp 123456
 ```
 
-That runs two steps. The first refuses the publish if npm already has the
-version, in a second and before anything is built — npm would reject it anyway,
-but only after `prepublishOnly` has run the whole gate and the one-time password
-has been entered, and its E403 reads like a permissions problem rather than a
-forgotten bump. The second is `pnpm publish --access public`, which runs
-`prepublishOnly` and so repeats `pnpm release:check`.
+Use an explicit release type when the reviewed change warrants it:
+
+```sh
+pnpm release --release-type minor --otp 123456
+pnpm release --release-type major --otp 123456
+```
+
+The script first checks the registry, selects a version that is greater than or
+equal to the manifest version, updates both manifests, and then runs the
+unpublished-version guard. A manifest version already ahead of npm is preserved
+so a failed publish can be retried. Registry errors fail closed; an E404 means
+the package has no published version yet and keeps the current manifest version.
+The final `pnpm publish --access public` runs `prepublishOnly` and so repeats
+`pnpm release:check`.
 
 `--otp` carries the npm one-time password and is required whenever the account
 has two-factor auth on writes. To rehearse without publishing:
@@ -76,9 +85,9 @@ has two-factor auth on writes. To rehearse without publishing:
 pnpm release --dry-run
 ```
 
-Nothing here picks the version. A script cannot know whether a change is a patch
-or a break, and one that guessed would eventually ship a major as a minor, so
-the refusal prints the three candidates and leaves the choice with you.
+Dry-run prints the registry version and the selected next version without
+changing either manifest or publishing anything. The default is `patch`; pass
+`--release-type minor` or `--release-type major` for an intentional wider bump.
 
 ## Tag and GitHub release
 
@@ -102,5 +111,5 @@ npx squad-skills list
 npx squad-skills add --skill squads-team --agent codex --yes
 ```
 
-Increment the package version before every later release; npm does not allow a
-published version to be overwritten.
+The release script increments from npm's latest published version; npm does not
+allow a published version to be overwritten.
