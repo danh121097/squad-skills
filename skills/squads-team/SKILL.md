@@ -5,10 +5,10 @@ user-invocable: true
 when_to_use: "Invoke for features, bugs, refactors, releases, or audits spanning multiple engineering roles or requiring independent QA and Code Review gates."
 category: dev-tools
 keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code-review, worktree]
-argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--delegate] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
+argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--coordinate-only] [--allow-new-threads] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
 metadata:
   author: Harry Nguyen
-  version: "2.6.0"
+  version: "2.9.0"
 ---
 
 # Squads Team
@@ -18,7 +18,7 @@ actually available. Detect installed specialist skills once and pair them with t
 them; named squad skills and multi-agent tooling stay optional. Quality gates and role boundaries are not optional.
 
 **Principles:** frame before spawn/edit | scout before split | one owner per file | capability-based
-routing | implement → QA → Review → done | explicit evidence | no hidden fallback.
+routing | explicit context/result packets | implement → QA → Review → done | explicit evidence | no hidden fallback.
 
 ## Usage
 
@@ -26,13 +26,27 @@ routing | implement → QA → Review → done | explicit evidence | no hidden f
 /squads-team <goal or plan path> [flags]
 ```
 
-- `--devs N`: requested parallel build slices; reduce when ownership cannot be isolated.
-- `--with-mobile` / `--with-designer`: force a role; Designer also routes automatically for material UI/UX.
-- `--delegate`: lead coordinates only when delegation exists; otherwise report and use single-session mode
-  only with user acceptance of the execution-shape change.
-- `--plan-approval`: require read-only build plans before edits.
-- `--mode auto|team|subagent|single`: `auto` selects the strongest available safe engine.
-- `--no-worktree`: disable worktree isolation; serialize overlapping/shared-file work instead.
+These are semantic controls interpreted by the orchestrating agent, not npm `squad-skills` CLI options.
+
+With no flags, use these defaults:
+
+- execution mode, safe concurrency, role routing and worktree use are `auto`;
+- the lead coordinates and may implement; plan-approval pause and blanket new-thread authority are off;
+- material unresolved decisions still return to the user, and QA then Code Review remain mandatory.
+
+Flags override one default without changing the others:
+
+- `--devs N`: cap parallel build slices at `N`; the no-flag default dispatches every safe ready slice.
+- `--with-mobile` / `--with-designer`: force a role that automatic scope routing did not select.
+- `--coordinate-only`: the lead delegates all owned slices and only coordinates. `--delegate` remains a
+  legacy alias. If delegation is unavailable, report the unavailable forced shape and request direction.
+- `--allow-new-threads`: per-run authority to create the minimum top-level user threads needed for
+  independently followable outcomes; it does not turn role slices or gates into separate threads.
+- `--plan-approval`: pause for approval of read-only build plans before edits; without it, mandatory
+  framing still returns material decisions to the user.
+- `--mode auto|team|subagent|single`: omitted or `auto` selects the strongest safe engine; another value
+  forces that engine.
+- `--no-worktree`: disable automatic worktree isolation and serialize overlapping/shared-file work.
 
 ## Scope and safety
 
@@ -57,7 +71,8 @@ PR, deploy, mutate data or change external services unless requested or required
    decisions; ordered work steps; phase-specific acceptance criteria and expected verification evidence;
    applicable risks and recovery; and the handoff condition.
 2. **Scout and split** — inspect project instructions, stack, relevant modules, contracts, tests and dirty
-   state. Split by capability and assign non-overlapping file ownership. Serialize unavoidable overlap.
+   state. Split by capability, map dependencies, assign non-overlapping file ownership, and serialize
+   unavoidable overlap.
 3. **Design before UI build** — material UI/UX work receives accepted Figma/design or Designer contract.
 4. **No done without gates** — every implementation slice must receive QA `PASS`, then Code Review
    `APPROVE`. `FAIL` or `CHANGES_REQUESTED` returns to the owning role. `NEEDS_ENVIRONMENT` or
@@ -88,10 +103,11 @@ PR, deploy, mutate data or change external services unless requested or required
 2. **Scout/diagnose** — read project guidance, repository state, stack, modules, contracts, tests and
    existing plan. An empty repository returns nothing here, so frame the stack as a decision instead of
    inferring one. For a concrete failure, prove root cause and blast radius before role assignment.
-3. **Route and own** — select roles, split independent slices, assign files and dependencies, then select
-   team/subagent/single execution mode from live capabilities.
+3. **Route and own** — select roles, split independent slices, assign files and dependencies, identify the
+   ready frontier, then select team/subagent/single execution mode from live capabilities.
 4. **Design/plan gates** — run Designer for material UI/UX; collect build plans when approval is enabled.
-5. **Implement** — execute role slices in parallel only with isolated ownership; otherwise serialize.
+5. **Implement** — dispatch every ready slice with isolated ownership; advance newly unblocked work without
+   waiting for unrelated siblings, and serialize overlap.
 6. **QA** — test each completed slice against acceptance and risk. `FAIL` returns to owner with minimal
    repro; `NEEDS_ENVIRONMENT` returns to the lead without inferring a pass.
 7. **Code Review** — review only QA-passed work. `CHANGES_REQUESTED` returns to owner → QA → Review;
@@ -99,12 +115,15 @@ PR, deploy, mutate data or change external services unless requested or required
 8. **Integrate** — combine approved work, resolve integration issues under one owner, run combined checks,
    update durable docs only when behavior/setup/contracts/architecture changed.
 9. **Finish** — report result, mode, roles, files/branches, tests, gate verdicts, residual risk and anything
-   not verified; clean up only resources/processes created by this run.
+   not verified; identify any top-level threads created; clean up only resources/processes created by this run.
 
 ## Handoff contract
 
 - Each role receives its slice with the acceptance criteria it must meet, the files it owns, the contracts
   it may not move, and the environment and authority available to it.
+- Use the context and result packet contract in
+  [references/coordination-contract.md](references/coordination-contract.md); thread history and shared
+  files are not substitutes for an explicit handoff.
 - Each role returns its artifact, the evidence at the level it actually ran, and the gaps it could not
   close; the lead composes these and never upgrades a gap into a result.
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
@@ -120,6 +139,8 @@ PR, deploy, mutate data or change external services unless requested or required
 - [ ] Project was scouted before role split
 - [ ] Every role loaded its routed references, or reported why one was skipped
 - [ ] Every edited file has one owner and overlap was serialized
+- [ ] Every delegated task acknowledged its current context; invalidated work was refreshed and rechecked
+- [ ] Every top-level thread was explicitly requested or covered by per-run authority and has an independent outcome
 - [ ] UI/UX work has accepted design input
 - [ ] Specialist skills were detected and paired where installed; an absence used a documented native
       fallback without lowering standards

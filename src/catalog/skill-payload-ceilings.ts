@@ -241,5 +241,22 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // Product keeps the detailed explanation in its routed reference.
   // Raised 2851 to 2899 so the lead's inline planning fallback carries the same
   // one-or-many role assignment and responsibility-separation rule.
-  'squads-team': 2899,
+  // Raised 2899 to 2925 for the explicit context/result packet contract: task
+  // and thread IDs are transport addresses, while the lead remains the source
+  // of truth for handoffs and integration.
+  // Raised 2925 to 2955 for revisioned async messages and dependency-frontier
+  // dispatch. The extra detail stays in routed coordination references; the
+  // entrypoint pays only the ready-frontier and invalidation checks every run
+  // needs.
+  // Raised 2955 to 3007 for explicit per-run top-level-thread authority. The
+  // cost binds the independent-outcome boundary, duplicate check, context seed,
+  // expiry and preserved mutation limits; without those, a flexible grant can
+  // silently become unbounded task creation or broader authorization.
+  // Raised 3007 to 3084 to make no-flag behavior explicit and rename the
+  // misleading `--delegate` control to `--coordinate-only` while retaining it
+  // as an alias. The entrypoint pays this because invocation defaults must be
+  // known before routing or conditional references are selected.
+  // Raised 3084 to 3109 to distinguish skill-level semantic controls from npm
+  // CLI flags and to keep mandatory framing explicit when plan approval is off.
+  'squads-team': 3109,
 };

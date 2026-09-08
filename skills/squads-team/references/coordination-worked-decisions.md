@@ -58,3 +58,32 @@ is how a redesign ships as a fix.
 
 **Decision:** Run that role directly and keep the gates. Coordination has a cost, and paying it for a
 single slice buys handoffs rather than quality.
+
+## 7. Parallel work follows the dependency frontier
+
+**Context:** Backend owns an accepted API contract and its implementation. Frontend consumes that contract;
+an unrelated DevOps slice owns CI configuration.
+
+**Decision:** Start all three once ownership is isolated. Frontend may build against the accepted contract
+without waiting for Backend implementation; only API-dependent QA and integration wait for the executable
+API. Independent UI and CI slices enter their own gates as soon as they finish. Parallelism is bounded by
+dependencies, not by phase labels.
+
+## 8. An upstream change invalidates only affected work
+
+**Context:** Backend changes the accepted error shape while Frontend and DevOps are running.
+
+**Decision:** The lead sends Frontend a `DELTA` naming the new context revision, invalid assumptions and
+checks to rerun. Frontend acknowledges before continuing. DevOps receives no interruption because its inputs
+did not change. A peer message alone cannot silently move the contract, and the stale Frontend result cannot
+advance to QA.
+
+## 9. Per-run thread authority preserves the outcome boundary
+
+**Context:** One feature has Backend, Frontend and QA slices plus a separately followable research outcome.
+The user grants `--allow-new-threads`, and the runtime supports child agents and top-level user threads.
+
+**Decision:** Keep the feature slices under the current lead and use child agents. Create one research
+thread under one stable per-run key, with its own acceptance and `CONTEXT` packet, then report its identity.
+The blanket authority removes repeated confirmation; it does not turn roles, gates, worktrees or ordinary
+parallelism into user-visible tasks, and it expires with the run.
