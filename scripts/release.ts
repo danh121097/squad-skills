@@ -12,6 +12,25 @@ import process from 'node:process';
 
 import { releaseTypes, type ReleaseType } from '../src/release/next-version.ts';
 
+/**
+ * pnpm checks Git state during publish. The release flow intentionally changes
+ * the two manifests immediately before publishing, so the clean-tree check
+ * must be performed before the bump and disabled for that one publish command.
+ * Keep the flag after caller arguments so it cannot be overridden accidentally.
+ */
+export function publishCommandArgs(publishArgs: string[]): string[] {
+  return ['publish', '--access', 'public', ...publishArgs, '--no-git-checks'];
+}
+
+/** Reject an accidental publish that starts with unrelated local changes. */
+export function assertCleanReleaseWorktree(status: string): void {
+  if (status.trim() !== '') {
+    throw new Error(
+      'Release requires a clean working tree before the version bump. Commit or stash changes first.'
+    );
+  }
+}
+
 function parseArgs(argv: string[]): {
   releaseType: ReleaseType;
   dryRun: boolean;
@@ -56,11 +75,21 @@ function main(): void {
   const bumpArgs = ['--release-type', releaseType];
   if (dryRun) bumpArgs.push('--dry-run');
 
+  if (!dryRun) {
+    const status = execFileSync('git', ['status', '--porcelain', '--untracked-files=all'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    assertCleanReleaseWorktree(status);
+  }
+
   run('scripts/bump-release-version.ts', bumpArgs);
   if (dryRun) return;
 
   run('scripts/assert-version-unpublished.ts', []);
-  execFileSync('pnpm', ['publish', '--access', 'public', ...publishArgs], { stdio: 'inherit' });
+  execFileSync('pnpm', publishCommandArgs(publishArgs), { stdio: 'inherit' });
 }
 
-main();
+if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname)) {
+  main();
+}

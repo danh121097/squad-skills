@@ -57,7 +57,8 @@ npm whoami
 
 `pnpm release` checks npm's latest published version and defaults to the next
 patch. It updates `package.json` and `.claude-plugin/plugin.json` together,
-then runs the release gate and publishes:
+requires a clean working tree before that bump, then runs the release gate and
+publishes:
 
 ```sh
 pnpm release --otp 123456
@@ -72,11 +73,14 @@ pnpm release --release-type major --otp 123456
 
 The script first checks the registry, selects a version that is greater than or
 equal to the manifest version, updates both manifests, and then runs the
-unpublished-version guard. A manifest version already ahead of npm is preserved
-so a failed publish can be retried. Registry errors fail closed; an E404 means
-the package has no published version yet and keeps the current manifest version.
-The final `pnpm publish --access public` runs `prepublishOnly` and so repeats
-`pnpm release:check`.
+unpublished-version guard. Because those manifest edits are intentional, the
+final publish passes pnpm's `--no-git-checks` after the clean-tree preflight;
+unrelated local changes are rejected before any version is written. A manifest
+version already ahead of npm is preserved so a failed publish can be retried
+after committing or stashing the synchronized version bump. Registry errors
+fail closed; an E404 means the package has no published version yet and keeps
+the current manifest version. The final `pnpm publish --access public` runs
+`prepublishOnly` and so repeats `pnpm release:check`.
 
 `--otp` carries the npm one-time password and is required whenever the account
 has two-factor auth on writes. To rehearse without publishing:

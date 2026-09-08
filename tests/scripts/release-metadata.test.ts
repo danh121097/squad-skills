@@ -3,6 +3,8 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { assertCleanReleaseWorktree, publishCommandArgs } from '../../scripts/release.ts';
+
 /**
  * The published file list is stated in four places that cannot see each other:
  * `package.json`, the two release scripts, and the contribution contract.
@@ -64,5 +66,23 @@ describe('published file list', () => {
     for (const entry of packageMetadata.files) {
       expect(packaging).toContain(entry);
     }
+  });
+});
+
+describe('release publish safety', () => {
+  it('rejects unrelated changes before the version bump', () => {
+    expect(() => assertCleanReleaseWorktree(' M src/index.ts\n')).toThrow('clean working tree');
+    expect(() => assertCleanReleaseWorktree('')).not.toThrow();
+  });
+
+  it('keeps publish arguments and disables pnpm Git checks after them', () => {
+    expect(publishCommandArgs(['--otp', '123456'])).toEqual([
+      'publish',
+      '--access',
+      'public',
+      '--otp',
+      '123456',
+      '--no-git-checks',
+    ]);
   });
 });

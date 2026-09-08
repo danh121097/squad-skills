@@ -221,12 +221,15 @@ skills add` runs the official Skills CLI, which has no agent concept — so
 - Pre-publication gate: `pnpm release:check`
 - Release: `pnpm release [--release-type patch|minor|major] [--otp <code>]`.
   The release script checks npm's latest published version, defaults to a patch
-  bump, updates `package.json` and `.claude-plugin/plugin.json` together, then
-  asserts the selected version is unpublished and publishes — which runs
-  `prepublishOnly` and so repeats the full gate. A manifest version already ahead
-  of npm is preserved so a failed publish can be retried without skipping a
-  version. `pnpm release --dry-run` reports the selected version without writing
-  or publishing. Registry failures fail closed; an E404 means the first publish
+  bump, requires a clean working tree, updates `package.json` and
+  `.claude-plugin/plugin.json` together, then asserts the selected version is
+  unpublished and publishes with pnpm's `--no-git-checks` because the bump is
+  intentional. Unrelated changes are rejected before any manifest is written.
+  The publish runs `prepublishOnly` and so repeats the full gate. A manifest
+  version already ahead of npm is preserved so a failed publish can be retried
+  after committing or stashing the synchronized version bump.
+  `pnpm release --dry-run` reports the selected version without writing or
+  publishing. Registry failures fail closed; an E404 means the first publish
   and keeps the manifest version. The arithmetic lives in
   `src/release/next-version.ts` so tests can reach it without importing a script
   that queries the registry on import.
