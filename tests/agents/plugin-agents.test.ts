@@ -60,8 +60,12 @@ describe('plugin manifests', () => {
     const manifest = JSON.parse(
       await readFile(path.join(projectRoot, '.claude-plugin/plugin.json'), 'utf8')
     ) as Record<string, unknown>;
+    const packageMetadata = JSON.parse(
+      await readFile(path.join(projectRoot, 'package.json'), 'utf8')
+    ) as { version: string };
 
     expect(manifest.name).toBe('squad-skills');
+    expect(manifest.version).toBe(packageMetadata.version);
   });
 
   it('offers that plugin from the repository root, which is where the skills are', async () => {

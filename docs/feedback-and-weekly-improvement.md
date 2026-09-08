@@ -56,6 +56,19 @@ Ask for it in the session where the task happened, while the context still
 exists — "save this as a Squad observation". The agent writes one redacted file
 to the configured inbox and says where it went.
 
+When the maintainer explicitly authorizes publication, the local helper can then
+create a date-named branch, commit only that observation, push it and open a
+draft PR:
+
+```sh
+node --experimental-strip-types scripts/feedback/publish-observation.ts \
+  --file plans/feedback/inbox/YYYY-MM-DD-short-slug.md --publish
+```
+
+Without `--publish`, the helper only prints the planned branch, commit and PR.
+It refuses to run when unrelated working-tree changes are present, and it never
+uploads the local usage ledger.
+
 - Record the original expected and actual. A later successful repair must not
   erase what the skill missed the first time.
 - Mark missing evidence explicitly rather than reconstructing it.
@@ -67,6 +80,20 @@ to the configured inbox and says where it went.
 The inbox destination is configured per machine and is not hard-coded into any
 distributed skill. Capture is off for everyone but the maintainer; nothing leaves
 a user's machine unless they choose to file an issue.
+
+## Daily draft PR (optional)
+
+The repository can run a scheduled GitHub Actions workflow at 00:00
+Asia/Ho_Chi_Minh (17:00 UTC). It reads only committed, redacted inbox files and
+GitHub Issues carrying the `skill-feedback` label, then writes a sanitized report
+to `plans/feedback/daily/YYYY-MM-DD.md`. When new material exists, it pushes a
+date-named automation branch and opens a **draft PR** for maintainer review. It
+never merges the PR or edits `main`; a day with no new material creates no PR.
+
+The workflow cannot read `~/.claude/squad-usage/ledger.jsonl` on a maintainer's
+machine. That usage ledger remains local. A local observation must therefore be
+redacted and committed/pushed (or submitted as a GitHub Issue) before the cloud
+summary can include it.
 
 ## The weekly read
 

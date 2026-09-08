@@ -162,6 +162,16 @@ is what happens to a report after that, and
 [`docs/skill-observations.md`](docs/skill-observations.md) is how one becomes a
 rule.
 
+An optional daily GitHub Actions workflow can collect new redacted inbox items
+and `skill-feedback` issues into a draft PR under `plans/feedback/daily/`. It
+runs in the cloud at 00:00 Vietnam time, creates no PR when there is no new
+feedback, and never merges automatically. Local usage logs stay on the machine.
+
+For an individual maintainer observation, ask the agent to save it first, then
+publish that one redacted file with the local helper when you explicitly want a
+branch and draft PR. Running the helper without `--publish` is a no-op preview;
+it requires an authenticated GitHub CLI for the publishing path.
+
 ## Skill format
 
 Each skill directory must contain a `SKILL.md` whose YAML `name` matches the

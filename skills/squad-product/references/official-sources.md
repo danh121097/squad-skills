@@ -25,7 +25,7 @@ Cite what was checked and the date, and state plainly when a constraint could no
 - GDPR text: https://eur-lex.europa.eu/eli/reg/2016/679/oj
 - EDPB guidelines: https://www.edpb.europa.eu/our-work-tools/general-guidance/guidelines-recommendations-best-practices_en
 - CCPA/CPRA: https://cppa.ca.gov/regulations/
-- PDPA Singapore: https://www.pdpc.gov.sg/overview-of-pdpa/the-legal-framework
+- PDPA Singapore: https://www.pdpc.gov.sg/overview-of-pdpa/the-legislation/personal-data-protection-act
 
 ## Payments and regulated flows
 
