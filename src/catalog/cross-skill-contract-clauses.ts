@@ -52,6 +52,7 @@ const fixSkill = 'skills/squad-fix/SKILL.md';
 const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const productSkill = 'skills/squad-product/SKILL.md';
+const productPlanDocument = 'skills/squad-product/references/plan-document-contract.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
 // squad-designer is deliberately absent from every handoff clause below but one.
@@ -189,8 +190,25 @@ export const boundaryClauses: BoundaryClause[] = [
     // takes in. "a run can actually check" is the load-bearing half — a plan
     // whose criteria nothing can fail reads exactly like one whose criteria can.
     statement:
-      "the outcome in the user's own terms, the constraints and explicit non-goals, acceptance criteria a run can actually check, and the phases with the role that owns each",
+      "the outcome in the user's own terms, the constraints and explicit non-goals, acceptance criteria a run can actually check, and the phases with the required Squad role or roles and each role's responsibility",
     files: [productSkill, teamSkill],
+  },
+  {
+    id: 'HANDOFF-PLAN-BUNDLE-001',
+    // Product owns written-plan production and the lead owns the inline fallback
+    // when Product is unavailable. Binding both sides prevents one path from
+    // collapsing the requested bundle back into a monolithic plan file.
+    statement:
+      'a written plan is one directory containing plan.md and one zero-padded phase-XX-kebab-case-title.md file per phase, with relative links from the index',
+    files: [productSkill, teamSkill],
+  },
+  {
+    id: 'QUALITY-PREFLIGHT-PLAN-001',
+    // The detailed Product schema is progressively disclosed, while the lead
+    // must carry the same schema inline when Product is unavailable.
+    statement:
+      'each phase file states context and current state; objective and concrete deliverables; required role or roles and their distinct scope boundaries; prerequisites and blocking decisions; ordered work steps; phase-specific acceptance criteria and expected verification evidence; applicable risks and recovery; and the handoff condition',
+    files: [productPlanDocument, teamSkill],
   },
   {
     id: 'HANDOFF-DECISION-001',

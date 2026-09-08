@@ -172,6 +172,23 @@ self-contained.
 The executable contract is owned by the TypeScript validator and tests. Run
 `pnpm validate` for a focused catalog check or `pnpm test` for the full gate.
 
+## Written plans
+
+When a user asks `squad-product` or `squads-team` to write a plan to disk, the result is a navigable bundle:
+
+```text
+plans/<DDMMYYYY-HHmm>-<topic>/
+├── plan.md
+├── phase-01-<kebab-case-title>.md
+└── phase-02-<kebab-case-title>.md
+```
+
+`plan.md` owns the outcome, boundaries, acceptance and phase index. Each linked phase file carries the
+context, deliverables, ordered work, phase-specific checks, risks and handoff needed to execute that phase.
+A phase declares one or more required Squad roles—for example `squad-backend` and `squad-devops`—and gives
+each a distinct responsibility; the lead assigns live files and agent instances later. Conversational plans
+remain in the conversation unless the user asks for files.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

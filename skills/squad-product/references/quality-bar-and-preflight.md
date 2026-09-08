@@ -11,9 +11,10 @@ pass holds with no other skill installed.
 - A stack, library or architecture chosen in passing by a role that does not own that decision.
 - Assumptions promoted to decisions between the first draft and the second, losing their labels.
 - Phases that mirror a calendar rather than a dependency, so two of them cannot run in that order.
-- A phase with no owner in the roster, assigned to whichever role was nearest.
-- Ceremony: a nine-phase plan for a two-file change.
-- A plan file written into the user's repository because it seemed tidy, not because they asked.
+- A required capability assigned to the nearest role, or several roles listed without distinct responsibilities.
+- Ceremony: nine artificial phases for a two-file change, or repeated prose that adds no execution detail.
+- Plan files written into the user's repository because they seemed tidy, not because the user asked.
+- A monolithic written plan whose phase summaries hide the steps, checks, risks and handoffs an owner needs.
 - Execution started — a file edited, a role invoked — by the role whose contract ends at the handover.
 
 ## Pre-flight
@@ -37,18 +38,32 @@ Pass every applicable check honestly.
 
 ### Phases
 
-- Each phase names its owning role and what must be true before it starts.
+- Each phase names one or more required Squad roles, gives each a distinct responsibility, and states what
+  must be true before work starts.
 - The order follows dependency, and no two parallel phases share the same files.
 - The first slice is complete for someone, and the plan says whether it buys demand or feasibility evidence.
 - Proportion: the plan is as small as the work.
 
+### Written bundle
+
+- `plan.md` links to exactly one zero-padded `phase-XX-kebab-case-title.md` file for every phase.
+- The index carries plan-wide authority and navigation; phase details are not duplicated there.
+- Every phase file states context, objective, deliverables, required roles, distinct role scopes,
+  prerequisites, ordered steps, acceptance evidence, risks or recovery where applicable, and its handoff
+  condition.
+- `roles` is always a list. A multi-role phase includes a role-responsibility table with concrete
+  deliverables and producer/consumer handoffs, while live file and agent-instance assignment stays with the lead.
+- Numbering, dependencies and status agree between the index and phase files; each plan-wide criterion
+  traces to expected evidence in at least one phase.
+- Detail exposes omitted scope without inventing implementation choices, files, commands or measurements.
+
 ### Boundary
 
 - Nothing was executed, assigned or gated.
-- A plan file exists only because the user asked for one, where they chose or approved.
+- Plan files exist only because the user asked for them, where they chose or approved.
 
 ## Proof to hand over
 
-Give the outcome, constraints and non-goals; the criteria with any marked unverified; the phases with owners
-and preconditions; the labeled assumptions; the unknown register; and the decisions the user still owes. Say
-plainly that nothing has been accepted and nothing has run.
+Give the outcome, constraints and non-goals; the criteria with any marked unverified; the phases with roles,
+responsibilities and preconditions; the labeled assumptions; the unknown register; and the decisions the
+user still owes. Say plainly that nothing has been accepted and nothing has run.

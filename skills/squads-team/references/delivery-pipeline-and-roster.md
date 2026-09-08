@@ -4,16 +4,16 @@ Read before routing roles or advancing any slice through Design, QA, Review, int
 
 ## 1. Role boundary matrix
 
-| Role | Delivers | Must not absorb |
-|---|---|---|
-| Product | Outcome, constraints, non-goals, checkable acceptance criteria, the scope cut, and phases that name their owner | Stack/architecture/UI decisions, implementation, role assignment, gates |
-| Designer | UX flow, IA, hierarchy, tokens, states, responsive, motion, accessibility, and the presentational components that render them | State, data, API, routing, platform lifecycle |
-| Frontend | Web UI, client state/forms/navigation, Backend API integration, a11y/performance | Server APIs, shared DB/business logic, infra |
-| Backend | Shared APIs/contracts, auth, DB/data access, server business logic, migrations | Web/mobile UI, deployment pipelines |
-| Mobile | App UI/navigation, client logic, API integration, persistence/offline/sync, device concerns | Shared server APIs/DB/business logic, web UI |
-| DevOps | Containers, CI/CD, IaC, cloud, secrets wiring, observability, rollout/rollback | Feature/app code |
-| QA | Scenario design, assigned tests/fixtures, execution, repro, evidence and PASS/FAIL/NEEDS_ENVIRONMENT | Production implementation, closing work |
-| Code Review | Evidence-based final review, findings and APPROVE/CHANGES_REQUESTED/NEEDS_EVIDENCE | Feature fixes, self-approval |
+| Role        | Delivers                                                                                                                                         | Must not absorb                                                                           |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Product     | Outcome, constraints, non-goals, checkable acceptance criteria, the scope cut, and phases that name required roles and distinct responsibilities | Stack/architecture/UI decisions, implementation, file or agent-instance assignment, gates |
+| Designer    | UX flow, IA, hierarchy, tokens, states, responsive, motion, accessibility, and the presentational components that render them                    | State, data, API, routing, platform lifecycle                                             |
+| Frontend    | Web UI, client state/forms/navigation, Backend API integration, a11y/performance                                                                 | Server APIs, shared DB/business logic, infra                                              |
+| Backend     | Shared APIs/contracts, auth, DB/data access, server business logic, migrations                                                                   | Web/mobile UI, deployment pipelines                                                       |
+| Mobile      | App UI/navigation, client logic, API integration, persistence/offline/sync, device concerns                                                      | Shared server APIs/DB/business logic, web UI                                              |
+| DevOps      | Containers, CI/CD, IaC, cloud, secrets wiring, observability, rollout/rollback                                                                   | Feature/app code                                                                          |
+| QA          | Scenario design, assigned tests/fixtures, execution, repro, evidence and PASS/FAIL/NEEDS_ENVIRONMENT                                             | Production implementation, closing work                                                   |
+| Code Review | Evidence-based final review, findings and APPROVE/CHANGES_REQUESTED/NEEDS_EVIDENCE                                                               | Feature fixes, self-approval                                                              |
 
 Named `squad-*` skills are preferred when installed. The role must load its `SKILL.md` plus task-relevant
 deep references; merely naming the skill is not enough. When absent, the lead gives the role this matrix,
@@ -35,7 +35,8 @@ visual or interaction gap returns to Designer instead of being redesigned inside
   when installed; otherwise perform the same baseline → scout → root-cause proof inline. `squad-fix` is a
   workflow controller, not an implementation role.
 - Idea, outcome or vague ask carrying no checkable acceptance criteria, or an empty repository → Product
-  before any other role. It returns the plan and stops; it never assigns a slice or advances a gate.
+  before any other role. It declares the role capabilities each phase needs, returns the plan and stops; it
+  never selects agent instances, assigns a live slice or advances a gate.
 - Material visual/UX/Figma work → Designer before Frontend/Mobile.
 - Web UI/client logic/API consumption → Frontend.
 - Server API/shared contract/auth/data/server logic → Backend.

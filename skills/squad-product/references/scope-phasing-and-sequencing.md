@@ -33,8 +33,10 @@ A phase exists because something must be true before the next thing can start �
 large, and not because a calendar has weeks in it. For each phase state:
 
 - **What it delivers** — an outcome, checkable against its own criteria.
-- **Who owns it** — a role from the roster. A phase with no owner there is a coverage gap to report, not one
-  to assign to whoever is nearest.
+- **Which roles it requires** — one Squad role for a single-domain phase, or every Squad role genuinely
+  needed for a cross-domain result. With multiple roles, name each role's distinct responsibility and the
+  contract or handoff between them. A required capability with no role in the roster is a coverage gap to
+  report, not one to assign to whoever is nearest.
 - **What must be true first** — the phase it depends on, the decision it assumes, the access it needs.
 - **What would make it wrong** — the unknown whose resolution would reorder the plan.
 
@@ -44,12 +46,15 @@ large, and not because a calendar has weeks in it. For each phase state:
   frontend and mobile build against it.
 - Material UI/UX work is preceded by a designer contract. A real dependency, not a courtesy.
 - Infrastructure comes before the first thing that must run on it, and not one phase earlier.
+- Multiple roles may share a phase when its result requires their coordinated work. Their responsibilities
+  remain separate; the lead later turns them into non-overlapping file ownership and execution slices.
 - Two phases touching the same files are one phase, or they are serialized. Parallelism that ownership
   cannot isolate is not parallelism.
 - Do not phase a thing that is one slice. A single-phase plan is a valid and common answer.
 
 ## Where the plan stops
 
-A phase names its owner and its precondition. It does not name the branch, the files, the execution mode or
-the agent. Splitting work into owned file sets is the lead's job, done against the live repository at the
-moment it runs, and a plan that pre-empts it is stale before it is read.
+A phase names its required Squad role or roles, each role's responsibility, and its precondition. It does
+not select an agent instance or name the branch, files or execution mode. Splitting work into owned file
+sets is the lead's job, done against the live repository at the moment it runs, and a plan that pre-empts it
+is stale before it is read.

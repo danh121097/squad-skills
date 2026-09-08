@@ -58,6 +58,7 @@ const fixSkill = 'skills/squad-fix/SKILL.md';
 const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const productSkill = 'skills/squad-product/SKILL.md';
+const productPlanDocument = 'skills/squad-product/references/plan-document-contract.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
 const rolesWithAnImplementationSlice = [
@@ -266,6 +267,8 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
       'HANDOFF-PLAN-001': [productSkill, teamSkill],
+      'HANDOFF-PLAN-BUNDLE-001': [productSkill, teamSkill],
+      'QUALITY-PREFLIGHT-PLAN-001': [productPlanDocument, teamSkill],
       'HANDOFF-DECISION-001': [
         backendSkill,
         codeReviewSkill,
@@ -467,6 +470,34 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [preflight],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toEqual([]);
+  });
+
+  it('binds the written plan bundle shape to Product and the lead fallback', async () => {
+    const planBundle = boundaryClauses.find((clause) => clause.id === 'HANDOFF-PLAN-BUNDLE-001');
+    if (!planBundle) throw new Error('HANDOFF-PLAN-BUNDLE-001 is missing from shipped clauses.');
+
+    expect([...planBundle.files].sort()).toEqual([productSkill, teamSkill].sort());
+
+    const result = await validateCrossSkillContract(process.cwd(), {
+      clauses: [planBundle],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toEqual([]);
+  });
+
+  it('binds detailed phase content to Product and the lead fallback', async () => {
+    const planDetail = boundaryClauses.find((clause) => clause.id === 'QUALITY-PREFLIGHT-PLAN-001');
+    if (!planDetail) throw new Error('QUALITY-PREFLIGHT-PLAN-001 is missing from shipped clauses.');
+
+    expect([...planDetail.files].sort()).toEqual([productPlanDocument, teamSkill].sort());
+
+    const result = await validateCrossSkillContract(process.cwd(), {
+      clauses: [planDetail],
       retiredPhrases: [],
     });
 

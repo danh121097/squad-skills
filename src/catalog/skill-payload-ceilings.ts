@@ -168,7 +168,14 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // role that found them, which is the one place a checklist cannot recover
   // from later. This figure is unchanged by the clause widening to all ten
   // entrypoints: product already stated it.
-  'squad-product': 2829,
+  // Raised 2829 to 3138 for the requested written-plan bundle contract. Most of
+  // the increase is routed only to `write-plan-document`: the directory/index
+  // shape and the execution-ready phase schema. The short entrypoint/checklist
+  // wording binds that output shape on every path that can write the bundle.
+  // Raised 3138 to 3302 so a phase may declare one or several required Squad
+  // roles with distinct responsibilities and handoffs, while the lead retains
+  // live file ownership and agent-instance assignment.
+  'squad-product': 3302,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
   // failing. Sixty words, and all six task types load that file, so the median
@@ -228,5 +235,11 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // are entrypoint-or-median cost with no cheaper routing available — the lead
   // has no task type that skips framing, and the mode paragraph is read before
   // any spawn.
-  'squads-team': 2771,
+  // Raised 2771 to 2851 by HANDOFF-PLAN-BUNDLE-001 and
+  // QUALITY-PREFLIGHT-PLAN-001. The lead pays the shape and phase schema at its
+  // entrypoint because it produces the plan inline when Product is unavailable;
+  // Product keeps the detailed explanation in its routed reference.
+  // Raised 2851 to 2899 so the lead's inline planning fallback carries the same
+  // one-or-many role assignment and responsibility-separation rule.
+  'squads-team': 2899,
 };

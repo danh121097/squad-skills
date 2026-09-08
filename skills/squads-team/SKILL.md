@@ -46,11 +46,16 @@ PR, deploy, mutate data or change external services unless requested or required
 ## Hard gates
 
 1. **Frame first** — reuse an accepted plan: the outcome in the user's own terms, the constraints and
-   explicit non-goals, acceptance criteria a run can actually check, and the phases with the role that owns
-   each. Without one, produce that here through `squad-product` when installed and inline otherwise, asking
-   only about material unresolved decisions. A plan reaches this gate carrying each open fork as named
-   options with their consequences, put to the user from the session that can ask and never answered by the
-   role that raised it.
+   explicit non-goals, acceptance criteria a run can actually check, and the phases with the required Squad
+   role or roles and each role's responsibility. Without one, produce that here through `squad-product` when
+   installed and inline otherwise, asking only about material unresolved decisions. A plan reaches this gate
+   carrying each open fork as named options with their consequences, put to the user from the session that
+   can ask and never answered by the role that raised it. When the user requests files, a written plan is one
+   directory containing `plan.md` and one zero-padded `phase-XX-kebab-case-title.md` file per phase, with
+   relative links from the index. Each phase file states context and current state; objective and concrete
+   deliverables; required role or roles and their distinct scope boundaries; prerequisites and blocking
+   decisions; ordered work steps; phase-specific acceptance criteria and expected verification evidence;
+   applicable risks and recovery; and the handoff condition.
 2. **Scout and split** — inspect project instructions, stack, relevant modules, contracts, tests and dirty
    state. Split by capability and assign non-overlapping file ownership. Serialize unavoidable overlap.
 3. **Design before UI build** — material UI/UX work receives accepted Figma/design or Designer contract.
@@ -110,6 +115,8 @@ PR, deploy, mutate data or change external services unless requested or required
 ## Completion checklist
 
 - [ ] Outcome, constraints, non-goals and acceptance criteria are explicit
+- [ ] Each phase names every required Squad role and gives each a distinct responsibility
+- [ ] A requested written plan has `plan.md` plus one detailed, linked file per phase
 - [ ] Project was scouted before role split
 - [ ] Every role loaded its routed references, or reported why one was skipped
 - [ ] Every edited file has one owner and overlap was serialized
