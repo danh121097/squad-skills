@@ -29,6 +29,12 @@ claim, and the path below is what keeps them apart.
   happened.
 - **A log entry is not a bug report.** A defect in this repository's tooling
   goes to an issue. This file records what a skill's _emitted output_ got wrong.
+- **A comparative entry is admissible, and claims less.** An entry may record a
+  gap found by reading this catalog against another rather than by watching a
+  run, in which case **Built** reads "none — comparative". It may not claim a
+  measurement, an observed failure, or anything about emitted output, because it
+  watched none. Entry 7 is the first of these and says so in its own first
+  field.
 
 ## What an entry carries
 
@@ -440,3 +446,97 @@ written down here so the next one does not depend on anybody remembering it.
   consistent and sized: it does not establish that any plan got better. The
   claim worth testing on the next multi-role run is narrow — that a fork the
   controller can render is a fork the user actually answers.
+
+---
+
+## 7. An external catalog read against this one — 2026-09-09
+
+- **Built:** none — comparative. This entry breaks the shape of every one above
+  it, and says so rather than pretending otherwise: the evidence is comparative,
+  not observed. A `squads-team` run read `github.com/mattpocock/skills` at
+  commit depth 1 and set its 26 skills against these ten, looking for technique
+  this catalog lacks. Nothing was measured and no skill emitted anything, so the
+  claim each candidate below carries is the weakest kind this file admits: a
+  named gap in shipped text, argued from another catalog's solution to it.
+- **Skill:** `squads-team` 2.9.1, with `squad-qa` 1.7.1 and `squad-code-review`
+  1.7.1 as the gates, in catalog 0.2.1.
+- **Missed:** Four gaps in shipped text, each verified by search before it was
+  believed. `squad-fix` required a deterministic baseline but never said to build
+  a red-capable command _before_ hypothesising, gave no ladder of ways to build
+  one, and treated an intermittent failure as a repro to clean up rather than a
+  reproduction rate to raise; it also demanded regression evidence with no
+  reading for the case where no seam can carry it, which is a run's incentive to
+  ship a test that passes without covering the bug. `squad-code-review` folded
+  spec compliance into one severity-ranked list with every other dimension, so a
+  diff that follows every convention while implementing the wrong feature reads
+  as a strong review. `squads-team` chose an execution mode carefully and said
+  nothing about context lifecycle: `grep -rniE "compact|context window|clear the
+context" skills/squads-team/` returned nothing across the whole skill, in the
+  role that runs the longest sessions in the catalog. And `grep -rn "Skill tool"
+skills/` returned nothing, so reaching a peer was left to prose.
+- **Candidate rule:** Four landed — one of them narrowed — and one declined.
+  `skills/squad-fix/references/diagnosis-root-cause-and-fix-loop.md`: build a
+  red-capable loop before hypothesising, with the construction ladder, loop
+  tightening, reproduction rate, minimisation, three to five ranked falsifiable
+  hypotheses, tagged probes, and the shallow-seam shortfall recorded as a finding.
+  `skills/squad-code-review/references/review-runtime-and-verdict.md`: spec
+  compliance and production quality ranked apart and never merged, plus a named maintainability baseline
+  in `cross-stack-review-dimensions.md` for a repository that documents no
+  conventions. `skills/squads-team/references/coordination-contract.md`: the
+  ordered phase-boundary ladder, and a peer reached by explicit invocation rather
+  than narration.
+
+  The peer-invocation rule closes less than the gap that motivated it, and the
+  narrower claim is the one that ships. The evidence was catalog-wide — `grep -rn
+"Skill tool" skills/` returned nothing across all ten — but the rule lands only
+  in the orchestrator's coordination contract, so it governs the lead's dispatch
+  path and nothing else. Nine skills still reach a peer with no invocation rule,
+  `squad-fix` among them, whose Core gate 5 routes by broken contract. Closing it
+  catalog-wide means the rule stated in each of those nine, and so nine more
+  ceilings re-measured — two of them, `squad-designer` and `squad-product`, with
+  no runtime reference to put it in. That is a separate change with its own
+  argument, not a line to append to this one.
+
+  The peer-invocation rule is the narrowed one. The source states it as a literal
+  instruction to call the Skill tool by name; that wording assumes one harness,
+  and this catalog installs to Codex, Cursor, OpenCode and the rest through the
+  Skills CLI, where no tool by that name exists. It ships as a capability
+  ("the runtime's own skill or agent invocation") so it cannot expire the way a
+  tool name does.
+
+  Declined: an eleventh skill acting as a router over the other ten. The source
+  needs one because its skills are user-invoked and carry no description, so
+  nothing but a human can route them. Every skill here is model-invocable with
+  its own trigger phrasing, so the routing a router would do is already done, and
+  a router named into this catalog's `squad-` convention would carry Core gates,
+  a Quality bar, a Handoff contract and a Completion checklist it has no use for.
+  That second leg is the weaker one — `src/catalog/skill-entrypoint-structure.ts`
+  fires on the name, so a router named outside the convention escapes it — and
+  the decision rests on the first. The human-facing half of the need was real and landed in `README.md`
+  as a "Choosing a skill" table, which ships on both distribution paths where a
+  `docs/` page would ship on neither.
+
+- **Outcome:** Landed 2026-09-09. Three ceilings moved: `squad-code-review` 2277
+  to 2425, `squad-fix` 2651 to 2694, `squads-team` 3139 to 3383. The routing
+  lever held everywhere it was reached for and paid nowhere else. The two-axis
+  rule had no lever available — it governs what every review reports, so it sits
+  in the file all six task types load, and the median pays the whole 117 words.
+  The remaining 31 of that raise is the completion criterion the review gate
+  asked for: 17 in the pre-flight, 14 at the entrypoint.
+  The other two raises are not the imported content at all: 665 words of
+  diagnosis depth and 468 words of coordination contract both landed in files
+  only the above-median tasks open and cost the median nothing. What the two
+  raises bought was reachability, found by the review gate rather than by the
+  import — 43 to put two verification rules in the file `regression-evidence`
+  actually loads, and 244 to let `advance-a-gate` load the ladder that governs
+  the gate it advances. The rule ships under this catalog's own names for the
+  split, Spec compliance and Production quality, rather than the source's Spec
+  and Standards: a co-loaded reference already prescribed the two stages under
+  those names, and an imported word that does not beat the one already in the
+  reader's context is drift, not vocabulary. `docs/authoring-doctrine.md` landed alongside as the
+  qualitative half of the ceiling regime, and is itself lifted from the source's
+  `writing-for-agents`. None of this establishes that any skill's output
+  improved: no arm was run and nothing was scored. The narrow claim worth testing
+  on the next real bug is whether a run that must name a red-capable command
+  before hypothesising reaches the right root cause more often than one that may
+  start reading code.

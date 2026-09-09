@@ -121,6 +121,29 @@ repository can use, so generate the subagent definitions after it:
 npx squad-skills agents --global
 ```
 
+## Choosing a skill
+
+Every skill here is model-invocable, so an agent routes most work on its own. This table is for the moment
+you want to pick the role yourself.
+
+| Situation                                                                                                                             | Reach for           |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| An idea or goal with no acceptance criteria yet, or an empty repository to frame                                                      | `squad-product`     |
+| UI, UX, design-system or motion work — a precondition for material UI, not a preference                                               | `squad-designer`    |
+| Web UI, client logic and API integration                                                                                              | `squad-frontend`    |
+| APIs, data models, auth, migrations, queues and server logic                                                                          | `squad-backend`     |
+| React Native, Expo, Flutter, SwiftUI or Compose screens and app logic                                                                 | `squad-mobile`      |
+| CI/CD, containers, IaC, reverse proxy and TLS, observability, release and rollback                                                    | `squad-devops`      |
+| A bug, regression, failing test, broken build or CI/deploy failure whose owner is unproven, or that wants a diagnosis-to-fix pipeline | `squad-fix`         |
+| Test design, a reproduction, or a fix that needs an evidence-backed verdict                                                           | `squad-qa`          |
+| A diff, PR or branch that needs a final review gate before it ships                                                                   | `squad-code-review` |
+| Work spanning several roles, or work needing independent QA and review gates                                                          | `squads-team`       |
+
+Two of these are gates rather than builders: `squad-qa` issues `PASS`, `FAIL` or `NEEDS_ENVIRONMENT`, and
+`squad-code-review` issues `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE` and never implements the fixes
+it asks for. `squads-team` runs the whole pipeline and enforces the implement, QA, review, done sequence;
+reach for the smallest role that fits and let it escalate.
+
 ## Develop
 
 Requires Node.js 22.20 or newer. The repository pins pnpm through `package.json`.

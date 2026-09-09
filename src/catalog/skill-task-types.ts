@@ -409,7 +409,10 @@ const team: SkillTaskType[] = [
     id: 'select-execution-mode',
     references: ['coordination-contract.md', 'delivery-pipeline-and-roster.md'],
   },
-  { id: 'advance-a-gate', references: ['delivery-pipeline-and-roster.md'] },
+  {
+    id: 'advance-a-gate',
+    references: ['coordination-contract.md', 'delivery-pipeline-and-roster.md'],
+  },
   {
     id: 'carry-an-absent-role',
     references: ['delivery-pipeline-and-roster.md', 'domain-coverage-contracts.md'],

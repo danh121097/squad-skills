@@ -113,6 +113,7 @@ finding. Before issuing a verdict, run the self-review in
 - [ ] A finding in an unfamiliar runtime cites that ecosystem's current documentation or an executed check
 - [ ] Severity matches realistic impact and likelihood
 - [ ] Findings include tight file:line, failure condition, impact and concrete remediation
+- [ ] Spec compliance and production quality are reported as separate ranked lists
 - [ ] Tests/docs/rollout/migration implications are covered where applicable
 - [ ] Reviewer made no feature edits or unauthorized external mutations
 - [ ] Verdict and residual unverified risk are explicit

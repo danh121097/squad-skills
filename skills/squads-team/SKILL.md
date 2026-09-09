@@ -83,8 +83,8 @@ PR, deploy, mutate data or change external services unless requested or required
 
 ## Conditional references
 
-- Before selecting an execution engine, spawning work, assigning ownership, using worktrees, or falling
-  back to one session, read
+- At a phase boundary, before compacting or clearing, when reaching a peer role, and before selecting an
+  execution engine, spawning work, assigning ownership, using worktrees or falling back to one session, read
   [references/coordination-contract.md](references/coordination-contract.md).
 - Before role routing or advancing any gate, read
   [references/delivery-pipeline-and-roster.md](references/delivery-pipeline-and-roster.md).

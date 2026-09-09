@@ -40,6 +40,7 @@ Pass every applicable check honestly.
 - Severity reflects user and system impact, not how unusual the pattern looks.
 - Each finding carries file:line, failure condition, impact and one concrete remediation.
 - Findings are deduplicated to one per cause, with the affected locations listed under it.
+- Spec compliance and production quality are ranked as separate lists; neither is folded into the other.
 
 ## Proof to hand over
 

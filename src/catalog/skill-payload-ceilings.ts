@@ -80,7 +80,60 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // point of the median regime: the run that needs the depth pays for it, and
   // the four that do not are unchanged.
   // Then 2239 to 2266 by HANDOFF-DECISION-001.
-  'squad-code-review': 2277,
+  // Raised 2277 to 2394 for the two-axis reporting rule: spec compliance and
+  // production quality are ranked apart and never merged into one list, because
+  // a merged list is how a diff that follows every convention while implementing
+  // the wrong feature reads as a strong review. The 117 words sit in
+  // review-runtime-and-verdict.md, which all six task types load, so the median
+  // pays the whole file cost. There is no cheaper route: the rule governs what
+  // every review reports, so a task type that skipped it would be a review
+  // allowed to merge the axes.
+  //
+  // Part of that is the vocabulary decision, and it is the part worth
+  // defending. The rule arrived from an external catalog naming its axes
+  // Spec and Standards, and it shipped that way until review caught that
+  // review-methodology-debugging-and-mindset.md already prescribes the same
+  // split under its own names — Spec compliance and Production quality — and
+  // that both files sit in the load of feature-diff-review and
+  // spec-compliance-pass together. A run reading two vocabularies for one split
+  // is the leading-word failure docs/authoring-doctrine.md warns about, landing
+  // in the same change that states the warning. The existing names won: an
+  // imported word has to beat the one already in the reader's context, and this
+  // one did not. Renaming back across this tree returns seven words — three in
+  // review-runtime-and-verdict.md and two in each of the two places the P1 raise
+  // below added the pairing — which is the figure a reader can reproduce. The
+  // draft that carried the imported names was never committed, so no delta
+  // measured against it is checkable and none is recorded here.
+  //
+  // The maintainability baseline that landed in the same change is free at the
+  // median and deliberately so. It gives the production-quality axis a named vocabulary
+  // for a repository that documents no conventions, and it belongs to
+  // cross-stack-review-dimensions.md, which only feature-diff-review and
+  // unfamiliar-runtime-review open — the two heaviest tasks, both already above
+  // the median. Neither HANDOFF-FINDINGS-001 nor any other clause moved: an axis
+  // label is extra structure on a finding, not a change to what crosses the
+  // boundary, so the clause statement is unchanged in all six files that carry
+  // it — this skill's entrypoint and the five roles with an implementation
+  // slice. The entrypoint is edited in this change, but by the P1 checklist
+  // item below, not on the clause line.
+  // Raised 2394 to 2425 by Code Review finding P1: the two-axis rule had no
+  // completion criterion. Two files a reviewer actually reads say what a review
+  // report must contain — quality-bar-and-preflight.md and the entrypoint
+  // checklist — and neither mentioned the split, so
+  // a reviewer composing its report from the pre-flight, which AGENTS.md
+  // designates as the copy a role runs in one piece before it hands over, would
+  // emit the single merged list the rule exists to prevent and pass every check
+  // this catalog has. A rule with no completion criterion is the failure
+  // docs/authoring-doctrine.md names, and it landed in the change that states
+  // the warning. One pre-flight bullet and one checklist item: the pre-flight
+  // reaches five of the six task types, standard-lookup being the exception, and
+  // the entrypoint checklist is what makes the criterion universal.
+  //
+  // The 148 words between 2277 and 2425 decompose exactly: 117 into
+  // review-runtime-and-verdict.md, which all six tasks load; 17 into
+  // quality-bar-and-preflight.md, which both middle tasks load; and 14 into the
+  // entrypoint, which every task pays.
+  'squad-code-review': 2425,
   // Was bounded on total payload while the retired evaluation lane held its task
   // types. Those moved to `skill-task-types.ts` when the lane was removed, so the
   // median binds here now. 1959 is the measured figure, and it reproduces the
@@ -115,7 +168,34 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // their routers name a condition ("a missing provider/test/review
   // capability"), so a single declaring task is the honest count there.
   // Then 2624 to 2651 by HANDOFF-DECISION-001.
-  'squad-fix': 2651,
+  // Raised 2651 to 2694 by the feedback-loop upgrade, and 43 is the whole of it.
+  // Every figure below re-derives from a state this comment names: the tree as
+  // shipped, HEAD, or the one counterfactual, which is labelled as such.
+  //
+  // 665 words landed in diagnosis-root-cause-and-fix-loop.md (518 to 1183) —
+  // build a red-capable loop before hypothesizing, the construction ladder, loop
+  // tightening, reproduction rate for intermittent failures, minimization, three
+  // to five ranked falsifiable hypotheses, tagged probes, and the shallow-seam
+  // finding. That file costs the median nothing: only diagnose-and-route (3483)
+  // and root-cause-to-fix (3908) open it, and both were already the two heaviest
+  // tasks. This is the routing lever working as designed.
+  //
+  // The 43 comes from the other 86 words, added to
+  // verification-qa-review-and-reporting.md (416 to 502) by Code Review finding
+  // P2. The shallow-seam shortfall and the tagged-probe removal are
+  // verification-phase rules that had landed only in the diagnosis file, which
+  // regression-evidence does not load — and the entrypoint routes verification
+  // work away from it, to this file. A run entering at regression-evidence
+  // therefore shipped the shallow test with no shortfall finding, which is the
+  // incentive the rule exists to remove, and left tagged probes in the tree.
+  // Restating both rules there moves that task 2639 to 2725, and since it is one
+  // of the two middle loads the median moves half of 86 with it.
+  //
+  // Routing the diagnosis file into regression-evidence instead of restating the
+  // rules was the cheaper edit and the wrong one: that task would go to 3822 and
+  // the median to 3073, buying the same two rules for 422 rather than 43 —
+  // nearly ten times the price.
+  'squad-fix': 2694,
   // Frontend, mobile and devops each rose about forty words in an earlier
   // change: HANDOFF-BUILD-001 is one sentence stated at three entrypoints, and
   // an entrypoint sentence is read by every task of that skill. Frontend then
@@ -264,5 +344,39 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // known before routing or conditional references are selected.
   // Raised 3084 to 3109 to distinguish skill-level semantic controls from npm
   // CLI flags and to keep mandatory framing explicit when plan approval is off.
-  'squads-team': 3139,
+  // Raised 3139 to 3383 by Code Review finding P4, the largest single raise on
+  // this entry and the one with the least room to argue. The phase-boundary
+  // ladder governs the implementation-into-QA and QA-into-Review boundaries and
+  // is the rule protecting gate independence, and advance-a-gate — the task type
+  // named for advancing a gate — could not load it: coordination-contract.md
+  // reached exactly one of five task types. Both pointers were also stale, still
+  // naming only mode selection and spawning, which docs/authoring-doctrine.md
+  // calls a variance bug and AGENTS.md forbids by requiring the router and the
+  // task types to be edited together.
+  //
+  // The 244 decomposes into two parts and no third, each measured in isolation
+  // against HEAD. Routing advance-a-gate to coordination-contract.md, with that
+  // file still at its HEAD size, takes the task 2577 to 4325 and the median to
+  // 3369: 230 of the 244, and there is no cheaper route, because a gate rule the
+  // gate-advancing run cannot read is not a rule. The remaining 14 is the
+  // entrypoint pointer rewrite, which every task pays. In the shipped tree that
+  // task reads 4821, the extra 496 being the two new sections and the two
+  // pointer rewrites.
+  //
+  // The squad-fix entry above faced this shape and chose the other way, so the
+  // comparison belongs here too. Restating section 7's gate carve-out in
+  // delivery-pipeline-and-roster.md, which all five tasks already load, would
+  // have cost about 38 words — the carve-out as written — against 230. Routing
+  // wins anyway, and not on the carve-out alone: advance-a-gate dispatches
+  // independent QA and Review, and option 4 of the ladder sends that dispatch to
+  // the packet contract, which is section 2 of the same file. A restatement that carried the carve-out would
+  // leave the packet contract unreachable from the task that dispatches, which
+  // is the defect this raise exists to close, one section further down.
+  //
+  // The two new sections cost the median nothing. They are 468 words — 374 in
+  // the phase-boundary ladder, 94 in peer invocation — and with the header
+  // pointer rewrite they take the file 1748 to 2230, but the median task after
+  // this edit is ambiguous-routing-calibration, which does not open that file.
+  // Only select-execution-mode and advance-a-gate pay for them.
+  'squads-team': 3383,
 };

@@ -60,6 +60,16 @@ runtime access is missing, state the limitation; do not convert uncertainty into
 Do not inflate severity, duplicate one root cause across many findings, or report lint/style already
 enforced automatically unless the change bypasses that enforcement.
 
+## Two axes, reported separately
+
+The two stages of a review are also its two reporting axes, and they stay apart in the report. **Spec
+compliance** asks whether the change does what its acceptance criteria, issue or plan asked, and names
+behavior nobody asked for. **Production quality** asks whether it holds the repository's conventions and the
+risk dimensions above. Rank findings inside an axis and never across it: one merged list is how a diff that
+follows every convention while implementing the wrong feature reads as a strong review. Report both axes even
+when one is empty, and where no spec is reachable say so on the spec-compliance axis rather than folding its
+findings into production quality.
+
 ## Verdict
 
 - **APPROVE:** no blocking findings; list residual risk and checks actually run.

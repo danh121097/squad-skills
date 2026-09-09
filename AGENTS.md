@@ -89,6 +89,14 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   `squad-skills agents` exists for the GitHub path.
 - Keep durable user guidance in `README.md` or `docs/`. `plans/` is ignored local
   execution state and must not become product authority.
+- `docs/authoring-doctrine.md` is how skill content is written: the two loads, how
+  a pointer decides what gets read, which rung content sits on, completion
+  criteria, leading words, prompting the positive, and the pruning tests. Read it
+  before adding content to a skill and again when a ceiling refuses a change. It
+  is the qualitative half of the payload regime — `skill-payload-ceilings.ts` says
+  how much a skill may spend, the doctrine says how to spend it — so a change that
+  cannot fit a ceiling looks there for the rewrite before it looks for a higher
+  number.
 - Squad handoffs are contracts stated in prose, not records written to disk. No
   skill writes a QA verdict, review findings, or an API snapshot into a user's
   repository _as a handoff record_, and no hook enforces a gate — a file records

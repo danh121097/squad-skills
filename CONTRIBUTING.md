@@ -6,7 +6,11 @@ why the review below is specific about what is accepted and what is not.
 
 Read [AGENTS.md](AGENTS.md) first — it is the binding contract for the
 toolchain, the directory boundaries, and the verification commands. This guide
-covers only what is different when the change comes from outside.
+covers only what is different when the change comes from outside. If the change
+adds or edits skill text, read
+[docs/authoring-doctrine.md](docs/authoring-doctrine.md) too: it is the
+qualitative half of the payload regime, and the ceilings enforce a size the
+doctrine explains how to spend.
 
 One thing to be clear about up front: `pnpm test` establishes that the catalog is
 consistent, contract-bound and within its payload ceilings. It does not establish

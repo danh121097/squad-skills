@@ -16,6 +16,13 @@ review evidence.
 Report static, local, browser/device, integration, CI, staging and production evidence separately. A lower
 verification level can be sufficient for a low-risk bug, but it must never be described as a higher level.
 
+Write the regression test at a seam that exercises the defect as it occurs at the real call site. When the
+only reachable seam is too shallow to carry that pattern, record the shortfall as a finding: the architecture
+is what prevents this defect from being locked down. Report it with the repair and route it as separately
+scoped work, rather than shipping a test that passes without covering the bug.
+
+Remove every tagged diagnostic probe before handing over, and verify removal by grepping its marker.
+
 ## Regression ownership
 
 The build role owns regression tests co-located with its implementation slice. QA owns only explicitly

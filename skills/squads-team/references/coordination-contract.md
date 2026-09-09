@@ -1,7 +1,8 @@
 # Coordination contract
 
-Read before selecting a mode, creating tasks, spawning agents, assigning files, using worktrees, or
-falling back to a single-session role loop.
+Read at a phase boundary, before compacting or clearing, when reaching a peer role, and before selecting a
+mode, creating tasks, spawning agents, assigning files, using worktrees or falling back to a single-session
+role loop.
 
 ## 1. Runtime discovery
 
@@ -152,13 +153,51 @@ Use one controller sequentially:
 This preserves logical gates but not independent-agent judgment. State that limitation in the final report.
 Do not call a self-check an independent QA or Review.
 
-## 7. Processes and cleanup
+## 7. Context lifecycle at a phase boundary
+
+A phase boundary is the gap between two chunks of this run: framing to implementation, implementation to QA,
+QA to Review, one slice to the next. Decide context lifecycle only there. Mid-phase the choice is to continue
+or to split the remaining work into child agents, because compacting mid-phase discards the thread the
+current work is standing on.
+
+Work the boundary in order and take the first option that fits.
+
+1. **Continue** when the next phase needs this one as a primary source, or when the remaining window holds it
+   comfortably. Framing into implementation is the usual yes: the next phase wants the reasoning as it
+   happened rather than a summary of it. A gate boundary is the exception — where the mode supports it,
+   implementation into QA and QA into Review go to option 4, because carrying the implementer's reasoning
+   across a gate is what costs that gate its independence. Continue costs nothing and loses nothing, so rule
+   it out before anything else.
+2. **Clear** when nothing in this phase is a primary source for any later one — and a return to this owner
+   after a `FAIL` counts as a later one. It is the cheapest move available and the one whose mistake is one-way: the
+   reasoning behind what was built does not come back from reading the diff, so a boundary that can loop
+   back is a boundary that clears nothing.
+3. **Hand off a portable brief** when the work moves to another harness, another repository or another
+   person. Portability is the whole reason to pay for it; when nothing travels, skip it.
+4. **Dispatch a child agent** when the task is scoped tightly enough to run unattended. Independent QA and
+   Code Review are the standard case, and the packet contract above is what crosses.
+5. **Compact** otherwise, passing an instruction naming what the next phase needs from this one.
+
+Every option but Continue turns a primary source into a secondary one: less noise and more room, at the price
+of detail nothing recovers. Compact is where this ladder lands often, not where it starts. Name the option
+taken at each boundary in the run's report, because a decision a summary flattened reads exactly like a
+decision nobody made.
+
+## 8. Invoking a peer
+
+The lead reaches a peer role or specialist skill through the runtime's own skill or agent invocation, naming
+one skill or agent per invocation. Concurrency is unchanged: the limit is on what a single invocation carries,
+not on how many run at once. A role named only in narration is a role that did not run, and a report that
+credits it is the failure the pairing rules exist to prevent. Where the runtime exposes no such invocation,
+the handoff contract at this skill's entrypoint governs what happens instead.
+
+## 9. Processes and cleanup
 
 Track background processes, ports, sessions, worktrees and temporary resources created by the run. Reuse
 existing project processes when safe. Stop only owned processes and clean only owned temporary resources.
 Never delete a broad or unresolved path.
 
-## 8. Status and reports
+## 10. Status and reports
 
 Use the repository's configured report/plan location. If none exists, report in the conversation instead
 of creating a squad-specific tree. Every role reports status, summary, evidence, risks and unresolved
