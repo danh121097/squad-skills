@@ -27,7 +27,13 @@ bundle to a commit unless the user asked for that too.
 
 ## Required structure
 
-Every written plan uses this shape, including a one-phase plan:
+Two files make a bundle, and one holding only them is complete:
+
+- `plan.md` at the root — the entrypoint and the only index.
+- `phases/phase-01-<kebab-case-title>.md` — one file per phase.
+
+`artifacts/`, `adr/` and `references/` are slots, not a manifest; each stays absent until it has something
+to hold. The shape once a run has filled all four:
 
 ```text
 <DDMMYYYY-HHmm>-<kebab-case-topic>/
@@ -36,21 +42,15 @@ Every written plan uses this shape, including a one-phase plan:
 │   ├── phase-01-<kebab-case-title>.md
 │   └── phase-02-<kebab-case-title>.md
 ├── artifacts/
-│   ├── product-contract.md
-│   ├── acceptance-traceability.md
-│   ├── test-strategy.md
-│   ├── qa-report.md
-│   ├── code-review.md
-│   └── handoff-to-phase-02.md
+│   └── <kebab-case-title>.md
 ├── adr/
 │   └── adr-001-<kebab-case-title>.md
 └── references/
-    ├── domain-model.md
-    ├── feature-scope.md
-    ├── decisions-and-risks.md
-    ├── technical-stack.md
-    └── ui-ux-direction.md
+    └── <kebab-case-title>.md
 ```
+
+Those are shapes, not names to reproduce. A tree opening with eleven named files gets eleven files filled,
+which is how framing that settled nothing ships a bundle reading as though it settled everything.
 
 A written plan is one directory whose root holds only `plan.md` and the standard `phases`, `artifacts`,
 `adr` and `references` directories, with every phase file in `phases/` named
@@ -72,8 +72,12 @@ Four rules give that tree its meaning, and each exists because a flat directory 
 identity — what a phase and a later ADR cite — and states nothing about when it is implemented. ADR numbers
 may have gaps; phase numbers may not.
 
-Create a directory when it has a file. An empty `adr/` says a plan made no decisions worth recording, which
-is usually false and never checkable.
+Create a directory when it has a file, and a file when its subject already exists. An **ADR** records an
+accepted decision; a proposal is an open decision in `plan.md` with its owner named, and one ADR per option
+still under discussion is an approval nobody gave. An **artifact** records something that ran, so
+`qa-report.md` exists once QA issued a verdict and never before. A **reference** holds background a phase
+names under `inputs`. Framing produces `plan.md` and `phases/`, and on a plan whose decisions are all still
+open that is the whole bundle.
 
 ## What each file states
 

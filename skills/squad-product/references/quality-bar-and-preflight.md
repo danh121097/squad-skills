@@ -47,6 +47,9 @@ Pass every applicable check honestly.
 ### Written bundle
 
 - The root holds `plan.md` and nothing else; `phases/`, `artifacts/`, `adr/` and `references/` hold the rest.
+- Every file under `artifacts/`, `adr/` and `references/` records something that already exists — a gate
+  that ran, a decision the user accepted, background a phase names under `inputs`. No slot was filled to
+  complete the shape.
 - `plan.md` links exactly one `phases/phase-XX-kebab-case-title.md` file for every phase, numbered
   continuously from `01`.
 - Nothing outside `phases/` carries the `phase-XX-` prefix; an artifact records its owning phase, owner,
