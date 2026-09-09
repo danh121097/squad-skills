@@ -80,6 +80,11 @@ squad-skills add --skill squads-team
 the packaged `skills/` directory as its source and adds `--copy` by default so
 the installation remains valid after an `npx` cache is cleaned.
 
+`--all` differs between the two paths. Under `skills add .` it means every skill
+into every detected agent, and an `--agent` given alongside it is overridden.
+Under `squad-skills add` an explicit `--skill` or `--agent` wins, so
+`squad-skills add --all --agent codex` installs every skill into Codex only.
+
 ## As a Claude Code plugin
 
 Claude Code loads a plugin's `skills/` and `agents/` directories together, which

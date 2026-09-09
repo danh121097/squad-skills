@@ -65,13 +65,52 @@ describe('createCliAction', () => {
 
     expect(action).toMatchObject({
       agentPlan: { scope: 'global', skills: ['squad-qa', 'squad-fix'] },
-      arguments: ['add', packageRoot, '-g', '-s', 'squad-qa,squad-fix', '--copy'],
+      arguments: ['add', packageRoot, '-g', '-s', 'squad-qa', '-s', 'squad-fix', '--copy'],
     });
   });
 
   it('treats an every-agent install as every supported agent', () => {
     expect(createCliAction(['add', '--agent=*'], packageRoot, '0.1.0')).toMatchObject({
       agentPlan: { agents: supportedAgentTools },
+    });
+  });
+
+  it('keeps an explicit agent filter when --all is used, rather than letting it widen', () => {
+    const action = createCliAction(
+      ['add', '--all', '--global', '--agent', 'codex'],
+      packageRoot,
+      '0.1.0'
+    );
+
+    expect(action).toMatchObject({
+      agentPlan: { agents: ['codex'], scope: 'global' },
+      arguments: [
+        'add',
+        packageRoot,
+        '--skill',
+        '*',
+        '-y',
+        '--global',
+        '--agent',
+        'codex',
+        '--copy',
+      ],
+    });
+  });
+
+  it('keeps an explicit skill filter when --all is used', () => {
+    expect(
+      createCliAction(['add', '--all', '--skill=squad-qa'], packageRoot, '0.1.0')
+    ).toMatchObject({
+      agentPlan: { skills: ['squad-qa'], agents: supportedAgentTools },
+      arguments: ['add', packageRoot, '--agent', '*', '-y', '--skill', 'squad-qa', '--copy'],
+    });
+  });
+
+  it('expands a bare --all to every skill and every agent', () => {
+    expect(createCliAction(['add', '--all'], packageRoot, '0.1.0')).toMatchObject({
+      agentPlan: { agents: supportedAgentTools, skills: [] },
+      arguments: ['add', packageRoot, '--agent', '*', '--skill', '*', '-y', '--copy'],
     });
   });
 
@@ -155,6 +194,77 @@ describe('createCliAction', () => {
         skills: ['opus'],
       },
       arguments: ['add', packageRoot, '--skill', 'opus', '--copy'],
+    });
+  });
+
+  it('rewrites an equals-joined filter into the form the Skills CLI parses', () => {
+    expect(createCliAction(['add', '--agent=codex'], packageRoot, '0.1.0')).toMatchObject({
+      agentPlan: { agents: ['codex'] },
+      arguments: ['add', packageRoot, '--agent', 'codex', '--copy'],
+    });
+  });
+
+  it('splits a comma list the Skills CLI would read as one name', () => {
+    expect(
+      createCliAction(['add', '--skill', 'squad-qa,squad-fix'], packageRoot, '0.1.0')
+    ).toMatchObject({
+      agentPlan: { skills: ['squad-qa', 'squad-fix'] },
+      arguments: ['add', packageRoot, '--skill', 'squad-qa', '--skill', 'squad-fix', '--copy'],
+    });
+  });
+
+  it('keeps an equals-joined filter against --all, which the plan and the install must agree on', () => {
+    expect(createCliAction(['add', '--all', '--agent=codex'], packageRoot, '0.1.0')).toMatchObject({
+      agentPlan: { agents: ['codex'] },
+      arguments: ['add', packageRoot, '--skill', '*', '-y', '--agent', 'codex', '--copy'],
+    });
+  });
+
+  it('reads a run of values after one flag, as the Skills CLI does', () => {
+    expect(
+      createCliAction(['add', '--agent', 'claude-code', 'codex'], packageRoot, '0.1.0')
+    ).toMatchObject({
+      agentPlan: { agents: ['claude-code', 'codex'] },
+      arguments: ['add', packageRoot, '--agent', 'claude-code', '--agent', 'codex', '--copy'],
+    });
+  });
+
+  it('refuses a list flag left with no value', () => {
+    for (const argv of [
+      ['add', '--agent'],
+      ['add', '--agent='],
+      ['add', '--skill=', 'squad-qa'],
+      ['add', '--agent', '--global'],
+      ['add', '--skill', ','],
+    ]) {
+      expect(createCliAction(argv, packageRoot, '0.1.0')).toMatchObject({
+        kind: 'print',
+        exitCode: 1,
+      });
+    }
+  });
+
+  it('takes an inline value together with the run that follows it', () => {
+    expect(
+      createCliAction(
+        ['add', '--skill=squad-qa', 'squad-fix,squads-team', '--global'],
+        packageRoot,
+        '0.1.0'
+      )
+    ).toMatchObject({
+      agentPlan: { skills: ['squad-qa', 'squad-fix', 'squads-team'], scope: 'global' },
+      arguments: [
+        'add',
+        packageRoot,
+        '--skill',
+        'squad-qa',
+        '--skill',
+        'squad-fix',
+        '--skill',
+        'squads-team',
+        '--global',
+        '--copy',
+      ],
     });
   });
 

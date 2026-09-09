@@ -36,6 +36,8 @@ const helpFlags = new Set(['--help', '-h']);
 const versionFlags = new Set(['--version', '-v']);
 const addCommands = new Set(['add', 'install', 'i']);
 const noAgentsFlag = '--no-agents';
+const everyFlag = '--all';
+const listOptionFlags = ['--agent', '-a', '--skill', '-s'];
 // Per-machine preferences, never catalog content: this package ships to
 // everyone, so a model name belongs in the invocation that writes one user's
 // agent files and nowhere in `skills/`.
@@ -68,8 +70,10 @@ export function createCliAction(
   }
 
   if (addCommands.has(command)) {
-    const forwardable = dropPreferenceArguments(
-      forwardedArguments.filter((argument) => argument !== noAgentsFlag)
+    const forwardable = expandEveryFlag(
+      normalizeListOptions(
+        dropPreferenceArguments(forwardedArguments.filter((argument) => argument !== noAgentsFlag))
+      )
     );
 
     return {
@@ -78,13 +82,16 @@ export function createCliAction(
       // stripped below are exactly the ones the plan is built from.
       agentPlan: forwardedArguments.includes(noAgentsFlag)
         ? null
-        : createAgentPlan(forwardedArguments),
+        : createAgentPlan(expandEveryFlag(normalizeListOptions(forwardedArguments))),
       arguments: ['add', packageRoot, ...ensureCopyInstallation(forwardable)],
     };
   }
 
   if (command === 'agents') {
-    return { kind: 'install-agents', agentPlan: createAgentPlan(forwardedArguments) };
+    return {
+      kind: 'install-agents',
+      agentPlan: createAgentPlan(normalizeListOptions(forwardedArguments)),
+    };
   }
 
   if (command === 'list' || command === 'ls') {
@@ -154,6 +161,37 @@ function findMalformedScalarOption(arguments_: string[]): string | null {
     if (written && readScalarOption(arguments_, flags) === null) return flags[0] as string;
   }
 
+  return findValuelessListOption(arguments_);
+}
+
+/**
+ * A list flag carrying no value is refused rather than normalized away. Left in,
+ * it reaches two readers that disagree: `readListOption` takes the next token
+ * whatever it is, and the Skills CLI consumes a whole run of them, so a bare
+ * `--agent` silently turns the following flag into an agent name and installs a
+ * skill with no agent definition. `--model` and `--effort` are already refused
+ * this way, and a filter the caller wrote but left empty is the same mistake.
+ */
+function findValuelessListOption(arguments_: string[]): string | null {
+  for (const [index, argument] of arguments_.entries()) {
+    const flag = listOptionFlags.find(
+      (candidate) => argument === candidate || argument.startsWith(`${candidate}=`)
+    );
+
+    if (flag === undefined) continue;
+
+    const written = argument.startsWith(`${flag}=`)
+      ? argument.slice(flag.length + 1)
+      : (arguments_[index + 1] ?? '');
+
+    const usable = written
+      .split(',')
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0);
+
+    if (usable.length === 0 || (!argument.includes('=') && written.startsWith('-'))) return flag;
+  }
+
   return null;
 }
 
@@ -180,7 +218,17 @@ function readListOption(arguments_: string[], flags: string[], wildcard: string[
     const inlineFlag = flags.find((flag) => argument.startsWith(`${flag}=`));
 
     if (inlineFlag !== undefined) values.push(argument.slice(inlineFlag.length + 1));
-    else if (flags.includes(argument)) values.push(arguments_[index + 1] ?? '');
+    else if (flags.includes(argument)) {
+      // Read the run the Skills CLI reads, and stop where it stops: at the next
+      // flag. Taking `arguments_[index + 1]` unconditionally reads `--global` as
+      // an agent name.
+      for (let cursor = index + 1; cursor < arguments_.length; cursor += 1) {
+        const value = arguments_[cursor] as string;
+
+        if (value.startsWith('-')) break;
+        values.push(value);
+      }
+    }
   }
 
   const parsed = values
@@ -189,6 +237,80 @@ function readListOption(arguments_: string[], flags: string[], wildcard: string[
     .filter((value) => value.length > 0);
 
   return parsed.includes('*') || parsed.length === 0 ? wildcard : parsed;
+}
+
+/**
+ * Expands `--all` here rather than letting the Skills CLI do it. There it is
+ * shorthand for `--skill '*' --agent '*' -y`, and the `--agent '*'` half
+ * silently overrides an explicit `--agent` the caller passed in the same
+ * command: `add --all --agent codex` installs to every tool on the machine and
+ * reports the failures of tools the caller never named. Expanding it locally
+ * fills in only the halves the caller left out, so an explicit filter wins and
+ * a bare `--all` behaves exactly as before.
+ */
+function expandEveryFlag(arguments_: string[]): string[] {
+  if (!arguments_.includes(everyFlag)) return arguments_;
+
+  const expansion = ['-y'];
+
+  if (!hasOption(arguments_, ['--skill', '-s'])) expansion.unshift('--skill', '*');
+  if (!hasOption(arguments_, ['--agent', '-a'])) expansion.unshift('--agent', '*');
+
+  return arguments_.flatMap((argument) => (argument === everyFlag ? expansion : [argument]));
+}
+
+/**
+ * Rewrites every list option into the one shape the Skills CLI actually parses:
+ * a bare flag followed by a single value, repeated per value. Upstream matches
+ * only the bare tokens, so `--skill=squad-qa` is discarded outright, and it
+ * splits on nothing, so `--skill squad-qa,squad-fix` becomes a search for one
+ * skill by that literal name. Both forms are read by `readListOption` here, so
+ * without this the agent plan honours a filter the install silently ignored —
+ * and for `--agent` that means writing to every tool on the machine.
+ */
+function normalizeListOptions(arguments_: string[]): string[] {
+  const normalized: string[] = [];
+
+  for (let index = 0; index < arguments_.length; index += 1) {
+    const argument = arguments_[index] as string;
+    const flag = listOptionFlags.find(
+      (candidate) => argument === candidate || argument.startsWith(`${candidate}=`)
+    );
+
+    if (flag === undefined) {
+      normalized.push(argument);
+      continue;
+    }
+
+    const values: string[] = [];
+
+    if (argument.startsWith(`${flag}=`)) values.push(argument.slice(flag.length + 1));
+
+    // Upstream consumes every following non-flag token, so a caller may have
+    // written `--agent claude-code codex`. Consume the same run — including
+    // after an inline value, so `--agent=claude-code codex` names both rather
+    // than leaving `codex` for a second pass to read differently. Rewriting the
+    // run here is what stops a second reader from disagreeing: after it, values
+    // are non-empty and comma-free, and the token ending a run is a flag.
+    while (index + 1 < arguments_.length && !(arguments_[index + 1] as string).startsWith('-')) {
+      index += 1;
+      values.push(arguments_[index] as string);
+    }
+
+    const parsed = values
+      .flatMap((value) => value.split(','))
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0);
+
+    for (const value of parsed) normalized.push(flag, value);
+  }
+
+  return normalized;
+}
+
+/** True when a list option was given. Run only on a normalized argument list. */
+function hasOption(arguments_: string[], flags: string[]): boolean {
+  return arguments_.some((argument) => flags.includes(argument));
 }
 
 function ensureCopyInstallation(arguments_: string[]): string[] {
@@ -219,6 +341,9 @@ Agent options:
   --global, -g      Read and write the user-level location
   --agent, -a       Limit to ${supportedAgentTools.join(', ')}
   --skill, -s       Limit to named skills
+  --all             Every skill into every agent (add). A --skill or --agent
+                    given alongside it wins, so --all --agent codex stays
+                    codex-only
   --model           Write this model into each Claude Code agent file
   --effort          Write this reasoning effort into each Claude Code agent file
 
