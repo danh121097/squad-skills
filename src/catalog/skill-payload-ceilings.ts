@@ -276,7 +276,26 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // reads in one piece before handing over, and a structure rule absent from it
   // is one nothing checks at the moment it could still be fixed. Four bullets:
   // the root, the phase index, the reserved prefix, and links resolving.
-  'squad-product': 3387,
+  // Raised 3387 to 3424 by one pre-flight bullet, which is the whole median cost
+  // of retiring the bundle manifest. The tree under `Required structure` used to
+  // name eleven files — `product-contract.md`, `technical-stack.md`,
+  // `ui-ux-direction.md` and the rest — and a named empty slot is an instruction
+  // to fill it. One observed bundle filled all eleven: 67,456 words, of which
+  // 56,176 sat in `artifacts/`, `adr/` and `references/` while the code the plan
+  // covered was 3,522 lines. Six ADRs recorded decisions that plan's own index
+  // still listed as awaiting the user, which the `Decisions` pre-flight already
+  // forbade — the manifest simply outranked it, because a rule is prose and a
+  // named file is a slot.
+  //
+  // Removing the eleven names costs the median nothing: that text is routed to
+  // `write-plan-document` alone, which sits above the median at 4368 and moves
+  // without moving the figure. Which is the reason for the 37 words that do
+  // land. The median regime cannot see the heaviest task in the catalog, so a
+  // rule left only there is one no ceiling and no pre-flight ever checks. The
+  // bullet names the mechanism rather than the outcome — a slot filled to
+  // complete the shape — because `Decisions` already stated the outcome and a
+  // run walked past it.
+  'squad-product': 3424,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
   // failing. Sixty words, and all six task types load that file, so the median
