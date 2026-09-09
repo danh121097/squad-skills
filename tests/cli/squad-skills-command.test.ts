@@ -1,8 +1,32 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, it } from 'vitest';
 
 import { createCliAction, supportedAgentTools } from '../../src/cli/squad-skills-command.ts';
 
 const packageRoot = '/package/squad-skills';
+
+describe('Skills CLI parity', () => {
+  it('still reads a value run the way this CLI mirrors it', () => {
+    // `readListOptionRun` consumes exactly what upstream consumes, and the whole
+    // separation between what the run takes and what the refusal rejects rests
+    // on that. Nothing else in this suite would notice a `skills` bump changing
+    // the rule: the plan and the forwarded vector would simply start disagreeing
+    // in production. Assert the premise against the installed package so the
+    // bump is a red gate instead.
+    const upstream = readFileSync(
+      new URL('../../node_modules/skills/dist/cli.mjs', import.meta.url),
+      'utf8'
+    );
+    // Count rather than `toContain`: the rule governs `--agent` and `--skill`
+    // separately, so matching one occurrence would miss a change to the other.
+    // Counting also keeps the failure readable — asserting over the bundle
+    // itself prints 300KB on the one day this test is supposed to be read.
+    const rule = 'while (i < args.length && nextArg && !nextArg.startsWith("-"))';
+
+    expect(upstream.split(rule).length - 1).toBeGreaterThanOrEqual(2);
+  });
+});
 
 describe('createCliAction', () => {
   it('shows help when no command is provided', () => {
@@ -234,6 +258,10 @@ describe('createCliAction', () => {
       ['add', '--agent'],
       ['add', '--agent='],
       ['add', '--skill=', 'squad-qa'],
+      // The bare spelling of the same unset shell variable. Refusing one and
+      // reading the next token as the value for the other is the drift.
+      ['add', '--skill', '', 'squad-fix'],
+      ['add', '--agent', '', 'codex'],
       ['add', '--agent', '--global'],
       ['add', '--skill', ','],
     ]) {
@@ -242,6 +270,99 @@ describe('createCliAction', () => {
         exitCode: 1,
       });
     }
+  });
+
+  it('refuses a flag-shaped value wherever it is written', () => {
+    // Left in, each of these normalizes to a list flag with no value after it,
+    // which upstream reads as an empty agent list: every tool on the machine.
+    for (const argv of [
+      ['add', '--agent=-foo'],
+      ['add', '--skill', 'squad-qa,-foo'],
+      ['add', '--skill=squad-qa,-foo'],
+      ['add', '--all', '--agent=-foo'],
+      // Later in the run, not just the token after the flag: the refusal and
+      // the rewrite must read the same run or one lets through what the other
+      // consumes.
+      ['add', '--skill', 'squad-qa', 'squad-fix,-x'],
+      // Only a filter value once --model and its value are stripped, which is
+      // why the refusal has to read the stripped vector and not the caller's.
+      ['add', '--skill', 'squad-qa', '--model', 'opus', 'a,-b'],
+    ]) {
+      expect(createCliAction(argv, packageRoot, '0.1.0')).toMatchObject({
+        kind: 'print',
+        exitCode: 1,
+      });
+    }
+  });
+
+  it('refuses a filter value that names nothing', () => {
+    // Every row here already held in 0.2.3; they pin it against the change that
+    // made the run consume what upstream consumes. The run has to take a blank
+    // token because upstream does, or it survives into the forwarded vector and
+    // upstream reads it as a value there. The refusal is under no such
+    // constraint — it builds no vector — so it rejects what the run had to take.
+    for (const argv of [
+      ['add', '--skill', ' ', 'squad-fix'],
+      ['add', '--skill', '\t', 'squad-fix'],
+      ['add', '--agent', '  ', 'codex'],
+      ['add', '--skill=  ', 'squad-fix'],
+      ['add', '--skill', ',', 'squad-fix'],
+      ['add', '--skill', ' , ', 'squad-fix'],
+      ['add', '--agent', ',,', 'codex'],
+      // The run stopped at this one instead of starting at it. Same token.
+      ['add', '--skill', 'squad-qa', '', 'squad-fix'],
+      // Valueless in what the caller wrote, whatever stripping joins onto it.
+      ['add', '--agent', '--no-agents', 'codex'],
+      ['add', '--skill', '--model', 'opus', 'squad-qa'],
+    ]) {
+      expect(createCliAction(argv, packageRoot, '0.1.0')).toMatchObject({
+        kind: 'print',
+        exitCode: 1,
+      });
+    }
+  });
+
+  it('agrees on the filter when a preference flag interrupts a value run', () => {
+    // `--model opus` is a run terminator that only the forwarded vector loses,
+    // so building the plan from a second vector installed two skills and wrote
+    // one agent definition.
+    expect(
+      createCliAction(
+        ['add', '--skill', 'squad-qa', '--model', 'opus', 'squad-fix', '--agent', 'claude-code'],
+        packageRoot,
+        '0.1.0'
+      )
+    ).toMatchObject({
+      agentPlan: {
+        agents: ['claude-code'],
+        model: 'opus',
+        skills: ['squad-qa', 'squad-fix'],
+      },
+      arguments: [
+        'add',
+        packageRoot,
+        '--skill',
+        'squad-qa',
+        '--skill',
+        'squad-fix',
+        '--agent',
+        'claude-code',
+        '--copy',
+      ],
+    });
+  });
+
+  it('agrees on the agent list when a preference flag interrupts it', () => {
+    expect(
+      createCliAction(
+        ['add', '--agent', 'codex', '--effort', 'high', 'claude-code'],
+        packageRoot,
+        '0.1.0'
+      )
+    ).toMatchObject({
+      agentPlan: { agents: ['codex', 'claude-code'], effort: 'high' },
+      arguments: ['add', packageRoot, '--agent', 'codex', '--agent', 'claude-code', '--copy'],
+    });
   });
 
   it('takes an inline value together with the run that follows it', () => {
