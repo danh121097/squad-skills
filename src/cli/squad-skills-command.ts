@@ -13,6 +13,9 @@
  */
 import type { AgentScope } from '../agents/agent-installation.ts';
 
+/** The two flags this CLI owns, read once and carried rather than re-scanned. */
+type AgentPreferences = Pick<AgentPlan, 'effort' | 'model'>;
+
 export interface AgentPlan {
   agents: string[];
   /** Reasoning effort to write into a generated Claude Code agent file, if any. */
@@ -59,7 +62,28 @@ export function createCliAction(
     return { kind: 'print', message: version, exitCode: 0 };
   }
 
-  const malformed = findMalformedScalarOption(forwardedArguments);
+  // The one vector every later reader builds from. Both flags this CLI owns come
+  // out here, before anything reads a value run: each starts with `-`, so
+  // removing one joins the runs on either side of it, and a run only reaches
+  // its true extent once they are gone. `--skill squad-qa --model x a,-b` is
+  // the case: `-b` is not in the filter's run until `--model x` leaves, and a
+  // reader that never sees the joined form never refuses it. Dropping
+  // `--no-agents` after the rewrite instead rejoins runs the rewrite has split.
+  const strippedArguments = dropPreferenceArguments(
+    forwardedArguments.filter((argument) => argument !== noAgentsFlag)
+  );
+  // Preferences are read from the caller's own arguments because `stripped` no
+  // longer carries them.
+  const preferences = readPreferences(forwardedArguments);
+  // Both vectors get asked, because each catches what the other cannot. The
+  // caller's own arguments hold flags left with no value at all — `--agent
+  // --no-agents squad-qa` names no agent, however adjacent stripping makes it
+  // look. The stripped vector holds values that only become values once the
+  // preference flags between them are gone.
+  const malformed =
+    findMalformedScalarOption(forwardedArguments) ??
+    findValuelessListOption(forwardedArguments) ??
+    findValuelessListOption(strippedArguments);
 
   if (malformed !== null) {
     return {
@@ -70,27 +94,21 @@ export function createCliAction(
   }
 
   if (addCommands.has(command)) {
-    const forwardable = expandEveryFlag(
-      normalizeListOptions(
-        dropPreferenceArguments(forwardedArguments.filter((argument) => argument !== noAgentsFlag))
-      )
-    );
+    const canonical = expandEveryFlag(normalizeListOptions(strippedArguments));
 
     return {
       kind: 'delegate',
-      // Read from the full argument list, not the forwardable one: the flags
-      // stripped below are exactly the ones the plan is built from.
       agentPlan: forwardedArguments.includes(noAgentsFlag)
         ? null
-        : createAgentPlan(expandEveryFlag(normalizeListOptions(forwardedArguments))),
-      arguments: ['add', packageRoot, ...ensureCopyInstallation(forwardable)],
+        : createAgentPlan(canonical, preferences),
+      arguments: ['add', packageRoot, ...ensureCopyInstallation(canonical)],
     };
   }
 
   if (command === 'agents') {
     return {
       kind: 'install-agents',
-      agentPlan: createAgentPlan(normalizeListOptions(forwardedArguments)),
+      agentPlan: createAgentPlan(normalizeListOptions(strippedArguments), preferences),
     };
   }
 
@@ -110,17 +128,30 @@ export function createCliAction(
 }
 
 /**
+ * Read from the caller's own arguments, because `dropPreferenceArguments`
+ * strips these two flags before anything else sees them. Passing them into the plan
+ * keeps that stripping unconditional: no vector has to stay readable by two
+ * consumers that disagree about whether the preference flags are still in it.
+ */
+function readPreferences(arguments_: string[]): AgentPreferences {
+  return {
+    effort: readScalarOption(arguments_, effortFlags),
+    model: readScalarOption(arguments_, modelFlags),
+  };
+}
+
+/**
  * Reads the same flags the Skills CLI reads, without consuming them. An
  * unspecified `--agent` means both supported tools: the installer writes an
  * agent only where it can see the matching skill, so guessing wide is caught by
  * that check rather than by producing a definition pointing at nothing.
  */
-export function createAgentPlan(arguments_: string[]): AgentPlan {
+function createAgentPlan(arguments_: string[], preferences: AgentPreferences): AgentPlan {
   return {
     agents: readListOption(arguments_, ['--agent', '-a'], supportedAgentTools),
-    effort: readScalarOption(arguments_, effortFlags),
+    effort: preferences.effort,
     force: arguments_.includes('--force'),
-    model: readScalarOption(arguments_, modelFlags),
+    model: preferences.model,
     scope: arguments_.includes('--global') || arguments_.includes('-g') ? 'global' : 'project',
     skills: readListOption(arguments_, ['--skill', '-s'], []),
   };
@@ -161,38 +192,116 @@ function findMalformedScalarOption(arguments_: string[]): string | null {
     if (written && readScalarOption(arguments_, flags) === null) return flags[0] as string;
   }
 
-  return findValuelessListOption(arguments_);
+  return null;
 }
 
 /**
- * A list flag carrying no value is refused rather than normalized away. Left in,
- * it reaches two readers that disagree: `readListOption` takes the next token
- * whatever it is, and the Skills CLI consumes a whole run of them, so a bare
- * `--agent` silently turns the following flag into an agent name and installs a
- * skill with no agent definition. `--model` and `--effort` are already refused
- * this way, and a filter the caller wrote but left empty is the same mistake.
+ * A list flag carrying no usable value is refused rather than normalized away.
+ * Left in, it reaches two readers that disagree: `readListOption` takes the next
+ * token whatever it is, and the Skills CLI consumes a whole run of them, so a
+ * bare `--agent` silently turns the following flag into an agent name and
+ * installs a skill with no agent definition. `--model` and `--effort` are
+ * already refused this way, and a filter the caller wrote but left empty is the
+ * same mistake.
+ *
+ * A flag-shaped value is refused everywhere the same run can carry one, which
+ * is why this reads through `readListOptionRun` rather than testing the token
+ * after the flag. No skill or agent is named with a leading `-`, and letting one
+ * through leaves `normalizeListOptions` emitting a flag with no value after it
+ * — output this same function rejects — which upstream then reads as an empty
+ * agent list, the widen-to-every-tool path `--all` was fixed to close.
  */
 function findValuelessListOption(arguments_: string[]): string | null {
   for (const [index, argument] of arguments_.entries()) {
-    const flag = listOptionFlags.find(
-      (candidate) => argument === candidate || argument.startsWith(`${candidate}=`)
-    );
+    const flag = findListOptionFlag(argument);
 
-    if (flag === undefined) continue;
+    if (flag === null) continue;
 
-    const written = argument.startsWith(`${flag}=`)
-      ? argument.slice(flag.length + 1)
-      : (arguments_[index + 1] ?? '');
+    const { consumed, end, values } = readListOptionRun(arguments_, index, flag);
 
-    const usable = written
-      .split(',')
-      .map((value) => value.trim())
-      .filter((value) => value.length > 0);
+    // The two knobs part here. What the run *consumes* has to match upstream
+    // exactly, or a token this CLI declined survives into the forwarded vector
+    // and upstream reads it there as a value. What the refusal *rejects* is
+    // under no such constraint, because a refusal builds no vector at all — so
+    // it rejects tokens the run was obliged to take.
+    //
+    // A token naming nothing is one of them. `--skill "$VAR" squad-fix` with
+    // `VAR=" "`, and the `,` and `, ` spellings of the same mistake, all read
+    // `squad-fix` as the filter otherwise — the guess this fix exists to stop.
+    if (consumed.some((value) => value.split(',').every((part) => part.trim() === ''))) {
+      return flag;
+    }
 
-    if (usable.length === 0 || (!argument.includes('=') && written.startsWith('-'))) return flag;
+    // A run that stopped at an empty token is the same mistake one token later.
+    // Left in, `--skill a "" b` drops `b` in silence while `--skill "" b` is
+    // refused: one token meaning one thing, answered two ways.
+    if (arguments_[end + 1] === '') return flag;
+
+    if (values.length === 0 || values.some((value) => value.startsWith('-'))) return flag;
   }
 
   return null;
+}
+
+/** The list flag a token writes, in either the bare or the inline form. */
+function findListOptionFlag(argument: string): string | null {
+  return (
+    listOptionFlags.find(
+      (candidate) => argument === candidate || argument.startsWith(`${candidate}=`)
+    ) ?? null
+  );
+}
+
+/**
+ * Every value one list option carries, read once for both the refusal and the
+ * rewrite: the inline value if there is one, then the run of following tokens up
+ * to the next flag, split on commas. Upstream consumes that same run, so a
+ * caller may have written `--agent claude-code codex`, and an inline value takes
+ * the run with it rather than leaving `codex` for a second reader.
+ *
+ * Both callers read through here because reading it two ways is the defect this
+ * file keeps producing: a refusal that checked only the first token of the run
+ * let `--skill squad-qa squad-fix,-x` through to a rewrite that consumed all of
+ * it, emitting a flag with no value after it. `end` is the last index consumed,
+ * so the rewrite can skip what it has already read.
+ */
+function readListOptionRun(
+  arguments_: string[],
+  index: number,
+  flag: string
+): { consumed: string[]; end: number; values: string[] } {
+  const consumed: string[] = [];
+  const argument = arguments_[index] as string;
+
+  if (argument.startsWith(`${flag}=`)) consumed.push(argument.slice(flag.length + 1));
+
+  let end = index;
+
+  // Upstream stops this run at a falsy token as well as at a flag
+  // (`while (i < args.length && nextArg && !nextArg.startsWith('-'))`), so an
+  // empty token ends the run rather than being trimmed away inside it. Walking
+  // past one would read `--skill "$VAR" squad-fix` with `VAR` unset as a filter
+  // naming `squad-fix` — the guess the inline `--skill=` form is refused for.
+  // Stopping anywhere upstream does not, whitespace included, is just as wrong:
+  // the token then survives into the forwarded vector, where upstream reads it
+  // as a value this reader already declined.
+  while (end + 1 < arguments_.length) {
+    const next = arguments_[end + 1] as string;
+
+    if (next === '' || next.startsWith('-')) break;
+
+    end += 1;
+    consumed.push(next);
+  }
+
+  return {
+    consumed,
+    end,
+    values: consumed
+      .flatMap((value) => value.split(','))
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0),
+  };
 }
 
 /**
@@ -211,30 +320,22 @@ function dropPreferenceArguments(arguments_: string[]): string[] {
   });
 }
 
+/**
+ * Reads a normalized vector only. `normalizeListOptions` runs on every path
+ * that reaches here, so the `--flag=value` form is already gone and this handles
+ * the bare form alone.
+ */
 function readListOption(arguments_: string[], flags: string[], wildcard: string[]): string[] {
-  const values: string[] = [];
+  const parsed: string[] = [];
 
   for (const [index, argument] of arguments_.entries()) {
-    const inlineFlag = flags.find((flag) => argument.startsWith(`${flag}=`));
-
-    if (inlineFlag !== undefined) values.push(argument.slice(inlineFlag.length + 1));
-    else if (flags.includes(argument)) {
-      // Read the run the Skills CLI reads, and stop where it stops: at the next
-      // flag. Taking `arguments_[index + 1]` unconditionally reads `--global` as
-      // an agent name.
-      for (let cursor = index + 1; cursor < arguments_.length; cursor += 1) {
-        const value = arguments_[cursor] as string;
-
-        if (value.startsWith('-')) break;
-        values.push(value);
-      }
-    }
+    // The third reader of a value run, and so the third chance for one to drift.
+    // It reads through `readListOptionRun` for that reason: stopping only at a
+    // flag would take the stray blank a run already ended at, and the plan would
+    // name a skill the install does not.
+    if (flags.includes(argument))
+      parsed.push(...readListOptionRun(arguments_, index, argument).values);
   }
-
-  const parsed = values
-    .flatMap((value) => value.split(','))
-    .map((value) => value.trim())
-    .filter((value) => value.length > 0);
 
   return parsed.includes('*') || parsed.length === 0 ? wildcard : parsed;
 }
@@ -272,37 +373,24 @@ function normalizeListOptions(arguments_: string[]): string[] {
   const normalized: string[] = [];
 
   for (let index = 0; index < arguments_.length; index += 1) {
-    const argument = arguments_[index] as string;
-    const flag = listOptionFlags.find(
-      (candidate) => argument === candidate || argument.startsWith(`${candidate}=`)
-    );
+    const flag = findListOptionFlag(arguments_[index] as string);
 
-    if (flag === undefined) {
-      normalized.push(argument);
+    if (flag === null) {
+      normalized.push(arguments_[index] as string);
       continue;
     }
 
-    const values: string[] = [];
+    // On a vector `findValuelessListOption` has cleared, this makes the function
+    // a fixpoint: every value it emits is non-empty, comma-free and not
+    // flag-shaped, so a second pass re-reads the same runs and rewrites them to
+    // themselves. A token the run stopped at survives beside them untouched, so
+    // what follows a value is not always a flag — `readListOptionRun` is the
+    // single reader that keeps that from mattering.
+    const { end, values } = readListOptionRun(arguments_, index, flag);
 
-    if (argument.startsWith(`${flag}=`)) values.push(argument.slice(flag.length + 1));
+    index = end;
 
-    // Upstream consumes every following non-flag token, so a caller may have
-    // written `--agent claude-code codex`. Consume the same run — including
-    // after an inline value, so `--agent=claude-code codex` names both rather
-    // than leaving `codex` for a second pass to read differently. Rewriting the
-    // run here is what stops a second reader from disagreeing: after it, values
-    // are non-empty and comma-free, and the token ending a run is a flag.
-    while (index + 1 < arguments_.length && !(arguments_[index + 1] as string).startsWith('-')) {
-      index += 1;
-      values.push(arguments_[index] as string);
-    }
-
-    const parsed = values
-      .flatMap((value) => value.split(','))
-      .map((value) => value.trim())
-      .filter((value) => value.length > 0);
-
-    for (const value of parsed) normalized.push(flag, value);
+    for (const value of values) normalized.push(flag, value);
   }
 
   return normalized;
