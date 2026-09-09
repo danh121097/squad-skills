@@ -1,6 +1,6 @@
 {
   "name": "squad-skills",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Role-specialized engineering squad skills for AI coding agents.",
   "license": "MIT",
   "type": "module",
