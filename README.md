@@ -212,15 +212,44 @@ When a user asks `squad-product` or `squads-team` to write a plan to disk, the r
 ```text
 plans/<DDMMYYYY-HHmm>-<topic>/
 ├── plan.md
-├── phase-01-<kebab-case-title>.md
-└── phase-02-<kebab-case-title>.md
+├── phases/
+│   ├── phase-01-<kebab-case-title>.md
+│   └── phase-02-<kebab-case-title>.md
+├── artifacts/
+│   ├── product-contract.md
+│   ├── qa-report.md
+│   ├── code-review.md
+│   └── handoff-to-phase-02.md
+├── adr/
+│   └── adr-001-<kebab-case-title>.md
+└── references/
+    ├── domain-model.md
+    └── technical-stack.md
 ```
 
-`plan.md` owns the outcome, boundaries, acceptance and phase index. Each linked phase file carries the
-context, deliverables, ordered work, phase-specific checks, risks and handoff needed to execute that phase.
-A phase declares one or more required Squad roles—for example `squad-backend` and `squad-devops`—and gives
-each a distinct responsibility; the lead assigns live files and agent instances later. Conversational plans
-remain in the conversation unless the user asks for files.
+`plan.md` is the entrypoint and the only index: it owns the outcome, boundaries, acceptance and the phase
+table. Each linked phase file carries the context, deliverables, ordered work, phase-specific checks, risks
+and handoff needed to execute that phase. A phase declares one or more required Squad roles—for example
+`squad-backend` and `squad-devops`—and gives each a distinct responsibility; the lead assigns live files and
+agent instances later. Conversational plans remain in the conversation unless the user asks for files.
+
+Only `phases/` states the running order, so only phase files carry the `phase-XX-` prefix. `artifacts/`
+holds what a phase produced, `adr/` one decision per file, and `references/` the background every phase
+reads and none of them owns; each records its owning phase in frontmatter rather than in its name, which is
+why a handoff is `artifacts/handoff-to-phase-02.md`. A gate recorded in `artifacts/` names the revisions it
+graded — and once one of those moves, that verdict is marked superseded and the gates rerun. The record is
+for a reader; the gate itself is still the prose handoff between roles.
+
+Check a bundle against that contract:
+
+```sh
+pnpm validate:plan plans/<DDMMYYYY-HHmm>-<topic>
+```
+
+A plan written under the earlier flat layout still reads fine and no longer validates. Migrate it by moving
+each `phase-XX-*.md` into `phases/`, moving shared background into `references/` and produced work into
+`artifacts/`, renaming any `phase-XX-` artifact to drop the reserved prefix, adding the frontmatter each
+kind now states, and repointing the links in `plan.md`.
 
 ## License
 

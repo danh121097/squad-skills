@@ -43,8 +43,9 @@ checklist`. The catalog validator enforces the complete sequence so a role's
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
   `catalog/` for skill-catalog checks, `eval/` for the knowledge-card schema and
   the report contract, `agents/` for the subagent definitions generated from
-  installed skills, `release/` for the version arithmetic the publish
-  preflight imports — and mirror that layout in `tests/`. A skill's reviewed
+  installed skills, `plans/` for the written-plan-bundle structure the Product
+  role and the squad lead produce, `release/` for the version arithmetic the
+  publish preflight imports — and mirror that layout in `tests/`. A skill's reviewed
   knowledge cards live in `evals/<skill>/knowledge/`, so adding them for another
   skill means adding that directory, not editing `src/eval/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
@@ -102,24 +103,38 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   repository _as a handoff record_, and no hook enforces a gate — a file records
   a claim rather than the pass behind it, and a hook binds to one runtime while
   the GitHub distribution path ships no `dist/`. Output a user asked for is not
-  a handoff record and is unaffected. The mandatory QA and Code Review gates and
+  a handoff record and is unaffected. A written plan bundle is that case and the
+  one place it needs saying: the bundle is requested output, so an
+  `artifacts/qa-report.md` inside it records a verdict for a reader while the
+  gate itself stays the prose handoff, and `pnpm validate:plan` reads that record
+  rather than deciding anything. The structure rules for such a bundle live in
+  `src/plans/` and are checked against the one bundle
+  `evals/fixtures/plan-bundle/` ships plus mutations of it, never against a
+  user's repository during a run. The mandatory QA and Code Review gates and
   their sequence are bound instead as clauses in
   `src/catalog/cross-skill-contract-clauses.ts`, checked by `pnpm validate`; the
   other pipeline rules are unbound prose. Reopening this needs evidence that a
   gate failed in a way a file-existence check would have caught.
 - The cross-skill contract in `src/catalog/cross-skill-contract-clauses.ts`
-  carries four clause families, each binding wording that has to read the same
+  carries five clause families, each binding wording that has to read the same
   way in every file that states it. `BOUNDARY-*` says who owns an artifact
   between the designer and the build roles. `PAIRING-*` binds how a role
   detects an installed specialist skill, which side is authoritative when both
   are present, and that it may never report an absent skill as run. `HANDOFF-*` covers a stage boundary in the
   squad pipeline — what shape crosses it, who owns a mandatory gate when the
   peer skill is not installed, which verdict closes a stage, and what a role
-  does when a named squad peer is absent. A stage boundary is stated by both
+  does when a named squad peer is absent. Every `HANDOFF-*` member binds only
+  entrypoints, because both ends of a boundary have to be readable without
+  loading a reference; a rule that needs a reference belongs in another family.
+  A stage boundary is stated by both
   the sending and the receiving role, in both directions: an edge only its
   sender describes leaves the receiver no contract to refuse a handoff that
   arrives incomplete, which is how every return edge stood before
-  `HANDOFF-REPRO-001`. `QUALITY-PREFLIGHT-*` binds the
+  `HANDOFF-REPRO-001`. `PLAN-BUNDLE-*` binds the shape of a
+  written plan bundle, and is a family of its own rather than a `HANDOFF-*`
+  member because that schema is progressively disclosed: every member binds a
+  reference, and every member is bound on `plan-document-contract.md`, the file
+  that owns what a bundle holds. `QUALITY-PREFLIGHT-*` binds the
   pre-flight line the roles share. The same file also carries `RETIRED-SPEC-*`,
   which works the other way: wording the contract retired, failed wherever it
   survives. Bind a sentence when it exists in two files and their drifting apart
@@ -204,6 +219,16 @@ skills add` runs the official Skills CLI, which has no agent concept — so
   and freshness offline, and checks `evals/*/knowledge/TEMPLATE.md` as a scaffold
   — it must offer every required card field and no other key — rather than
   grading its placeholders as a card.
+- Written plan bundle: `pnpm validate:plan <plan-directory>`. Checks one bundle
+  against the structure `squad-product` and the `squads-team` lead produce when a
+  user asks for a plan on disk — root layout, continuous phase numbering, the
+  `phase-XX-` prefix reserved to `phases/`, relative links that resolve, the
+  index reaching every phase, frontmatter by document kind, a Code Review
+  `APPROVE` naming the QA `PASS` it followed, a gate whose graded evidence moved
+  needing `status: superseded`, and a phase held out of `accepted` by an open
+  checkbox or a pending user approval. It takes a path because a bundle lives in
+  the user's repository, so it is not part of `pnpm test`; the shipped fixture
+  bundle is validated there through `tests/plans/` instead.
 - Catalog discovery: `pnpm skills:list`
 - Cited source liveness: `pnpm evals:links`. Requests each knowledge card's
   `source_url` and every link in a skill's source registry, reading the status

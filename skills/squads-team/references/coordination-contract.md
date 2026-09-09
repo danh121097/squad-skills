@@ -215,3 +215,23 @@ Gate verdict vocabulary is exact:
   resolved within authority, time or access, report the work as blocked with the exact next action.
 
 These gate verdicts are distinct from a runtime's general task statuses; do not translate them silently.
+
+### A written plan bundle the user asked for
+
+A bundle on disk is output the user requested, so it records what happened for a reader. It is never the
+mechanism that opens a stage — the handoff is still the prose contract above — and no check here reads a
+file as a gate. What it must not do is read as current when it is not.
+
+- The root holds only `plan.md` and the standard `phases`, `artifacts`, `adr` and `references`
+  directories. `phases/` alone states the running order.
+- An artifact records its owning phase, owner, revision and status in frontmatter, never in a `phase-XX-`
+  filename prefix, which `phases/` alone reserves. A handoff to the next phase is its own artifact, named
+  `artifacts/handoff-to-phase-02.md`.
+- A recorded gate names its gate, its verdict in that gate's own vocabulary, and every input it graded with
+  the exact revision it graded. A Code Review `APPROVE` names the QA `PASS` it followed, because that is the
+  only thing in a file showing the review ran second.
+- A change to structure or contract after a gate marks the recorded verdict superseded and requires QA then
+  Code Review again. Mark the old record superseded rather than editing its verdict, then rerun in pipeline
+  order.
+- A phase is not marked accepted while a required checkbox or a user approval it declared is still open.
+  Put the approval to the user as named options with their consequences, from the session that can ask.

@@ -54,7 +54,8 @@
     "test:unit": "vitest run",
     "type-check": "tsc --noEmit",
     "validate": "node scripts/validate-skills.ts",
-    "validate:evals": "node scripts/validate-evals.ts"
+    "validate:evals": "node scripts/validate-evals.ts",
+    "validate:plan": "node scripts/validate-plan-bundle.ts"
   },
   "dependencies": {
     "skills": "1.5.23"

@@ -261,7 +261,22 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // Raised 3138 to 3302 so a phase may declare one or several required Squad
   // roles with distinct responsibilities and handoffs, while the lead retains
   // live file ownership and agent-instance assignment.
-  'squad-product': 3302,
+  // Raised 3302 to 3387 for the plan bundle's directory structure. The 85 is
+  // 27 entrypoint words restating the bound bundle shape and 60 in
+  // quality-bar-and-preflight.md, which both median-flanking tasks load. The
+  // structure itself is 684 words in plan-document-contract.md and 130 in
+  // product-worked-decisions.md, and neither costs the median a word: the first
+  // is routed to write-plan-document alone, which rose 3434 to 4205 and is the
+  // run that needs it, and the second to product-calibration, second-lightest in
+  // the skill. That split is the whole reason the median regime exists — the
+  // task that writes a bundle pays for the bundle's schema, and the four that do
+  // not are unchanged.
+  //
+  // The quality-bar 60 is the part worth defending, because it is the copy a run
+  // reads in one piece before handing over, and a structure rule absent from it
+  // is one nothing checks at the moment it could still be fixed. Four bullets:
+  // the root, the phase index, the reserved prefix, and links resolving.
+  'squad-product': 3387,
   // Raised from 2236 by a false-FAIL rule in the verdict reference: a runner's
   // non-zero exit can mean the process was dirty rather than an assertion
   // failing. Sixty words, and all six task types load that file, so the median
@@ -378,5 +393,21 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // pointer rewrite they take the file 1748 to 2230, but the median task after
   // this edit is ambiguous-routing-calibration, which does not open that file.
   // Only select-execution-mode and advance-a-gate pay for them.
-  'squads-team': 3383,
+  // Raised 3383 to 3572 by the plan bundle's directory structure, and the split
+  // is the same shape as squad-product's: 248 words landed in
+  // coordination-contract.md — what a recorded gate states and what supersedes
+  // it — and cost the median nothing, because only select-execution-mode and
+  // advance-a-gate open that file and both were already the two heaviest tasks
+  // at 5140. The 189 that did land is 27 entrypoint words for the bound bundle
+  // shape, 124 for worked decision 10 in coordination-worked-decisions.md, and
+  // 38 for the supersede rule in delivery-pipeline-and-roster.md.
+  //
+  // The last two are the ones a cheaper accounting would have skipped, and both
+  // are median-path on purpose. The pipeline's hard rules are where a lead reads
+  // what closes a stage, so a rule about a verdict reopening belongs beside them
+  // rather than one file away. And ambiguous-routing-calibration is the median
+  // task precisely because it is the one a lead runs when it cannot tell what a
+  // gate outcome means — which is exactly the question a superseded verdict
+  // raises.
+  'squads-team': 3572,
 };

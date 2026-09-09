@@ -87,3 +87,14 @@ The user grants `--allow-new-threads`, and the runtime supports child agents and
 thread under one stable per-run key, with its own acceptance and `CONTEXT` packet, then report its identity.
 The blanket authority removes repeated confirmation; it does not turn roles, gates, worktrees or ordinary
 parallelism into user-visible tasks, and it expires with the run.
+
+## 10. A structure change after APPROVE reopens the gates
+
+**Context:** Phase 01 passed QA and was approved. The user then changes the contract that phase publishes,
+and the written bundle already holds a `qa-report.md` and a `code-review.md` for it.
+
+**Decision:** Mark both records superseded and rerun QA, then Code Review. Do not edit the old verdicts.
+They were true about a revision the bundle no longer holds, and a verdict rewritten in place reads exactly
+like one that was earned against the current document — which is the single way a bundle can be more
+misleading than no bundle at all. The `DELTA` that carries the contract change is what invalidates them, and
+the file records that, rather than being what enforces it.

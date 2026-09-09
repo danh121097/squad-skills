@@ -59,6 +59,7 @@ const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const productSkill = 'skills/squad-product/SKILL.md';
 const productPlanDocument = 'skills/squad-product/references/plan-document-contract.md';
+const productQuality = 'skills/squad-product/references/quality-bar-and-preflight.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
 const rolesWithAnImplementationSlice = [
@@ -298,12 +299,21 @@ describe('validateCrossSkillContract', () => {
         qaSkill,
         teamSkill,
       ].sort(),
+      'PLAN-BUNDLE-ARTIFACT-001': [productPlanDocument, teamCoordination].sort(),
+      'PLAN-BUNDLE-SUPERSEDE-001': [productPlanDocument, teamCoordination, teamPipeline].sort(),
       'QUALITY-PREFLIGHT-001': preflightRoles,
       'RETIRED-SPEC-001': [designerEntrypoint, ...designerReferences, ...teamFiles],
       'RETIRED-SPEC-002': [designerEntrypoint, designerHandoff, teamPipeline],
       'RETIRED-SPEC-003': designerReferences,
       'RETIRED-SPEC-004': [designerEntrypoint, ...designerReferences],
       'RETIRED-SPEC-005': [designerEntrypoint, ...designerReferences, ...teamFiles],
+      'RETIRED-SPEC-006': [
+        productSkill,
+        productPlanDocument,
+        productQuality,
+        teamSkill,
+        teamCoordination,
+      ].sort(),
     });
   });
 
@@ -329,6 +339,27 @@ describe('validateCrossSkillContract', () => {
  * state: it binds who may answer a question the user owns, not who owns an
  * artifact, so there is no second owner for BOUNDARY-* to disagree with.
  */
+/**
+ * The PLAN-BUNDLE-* family is the inverse of HANDOFF-*: its wording lives in
+ * references, because the bundle's schema is progressively disclosed and a run
+ * reaches it by routing there. What keeps it from drifting into a second schema
+ * is that every member is bound on the plan contract itself — the one file that
+ * owns what a bundle holds. A clause the plan contract does not state is a rule
+ * some other file invented.
+ */
+describe('plan bundle contract family', () => {
+  const planClauses = boundaryClauses.filter((clause) => clause.id.startsWith('PLAN-BUNDLE-'));
+
+  it('binds every plan-bundle clause on the plan contract that owns the schema', () => {
+    expect(planClauses.length).toBeGreaterThan(0);
+
+    for (const clause of planClauses) {
+      expect(clause.files).toContain(productPlanDocument);
+      expect(clause.files.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+});
+
 describe('handoff contract family', () => {
   const handoffClauses = boundaryClauses.filter((clause) => clause.id.startsWith('HANDOFF-'));
 
@@ -484,6 +515,38 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [planBundle],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toEqual([]);
+  });
+
+  // The two rules the directory layout adds. Both fail the same way when they
+  // drift: a bundle stays readable while saying something untrue about itself.
+  it('binds artifact ownership to the plan contract and the coordination contract', async () => {
+    const artifact = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-ARTIFACT-001');
+    if (!artifact) throw new Error('PLAN-BUNDLE-ARTIFACT-001 is missing from shipped clauses.');
+
+    expect([...artifact.files].sort()).toEqual([productPlanDocument, teamCoordination].sort());
+
+    const result = await validateCrossSkillContract(process.cwd(), {
+      clauses: [artifact],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toEqual([]);
+  });
+
+  it('binds the superseded-verdict rule to the three files that record one', async () => {
+    const supersede = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-SUPERSEDE-001');
+    if (!supersede) throw new Error('PLAN-BUNDLE-SUPERSEDE-001 is missing from shipped clauses.');
+
+    expect([...supersede.files].sort()).toEqual(
+      [productPlanDocument, teamCoordination, teamPipeline].sort()
+    );
+
+    const result = await validateCrossSkillContract(process.cwd(), {
+      clauses: [supersede],
       retiredPhrases: [],
     });
 

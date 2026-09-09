@@ -64,3 +64,18 @@ reorder anything.
 
 **Rule:** a plan is as small as the work. Producing ceremony for a two-file change is a failure of this role,
 not thoroughness.
+
+## 6. The written plan that put everything at the root
+
+**Arrived:** "Write the plan to disk."
+
+**First draft:** a directory holding `plan.md`, three `phase-XX-` files, a `domain-model.md`, a
+`test-strategy.md` and a `phase-02-handoff.md`, all side by side.
+
+**Correction:** two of those files had nothing to do with the running order, and one of them announced that
+it did. A reader scanning the root cannot tell an ordered phase from shared background from a produced
+artifact, and `phase-02-handoff.md` reads as a fourth phase. Move background into `references/`, produced
+work into `artifacts/`, decisions into `adr/`, and name the handoff `handoff-to-phase-02.md`.
+
+**Rule:** only `phases/` states order, and only phase files carry the prefix that announces it. Everything
+else records its owning phase in frontmatter, where a reader looks for ownership rather than sequence.

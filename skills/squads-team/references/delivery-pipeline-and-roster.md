@@ -69,6 +69,8 @@ Hard rules:
 - No slice or integrated result is done without PASS then APPROVE.
 - If a `NEEDS_*` gap cannot be resolved within scope, stop as blocked and name the next action; do not mark
   the slice done and do not mislabel the gap as a product defect.
+- A change to structure or contract after a gate marks the recorded verdict superseded and requires QA then
+  Code Review again. This holds whether the verdict lives in a prose handoff or in a written plan bundle.
 - QA never edits production implementation; Reviewer never implements fixes.
 
 In single-session mode, these are separate logical passes and the reduced independence must be disclosed.

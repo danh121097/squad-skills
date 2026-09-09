@@ -65,8 +65,9 @@ PR, deploy, mutate data or change external services unless requested or required
    installed and inline otherwise, asking only about material unresolved decisions. A plan reaches this gate
    carrying each open fork as named options with their consequences, put to the user from the session that
    can ask and never answered by the role that raised it. When the user requests files, a written plan is one
-   directory containing `plan.md` and one zero-padded `phase-XX-kebab-case-title.md` file per phase, with
-   relative links from the index. Each phase file states context and current state; objective and concrete
+   directory whose root holds only `plan.md` and the standard `phases`, `artifacts`, `adr` and `references`
+   directories, with every phase file in `phases/` named `phase-XX-kebab-case-title.md` and every link
+   relative. Each phase file states context and current state; objective and concrete
    deliverables; required role or roles and their distinct scope boundaries; prerequisites and blocking
    decisions; ordered work steps; phase-specific acceptance criteria and expected verification evidence;
    applicable risks and recovery; and the handoff condition.
@@ -140,7 +141,8 @@ integrated result, and a missing environment or evidence never becomes completio
 
 - [ ] Outcome, constraints, non-goals and acceptance criteria are explicit
 - [ ] Each phase names every required Squad role and gives each a distinct responsibility
-- [ ] A requested written plan has `plan.md` plus one detailed, linked file per phase
+- [ ] A requested written plan has `plan.md` as its only root file and one detailed, linked file per phase
+      in `phases/`; a gate recorded there names the revisions it graded
 - [ ] Project was scouted before role split
 - [ ] Every role loaded its routed references, or reported why one was skipped
 - [ ] Every edited file has one owner and overlap was serialized

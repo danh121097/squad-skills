@@ -46,7 +46,13 @@ Pass every applicable check honestly.
 
 ### Written bundle
 
-- `plan.md` links to exactly one zero-padded `phase-XX-kebab-case-title.md` file for every phase.
+- The root holds `plan.md` and nothing else; `phases/`, `artifacts/`, `adr/` and `references/` hold the rest.
+- `plan.md` links exactly one `phases/phase-XX-kebab-case-title.md` file for every phase, numbered
+  continuously from `01`.
+- Nothing outside `phases/` carries the `phase-XX-` prefix; an artifact records its owning phase, owner,
+  revision and status in frontmatter instead.
+- Every relative link resolves inside the bundle, and every path a phase declares under `inputs` is linked
+  from its body.
 - The index carries plan-wide authority and navigation; phase details are not duplicated there.
 - Every phase file states context, objective, deliverables, required roles, distinct role scopes,
   prerequisites, ordered steps, acceptance evidence, risks or recovery where applicable, and its handoff

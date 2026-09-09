@@ -53,6 +53,7 @@ const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const productSkill = 'skills/squad-product/SKILL.md';
 const productPlanDocument = 'skills/squad-product/references/plan-document-contract.md';
+const productQuality = 'skills/squad-product/references/quality-bar-and-preflight.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
 // squad-designer is deliberately absent from every handoff clause below but one.
@@ -110,8 +111,12 @@ const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.m
  * `PAIRING-*` binds how a role detects an installed specialist skill, which side
  * is authoritative when both are present, and that it may never report an absent
  * skill as run.
- * `HANDOFF-*` covers a stage boundary in the squad pipeline. And
- * `QUALITY-PREFLIGHT-*` binds the pre-flight line the roles share.
+ * `HANDOFF-*` covers a stage boundary in the squad pipeline, and binds only
+ * entrypoints, because both ends of a boundary must be readable without loading
+ * a reference. `PLAN-BUNDLE-*` binds the shape of a written plan bundle, and is
+ * a separate family for that reason: the bundle's schema lives in a reference
+ * and a run reaches it by routing there. And `QUALITY-PREFLIGHT-*` binds the
+ * pre-flight line the roles share.
  *
  * Every skill that states one of these carries the same wording, so a reader of
  * any one of them learns the same contract.
@@ -198,9 +203,49 @@ export const boundaryClauses: BoundaryClause[] = [
     // Product owns written-plan production and the lead owns the inline fallback
     // when Product is unavailable. Binding both sides prevents one path from
     // collapsing the requested bundle back into a monolithic plan file.
+    //
+    // Restated 2026-09-09 from a flat directory to the four-directory layout.
+    // The flat shape said where phase files go and nothing about anything else,
+    // so a plan that produced artifacts, decisions and shared background put
+    // them beside the phases — where a reader cannot tell ordered work from
+    // background, and where a handoff named with the phase prefix reads as an
+    // extra phase. What the clause binds now is the root: `plan.md` alone, and
+    // the four named directories. Everything the layout rules out follows from
+    // that sentence being stated the same way on both sides.
     statement:
-      'a written plan is one directory containing plan.md and one zero-padded phase-XX-kebab-case-title.md file per phase, with relative links from the index',
+      'a written plan is one directory whose root holds only plan.md and the standard phases, artifacts, adr and references directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative',
     files: [productSkill, teamSkill],
+  },
+  {
+    id: 'PLAN-BUNDLE-ARTIFACT-001',
+    // The half of the layout a reader gets wrong first. Ordering by filename is
+    // the habit the flat bundle taught, and it survives the directory split
+    // unless something says where ownership is written instead: an artifact
+    // named `phase-02-handoff.md` still sorts and reads as a phase, in a
+    // directory whose whole job is to hold things that are not phases.
+    //
+    // Bound on the two files that describe an artifact being produced: the
+    // Product plan contract, which says what the bundle holds, and the lead's
+    // coordination contract, which is what a run reads while filling it.
+    statement:
+      'an artifact records its owning phase, owner, revision and status in frontmatter, never in a phase-XX- filename prefix, which phases/ alone reserves',
+    files: [productPlanDocument, teamCoordination],
+  },
+  {
+    id: 'PLAN-BUNDLE-SUPERSEDE-001',
+    // A bundle outlives the framing that produced it, and this is the only rule
+    // that keeps it from outliving its own truth. A verdict names the revisions
+    // it graded; move one and the record is about a document the bundle no
+    // longer holds, which reads exactly like a record about the current one.
+    // Editing the verdict in place is worse than leaving it: it produces an
+    // approval that was never earned against anything.
+    //
+    // Three files, because three readers need it. The plan contract is read
+    // while writing the bundle, the pipeline while advancing a gate, and the
+    // coordination contract while recording one.
+    statement:
+      'a change to structure or contract after a gate marks the recorded verdict superseded and requires QA then Code Review again',
+    files: [productPlanDocument, teamCoordination, teamPipeline],
   },
   {
     id: 'QUALITY-PREFLIGHT-PLAN-001',
@@ -461,6 +506,15 @@ export const retiredPhrases: RetiredPhrase[] = [
       designerResearch,
       designerSources,
     ],
+  },
+  {
+    // The flat plan bundle HANDOFF-PLAN-BUNDLE-001 replaced. A file still
+    // telling a role to put phase files beside the index describes a layout the
+    // validator now rejects, and it would be read as the current contract by
+    // whichever run opened that file first.
+    id: 'RETIRED-SPEC-006',
+    phrase: 'phase files live beside the index',
+    files: [productSkill, productPlanDocument, productQuality, teamSkill, teamCoordination],
   },
   {
     id: 'RETIRED-SPEC-004',
