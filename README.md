@@ -21,6 +21,7 @@ subagents arrive.
 | Path               | Skills | Subagents        | Tools                               |
 | ------------------ | ------ | ---------------- | ----------------------------------- |
 | Claude Code plugin | ✅     | ✅ same step     | Claude Code                         |
+| Codex plugin       | ✅     | one more command | Codex                               |
 | npm CLI            | ✅     | ✅ same step     | Claude Code, Codex                  |
 | `npx skills add`   | ✅     | one more command | every agent the Skills CLI supports |
 
@@ -36,6 +37,23 @@ both:
 
 Each role then exists twice over: as a skill you invoke, and as a subagent you
 spawn by name.
+
+### As a Codex plugin
+
+Codex installs the skill catalog directly from the repository plugin:
+
+```sh
+codex plugin marketplace add danh121097/squad-skills
+codex plugin add squad-skills@squad-skills
+```
+
+The Codex plugin manifest lives at `.codex-plugin/plugin.json` and exposes
+`skills/`. Codex agent definitions remain a separate runtime surface, so add
+them after plugin installation when named subagents are wanted:
+
+```sh
+npx squad-skills agents --global --agent codex
+```
 
 ### From the npm package (recommended)
 

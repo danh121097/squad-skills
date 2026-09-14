@@ -14,7 +14,7 @@ import { releaseTypes, type ReleaseType } from '../src/release/next-version.ts';
 
 /**
  * pnpm checks Git state during publish. The release flow intentionally changes
- * the two manifests immediately before publishing, so the clean-tree check
+ * package.json and both plugin manifests immediately before publishing, so the clean-tree check
  * must be performed before the bump and disabled for that one publish command.
  * Keep the flag after caller arguments so it cannot be overridden accidentally.
  */

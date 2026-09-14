@@ -101,7 +101,24 @@ reaches its role by skill name because a plugin installs both halves at once.
 file has fallen behind, so a skill description never drifts away from the agent
 that carries it.
 
-Codex has no equivalent plugin format; use the npm CLI for it.
+## As a Codex plugin
+
+Codex reads `.codex-plugin/plugin.json` from the repository root and installs
+the same `skills/` catalog through its plugin marketplace:
+
+```sh
+codex plugin marketplace add danh121097/squad-skills
+codex plugin add squad-skills@squad-skills
+```
+
+The plugin supplies skills, not the generated Codex agent definitions. Generate
+those separately when each role should also be spawnable by name:
+
+```sh
+npx squad-skills agents --global --agent codex
+```
+
+Start a new Codex task after plugin installation so it discovers the catalog.
 
 ## Subagent definitions
 

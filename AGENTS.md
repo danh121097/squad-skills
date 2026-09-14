@@ -69,15 +69,21 @@ checklist`. The catalog validator enforces the complete sequence so a role's
   reference the skill does not ship, on a reference no task type loads — that
   file would be payload the median never counts — and on fewer than three task
   types, which is too few for a median to mean anything.
-- The repository is also a Claude Code plugin: `.claude-plugin/plugin.json` and
-  `.claude-plugin/marketplace.json` declare it, and Claude Code loads `skills/`
-  and `agents/` from the checkout. That is the only distribution path where
-  skills and subagents arrive in one step, because the upstream Skills CLI
-  exposes no hook a source repository can use. The files in `agents/`, one per skill, are
+- The repository is also a Claude Code and Codex plugin. `.claude-plugin/plugin.json`,
+  `.codex-plugin/plugin.json` and `.claude-plugin/marketplace.json` declare the
+  two plugin surfaces. Claude Code loads `skills/` and `agents/` from the checkout,
+  so that remains the plugin path where skills and subagents arrive in one step.
+  Codex loads `skills/` through its plugin; named Codex agents still come from the
+  npm CLI because the Codex plugin manifest has no agent-definition component.
+  The two plugin manifests share product metadata exactly; only their
+  platform-specific discovery and interface fields differ. Repository tests
+  reject drift, and `pnpm release` updates both plugin versions with `package.json`.
+  The upstream Skills CLI likewise exposes no hook a source repository can use.
+  The files in `agents/`, one per skill, are
   committed rather than generated at install time, so a test regenerates each
   from its `SKILL.md` and fails on any drift — repair a failure by regenerating,
   never by editing the agent. Neither directory is packaged for npm, so the
-  three-place `files` assertion is unaffected. Adding `.claude-plugin/` does not
+  three-place `files` assertion is unaffected. Adding either plugin manifest does not
   change what the Skills CLI discovers; `pnpm skills:list` still reports what `skills/` holds.
 - A generated subagent definition points at the installed `SKILL.md` and never
   restates a role. Copying the prose would create a second product surface
@@ -259,8 +265,8 @@ skills add` runs the official Skills CLI, which has no agent concept — so
 - Pre-publication gate: `pnpm release:check`
 - Release: `pnpm release [--release-type patch|minor|major] [--otp <code>]`.
   The release script checks npm's latest published version, defaults to a patch
-  bump, requires a clean working tree, updates `package.json` and
-  `.claude-plugin/plugin.json` together, then asserts the selected version is
+  bump, requires a clean working tree, updates `package.json`,
+  `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json` together, then asserts the selected version is
   unpublished and publishes with pnpm's `--no-git-checks` because the bump is
   intentional. Unrelated changes are rejected before any manifest is written.
   The publish runs `prepublishOnly` and so repeats the full gate. A manifest

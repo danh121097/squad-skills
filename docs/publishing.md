@@ -56,9 +56,9 @@ npm whoami
 ```
 
 `pnpm release` checks npm's latest published version and defaults to the next
-patch. It updates `package.json` and `.claude-plugin/plugin.json` together,
-requires a clean working tree before that bump, then runs the release gate and
-publishes:
+patch. It updates `package.json`, `.claude-plugin/plugin.json`, and
+`.codex-plugin/plugin.json` together, requires a clean working tree before that
+bump, then runs the release gate and publishes:
 
 ```sh
 pnpm release --otp 123456
@@ -72,7 +72,7 @@ pnpm release --release-type major --otp 123456
 ```
 
 The script first checks the registry, selects a version that is greater than or
-equal to the manifest version, updates both manifests, and then runs the
+equal to the manifest version, updates all three manifests atomically, and then runs the
 unpublished-version guard. Because those manifest edits are intentional, the
 final publish passes pnpm's `--no-git-checks` after the clean-tree preflight;
 unrelated local changes are rejected before any version is written. A manifest
@@ -90,7 +90,7 @@ pnpm release --dry-run
 ```
 
 Dry-run prints the registry version and the selected next version without
-changing either manifest or publishing anything. The default is `patch`; pass
+changing any manifest or publishing anything. The default is `patch`; pass
 `--release-type minor` or `--release-type major` for an intentional wider bump.
 
 ## Tag and GitHub release

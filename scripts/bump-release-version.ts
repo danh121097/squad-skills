@@ -30,7 +30,7 @@ type Manifest = {
 
 export type BumpOptions = {
   manifestPath: string;
-  pluginPath: string;
+  pluginPaths: string[];
   releaseType: ReleaseType;
   dryRun: boolean;
 };
@@ -42,6 +42,11 @@ export type BumpResult = {
   nextVersion: string;
   changed: boolean;
 };
+
+export const pluginManifestPaths = [
+  resolve('.claude-plugin/plugin.json'),
+  resolve('.codex-plugin/plugin.json'),
+];
 
 function parseReleaseType(value: string | undefined): ReleaseType {
   const candidate = value ?? process.env.RELEASE_TYPE ?? 'patch';
@@ -72,7 +77,7 @@ function parseArgs(argv: string[]): BumpOptions {
 
   return {
     manifestPath: resolve('package.json'),
-    pluginPath: resolve('.claude-plugin/plugin.json'),
+    pluginPaths: pluginManifestPaths,
     releaseType: parseReleaseType(releaseType),
     dryRun,
   };
@@ -130,16 +135,25 @@ export function writeManifestPair(
   pluginPath: string,
   pluginSource: { original: string; updated: string }
 ): void {
+  writeManifestSet([
+    { path: packagePath, ...packageSource },
+    { path: pluginPath, ...pluginSource },
+  ]);
+}
+
+export function writeManifestSet(
+  manifests: Array<{ path: string; original: string; updated: string }>
+): void {
   try {
-    writeFileSync(packagePath, packageSource.updated, 'utf8');
-    writeFileSync(pluginPath, pluginSource.updated, 'utf8');
+    for (const manifest of manifests) writeFileSync(manifest.path, manifest.updated, 'utf8');
   } catch (error) {
     try {
-      writeFileSync(packagePath, packageSource.original, 'utf8');
-      writeFileSync(pluginPath, pluginSource.original, 'utf8');
+      for (const manifest of manifests) {
+        writeFileSync(manifest.path, manifest.original, 'utf8');
+      }
     } catch (rollbackError) {
       throw new Error(
-        'Version update failed and automatic rollback also failed; inspect both manifests before retrying.',
+        'Version update failed and automatic rollback also failed; inspect every manifest before retrying.',
         { cause: rollbackError }
       );
     }
@@ -161,11 +175,14 @@ export function bumpReleaseVersion(options: BumpOptions): BumpResult {
 
   if (options.dryRun || !result.changed) return result;
 
-  // Validate both files before writing either one, so a malformed plugin
+  // Validate every file before writing any of them, so a malformed plugin
   // manifest cannot leave package.json half-bumped.
   const packageSource = updatedManifest(options.manifestPath, selected);
-  const pluginSource = updatedManifest(options.pluginPath, selected);
-  writeManifestPair(options.manifestPath, packageSource, options.pluginPath, pluginSource);
+  const pluginSources = options.pluginPaths.map((path) => ({
+    path,
+    ...updatedManifest(path, selected),
+  }));
+  writeManifestSet([{ path: options.manifestPath, ...packageSource }, ...pluginSources]);
   return result;
 }
 

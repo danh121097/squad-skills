@@ -79,4 +79,55 @@ describe('plugin manifests', () => {
       expect.objectContaining({ name: 'squad-skills', source: './' }),
     ]);
   });
+
+  it('declares the Codex plugin at the repository root with the same catalog version', async () => {
+    const manifest = JSON.parse(
+      await readFile(path.join(projectRoot, '.codex-plugin/plugin.json'), 'utf8')
+    ) as {
+      name: string;
+      version: string;
+      skills: string;
+      interface: { displayName: string; category: string };
+    };
+    const packageMetadata = JSON.parse(
+      await readFile(path.join(projectRoot, 'package.json'), 'utf8')
+    ) as { version: string };
+
+    expect(manifest).toEqual(
+      expect.objectContaining({
+        name: 'squad-skills',
+        version: packageMetadata.version,
+        skills: './skills/',
+      })
+    );
+    expect(manifest.interface).toEqual(
+      expect.objectContaining({ displayName: 'Squad Skills', category: 'Developer Tools' })
+    );
+  });
+
+  it('keeps shared Claude and Codex plugin metadata identical', async () => {
+    const claudeManifest = JSON.parse(
+      await readFile(path.join(projectRoot, '.claude-plugin/plugin.json'), 'utf8')
+    ) as Record<string, unknown>;
+    const codexManifest = JSON.parse(
+      await readFile(path.join(projectRoot, '.codex-plugin/plugin.json'), 'utf8')
+    ) as Record<string, unknown> & { interface: { displayName: string } };
+    const sharedFields = [
+      'name',
+      'version',
+      'description',
+      'author',
+      'homepage',
+      'repository',
+      'license',
+      'keywords',
+    ];
+
+    for (const field of sharedFields) {
+      expect(codexManifest[field], `${field} drifted between plugin manifests`).toEqual(
+        claudeManifest[field]
+      );
+    }
+    expect(codexManifest.interface.displayName).toBe(claudeManifest.displayName);
+  });
 });
