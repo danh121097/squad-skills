@@ -26,7 +26,8 @@ Pass every applicable check honestly.
 
 - Exact revision, base, acceptance criteria and QA evidence are resolved before the first finding.
 - Blast radius traced: callers, contracts, data and permission paths, migrations, config, rollout, tests.
-- Spec compliance settled first; taste review never precedes an unmet requirement.
+- Implementation alignment is settled first; production-quality review uses the accepted contract and QA
+  evidence without replaying behavioral coverage.
 
 ### Evidence
 
@@ -40,7 +41,7 @@ Pass every applicable check honestly.
 - Severity reflects user and system impact, not how unusual the pattern looks.
 - Each finding carries file:line, failure condition, impact and one concrete remediation.
 - Findings are deduplicated to one per cause, with the affected locations listed under it.
-- Spec compliance and production quality are ranked as separate lists; neither is folded into the other.
+- Implementation alignment and production quality are ranked as separate lists; neither is folded into the other.
 
 ## Proof to hand over
 

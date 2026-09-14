@@ -113,7 +113,7 @@ const codeReview: SkillTaskType[] = [
     ],
   },
   {
-    id: 'spec-compliance-pass',
+    id: 'implementation-alignment-pass',
     references: [
       'quality-bar-and-preflight.md',
       'review-methodology-debugging-and-mindset.md',
@@ -272,9 +272,13 @@ const frontend: SkillTaskType[] = [
     ],
   },
   {
-    id: 'motion-implementation',
+    id: 'motion-and-interactive-graphics',
     references: [
+      'frontend-security-accessibility-and-performance.md',
       'frontend-stack-and-motion-selection.md',
+      'frontend-testing-debugging-and-mindset.md',
+      'interactive-graphics-and-runtime-animation.md',
+      'official-sources.md',
       'quality-bar-and-preflight.md',
       'runtime-capability-fallbacks.md',
     ],

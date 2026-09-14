@@ -25,6 +25,7 @@ Pass every applicable check honestly.
 ### Traceability
 
 - Every acceptance criterion maps to a test, an observation, or a stated risk-based reason it has neither.
+- The pass demonstrates observable behavior; implementation-quality concerns are handed to Code Review.
 - The risk surface is covered where it exists: boundary, error, permission, concurrency, lifecycle,
   offline, security, accessibility, performance, compatibility, rollback.
 
@@ -38,6 +39,11 @@ Pass every applicable check honestly.
 
 - Only QA-owned files were edited; a case belonging to a build-owned file went back to its owner.
 - No production implementation was changed to make a check pass.
+
+### Rerun scope
+
+- Still-current evidence is retained, and every changed behavior, contract or risk has affected and
+  regression coverage before the new verdict.
 
 ## Proof to hand over
 

@@ -17,7 +17,7 @@ Never auto-install a specialist skill, and never report a skill as run when it d
 
 ## Review dimensions
 
-Select dimensions by change risk:
+Consume current QA behavioral evidence, then select implementation-quality dimensions by change risk:
 
 - correctness: logic, boundary/error paths, lifecycle, race, concurrency and regression;
 - security/privacy: authN/authZ, tenant isolation, injection, SSRF, secrets, validation and logging;
@@ -35,7 +35,7 @@ Select dimensions by change risk:
 | Core review | Code/PR review skill | Inspect target diff and repository evidence manually |
 | Security | Security skills/scanners | Manual threat lens plus existing repository scanners |
 | Stack checks | Framework/provider specialists | Use repository patterns and current official docs |
-| Verify claim | Debug/test skill | Run focused repro/test/static command directly |
+| Verify finding | Debug/test skill | Trace the code path or run a focused repro/test/static command |
 
 Never auto-install a skill, scanner, package, plugin, MCP server or CLI. If required QA evidence or
 runtime access is missing, state the limitation; do not convert uncertainty into approval.
@@ -60,20 +60,19 @@ runtime access is missing, state the limitation; do not convert uncertainty into
 Do not inflate severity, duplicate one root cause across many findings, or report lint/style already
 enforced automatically unless the change bypasses that enforcement.
 
-## Two axes, reported separately
+## Two implementation-quality axes, reported separately
 
-The two stages of a review are also its two reporting axes, and they stay apart in the report. **Spec
-compliance** asks whether the change does what its acceptance criteria, issue or plan asked, and names
-behavior nobody asked for. **Production quality** asks whether it holds the repository's conventions and the
-risk dimensions above. Rank findings inside an axis and never across it: one merged list is how a diff that
-follows every convention while implementing the wrong feature reads as a strong review. Report both axes even
-when one is empty, and where no spec is reachable say so on the spec-compliance axis rather than folding its
-findings into production quality.
+The two stages are also the reporting axes. **Implementation alignment** asks whether the diff follows the
+accepted contract and scope that QA exercised, without re-performing QA's behavioral verdict. **Production
+quality** asks whether the implementation holds the repository's conventions and the risk dimensions above.
+Rank findings inside an axis and never across it. Report both axes even when one is empty; where no contract
+is reachable, say so under implementation alignment.
 
 ## Verdict
 
 - **APPROVE:** no blocking findings; list residual risk and checks actually run.
-- **CHANGES REQUESTED:** at least one blocker; return to owner, then require QA rerun before re-review.
+- **CHANGES REQUESTED:** at least one blocker; return to owner, then require affected/regression QA before a
+  focused re-review of the finding, delta and neighboring blast radius. Broaden only when contract or risk moved.
 - **NEEDS_EVIDENCE:** required target, QA, contract, docs or runtime evidence is unavailable. Name the exact
   gap and smallest next action, return it to the lead, and resume Review after evidence is supplied. It is
   not eligible for done and must not be converted into a speculative finding.

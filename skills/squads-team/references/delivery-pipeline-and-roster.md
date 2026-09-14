@@ -12,8 +12,8 @@ Read before routing roles or advancing any slice through Design, QA, Review, int
 | Backend     | Shared APIs/contracts, auth, DB/data access, server business logic, migrations                                                                   | Web/mobile UI, deployment pipelines                                                       |
 | Mobile      | App UI/navigation, client logic, API integration, persistence/offline/sync, device concerns                                                      | Shared server APIs/DB/business logic, web UI                                              |
 | DevOps      | Containers, CI/CD, IaC, cloud, secrets wiring, observability, rollout/rollback                                                                   | Feature/app code                                                                          |
-| QA          | Scenario design, assigned tests/fixtures, execution, repro, evidence and PASS/FAIL/NEEDS_ENVIRONMENT                                             | Production implementation, closing work                                                   |
-| Code Review | Evidence-based final review, findings and APPROVE/CHANGES_REQUESTED/NEEDS_EVIDENCE                                                               | Feature fixes, self-approval                                                              |
+| QA          | Observable-behavior scenarios, assigned tests/fixtures, execution, repro, evidence and PASS/FAIL/NEEDS_ENVIRONMENT                                | Production implementation, broad implementation-quality review, closing work              |
+| Code Review | Implementation-quality review, focused finding verification and APPROVE/CHANGES_REQUESTED/NEEDS_EVIDENCE                                         | Replaying QA coverage, feature fixes, self-approval                                        |
 
 Named `squad-*` skills are preferred when installed. The role must load its `SKILL.md` plus task-relevant
 deep references; merely naming the skill is not enough. When absent, the lead gives the role this matrix,
@@ -63,7 +63,8 @@ Hard rules:
 - QA `NEEDS_ENVIRONMENT` returns to the lead for the smallest missing target, artifact, access or authority;
   QA resumes after resolution. It never becomes an inferred pass.
 - Code Review runs only after QA PASS.
-- `CHANGES_REQUESTED` returns to owner, then requires QA rerun and Review rerun.
+- `CHANGES_REQUESTED` returns to owner, then requires affected/regression QA and focused Review rerun;
+  broaden either pass only when the changed contract or risk surface requires it.
 - `NEEDS_EVIDENCE` returns to the lead for the exact missing review/QA/contract/runtime evidence; Review
   resumes after it is supplied.
 - No slice or integrated result is done without PASS then APPROVE.
@@ -89,9 +90,10 @@ Use only when the named role skill is unavailable:
   realistic simulator/device targets and disclose gaps.
 - **DevOps:** resolve exact environment/authority; plan before apply; reproducible artifacts, least
   privilege, observability and rollback; separate static/plan/live evidence.
-- **QA:** map acceptance/risk to deterministic evidence; no implementation edits;
+- **QA:** map observable behavior under acceptance/risk to deterministic evidence; no implementation edits;
   PASS/FAIL/NEEDS_ENVIRONMENT with repro or exact missing target plus residual risk.
-- **Code Review:** inspect blast radius; verify findings; severity + file:line + remediation; advisory
+- **Code Review:** consume QA evidence; inspect implementation quality and blast radius; verify findings
+  narrowly; severity + file:line + remediation; advisory
   APPROVE/CHANGES REQUESTED/NEEDS_EVIDENCE.
 
 These summaries are routing reminders, not sufficient domain knowledge. Read the full role section in

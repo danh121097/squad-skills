@@ -17,7 +17,8 @@ Never auto-install a specialist skill, and never report a skill as run when it d
 
 ## Risk matrix
 
-Select applicable dimensions; do not run every category mechanically:
+Select applicable behavioral dimensions; implementation structure belongs to Code Review. Do not run every
+category mechanically:
 
 - behavior: happy path, boundary values, invalid input, error and recovery;
 - state: loading, empty, stale, retry, cancellation, partial success and idempotency;
@@ -47,6 +48,9 @@ browser/device/load/deploy check ran without that environment.
 
 Record the exact target, command or manual path, environment/version, result, relevant artifact, and any
 limitation. Redact tokens, credentials, personal data and private payloads.
+
+On a fix rerun, retain evidence whose behavior, contract and environment are unchanged. Rerun the failed or
+affected checks plus neighboring regression coverage; widen only when the delta changes the risk surface.
 
 ## Verdict
 

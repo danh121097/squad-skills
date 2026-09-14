@@ -8,7 +8,7 @@ keywords: [bugfix, debug, root-cause, regression, error, failing-test, ci-failur
 argument-hint: "[bug, error, log, or failing test] [--quick] [--mode auto|team|subagent|single]"
 metadata:
   author: Harry Nguyen
-  version: "1.3.1"
+  version: "1.4.0"
 ---
 
 # Squad — Fix
@@ -28,8 +28,9 @@ change | owner follows root cause | smallest safe fix | regression evidence | QA
 
 - `--quick`: reduce planning ceremony only for an obvious syntax/type/lint or narrow single-owner defect;
   baseline, root-cause proof, regression verification, QA and Review still apply.
-- `--mode auto|team|subagent|single`: `auto` chooses the strongest safe live execution mode. If the user
-  forces an unavailable mode, report the missing capability instead of silently changing the contract.
+- `--mode auto|team|subagent|single`: `auto` chooses the lowest-overhead safe live mode for the repair's
+  ownership and risk. If the user forces an unavailable mode, report the missing capability instead of
+  silently changing the contract.
 
 ## Scope and safety
 
@@ -101,9 +102,10 @@ was. Before declaring the repair complete, run the self-review in
    user changes and public contracts unless the accepted repair intentionally changes one.
 6. **Verify** — rerun the baseline; run focused then blast-radius tests/type/lint/build/performance checks
    appropriate to the failure; inspect side effects and cleanup task-owned processes/resources.
-7. **QA** — run a distinct risk/acceptance pass. `FAIL` returns to owner; `NEEDS_ENVIRONMENT` returns to lead.
-8. **Review** — after QA PASS, inspect the diff and cause alignment. `CHANGES_REQUESTED` returns through
-   owner → QA → Review; `NEEDS_EVIDENCE` returns to lead.
+7. **QA** — run a distinct behavioral risk/acceptance pass. `FAIL` returns to owner;
+   `NEEDS_ENVIRONMENT` returns to lead.
+8. **Review** — after QA PASS, consume its evidence and inspect implementation quality and cause alignment.
+   `CHANGES_REQUESTED` returns through owner → affected QA → focused Review; `NEEDS_EVIDENCE` returns to lead.
 9. **Finish** — report root cause, changes, prevention, evidence, execution/independence mode, residual risk,
    docs impact and any authorized external mutation.
 
@@ -140,6 +142,7 @@ was. Before declaring the repair complete, run the self-review in
 - [ ] Smallest cause-aligned fix and regression evidence are present
 - [ ] Original repro plus affected tests/contracts/checks pass, or exact gaps block completion
 - [ ] QA PASS and Code Review APPROVE are recorded with independence level
+- [ ] Fix reruns preserve still-current evidence and cover the changed behavior, contract and risk surface
 - [ ] No unauthorized production/data/deploy/Git/external mutation occurred
 - [ ] Residual risk, docs impact and task-owned resource cleanup are explicit
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

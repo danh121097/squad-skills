@@ -15,12 +15,14 @@ Count a runtime capability only after its read-only inventory or probe confirms 
 files, remembered availability or an ambiguous probe do not establish a mode; choose the next lower safe
 mode and report the missing evidence.
 
-Select the strongest safe mode:
+Select the lowest-overhead safe mode that preserves the task's ownership and risk-appropriate independence:
 
-1. **Peer-team mode:** use when native peer agents, messaging and task coordination are available and the
-   task has independent slices worth the overhead.
-2. **Subagent mode:** use when bounded child agents/delegation exist but peer messaging/shared boards do not.
-3. **Single-session mode:** use when no multi-agent engine exists or the task is too small to delegate.
+1. **Single-session mode:** use for a small, coherent or low-risk change when distinct logical QA and Review
+   passes provide sufficient judgment.
+2. **Subagent mode:** use when bounded implementation slices or an independent gate materially improve
+   concurrency or risk coverage.
+3. **Peer-team mode:** use when several independent slices and gate handoffs justify native messaging and
+   task coordination.
 
 No mode flag means `auto`. `--coordinate-only` (legacy alias `--delegate`) is a forced execution shape,
 not the switch that enables delegation: without it, `auto` may still delegate safe slices while the lead
@@ -128,8 +130,9 @@ or evidence. Dispatch each newly ready task when its dependencies clear rather t
 to finish. If a child asks a question, return the named fork to the lead rather than answering it from an
 assumption.
 
-After each build result, the lead launches QA; after PASS, launches Code Review. Fixes return to the same
-owner when possible.
+After a coherent gate unit is ready, the lead launches one QA pass over its exact slice revisions; after
+PASS, it launches one Code Review. A verdict may cover several coherent slices, while a high-risk or
+independently shippable slice remains its own unit. Fixes return to the same owner when possible.
 
 A child agent has no channel to the user. A question it writes into its report is read by the lead and by
 nobody else, so a role that needs a user decision must return the fork rather than answer it, and the lead
@@ -146,8 +149,8 @@ Use one controller sequentially:
 2. End implementation and perform a distinct QA pass from acceptance/risk, without editing implementation.
 3. If QA returns `FAIL`, return to the build role, fix, then restart QA. If it returns
    `NEEDS_ENVIRONMENT`, return to the lead to resolve the missing target/artifact, then resume QA.
-4. After PASS, perform a fresh Code Review pass over the diff and evidence.
-5. `CHANGES_REQUESTED` returns to owner → QA → Review. `NEEDS_EVIDENCE` returns to the lead, then resumes
+4. After PASS, perform a fresh Code Review pass over implementation quality, consuming QA evidence.
+5. `CHANGES_REQUESTED` returns to owner → affected QA → focused Review. `NEEDS_EVIDENCE` returns to the lead, then resumes
    Review after the missing evidence is available.
 
 This preserves logical gates but not independent-agent judgment. State that limitation in the final report.

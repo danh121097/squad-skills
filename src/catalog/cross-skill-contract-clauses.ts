@@ -416,6 +416,25 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [fixSkill, teamSkill],
   },
   {
+    id: 'HANDOFF-GATE-004',
+    // The two gates used to overlap by default: QA carried broad implementation
+    // lenses while Review re-ran behavioral checks. Bind the division at all
+    // three lead/gate entrypoints so either receiver can refuse replay
+    // disguised as depth.
+    statement:
+      'QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges implementation quality, adding only verification needed to prove a finding',
+    files: [codeReviewSkill, qaSkill, teamSkill],
+  },
+  {
+    id: 'HANDOFF-RERUN-001',
+    // A code change invalidates evidence by blast radius, not by chronology.
+    // Both gates and their lead carry the same delta-sized return edge so a fix
+    // does not silently restart unaffected work or skip affected evidence.
+    statement:
+      'After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and neighboring blast radius, broadening only when contract or risk changes',
+    files: [codeReviewSkill, qaSkill, teamSkill],
+  },
+  {
     id: 'HANDOFF-SOLO-001',
     // The squad-peer analog of PAIRING-SAFETY-001, which covers an absent
     // specialist skill rather than an absent role. "where this role's boundary

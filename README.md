@@ -139,10 +139,12 @@ you want to pick the role yourself.
 | A diff, PR or branch that needs a final review gate before it ships                                                                   | `squad-code-review` |
 | Work spanning several roles, or work needing independent QA and review gates                                                          | `squads-team`       |
 
-Two of these are gates rather than builders: `squad-qa` issues `PASS`, `FAIL` or `NEEDS_ENVIRONMENT`, and
-`squad-code-review` issues `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE` and never implements the fixes
-it asks for. `squads-team` runs the whole pipeline and enforces the implement, QA, review, done sequence;
-reach for the smallest role that fits and let it escalate.
+Two of these are gates rather than builders. `squad-qa` verifies observable behavior against acceptance and
+risk, then issues `PASS`, `FAIL` or `NEEDS_ENVIRONMENT`. `squad-code-review` consumes that evidence, reviews
+implementation quality and issues `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`; it never implements
+the fixes it asks for. `squads-team` runs the whole pipeline and enforces the implement, QA, review, done
+sequence while sizing gate units and reruns to the changed contract and risk surface. Reach for the smallest
+role that fits and let it escalate.
 
 ## Develop
 

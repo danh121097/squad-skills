@@ -1,6 +1,6 @@
 ---
 name: squads-team
-description: "Orchestrate a role-specialized Engineering Squad (Designer, Frontend, Backend, Mobile, DevOps, QA, Code Review) with frame-first scoping, non-overlapping ownership, and mandatory implement → QA → review → done gates. Pairs with installed specialist skills; multi-agent engines are optional, so use peer teams, subagents, or a single-session role loop while preserving role boundaries and high-quality evidence."
+description: "Orchestrate a role-specialized Engineering Squad (Designer, Frontend, Backend, Mobile, DevOps, QA, Code Review) with frame-first scoping, non-overlapping ownership, risk-proportionate execution, and mandatory implement → QA → review → done gates."
 user-invocable: true
 when_to_use: "Invoke for features, bugs, refactors, releases, or audits spanning multiple engineering roles or requiring independent QA and Code Review gates."
 category: dev-tools
@@ -8,17 +8,19 @@ keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code
 argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--coordinate-only] [--allow-new-threads] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
 metadata:
   author: Harry Nguyen
-  version: "2.9.1"
+  version: "2.10.0"
 ---
 
 # Squads Team
 
-Coordinate role-specialized delivery against one accepted goal. Select the strongest execution engine
-actually available. Detect installed specialist skills once and pair them with the roles that need
-them; named squad skills and multi-agent tooling stay optional. Quality gates and role boundaries are not optional.
+Coordinate role-specialized delivery against one accepted goal. Select the lowest-overhead safe execution
+shape that preserves required ownership and risk-appropriate gate independence. Detect installed specialist
+skills once and pair them with the roles that need them; named squad skills and multi-agent tooling stay
+optional. Quality gates and role boundaries are not optional.
 
 **Principles:** frame before spawn/edit | scout before split | one owner per file | capability-based
-routing | explicit context/result packets | implement → QA → Review → done | explicit evidence | no hidden fallback.
+routing | coherent gate units | behavioral QA → implementation-quality Review | delta-sized reruns |
+explicit context/result packets | explicit evidence | no hidden fallback.
 
 ## Usage
 
@@ -44,8 +46,8 @@ Flags override one default without changing the others:
   independently followable outcomes; it does not turn role slices or gates into separate threads.
 - `--plan-approval`: pause for approval of read-only build plans before edits; without it, mandatory
   framing still returns material decisions to the user.
-- `--mode auto|team|subagent|single`: omitted or `auto` selects the strongest safe engine; another value
-  forces that engine.
+- `--mode auto|team|subagent|single`: omitted or `auto` selects the lowest-overhead safe mode for the task's
+  ownership and risk; another value forces that engine.
 - `--no-worktree`: disable automatic worktree isolation and serialize overlapping/shared-file work.
 
 ## Scope and safety
@@ -76,7 +78,10 @@ PR, deploy, mutate data or change external services unless requested or required
    unavoidable overlap.
 3. **Design before UI build** — material UI/UX work receives accepted Figma/design or Designer contract.
 4. **No done without gates** — every implementation slice must receive QA `PASS`, then Code Review
-   `APPROVE`. `FAIL` or `CHANGES_REQUESTED` returns to the owning role. `NEEDS_ENVIRONMENT` or
+   `APPROVE`; one verdict may cover a coherent set of slices when it names their exact revisions and evidence.
+   QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges
+   implementation quality, adding only verification needed to prove a finding. `FAIL` or
+   `CHANGES_REQUESTED` returns to the owning role. `NEEDS_ENVIRONMENT` or
    `NEEDS_EVIDENCE` returns to the lead for the smallest missing capability, artifact, access or decision;
    neither is eligible for `done`. Resume at the blocked gate after resolution.
 5. **Integrate and verify** — merge/compose only approved slices, run appropriate combined checks, report
@@ -114,10 +119,11 @@ integrated result, and a missing environment or evidence never becomes completio
 4. **Design/plan gates** — run Designer for material UI/UX; collect build plans when approval is enabled.
 5. **Implement** — dispatch every ready slice with isolated ownership; advance newly unblocked work without
    waiting for unrelated siblings, and serialize overlap.
-6. **QA** — test each completed slice against acceptance and risk. `FAIL` returns to owner with minimal
-   repro; `NEEDS_ENVIRONMENT` returns to the lead without inferring a pass.
-7. **Code Review** — review only QA-passed work. `CHANGES_REQUESTED` returns to owner → QA → Review;
-   `NEEDS_EVIDENCE` returns to the lead, then resumes Review after the evidence is supplied.
+6. **QA** — test each coherent gate unit's observable behavior against acceptance and risk. `FAIL` returns
+   to owner with minimal repro; `NEEDS_ENVIRONMENT` returns to the lead without inferring a pass.
+7. **Code Review** — consume QA evidence and review implementation quality on QA-passed work.
+   `CHANGES_REQUESTED` returns to owner → delta-sized QA → focused Review; `NEEDS_EVIDENCE` returns to
+   the lead, then resumes Review after the evidence is supplied.
 8. **Integrate** — combine approved work, resolve integration issues under one owner, run combined checks,
    update durable docs only when behavior/setup/contracts/architecture changed.
 9. **Finish** — report result, mode, roles, files/branches, tests, gate verdicts, residual risk and anything
@@ -132,6 +138,8 @@ integrated result, and a missing environment or evidence never becomes completio
   files are not substitutes for an explicit handoff.
 - Each role returns its artifact, the evidence at the level it actually ran, and the gaps it could not
   close; the lead composes these and never upgrades a gap into a result.
+- After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
+  neighboring blast radius, broadening only when contract or risk changes.
 - QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
   logical passes and labels them non-independent.
 - When a named squad peer is absent, carry its stage inline at the same standard where this role's
@@ -152,6 +160,8 @@ integrated result, and a missing environment or evidence never becomes completio
 - [ ] Specialist skills were detected and paired where installed; an absence used a documented native
       fallback without lowering standards
 - [ ] Every implementation slice has QA PASS then Code Review APPROVE
+- [ ] Gate units and reruns match the changed behavior, contract and risk surface instead of replaying
+      unaffected work
 - [ ] Any NEEDS_* gate was resolved and rerun, or the work is explicitly blocked rather than marked done
 - [ ] Integration and combined verification actually ran or exact gaps are stated
 - [ ] No unauthorized commit, push, PR, deploy, data or external-service mutation occurred

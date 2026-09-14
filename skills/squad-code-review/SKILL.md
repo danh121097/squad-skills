@@ -1,6 +1,6 @@
 ---
 name: squad-code-review
-description: "Operate as the squad's final Code Review gate — evidence-based review for correctness, security, performance, contract compatibility, operations, and maintainability across frontend, backend, mobile, and infrastructure. Issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE; advisory only, pairing with installed specialist skills and running natively without them."
+description: "Operate as the squad's final implementation-quality gate after behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE."
 user-invocable: true
 when_to_use: "Invoke after QA passes as the final gate, or to review a diff, PR, commit, or pending changes solo. Does not implement feature fixes."
 category: utilities
@@ -8,17 +8,20 @@ keywords: [code-review, security, owasp, correctness, performance, contracts, ma
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
   author: Harry Nguyen
-  version: "1.7.1"
+  version: "1.8.0"
 ---
 
 # Squad — Code Review
 
-Review the actual change for production readiness after QA. Verify claims before reporting them, rank
-actionable findings and gate `done`. Pair installed specialist review skills; work natively when they
-are absent.
+Review the actual implementation for production readiness after QA has established behavioral evidence.
+Verify suspected findings before reporting them, rank actionable findings and gate `done`. Pair installed
+specialist review skills; work natively when they are absent.
 
 **Principles:** evidence before assertion | review the diff and blast radius | severity reflects impact |
 contracts and operations matter | advisory, not rewriting | no approval with blockers.
+
+QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges
+implementation quality, adding only verification needed to prove a finding.
 
 ## Usage
 
@@ -44,13 +47,14 @@ Never expose secrets or private payloads in findings.
    files and affected consumers before reviewing.
 2. **Inspect blast radius** — follow changed contracts, callers, state/data paths, permissions, migrations,
    configuration, rollout and tests beyond the edited lines.
-3. **Verify defects empirically** — reproduce, run focused tests, inspect authoritative docs or prove the
-   code path before asserting a finding. Separate confirmed defects from questions.
+3. **Verify findings empirically** — trace the code path, inspect authoritative docs, or run the narrowest
+   check needed to prove a suspected finding. Treat QA's still-current behavioral evidence as an input rather
+   than replaying its suite. Separate confirmed defects from questions.
 4. **Rank by user/system impact** — blocking, warning and suggestion; include tight file:line evidence,
    failure condition, impact and concrete remediation.
-5. **Gate honestly** — `APPROVE` only with no blockers; `CHANGES_REQUESTED` returns to owner, then re-QA and
-   re-review after fixes; `NEEDS_EVIDENCE` names the exact missing target, QA, contract, docs or runtime
-   evidence and returns to the lead. It blocks `done` without inventing a defect.
+5. **Gate honestly** — `APPROVE` only with no blockers; `CHANGES_REQUESTED` returns to owner, then affected
+   QA and focused re-review after fixes; `NEEDS_EVIDENCE` names the exact missing target, QA, contract, docs
+   or runtime evidence and returns to the lead. It blocks `done` without inventing a defect.
 
 ## Conditional references
 
@@ -58,7 +62,8 @@ Never expose secrets or private payloads in findings.
   [cross-stack-review-dimensions.md](references/cross-stack-review-dimensions.md)
 - Threat, auth/privacy, architecture, contracts/data/migrations, concurrency and operations:
   [security-architecture-data-and-operations-review.md](references/security-architecture-data-and-operations-review.md)
-- Spec compliance, blast-radius tracing, defect verification, AI-assisted-code risks and reviewer mindset:
+- Implementation alignment, blast-radius tracing, finding verification, AI-assisted-code risks and
+  reviewer mindset:
   [review-methodology-debugging-and-mindset.md](references/review-methodology-debugging-and-mindset.md)
 - When calibrating severity, evidence thresholds or anti-slop judgment against concrete cases:
   [code-review-worked-decisions.md](references/code-review-worked-decisions.md)
@@ -81,12 +86,12 @@ finding. Before issuing a verdict, run the self-review in
    contracts; identify unreviewable/generated/vendor areas explicitly.
 2. **Review** — inspect correctness and regressions, auth/security, contract/data compatibility,
    concurrency, performance, maintainability, tests/docs and operational safety according to risk.
-3. **Verify** — run narrow tests or static checks and consult current official docs when behavior is
-   uncertain. Do not report speculative style preferences as defects.
+3. **Verify** — use code-path proof, narrow tests or static checks and current official docs when a finding
+   is uncertain. Preserve still-current QA evidence rather than rerunning broad behavioral coverage.
 4. **Report findings first** — severity-ranked findings with file:line and remediation; then questions,
    residual risk and concise summary. State when no findings exist.
-5. **Verdict** — `APPROVE`, `CHANGES_REQUESTED`, or `NEEDS_EVIDENCE`. Fixes return to owner → QA → Review;
-   missing evidence returns to the lead, then resumes Review when supplied.
+5. **Verdict** — `APPROVE`, `CHANGES_REQUESTED`, or `NEEDS_EVIDENCE`. Fixes return to owner → affected QA
+   → focused Review; missing evidence returns to the lead, then resumes Review when supplied.
 
 ## Handoff contract
 
@@ -97,6 +102,8 @@ finding. Before issuing a verdict, run the self-review in
 - To the owning role and the lead, severity-ranked findings carrying file:line, failure condition, impact
   and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - What was inspected, what was not, and the residual unverified risk — reported even when no finding exists.
+- After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
+  neighboring blast radius, broadening only when contract or risk changes.
 - QA and Code Review are both mandatory: when the peer gate's skill is absent, this role runs that
   pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned.
 - To the lead, each open fork as named options with their consequences, put to the user from the
@@ -113,7 +120,8 @@ finding. Before issuing a verdict, run the self-review in
 - [ ] A finding in an unfamiliar runtime cites that ecosystem's current documentation or an executed check
 - [ ] Severity matches realistic impact and likelihood
 - [ ] Findings include tight file:line, failure condition, impact and concrete remediation
-- [ ] Spec compliance and production quality are reported as separate ranked lists
+- [ ] Implementation alignment and production quality are reported as separate ranked lists
+- [ ] Still-current QA evidence was consumed without replay; extra verification maps to a suspected finding
 - [ ] Tests/docs/rollout/migration implications are covered where applicable
 - [ ] Reviewer made no feature edits or unauthorized external mutations
 - [ ] Verdict and residual unverified risk are explicit

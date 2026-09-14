@@ -293,6 +293,8 @@ describe('validateCrossSkillContract', () => {
       'HANDOFF-GATE-001': [...rolesWithAnImplementationSlice, teamSkill].sort(),
       'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],
       'HANDOFF-GATE-003': [fixSkill, teamSkill],
+      'HANDOFF-GATE-004': [codeReviewSkill, qaSkill, teamSkill],
+      'HANDOFF-RERUN-001': [codeReviewSkill, qaSkill, teamSkill],
       'HANDOFF-SOLO-001': [
         ...rolesWithAnImplementationSlice,
         codeReviewSkill,
@@ -488,6 +490,44 @@ describe('handoff contract family', () => {
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0]).toContain(fixSkill);
     expect(result.errors[0]).toContain(teamSkill);
+  });
+
+  it('fails when a gate drops the behavioral-versus-implementation boundary', async () => {
+    const boundary = boundaryClauses.find((clause) => clause.id === 'HANDOFF-GATE-004');
+    if (!boundary) throw new Error('HANDOFF-GATE-004 is missing from the shipped clauses.');
+
+    const projectRoot = await createProject({
+      [teamSkill]: `# Team\n\n${boundary.statement}.\n`,
+      [qaSkill]: `# QA\n\n${boundary.statement}.\n`,
+      [codeReviewSkill]: '# Review\n\nReview everything again from scratch.\n',
+    });
+
+    const result = await validateCrossSkillContract(projectRoot, {
+      clauses: [boundary],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(codeReviewSkill);
+  });
+
+  it('fails when one gate restarts the whole pipeline instead of preserving delta-sized reruns', async () => {
+    const rerun = boundaryClauses.find((clause) => clause.id === 'HANDOFF-RERUN-001');
+    if (!rerun) throw new Error('HANDOFF-RERUN-001 is missing from the shipped clauses.');
+
+    const projectRoot = await createProject({
+      [teamSkill]: `# Team\n\n${rerun.statement}.\n`,
+      [qaSkill]: '# QA\n\nAfter code changes, discard every result and restart all checks.\n',
+      [codeReviewSkill]: `# Review\n\n${rerun.statement}.\n`,
+    });
+
+    const result = await validateCrossSkillContract(projectRoot, {
+      clauses: [rerun],
+      retiredPhrases: [],
+    });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(qaSkill);
   });
 
   // Seven roles were given this line word for word with nothing holding them

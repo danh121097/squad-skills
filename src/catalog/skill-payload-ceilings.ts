@@ -95,7 +95,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // review-methodology-debugging-and-mindset.md already prescribes the same
   // split under its own names — Spec compliance and Production quality — and
   // that both files sit in the load of feature-diff-review and
-  // spec-compliance-pass together. A run reading two vocabularies for one split
+  // implementation-alignment-pass together. A run reading two vocabularies for one split
   // is the leading-word failure docs/authoring-doctrine.md warns about, landing
   // in the same change that states the warning. The existing names won: an
   // imported word has to beat the one already in the reader's context, and this
@@ -133,7 +133,15 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // review-runtime-and-verdict.md, which all six tasks load; 17 into
   // quality-bar-and-preflight.md, which both middle tasks load; and 14 into the
   // entrypoint, which every task pays.
-  'squad-code-review': 2425,
+  // Raised 2425 to 2506 by the behavioral-QA/implementation-quality boundary.
+  // The entrypoint owns the bound boundary and delta-sized return edge;
+  // review-runtime-and-verdict.md, review-methodology-debugging-and-mindset.md
+  // and the deliberate pre-flight copy make Review consume current QA evidence,
+  // verify suspected findings narrowly and broaden only with contract or risk.
+  // The same change renames the old spec-compliance axis to implementation
+  // alignment so the reviewer checks the diff against the accepted contract
+  // without issuing a second behavioral verdict.
+  'squad-code-review': 2506,
   // Was bounded on total payload while the retired evaluation lane held its task
   // types. Those moved to `skill-task-types.ts` when the lane was removed, so the
   // median binds here now. 1959 is the measured figure, and it reproduces the
@@ -195,14 +203,28 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // rules was the cheaper edit and the wrong one: that task would go to 3822 and
   // the median to 3073, buying the same two rules for 422 rather than 43 —
   // nearly ten times the price.
-  'squad-fix': 2694,
+  // Raised 2694 to 2734 so the standalone bug pipeline sends review fixes
+  // through affected/regression QA and focused Review rather than replaying
+  // both full gates. Auto also chooses the lowest-overhead safe mode for the
+  // repair's ownership and risk. The routed verification reference owns the
+  // boundary; the entrypoint carries only the workflow and completion criterion.
+  'squad-fix': 2734,
   // Frontend, mobile and devops each rose about forty words in an earlier
   // change: HANDOFF-BUILD-001 is one sentence stated at three entrypoints, and
   // an entrypoint sentence is read by every task of that skill. Frontend then
   // moved 2134 to 2572 and mobile 1875 to 2226 for the runtime-fallback
   // accounting described above; both totals are unchanged.
   // Then 2572 to 2601 by HANDOFF-DECISION-001.
-  'squad-frontend': 2609,
+  // Raised 2609 to 2646 for the Three.js, Phaser, PixiJS and Rive implementation
+  // lane. The runtime reference and its official-source entries route only to
+  // motion-and-interactive-graphics, already above the median; the median paid
+  // 37 entrypoint words for discovery and the teardown completion criterion.
+  // Adding a ninth task type instead changed which load was the median and
+  // measured 2738, so the existing motion branch owns this work. The follow-up
+  // game scope grew that routed reference from 812 to 1056 words while a sharper
+  // description reduced the entrypoint from 1252 to 1240; the median is now
+  // 2634 and remains below the reviewed ceiling.
+  'squad-frontend': 2646,
   // Then 2226 to 2251 by HANDOFF-DECISION-001.
   'squad-mobile': 2260,
   // Recorded on the skill's first landing at 2233 and corrected to 2740 in
@@ -314,7 +336,11 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // shipped text, found by reading it; the gate below proves the catalog stays
   // consistent and sized, not that any verdict got better.
   // Then 2350 to 2382 by HANDOFF-DECISION-001.
-  'squad-qa': 2392,
+  // Raised 2392 to 2524 by the behavioral-QA boundary and delta-sized rerun
+  // contract. The entrypoint carries the cross-skill clauses; the verdict and
+  // pre-flight references retain still-current evidence and require coverage
+  // only for behavior, contracts and risks the fix can affect.
+  'squad-qa': 2524,
   // The flattest router in the catalog, in the skill that runs on every squad
   // task: its median is 64% of its total, so routing buys it little. Worth the
   // next routing pass. Raised three words by the same capability-resolved
@@ -428,5 +454,10 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   // task precisely because it is the one a lead runs when it cannot tell what a
   // gate outcome means — which is exactly the question a superseded verdict
   // raises.
-  'squads-team': 3572,
+  // Raised 3572 to 3696 by risk-proportionate execution and coherent gate
+  // units. The entrypoint carries the bound QA/Review boundary and return edge;
+  // coordination-contract.md makes auto choose the lowest-overhead safe mode
+  // and permits one exact-revision verdict to cover several coherent slices,
+  // while the pipeline references preserve the same ownership in native fallback.
+  'squads-team': 3696,
 };

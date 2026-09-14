@@ -62,18 +62,19 @@ operability mindset. No external mutation beyond explicit scope; distinguish sta
 
 ## QA
 
-Must map acceptance/risk to static, unit/property, component, integration, contract, E2E/exploratory,
+Must map observable behavior under acceptance/risk to unit/property, component, integration, contract,
+E2E/exploratory,
 database/migration, browser/mobile, security, accessibility, visual, performance/load/resilience and release
 evidence as applicable. Own deterministic fixtures/data/CI/flakiness/coverage quality, minimal repro,
 environment/artifact record and PASS/FAIL/NEEDS_ENVIRONMENT. Reads implementation; never edits it.
 
 ## Code Review
 
-Must run spec compliance before production-quality review; trace blast radius through callers/contracts/
-data/auth/events/config/deploy/tests; apply cross-stack correctness/security/privacy/compatibility/
-concurrency/performance/operations/maintainability/test lenses; verify findings empirically; rank severity
-with file:line, trigger, impact, evidence and remediation; issue APPROVE/CHANGES REQUESTED/NEEDS_EVIDENCE.
-Advisory only.
+Must consume current QA evidence, then review implementation alignment and production quality through callers/
+contracts/data/auth/events/config/deploy/tests. Apply cross-stack correctness/security/privacy/compatibility/
+concurrency/performance/operations/maintainability lenses; verify suspected findings with the narrowest useful
+check; rank severity with file:line, trigger, impact, evidence and remediation; issue
+APPROVE/CHANGES REQUESTED/NEEDS_EVIDENCE. Advisory only.
 
 ## Universal evidence gate
 

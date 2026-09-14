@@ -31,7 +31,7 @@ build-owned case to the owner or accepts a serialized reassignment.
 
 ## QA gate
 
-- `PASS`: acceptance and material-risk evidence passed; list environment, checks and residual risk.
+- `PASS`: observable behavior under acceptance and material risk passed; list environment, checks and residual risk.
 - `FAIL`: evidence proves a defect/unmet criterion; provide minimal repro, expected/actual, owner and retest
   scope.
 - `NEEDS_ENVIRONMENT`: a required target/artifact/access is unavailable; name it and the smallest next
@@ -41,8 +41,10 @@ After a fix for QA FAIL, rerun the affected and regression scope before changing
 
 ## Code Review gate
 
-- `APPROVE`: no blocking finding; list evidence and residual risk.
-- `CHANGES_REQUESTED`: a verified blocker returns to the implementation owner, then QA, then Review.
+- `APPROVE`: QA evidence is current and implementation quality has no blocking finding; list evidence and
+  residual risk.
+- `CHANGES_REQUESTED`: a verified blocker returns to the implementation owner, then affected/regression QA,
+  then focused Review over the finding, delta and neighboring blast radius.
 - `NEEDS_EVIDENCE`: target/QA/contract/docs/runtime evidence is insufficient for a defensible verdict; name
   the exact gap and return it to the lead. It blocks `done` without inventing a defect.
 

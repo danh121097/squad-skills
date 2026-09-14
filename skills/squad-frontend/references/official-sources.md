@@ -28,6 +28,14 @@ Use primary documentation for the repository's exact versions. Do not upgrade be
   https://beui.dev/components/motion
 - Motion: https://motion.dev/docs
 - GSAP: https://gsap.com/docs/v3/
+- Three.js: https://threejs.org/docs/, https://threejs.org/manual/ and
+  https://threejs.org/manual/en/game.html
+- Phaser: https://docs.phaser.io/
+- PixiJS: https://pixijs.com/8.x/guides and https://pixijs.com/8.x/guides/getting-started/intro
+- Rive runtimes: https://rive.app/docs/runtimes/getting-started,
+  https://rive.app/docs/runtimes/web/web-js,
+  https://rive.app/docs/runtimes/web/rive-parameters and
+  https://rive.app/docs/runtimes/web/low-level-api-usage
 - Tailwind CSS: https://tailwindcss.com/docs
 - React Hook Form: https://react-hook-form.com/get-started
 - Zod: https://zod.dev/

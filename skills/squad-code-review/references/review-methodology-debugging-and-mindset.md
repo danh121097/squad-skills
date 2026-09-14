@@ -4,12 +4,13 @@ Use for any final review, especially AI-assisted code, broad diffs, ambiguous sp
 
 ## Two-stage review
 
-1. **Spec compliance:** compare request/plan/acceptance to behavior and diff. Identify omissions, scope drift,
-   contract changes and user decisions. Do not begin taste/style review while requirements fail.
+1. **Implementation alignment:** compare the diff to the accepted contract, scope and QA evidence. Identify
+   omissions, scope drift, contract changes and user decisions without replaying behavioral QA.
 2. **Production quality:** inspect correctness, security, compatibility, performance, operations,
    maintainability and evidence using the relevant domain references.
 
-Then run fresh verification appropriate to risk. QA PASS is evidence input, not permission to rubber-stamp.
+Then verify suspected findings at the narrowest useful scope. QA PASS is evidence input, not permission to
+rubber-stamp or a suite to replay.
 
 ## Blast-radius tracing
 
@@ -49,5 +50,6 @@ errors, unbounded resources, incorrect async/lifecycle cleanup, security boundar
 
 ## Re-review
 
-Verify the original finding, changed fix and neighboring regression. Material fixes return through QA before
-final Review. Limit repeated cycles by escalating contradictory requirements/evidence, not by approving.
+Verify the original finding, changed fix and neighboring regression. Material fixes return through affected
+QA before final Review; broaden only when contract or risk moved. Limit repeated cycles by escalating
+contradictory requirements/evidence, not by approving.

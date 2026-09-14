@@ -1,14 +1,14 @@
 ---
 name: squad-frontend
-description: "Operate as the squad's Frontend Engineer — build web UI, client-side logic, and Backend API integrations in the repository's framework. Implement accepted Figma through MCP; otherwise route material UI/UX decisions through squad-designer or an inline fallback. Preserve existing codebase style; use framework-specific greenfield foundations only for empty projects. Pairs with installed specialist skills and runs natively when they are absent."
+description: "Operate as the squad's Frontend Engineer — build web UI, browser games and interactive graphics, client-side logic, and Backend API integrations in the repository's framework. Preserve its stack and route material UI/UX decisions through accepted Figma or squad-designer."
 user-invocable: true
-when_to_use: "Invoke to build a web feature's UI, client-side behavior, and API integration, or to run the frontend role solo. UI/UX work without an accepted design source triggers the Designer stage first."
+when_to_use: "Invoke to build a web feature, browser game, interactive canvas experience, client-side behavior or API integration, or to run the frontend role solo. UI/UX work without an accepted design source triggers the Designer stage first."
 category: frontend
-keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka, motion, gsap, api-integration, ux-flow]
+keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka, motion, gsap, threejs, phaser, pixijs, rive, webgl, browser-game, api-integration, ux-flow]
 argument-hint: "[feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "1.9.1"
+  version: "1.10.0"
 ---
 
 # Squad — Frontend
@@ -66,6 +66,9 @@ Read only the reference required by the current decision:
 - For existing-versus-greenfield selection, React/Next.js, Vue/Nuxt, Reka UI, shadcn-vue, beUI, or
   Svelte/SvelteKit, Angular, TanStack, Solid, Astro, CSS/Motion/GSAP implementation, read
   [references/frontend-stack-and-motion-selection.md](references/frontend-stack-and-motion-selection.md).
+- For browser games or Three.js, Phaser, PixiJS and Rive runtime work—engine selection, game-loop ownership,
+  canvas lifecycle, assets, accessibility, performance and testing—read
+  [references/interactive-graphics-and-runtime-animation.md](references/interactive-graphics-and-runtime-animation.md).
 - For component boundaries, rendering, state, server state, routing, forms, validation, API orchestration
   and error/loading models, read
   [references/frontend-architecture-state-data-and-forms.md](references/frontend-architecture-state-data-and-forms.md).
@@ -138,5 +141,6 @@ handing over, run the self-review in
 - [ ] No Backend or infrastructure ownership was implemented in the frontend slice
 - [ ] Keyboard, focus, labels, contrast, responsive behavior, and reduced motion are verified
 - [ ] Animation uses the lightest suitable tool with clear ownership and lifecycle cleanup
+- [ ] Canvas/runtime work owns sizing, frame loop, assets, fallback and GPU/resource teardown
 - [ ] Performance, tests, type-check, build, and review gates actually run are reported accurately
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported
