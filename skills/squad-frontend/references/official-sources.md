@@ -29,7 +29,7 @@ Use primary documentation for the repository's exact versions. Do not upgrade be
 - Motion: https://motion.dev/docs
 - GSAP: https://gsap.com/docs/v3/
 - Three.js: https://threejs.org/docs/, https://threejs.org/manual/ and
-  https://threejs.org/manual/en/game.html
+  https://threejs.org/manual/#en/game
 - Phaser: https://docs.phaser.io/
 - PixiJS: https://pixijs.com/8.x/guides and https://pixijs.com/8.x/guides/getting-started/intro
 - Rive runtimes: https://rive.app/docs/runtimes/getting-started,
