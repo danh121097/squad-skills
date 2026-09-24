@@ -36,8 +36,8 @@ Designer activation resolves only those decisions and preserves the material's a
 
 ## 3. Do not trigger Designer
 
-With one build owner and no design-system change, do the presentational work inline. Continue directly
-also for logic-only work, a narrow bug fix, material that covers the screen, or a small UI change that
+With one build owner, no design-system change and no design decision left open by the triggers above, do
+the presentational work inline. Continue directly also for logic-only work, a narrow bug fix, material that covers the screen, or a small UI change that
 follows an established local pattern.
 
 ## 4. Routing

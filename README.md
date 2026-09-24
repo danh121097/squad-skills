@@ -241,18 +241,20 @@ Check a bundle against that contract:
 pnpm validate:plan plans/<YYMMDD-HHmm>-<topic>
 ```
 
-### Migrating from 0.2
+A plan written under the earlier flat layout still reads fine and no longer validates. Migrate it by moving
+each `phase-XX-*.md` into `phases/`, moving shared background into `references/` and produced work into
+`artifacts/`, renaming any `phase-XX-` artifact to drop the reserved prefix, adding the frontmatter each
+kind now states, and repointing the links in `plan.md`.
+
+### Migrating from 0.2 to 0.3
 
 - New plan directories are named `<YYMMDD-HHmm>-<topic>`; existing `<DDMMYYYY-HHmm>` directories still
   validate and need no rename.
 - `--delegate` is gone; use `--coordinate-only`. `--allow-new-threads` and the thread registry are gone;
   ask for a separate task directly when you want one.
 - QA and Code Review are no longer run on every change: `light` work closes on one combined verify pass.
-
-A plan written under the earlier flat layout still reads fine and no longer validates. Migrate it by moving
-each `phase-XX-*.md` into `phases/`, moving shared background into `references/` and produced work into
-`artifacts/`, renaming any `phase-XX-` artifact to drop the reserved prefix, adding the frontmatter each
-kind now states, and repointing the links in `plan.md`.
+- A role invoked on its own names its own gate tier and suggests the gates it did not run; `high` work
+  still runs both.
 
 ## License
 

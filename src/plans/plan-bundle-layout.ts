@@ -1,6 +1,8 @@
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
+import { parseDocument } from 'yaml';
+
 /**
  * Which contract a file in a written plan bundle answers to.
  *
@@ -46,9 +48,23 @@ const adrFileName = /^adr-(\d{3,})-([a-z0-9-]+)\.md$/;
 /** The prefix `phases/` reserves. Nothing outside it may open with one. */
 const reservedPhasePrefix = /^phase-\d/;
 const frontMatterPattern = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
-const singleLayout = /^layout:\s*['"]?single['"]?\s*$/m;
 const singlePhaseHeading = /^##\s+Phase\s+(\d+)\b/gim;
-const fencedBlock = /^(```|~~~)[\s\S]*?^\1/gm;
+// A fence opens with up to three spaces of indent and closes on a line holding
+// only a run of the same character at least as long, as in CommonMark: a
+// four-backtick example that contains a three-backtick block closes where it
+// actually closes, and a "```md" line inside it opens nothing. An unterminated
+// fence runs to the end of the file.
+const fencedBlock =
+  /^ {0,3}(`{3,}|~{3,})[^\n]*\n(?:[\s\S]*?^ {0,3}\1[`~]*[ \t]*$|[\s\S]*)/gm;
+
+/** Reads `layout` the way the front-matter check does, so a comment or quoting cannot hide it. */
+function declaresSingleLayout(frontMatter: string | null): boolean {
+  if (frontMatter === null) return false;
+
+  const document = parseDocument(frontMatter);
+
+  return document.errors.length === 0 && document.get('layout') === 'single';
+}
 
 /**
  * The most phases a single-file plan may hold. Past two, a reader needs the
@@ -102,7 +118,7 @@ export async function readPlanBundle(bundleRoot: string): Promise<PlanBundleLayo
   if (files.includes(planIndexFile)) {
     const index = await readDocument(bundleRoot, planIndexFile, 'index', null);
 
-    single = index.frontMatter !== null && singleLayout.test(index.frontMatter);
+    single = declaresSingleLayout(index.frontMatter);
     documents.push(index);
 
     if (single) reportSingleLayout(index, directories, errors);

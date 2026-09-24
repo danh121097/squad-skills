@@ -69,5 +69,5 @@ is reachable, say so under implementation alignment.
 - **CHANGES REQUESTED:** at least one blocker; return to owner, then require affected/regression QA before a
   focused re-review of the finding, delta and neighboring blast radius. Broaden only when contract or risk moved.
 - **NEEDS_EVIDENCE:** required target, QA, contract, docs or runtime evidence is unavailable. Name the exact
-  gap and smallest next action, return it to the lead, and resume Review after evidence is supplied. It is
+  gap and smallest next action, return it to the lead (or the user, run on its own), and resume Review after evidence is supplied. It is
   not eligible for done and must not be converted into a speculative finding.

@@ -17,7 +17,7 @@ import {
  * Deliberately outside `pnpm test`: the repository gate is offline, and a check
  * that depends on dozens of third-party hosts is exactly the kind of flake the
  * contract keeps out of it. It runs on pull requests as its own non-blocking
- * job, and before a promotion that consumes these sources.
+ * job.
  */
 const requestTimeoutMs = 20_000;
 
@@ -52,19 +52,19 @@ interface CitedSource {
 }
 
 interface RegistryRead {
-  cards: CitedSource[];
+  citedSources: CitedSource[];
   /** Registries that exist but yielded nothing checkable, one message each. */
   failures: string[];
 }
 
 interface LivenessResult {
-  card: CitedSource;
+  cited: CitedSource;
   detail: string;
   state: 'live' | 'dead' | 'unreachable';
 }
 
 const projectRoot = process.cwd();
-const cards: CitedSource[] = [];
+const citedSources: CitedSource[] = [];
 
 const discovery = await findSourceRegistries(projectRoot);
 
@@ -85,9 +85,9 @@ if (registryRead.failures.length > 0) {
   process.exit(1);
 }
 
-cards.push(...registryRead.cards);
+citedSources.push(...registryRead.citedSources);
 
-if (cards.length === 0) {
+if (citedSources.length === 0) {
   console.log('No cited sources found.');
   process.exit(0);
 }
@@ -97,7 +97,7 @@ if (cards.length === 0) {
  *
  * Serially each source can spend two 20-second attempts, so a catalog of this
  * size runs far past the 10-minute job — the report is killed rather than read.
- * A `Promise.all` over every card would instead open the whole catalog at once
+ * A `Promise.all` over every source would instead open the whole catalog at once
  * and manufacture rate-limit responses from the few hosts that carry most of
  * it. Six in flight keeps the wall clock inside the cap without making a host
  * answer for the pace. Widening discovery from one registry to every skill's
@@ -108,15 +108,15 @@ const requestConcurrency = 6;
 
 // Written by index, so the printed order stays the catalog order no matter
 // which host answers first. Diffing one run against the next depends on that.
-const results = new Array<LivenessResult>(cards.length);
-let nextCard = 0;
+const results = new Array<LivenessResult>(citedSources.length);
+let nextCited = 0;
 
 await Promise.all(
-  Array.from({ length: Math.min(requestConcurrency, cards.length) }, async () => {
-    for (let index = nextCard++; index < cards.length; index = nextCard++) {
-      const card = cards[index];
+  Array.from({ length: Math.min(requestConcurrency, citedSources.length) }, async () => {
+    for (let index = nextCited++; index < citedSources.length; index = nextCited++) {
+      const cited = citedSources[index];
 
-      if (card !== undefined) results[index] = await check(card);
+      if (cited !== undefined) results[index] = await check(cited);
     }
   })
 );
@@ -124,13 +124,13 @@ await Promise.all(
 let mismatches = 0;
 
 for (const result of results) {
-  const { card } = result;
-  const agrees = result.state === card.declaredStatus;
+  const { cited } = result;
+  const agrees = result.state === cited.declaredStatus;
 
   if (!agrees) mismatches += 1;
 
   console.log(
-    `${agrees ? 'ok  ' : 'FAIL'} ${result.state.padEnd(11)} expected ${card.declaredStatus.padEnd(5)} ${result.detail.padEnd(24)} ${card.url}  (${card.relativePaths.join(', ')})`
+    `${agrees ? 'ok  ' : 'FAIL'} ${result.state.padEnd(11)} expected ${cited.declaredStatus.padEnd(5)} ${result.detail.padEnd(24)} ${cited.url}  (${cited.relativePaths.join(', ')})`
   );
 }
 
@@ -144,7 +144,7 @@ console.log(
 // reachable, so one live source turned every network fault in the same run into
 // a failure, which is exactly the noise this exemption exists to prevent.
 const blocking = results.filter(
-  (result) => result.state !== result.card.declaredStatus && result.state !== 'unreachable'
+  (result) => result.state !== result.cited.declaredStatus && result.state !== 'unreachable'
 );
 
 if (blocking.length > 0) {
@@ -201,7 +201,7 @@ async function readRegistryLinks(files: string[]): Promise<RegistryRead> {
   }
 
   return {
-    cards: [...byUrl.values()].sort((left, right) => (left.url < right.url ? -1 : 1)),
+    citedSources: [...byUrl.values()].sort((left, right) => (left.url < right.url ? -1 : 1)),
     failures,
   };
 }
@@ -211,13 +211,13 @@ async function readRegistryLinks(files: string[]): Promise<RegistryRead> {
  * cancelled rather than read: the status line is the entire result, and reading
  * further would turn this into the ingestion the contract forbids.
  */
-async function check(card: CitedSource): Promise<LivenessResult> {
+async function check(cited: CitedSource): Promise<LivenessResult> {
   for (const method of ['HEAD', 'GET'] as const) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), requestTimeoutMs);
 
     try {
-      const response = await fetch(card.url, {
+      const response = await fetch(cited.url, {
         headers: requestHeaders,
         method,
         redirect: 'follow',
@@ -228,13 +228,13 @@ async function check(card: CitedSource): Promise<LivenessResult> {
 
       if (response.ok) {
         // Fragments never reach the server, so `response.url` drops the anchor
-        // on every card citing one. Comparing with the fragment stripped keeps a
+        // on every source citing one. Comparing with the fragment stripped keeps a
         // real redirect visible instead of burying it in six false ones.
-        const requested = card.url.split('#')[0];
+        const requested = cited.url.split('#')[0];
         const moved = response.url !== requested && response.url !== `${requested}#`;
 
         return {
-          card,
+          cited,
           detail: moved ? `${response.status} redirected to ${response.url}` : `${response.status}`,
           state: 'live',
         };
@@ -244,7 +244,7 @@ async function check(card: CitedSource): Promise<LivenessResult> {
       // page, so only the GET verdict is allowed to declare a source dead.
       if (method === 'GET') {
         return {
-          card,
+          cited,
           detail: `${response.status} ${response.statusText}`,
           state: accessControlledStatuses.has(response.status) ? 'unreachable' : 'dead',
         };
@@ -252,7 +252,7 @@ async function check(card: CitedSource): Promise<LivenessResult> {
     } catch (error) {
       if (method === 'GET') {
         return {
-          card,
+          cited,
           detail: `request failed: ${(error as Error).message}`,
           state: 'unreachable',
         };
@@ -262,5 +262,5 @@ async function check(card: CitedSource): Promise<LivenessResult> {
     }
   }
 
-  return { card, detail: 'no response', state: 'unreachable' };
+  return { cited, detail: 'no response', state: 'unreachable' };
 }

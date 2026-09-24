@@ -68,10 +68,11 @@ PR, deploy, mutate data or change external services unless requested or required
    coherent set of slices when it names their exact revisions. QA proves observable behavior against
    acceptance and risk; Code Review consumes that evidence and judges implementation quality, adding only
    verification needed to prove a finding. `FAIL` or `CHANGES_REQUESTED` returns to the owning role, and a
-   gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes to the lead as
-   `BLOCKED` with the evidence and two to four options for the user. `NEEDS_ENVIRONMENT` or
-   `NEEDS_EVIDENCE` returns to the lead for one resolution of the smallest missing capability, artifact,
-   access or decision; still missing, the work is blocked. Neither is eligible for `done`.
+   gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED`
+   to the lead, or to the user when run on its own, with the evidence and two to four options for the
+   user. `NEEDS_ENVIRONMENT` or `NEEDS_EVIDENCE` returns to the lead for one resolution of the smallest
+   missing capability, artifact, access or decision; still missing, the work is blocked. Neither is
+   eligible for `done`.
 5. **Integrate and verify** — merge/compose only approved slices, run appropriate combined checks, report
    docs impact, residual risk, execution mode and evidence actually obtained.
 

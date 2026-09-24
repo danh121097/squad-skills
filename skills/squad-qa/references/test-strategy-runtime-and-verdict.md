@@ -73,8 +73,9 @@ affected checks plus neighboring regression coverage; widen only when the delta 
 
 - Exact missing executable target, browser/device, service, fixture/data, artifact, access or authorization.
 - Why the missing item is required for an acceptance or material-risk decision.
-- Smallest safe next action and owner (normally the lead), plus the QA scope to resume afterward.
+- Smallest safe next action and owner (the lead, or the user when QA runs on its own), plus the QA scope to
+  resume afterward.
 
 Use `FAIL` only when evidence demonstrates a product/test defect or unmet criterion. Use
 `NEEDS_ENVIRONMENT` when required evidence cannot be obtained in the current environment. It blocks `done`,
-returns to the lead for resolution and resumes at QA; it never becomes PASS by inference.
+returns to the lead (or the user, run on its own) for resolution and resumes at QA; it never becomes PASS by inference.

@@ -205,10 +205,12 @@ export const boundaryClauses: BoundaryClause[] = [
     // not anyone asked for files. It now lives where a run that writes a plan
     // reads it: the plan contract, and the quality bar that checks the result.
     // Two phases or fewer is one file, because a directory for a one-phase
-    // plan was ceremony a reader paid to navigate.
+    // plan was ceremony a reader paid to navigate. The lead's framing fallback
+    // carries it too: a plan written without squad-product still has to pass
+    // `pnpm validate:plan`.
     statement:
       'a written plan of one or two phases is a single plan.md declaring layout: single; a larger one is one directory whose root holds only plan.md and the standard phases, artifacts, adr and references directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative',
-    files: [productPlanDocument, productQuality],
+    files: [productPlanDocument, productQuality, teamContracts],
   },
   {
     id: 'PLAN-BUNDLE-ARTIFACT-001',
@@ -359,37 +361,37 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [codeReviewSkill, devopsSkill],
   },
   {
-    id: 'HANDOFF-GATE-001',
-    // The build roles' half of the gate tiers. Stated in the tier's own terms
-    // rather than as "both gates are mandatory", which is what every slice —
-    // a one-line copy change included — used to pay. The lead and the two
-    // gates carry the full tier definition as HANDOFF-TIER-001; a build role
-    // needs only what closes its own slice.
-    statement:
-      '`light` work closes on one combined verify pass with real commands; `standard` and `high` work closes on QA, then Code Review, labelled non-independent when one session runs both',
-    files: [backendSkill, codeReviewSkill, devopsSkill, frontendSkill, mobileSkill, qaSkill],
-  },
-  {
     id: 'HANDOFF-GATE-002',
-    // HANDOFF-GATE-001 for the two roles that are themselves the gates. Install
-    // squad-qa alone and Code Review still has to run on tiered work, with
-    // nobody named to carry it; the same holds in reverse. "where its boundary
+    // The two roles that are themselves the gates, in a squad run. Install
+    // squad-qa alone in a squad and Code Review still has to run on tiered
+    // work, with nobody named to carry it; the same holds in reverse. Invoked
+    // on its own, a gate runs only its own pass (HANDOFF-SOLO-003). "where its boundary
     // allows" keeps QA out of marking work done, and "reports the gate as
     // unowned" is the honest answer when the pass cannot be carried at all.
     statement:
-      "On `standard` and `high` work both gates run: when the peer gate's skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned",
+      "in a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned",
     files: [codeReviewSkill, qaSkill],
   },
   {
     id: 'HANDOFF-TIER-001',
     // Ceremony proportional to risk. `high` is a fixed list rather than a
     // judgment, because the failure this guards against is a model filing a
-    // risky change as `light`; the lead adds "when in doubt, the higher tier"
-    // in its own gate. Bound on the two roles that decide a tier: the lead,
-    // and squad-fix, which runs as one. The gates carry HANDOFF-GATE-001.
+    // risky change as `light`; "when in doubt, the higher tier" is stated
+    // beside it. Bound on every role that can run on its own as well as the
+    // lead, because a role invoked alone names its own tier and can only file
+    // auth or migration work as `high` if it carries the list.
     statement:
       '`light` (one owner, no change to a public contract, auth, data or migration, infrastructure or a dependency) closes on one combined verify pass with real commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion) runs both independently where the runtime allows',
-    files: [fixSkill, teamSkill],
+    files: [
+      backendSkill,
+      codeReviewSkill,
+      devopsSkill,
+      fixSkill,
+      frontendSkill,
+      mobileSkill,
+      qaSkill,
+      teamSkill,
+    ],
   },
   {
     id: 'HANDOFF-LOOP-001',
@@ -399,12 +401,12 @@ export const boundaryClauses: BoundaryClause[] = [
     // unit: a third attempt on an unchanged model of the problem is churn, and
     // choosing between narrowing, reassigning and accepting risk is the user's.
     statement:
-      'a gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes to the lead as `BLOCKED` with the evidence and two to four options for the user',
+      'a gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {
     id: 'HANDOFF-GATE-003',
-    // GATE-001 and GATE-002 bind who owns a gate when a peer is missing. Neither
+    // TIER-001 and GATE-002 bind who owns a gate when a peer is missing. Neither
     // binds what closes a stage, so `squads-team` hard gate 4 and the
     // `squad-fix` gate that restates it were free to disagree on the verdict
     // names, the order, or who issues the pass — a review-before-QA rewrite, or
@@ -415,7 +417,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // producer, which a subjectless fragment left open), the order, and the two
     // verdict names. An earlier draft bound only "`PASS`, then Code Review
     // `APPROVE`"; a probe rewriting `squad-fix` to "the owning role must return
-    // `PASS`" passed it, which is the independence GATE-001 and GATE-002 exist
+    // `PASS`" passed it, which is the independence TIER-001 and GATE-002 exist
     // to protect.
     //
     // `squad-fix` was reworded to match `squads-team` rather than the reverse:
@@ -424,7 +426,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // figure moves with it.
     //
     // Only these two entrypoints state the sequence. The build roles carry
-    // HANDOFF-GATE-001 instead, which binds what closes each tier rather than
+    // HANDOFF-TIER-001 instead, which binds what closes each tier rather than
     // which verdict closes each gate.
     statement: 'must receive QA `PASS`, then Code Review `APPROVE`',
     files: [fixSkill, teamSkill],
@@ -471,8 +473,18 @@ export const boundaryClauses: BoundaryClause[] = [
     // commands and hands the gate choice back to the user in one line. `high`
     // work keeps both gates, because the risk does not shrink with the team.
     statement:
-      'invoked on its own, this role closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both gates',
+      'invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both gates',
     files: rolesWithAnImplementationSlice,
+  },
+  {
+    id: 'HANDOFF-SOLO-003',
+    // HANDOFF-SOLO-002 for the two gates. `/squad-code-review` on a bare PR has
+    // no QA run and no lead: without this it either stopped at a verdict
+    // addressed to nobody or ran QA itself. It reviews, records the missing
+    // gate as risk, and leaves the peer gate to the user.
+    statement:
+      'invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own gate: a missing earlier gate is residual risk rather than a stop, a verdict that needs evidence or an environment and a `BLOCKED` go to the user with the missing input named, and one line suggests the peer gate',
+    files: [codeReviewSkill, qaSkill],
   },
   {
     id: 'QUALITY-PREFLIGHT-001',

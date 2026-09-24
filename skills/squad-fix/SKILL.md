@@ -131,13 +131,13 @@ was. Before declaring the repair complete, run the self-review in
   `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data or
   migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes to the lead
-  as `BLOCKED` with the evidence and two to four options for the user.
+- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED`
+  to the lead, or to the user when run on its own, with the evidence and two to four options for the user.
 - Each open fork goes to the lead, or to the user when run on its own, as named options with their
   consequences, and only the user answers it.
-- Invoked on its own, this role closes `light` and `standard` work on its own verify with real commands
-  and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both
-  gates.
+- Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light`
+  and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa`
+  then `/squad-code-review`; `high` work still runs both gates.
 - An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
   stage no pass ran is never reported as run.
 

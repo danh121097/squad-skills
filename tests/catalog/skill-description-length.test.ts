@@ -37,6 +37,7 @@ describe('skill trigger length', async () => {
 
     expect(words(frontmatter.description)).toBeGreaterThan(0);
     expect(words(frontmatter.description)).toBeLessThanOrEqual(maxDescriptionWords);
+    expect(words(frontmatter.when_to_use)).toBeGreaterThan(0);
     expect(words(frontmatter.when_to_use)).toBeLessThanOrEqual(maxWhenToUseWords);
   });
 });

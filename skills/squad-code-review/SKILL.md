@@ -13,7 +13,8 @@ metadata:
 
 # Squad — Code Review
 
-Review the actual implementation for production readiness after QA has established behavioral evidence.
+Review the actual implementation for production readiness, after QA has established behavioral evidence
+in a squad run.
 Verify suspected findings before reporting them, rank actionable findings and gate `done`. Pair installed
 specialist review skills; work natively when they are absent.
 
@@ -51,8 +52,8 @@ Never expose secrets or private payloads in findings.
 5. **Gate honestly** — `APPROVE` only with no blockers; warnings and suggestions are listed but never
    request changes on their own. `CHANGES_REQUESTED` returns to owner, then affected QA and a re-review of
    only the stated findings and the fix's blast radius; `NEEDS_EVIDENCE` names the exact missing target,
-   QA, contract, docs or runtime evidence and returns to the lead. It blocks `done` without inventing a
-   defect.
+   QA, contract, docs or runtime evidence and returns to the lead, or to the user when run on its own. It
+   blocks `done` without inventing a defect.
 
 ## Conditional references
 
@@ -91,7 +92,7 @@ finding. Before issuing a verdict, run the self-review in
 ## Handoff contract
 
 - From QA, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and
-  residual risk, and whether the pass was independent. Review runs only on `PASS`.
+  residual risk, and whether the pass was independent. In a squad run, Review runs only on `PASS`.
 - From DevOps on an infrastructure change, the exact target acted on, which verification level ran —
   static, plan or deployed — and the rollback trigger and recovery path.
 - To the owning role and the lead, severity-ranked findings carrying file:line, failure condition, impact
@@ -100,12 +101,20 @@ finding. Before issuing a verdict, run the self-review in
   exists.
 - After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
   neighboring blast radius, broadening only when contract or risk changes.
-- `light` work closes on one combined verify pass with real commands; `standard` and `high` work closes on
-  QA, then Code Review, labelled non-independent when one session runs both.
-- On `standard` and `high` work both gates run: when the peer gate's skill is absent, this role runs that
-  pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned.
-- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes to the lead
-  as `BLOCKED` with the evidence and two to four options for the user.
+- In a squad run the lead names the gate tier: `light` (one owner, no change to a public contract, auth,
+  data or migration, infrastructure or a dependency) closes on one combined verify pass with real
+  commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
+  or migration, production infrastructure or secrets, data deletion) runs both independently where the
+  runtime allows.
+- Invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own
+  gate: a missing earlier gate is residual risk rather than a stop, a verdict that needs evidence or an
+  environment and a `BLOCKED` go to the user with the missing input named, and one line suggests the peer
+  gate.
+- In a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this
+  role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate
+  as unowned.
+- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED`
+  to the lead, or to the user when run on its own, with the evidence and two to four options for the user.
 - Each open fork goes to the lead, or to the user when run on its own, as named options with their
   consequences, and only the user answers it.
 - An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
@@ -114,7 +123,8 @@ finding. Before issuing a verdict, run the self-review in
 ## Completion checklist
 
 - [ ] References this task needed were read
-- [ ] Target, base, acceptance and QA evidence were resolved; QA evidence was consumed, not replayed
+- [ ] Target, base, acceptance and QA evidence were resolved; QA evidence was consumed, not replayed, or
+      its absence recorded as residual risk
 - [ ] Contracts, consumers, data/auth paths and operational blast radius were inspected
 - [ ] Each finding is verified, carries file:line, failure condition, impact and remediation, and is
       ranked by realistic impact

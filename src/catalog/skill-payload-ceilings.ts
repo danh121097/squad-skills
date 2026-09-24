@@ -31,19 +31,21 @@
  * the tasks that need it, and the median does not move at all.
  *
  * Every figure below was re-recorded on 2026-09-24, after the catalog was cut
- * down to risk-tiered gates, one-line bound handoffs and shorter references.
+ * down to risk-tiered gates, one-line bound handoffs and shorter references,
+ * then raised where every role that can run on its own took the tier list, the
+ * gates took their solo rule, and the lead's plan fallback took the layout.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2210, // was 2268
-  'squad-code-review': 2364, // was 2506
+  'squad-backend': 2258, // was 2210
+  'squad-code-review': 2506, // was 2364
   'squad-designer': 1989, // was 2064
-  'squad-devops': 2047, // was 2256
-  'squad-fix': 2642, // was 2734
-  'squad-frontend': 2419, // was 2646
-  'squad-mobile': 2138, // was 2260
+  'squad-devops': 2095, // was 2047
+  'squad-fix': 2662, // was 2642
+  'squad-frontend': 2467, // was 2419
+  'squad-mobile': 2186, // was 2138
   'squad-product': 2696, // was 3424
-  'squad-qa': 2389, // was 2524
-  'squads-team': 3226, // was 3696
+  'squad-qa': 2524, // was 2389
+  'squads-team': 3291, // was 3226
 };

@@ -38,7 +38,8 @@ visual or interaction gap returns to Designer instead of being redesigned inside
   before any other role. It declares the role capabilities each phase needs, returns the plan and stops; it
   never selects agent instances, assigns a live slice or advances a gate.
 - A design decision the user's material and the existing system leave open → Designer before
-  Frontend/Mobile; one build owner with no design-system change does the presentational work inline.
+  Frontend/Mobile. With no such decision, one build owner with no design-system change does the
+  presentational work inline.
 - Web UI/client logic/API consumption → Frontend.
 - Server API/shared contract/auth/data/server logic → Backend.
 - App UI/client logic/offline/device/API consumption → Mobile.

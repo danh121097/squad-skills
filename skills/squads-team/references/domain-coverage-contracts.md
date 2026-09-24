@@ -13,8 +13,11 @@ unverified.
 
 Resolve what the user already decided — stack, hosting, deadline, compliance, budget — before proposing
 anything. Ask only about a fork that changes the work; state an assumption for the rest and let the user
-correct it. A written plan without `squad-product` is one `plan.md`: the frame above, then a
-`## Phase N` section per phase with its roles, steps and expected evidence.
+correct it. Without `squad-product`, a written plan follows the same shape: a written plan of one or two
+phases is a single plan.md declaring layout: single; a larger one is one directory whose root holds only
+plan.md and the standard phases, artifacts, adr and references directories, with every phase file in
+phases/ named phase-XX-kebab-case-title.md and every link relative. A single file carries the frame above,
+then a `## Phase N` section per phase with its roles, steps and expected evidence.
 
 An empty repository has nothing to scout, so the stack stops being a fact to discover and becomes a framing
 output. Name target platforms, the runtime and framework per platform, and the deployment target, then hand

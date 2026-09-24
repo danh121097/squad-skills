@@ -96,6 +96,8 @@ checklist`. The catalog validator enforces the sequence.
   binds wording that has to read the same in every file that states it, checked
   by `pnpm validate`. Families:
   - `BOUNDARY-*` — who owns an artifact between the designer and the build roles.
+  - `DECISION-RECORD-*` — what a decision another role builds on must record,
+    bound on the selection references where such a choice is made.
   - `PAIRING-*` — how a role detects an installed specialist skill, which side
     is authoritative, and that an absent skill is never reported as run.
   - `HANDOFF-*` — a stage boundary: what crosses it, who owns a gate when the
@@ -106,8 +108,9 @@ checklist`. The catalog validator enforces the sequence.
     both the sending and the receiving role.
   - `PLAN-BUNDLE-*` — the shape of a written plan, bound on
     `plan-document-contract.md`, the file that owns it, and on the product
-    quality bar that checks it; the supersede rule also binds the team
-    references that record and advance a gate.
+    quality bar that checks it; the layout rule also binds the lead's framing
+    fallback, and the supersede rule the team references that record and
+    advance a gate.
   - `QUALITY-PREFLIGHT-*` — the pre-flight line the roles share.
   - `RETIRED-SPEC-*` — retired wording, failed wherever it survives.
 
@@ -163,8 +166,9 @@ checklist`. The catalog validator enforces the sequence.
   (a single `plan.md`, or `plan.md` plus `phases/`), continuous phase numbering,
   the `phase-XX-` prefix reserved to `phases/`, resolving relative links,
   frontmatter by document kind, a Code Review `APPROVE` naming the QA `PASS` it
-  followed, superseded evidence, and a phase held out of `accepted` by an open
-  checkbox or pending approval. Not part of `pnpm test`; the fixture bundles are
+  followed, superseded evidence, and a phase file held out of `accepted` by an
+  open checkbox or pending approval (a single-file plan has no phase files, so
+  this check does not reach it). Not part of `pnpm test`; the fixture bundles are
   validated through `tests/plans/`.
 - Catalog discovery: `pnpm skills:list`
 - Source liveness: `pnpm check:links` — requests every link in a skill's source

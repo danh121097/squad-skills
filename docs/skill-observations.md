@@ -95,8 +95,8 @@ form; a maintainer records confirmed ones here, newest at the bottom.
 - **Outcome:** landed 2026-09-07 as `HANDOFF-DECISION-001` at all ten entrypoints:
   each open fork goes to the lead as named options with consequences, and the
   session that can ask puts it to the user. Shortened 2026-09-24 to one line: "each open
-  fork goes to the lead as named options with their consequences, and only the
-  user answers it".
+  fork goes to the lead, or to the user when run on its own, as named options
+  with their consequences, and only the user answers it".
 
 ## 6. An external catalog read against this one — 2026-09-09
 

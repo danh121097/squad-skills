@@ -94,15 +94,24 @@ verdict, run the self-review in
 - To Code Review, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage
   and residual risk, and whether the pass was independent.
 - On `FAIL`, to the owning role: the minimal repro, expected versus actual, and the redacted artifacts.
-- On `NEEDS_ENVIRONMENT`, to the lead: the exact gap and the smallest next action.
+- On `NEEDS_ENVIRONMENT`, to the lead, or to the user when run on its own: the exact gap and the smallest
+  next action.
 - After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
   neighboring blast radius, broadening only when contract or risk changes.
-- `light` work closes on one combined verify pass with real commands; `standard` and `high` work closes on
-  QA, then Code Review, labelled non-independent when one session runs both.
-- On `standard` and `high` work both gates run: when the peer gate's skill is absent, this role runs that
-  pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned.
-- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes to the lead
-  as `BLOCKED` with the evidence and two to four options for the user.
+- In a squad run the lead names the gate tier: `light` (one owner, no change to a public contract, auth,
+  data or migration, infrastructure or a dependency) closes on one combined verify pass with real
+  commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
+  or migration, production infrastructure or secrets, data deletion) runs both independently where the
+  runtime allows.
+- Invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own
+  gate: a missing earlier gate is residual risk rather than a stop, a verdict that needs evidence or an
+  environment and a `BLOCKED` go to the user with the missing input named, and one line suggests the peer
+  gate.
+- In a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this
+  role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate
+  as unowned.
+- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED`
+  to the lead, or to the user when run on its own, with the evidence and two to four options for the user.
 - Each open fork goes to the lead, or to the user when run on its own, as named options with their
   consequences, and only the user answers it.
 - An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a

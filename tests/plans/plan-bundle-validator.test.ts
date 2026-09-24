@@ -499,6 +499,40 @@ describe('validatePlanBundle on a single-file plan', () => {
     expect(errors).toEqual([]);
   });
 
+  it('closes a fence at its own length, so a nested example stays inside it', async () => {
+    const errors = await singleFileWith(async (root) => {
+      await patch(
+        root,
+        'plan.md',
+        '## Phase 2 — Export control',
+        '````md\n```md\n## Phase 3 — Example\n```\n## Phase 4 — Example\n````\n\n## Phase 2 — Export control'
+      );
+    });
+
+    expect(errors).toEqual([]);
+  });
+
+  it('does not close a fence on a line that carries an info string', async () => {
+    const errors = await singleFileWith(async (root) => {
+      await patch(
+        root,
+        'plan.md',
+        '## Phase 2 — Export control',
+        '```\nexample\n```md\n## Phase 3 — Example\n```\n\n## Phase 2 — Export control'
+      );
+    });
+
+    expect(errors).toEqual([]);
+  });
+
+  it('reads a commented layout declaration as single', async () => {
+    const errors = await singleFileWith(async (root) => {
+      await patch(root, 'plan.md', 'layout: single', 'layout: single # one file');
+    });
+
+    expect(errors).toEqual([]);
+  });
+
   it('rejects a layout value other than single', async () => {
     const errors = await singleFileWith(async (root) => {
       await patch(root, 'plan.md', 'layout: single', 'layout: flat');

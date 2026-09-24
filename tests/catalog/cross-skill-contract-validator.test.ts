@@ -59,6 +59,7 @@ const frontendSkill = 'skills/squad-frontend/SKILL.md';
 const mobileSkill = 'skills/squad-mobile/SKILL.md';
 const productSkill = 'skills/squad-product/SKILL.md';
 const productPlanDocument = 'skills/squad-product/references/plan-document-contract.md';
+const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.md';
 const productQuality = 'skills/squad-product/references/quality-bar-and-preflight.md';
 const qaSkill = 'skills/squad-qa/SKILL.md';
 const teamSkill = 'skills/squads-team/SKILL.md';
@@ -268,7 +269,7 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
       'HANDOFF-PLAN-001': [productSkill, teamSkill],
-      'PLAN-BUNDLE-LAYOUT-001': [productPlanDocument, productQuality].sort(),
+      'PLAN-BUNDLE-LAYOUT-001': [productPlanDocument, productQuality, teamContracts].sort(),
       'QUALITY-PREFLIGHT-PLAN-001': [productPlanDocument, productQuality].sort(),
       'HANDOFF-DECISION-001': [
         backendSkill,
@@ -290,16 +291,17 @@ describe('validateCrossSkillContract', () => {
       'HANDOFF-RUNTIME-001': [backendSkill, devopsSkill],
       'HANDOFF-BUILD-001': [devopsSkill, frontendSkill, mobileSkill],
       'HANDOFF-DEPLOY-001': [codeReviewSkill, devopsSkill],
-      'HANDOFF-GATE-001': [
+      'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],
+      'HANDOFF-TIER-001': [
         backendSkill,
         codeReviewSkill,
         devopsSkill,
+        fixSkill,
         frontendSkill,
         mobileSkill,
         qaSkill,
+        teamSkill,
       ],
-      'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],
-      'HANDOFF-TIER-001': [fixSkill, teamSkill],
       'HANDOFF-LOOP-001': [codeReviewSkill, fixSkill, qaSkill, teamSkill],
       'HANDOFF-GATE-003': [fixSkill, teamSkill],
       'HANDOFF-GATE-004': [codeReviewSkill, qaSkill, teamSkill],
@@ -311,6 +313,7 @@ describe('validateCrossSkillContract', () => {
         teamSkill,
       ].sort(),
       'HANDOFF-SOLO-002': [...rolesWithAnImplementationSlice].sort(),
+      'HANDOFF-SOLO-003': [codeReviewSkill, qaSkill],
       'PLAN-BUNDLE-ARTIFACT-001': [productPlanDocument, productQuality].sort(),
       'PLAN-BUNDLE-SUPERSEDE-001': [productPlanDocument, teamCoordination, teamPipeline].sort(),
       'QUALITY-PREFLIGHT-001': preflightRoles,
@@ -472,8 +475,8 @@ describe('handoff contract family', () => {
   });
 
   // The gate sequence was unbound until the handoff-artifact decision looked for
-  // what protected it and found nothing did. GATE-001 binds that both gates are
-  // mandatory; this binds who issues the pass, which verdict closes each gate,
+  // what protected it and found nothing did. TIER-001 binds which tiers run both
+  // gates; this binds who issues the pass, which verdict closes each gate,
   // and in what order.
   //
   // The shipped set is already validated against the working tree above, so
@@ -587,11 +590,13 @@ describe('handoff contract family', () => {
     expect(result.errors).toEqual([]);
   });
 
-  it('binds the written plan shape to the plan contract and its quality bar', async () => {
+  it('binds the written plan shape to the plan contract, its quality bar and the lead fallback', async () => {
     const planBundle = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-LAYOUT-001');
     if (!planBundle) throw new Error('PLAN-BUNDLE-LAYOUT-001 is missing from shipped clauses.');
 
-    expect([...planBundle.files].sort()).toEqual([productPlanDocument, productQuality].sort());
+    expect([...planBundle.files].sort()).toEqual(
+      [productPlanDocument, productQuality, teamContracts].sort()
+    );
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [planBundle],
