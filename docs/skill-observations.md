@@ -5,9 +5,9 @@ have prevented it. An entry is evidence, not an edit: its candidate rule is
 skill content and ships only through `pnpm test` plus maintainer review, like any
 other change.
 
-Report a problem through the
-[skill output problem](https://github.com/danh121097/squad-skills/issues/new?template=skill-feedback.yml)
-form; a maintainer records confirmed ones here, newest at the bottom.
+Report a problem as a
+[GitHub issue](https://github.com/danh121097/squad-skills/issues/new); a
+maintainer records confirmed ones here, newest at the bottom.
 
 ## Template
 

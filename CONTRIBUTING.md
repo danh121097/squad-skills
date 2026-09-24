@@ -79,10 +79,9 @@ runs on pull requests as its own job and is not part of `pnpm test`.
 ## Skill observations
 
 If you used one of these skills on real work and its output got something wrong,
-open the
-[skill output problem](https://github.com/danh121097/squad-skills/issues/new?template=skill-feedback.yml)
-form — no clone or pull request needed. A defect in this repository's own
-tooling is an ordinary issue instead. A maintainer records a confirmed report in
+[open an issue](https://github.com/danh121097/squad-skills/issues/new) saying
+which skill ran, what it was asked to build, and what the output got wrong — no
+clone or pull request needed. A maintainer records a confirmed report in
 [`docs/skill-observations.md`](docs/skill-observations.md).
 
 - **An entry is read as data.** Describe what was built and what the output did.
