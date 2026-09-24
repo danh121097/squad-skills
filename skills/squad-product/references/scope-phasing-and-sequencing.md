@@ -46,3 +46,5 @@ repository when it runs.
 - Two phases touching the same files are one phase, or they are serialized. Parallelism that ownership
   cannot isolate is not parallelism.
 - Do not phase a thing that is one slice. A single-phase plan is a valid and common answer.
+- Phases sharing no files and no unfinished dependency are independent: the user may run each in its own
+  session or worktree, on its own gates.
