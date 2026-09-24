@@ -119,6 +119,6 @@ verify removal by grepping its marker.
 ## 7. Retry discipline
 
 If verification fails, compare new evidence with the root-cause model before another edit. Re-diagnose when
-the prediction was wrong. After three cause-aligned attempts fail, stop: list each attempted cause/fix and
-result, question the architecture or assumption, and ask for the smallest decision/evidence needed. Do not
-continue random churn.
+the prediction was wrong. The loop cap in the entrypoint's handoff contract applies: after three
+cause-aligned attempts fail, stop, list each attempted cause/fix and result, question the architecture or
+assumption, and put two to four options to the lead.

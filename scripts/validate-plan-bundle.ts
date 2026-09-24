@@ -9,7 +9,7 @@ import { validatePlanBundle } from '../src/plans/plan-bundle-validator.ts';
  *
  * The bundle is the user's output and usually lives in the user's repository,
  * so this takes a path rather than scanning a fixed location. The one bundle
- * this repository ships is the worked example under `evals/fixtures/`, which
+ * this repository ships is the worked example under `tests/fixtures/`, which
  * `pnpm test` validates through the unit suite.
  */
 const target = process.argv[2];
@@ -29,5 +29,5 @@ if (result.errors.length > 0) {
 }
 
 console.log(
-  `Plan bundle ${target} is consistent: ${result.checkedDocuments.length} documents checked.`
+  `Plan bundle ${target} is consistent: ${result.checkedDocuments.length} document${result.checkedDocuments.length === 1 ? '' : 's'} checked.`
 );

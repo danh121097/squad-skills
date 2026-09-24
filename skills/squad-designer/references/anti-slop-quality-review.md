@@ -1,106 +1,47 @@
 # Anti-slop quality review
 
-Read this reference for material UI creation/redesign, a visual audit, or final design pre-flight. It
-defines how to use [Taste Skill](https://www.tasteskill.dev/) without letting a generic framework override
-the product's actual design authority.
+Read for material UI creation or redesign, a visual audit, or the final design pre-flight.
 
 ## Authority order
 
 Resolve conflicts in this order:
 
 1. Explicit user decisions and accepted product requirements.
-2. Accepted Figma design intent.
-3. Existing repository components, tokens, content density, and interaction language.
-4. Task-specific UX evidence from real products and current research.
-5. Taste Skill and this anti-slop checklist as critique layers.
+2. Material the user supplied — screenshot, link, brief, accepted Figma. "Make it like this" is accepted
+   intent; "for reference" is direction; an unclear one is a single fork to the lead.
+3. Existing repository components, tokens, content density and interaction language.
+4. Task-specific UX evidence from real products.
+5. Critique layers: [Taste Skill](https://www.tasteskill.dev/), `ui-ux-pro-max`, and this checklist.
 
-Taste Skill may identify generic output or missing craft. It must not silently redesign accepted Figma,
-replace a working design system, introduce a fashionable stack, or expand scope.
-
-## Designer mindset
-
-- Start from product purpose, content, audience, and the existing system; style is a consequence.
-- Distinguish novelty from differentiation and familiarity from generic output; prefer one strong
-  design thesis with coherent constraints over a collage of trends.
-- Evaluate the whole flow over isolated hero frames; motion is information in time — spatial
-  relationship, causality, feedback, continuity.
-- Treat accessibility, performance, localization, and implementation cost as design materials.
-- Preserve verified user and product decisions; make trade-offs visible when evidence conflicts.
+A critique layer may name generic output or missing craft. It never silently redesigns the user's material,
+replaces a working design system, introduces a fashionable stack or expands scope. Inspect the live skill
+catalog for an installed Taste Skill variant and load only the one the task needs; never auto-install it,
+and never claim it ran when only this checklist did. Skip critique layers for logic-only changes, narrow
+fixes and exact local-pattern extensions unless an audit was asked for.
 
 ## Know the current vocabulary
 
-Rejecting trends requires knowing them. Stay current on how contemporary products actually handle
-type scale and weight, spacing rhythm, surface and elevation treatment, component anatomy, motion
-character, and emerging interaction patterns — including agent-native primitives such as streaming
-output, tool-call display, and approval surfaces. Use that vocabulary to recognize when a screen
-reads as dated, when a convention has genuinely shifted, and to name precisely what a trending
-reference is doing. Knowing the vocabulary is not adopting it: currency informs the critique below;
-product fit decides what ships. When `ui-ux-pro-max` is installed it carries that vocabulary locally —
-style, palette, typography, and UX-guideline data — so name the direction against its data instead of
-recalling trends from memory.
+Rejecting trends requires knowing them: current type scale and weight, spacing rhythm, surface and
+elevation, component anatomy, motion character, and agent-native primitives such as streaming output,
+tool-call display and approval surfaces. Knowing the vocabulary is not adopting it; product fit decides
+what ships. When `ui-ux-pro-max` is installed, name the direction against its data rather than memory.
 
-## Critique-layer routing
+## Pre-flight
 
-- Consult `ui-ux-pro-max` data for style selection, color and type systems, interaction states, and
-  UX-guideline checks; pair Taste Skill for generic-output critique. Read `ui-ux-pro-max` as reference
-  and keep the design decision here — do not hand it the screen. Both sit at authority level 5: they
-  sharpen the direction, they never override accepted Figma, the existing system, or WCAG 2.2.
-- Inspect the live skill catalog first. When a compatible Taste Skill capability is already installed,
-  load only the variant relevant to the task—for example general frontend taste, a model-specific variant,
-  or redesign audit.
-- Treat the website's package names and versions as changing external information. Check current docs when
-  exact behavior matters; do not assume a previously seen variant is stable.
-- Never auto-install Taste Skill. If absent, apply the manual pre-flight below. Suggest installation only
-  when repeated high-fidelity work would materially benefit, then wait for explicit approval.
-- Do not activate it for logic-only changes, narrow bug fixes, or exact local-pattern extensions unless a
-  visual audit is explicitly requested.
+Run it on the rendered output, not on the code, and revise before handoff:
 
-## Manual pre-flight
-
-Pass every applicable check honestly:
-
-### Brief and direction
-
-- The direction follows industry, audience, task, content, brand, and desired mood.
-- The screen has a clear design thesis; it is not a generic dashboard/landing composition.
-- Existing-project redesigns preserve what already works and name every modernization lever.
-
-### Hierarchy and composition
-
-- Typography, spacing, grouping, alignment, and contrast create hierarchy before decoration.
-- Content density matches the workflow; whitespace is neither empty spectacle nor cramped residue.
-- Layout has intentional rhythm and variation without random asymmetry or novelty.
-- Primary, secondary, and destructive actions are unmistakable.
-
-### System coherence
-
-- Components share tokens, anatomy, variants, radii, borders, shadows, icons, and state behavior.
-- New blocks extend one coherent system instead of forming isolated showcase pieces.
-- Realistic content and long/short values do not collapse the composition.
-- Content is data, not decoration: per-item metadata is authored per item, counts follow the data, and
-  text containers grow with their content. One placeholder repeated across a list — the same read time on
-  every article, a fixed avatar count whatever the party size, a `max-height` that crops the longest real
-  string — is the tell that the composition was designed against one sample and never a second.
-
-### Anti-patterns
-
-- No gratuitous gradient, glow, glass, bento grid, pill, card stack, oversized heading, or floating blob.
-- No decorative icon, illustration, chart, or animation without product meaning.
-- No copied composition, brand asset, or distinctive interaction from research references.
-- No trendy effect that weakens readability, navigation, accessibility, or performance.
-
-### Interaction and motion
-
-- Motion explains space, feedback, state, or continuity and uses the lightest suitable tool.
-- Frequent actions feel immediate; expressive choreography is reserved for meaningful moments.
-- Focus, keyboard, touch, interruption, loading, reduced-motion, and error/recovery behavior are designed.
-
-### Final proof
-
-- Responsive layouts and dark/light themes preserve hierarchy when both themes are in scope.
-- WCAG 2.2 checks, realistic states, and implementation mapping are complete.
-- The emitted components are complete enough that a build role wires behavior without filling visual
-  gaps with generic AI defaults.
-
-Record failed checks and revise the components before handoff. Do not claim Taste Skill ran when only this
-manual fallback was used.
+1. The direction follows the product's audience, task, content and brand — one design thesis, not a
+   generic dashboard or landing composition.
+2. A redesign keeps what already works and names each modernization lever.
+3. Typography, spacing, grouping and contrast carry hierarchy before any decoration.
+4. Primary, secondary and destructive actions are unmistakable.
+5. Components share tokens, anatomy, radii, borders, shadows, icons and state behavior.
+6. Content is data: per-item metadata is authored per item, counts follow the data, and containers grow
+   with the longest real string rather than one repeated placeholder.
+7. No gradient, glow, glass, bento grid, pill, card stack, oversized heading, blob, icon, chart or
+   animation without product meaning, and nothing copied from a reference.
+8. Motion explains space, feedback, state or continuity; frequent actions feel immediate.
+9. Focus, keyboard, touch, loading, error and reduced-motion behavior are designed, not defaulted.
+10. The measure loop in
+    [design-system-ux-accessibility-and-handoff.md](design-system-ux-accessibility-and-handoff.md) came
+    back clean, or what remains is recorded.

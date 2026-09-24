@@ -15,10 +15,12 @@ Motion ownership follows authorship: whoever writes the animation code owns its 
 teardown, and reduced-motion fallback. Verify designer-authored motion against real device behavior;
 re-own it only when you rewrite it.
 
-- Treat accepted Figma as design intent and map it to existing app components and platform conventions.
-- Trigger `squad-designer` for new/redesigned UX, missing responsive/adaptive behavior, interaction,
-  accessibility, states, or cross-screen component language.
-- Skip Designer for logic-only work, narrow bugs, complete accepted designs, and exact local patterns.
+- Treat the user's material — screenshot, link, brief or accepted Figma — as design intent and map it to
+  existing app components and platform conventions.
+- Trigger `squad-designer` only for design decisions the material and the existing system leave open:
+  new UX, adaptive behavior, interaction, accessibility, states, or cross-screen component language.
+- Skip Designer for logic-only work, narrow bugs, material that covers the screen, exact local patterns,
+  and a single build owner with no design-system change — that owner does the presentational work.
 - If Designer is unavailable, inspect the codebase, research task-specific mobile flows when needed, then
   build the presentational components inline — hierarchy, navigation surface, states, platform adaptation
   and accessibility — before wiring behavior into them.

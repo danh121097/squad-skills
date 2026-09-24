@@ -1,7 +1,6 @@
 # Mobile official sources
 
-Use current primary docs for exact framework, OS, SDK and store requirements. Never trust hard-coded target
-SDK/store dates from an older skill.
+Live docs for framework, OS, SDK and store requirements; never a hard-coded SDK or store date.
 
 ## Cross-platform
 
@@ -41,5 +40,4 @@ SDK/store dates from an older skill.
 - Fastlane: https://docs.fastlane.tools/
 - Appium: https://appium.io/docs/en/latest/
 
-Check package/plugin maintenance, platform support and native source before adoption. Store and SDK policy
-is time-sensitive; verify live immediately before release work.
+Check a package's maintenance, platform support and native source before adoption; re-verify store policy before release.

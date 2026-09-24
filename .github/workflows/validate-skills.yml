@@ -96,7 +96,7 @@ jobs:
             --target "$GITHUB_SHA" \
             --generate-notes
 
-  # Reports a knowledge card whose source has moved or gone. Kept out of the
+  # Reports a source-registry link that has moved or gone. Kept out of the
   # gate above because it depends on third-party hosts: a slow documentation
   # site must not fail a contributor's pull request, and `pnpm test` stays
   # offline and deterministic. It reads status codes only and never a body.
@@ -106,7 +106,7 @@ jobs:
   # contributor whose change had nothing to do with it. On the weekly schedule it
   # is allowed to fail, because a green run nobody is notified about is the same
   # as not checking at all.
-  knowledge-sources:
+  source-links:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -130,5 +130,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Report knowledge-card source liveness
-        run: pnpm evals:links
+      - name: Report source-registry liveness
+        run: pnpm check:links

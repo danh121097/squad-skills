@@ -34,6 +34,7 @@ Pass every applicable check honestly.
 - Every finding names the input or state that triggers it and the line where behavior goes wrong.
 - Anything unproven is a question or `NEEDS_EVIDENCE`, not a defect stated with certainty.
 - A cheap check was run where one existed, and a claim it contradicts was dropped rather than softened.
+- A finding in an unfamiliar runtime cites that ecosystem's current documentation or an executed check.
 - A user decision is surfaced with its trade-off, not reversed inside a finding.
 
 ### Severity and shape
@@ -42,6 +43,8 @@ Pass every applicable check honestly.
 - Each finding carries file:line, failure condition, impact and one concrete remediation.
 - Findings are deduplicated to one per cause, with the affected locations listed under it.
 - Implementation alignment and production quality are ranked as separate lists; neither is folded into the other.
+- Warnings and suggestions never request changes on their own; tests, docs, rollout and migration
+  implications are covered where they apply.
 
 ## Proof to hand over
 

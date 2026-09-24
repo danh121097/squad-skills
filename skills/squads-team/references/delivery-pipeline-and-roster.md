@@ -37,13 +37,14 @@ visual or interaction gap returns to Designer instead of being redesigned inside
 - Idea, outcome or vague ask carrying no checkable acceptance criteria, or an empty repository → Product
   before any other role. It declares the role capabilities each phase needs, returns the plan and stops; it
   never selects agent instances, assigns a live slice or advances a gate.
-- Material visual/UX/Figma work → Designer before Frontend/Mobile.
+- A design decision the user's material and the existing system leave open → Designer before
+  Frontend/Mobile; one build owner with no design-system change does the presentational work inline.
 - Web UI/client logic/API consumption → Frontend.
 - Server API/shared contract/auth/data/server logic → Backend.
 - App UI/client logic/offline/device/API consumption → Mobile.
 - CI/container/IaC/cloud/deploy/observability → DevOps.
-- Completed implementation → QA.
-- QA PASS → Code Review.
+- Completed `standard` or `high` implementation → QA; QA PASS → Code Review. `light` closes on the
+  owner's combined verify.
 
 Do not spawn roles with no real slice. Split cross-role work by contract boundary. Backend publishes the
 shared contract; clients consume it. Contract mismatch returns to Backend instead of being reimplemented
@@ -53,66 +54,55 @@ inside clients.
 
 ```text
 [Diagnose first for bugs] → [Design when needed] → [Plan approval when requested]
-→ IMPLEMENT → QA → REVIEW → INTEGRATE → done
+→ IMPLEMENT → verify by tier → INTEGRATE → done
 ```
+
+The lead names the gate tier in one line before building. `light` is one owner and no change to a public
+contract, auth, data or migration, infrastructure or a dependency; the owner closes it with one combined
+verify pass — the relevant build, type, lint and test commands, the behavior observed, and a self-review of
+the diff — labelled non-independent. `standard` is the default and runs QA then Code Review, as logical
+passes when one session runs both. `high` is a fixed list, not a judgment — auth or permissions, payment,
+data or migration, production infrastructure or secrets, data deletion — and runs both as independent agents
+where the runtime allows. When in doubt, take the higher tier.
 
 Hard rules:
 
-- Build role reports completion but never self-approves.
-- QA `PASS` advances; `FAIL` returns to owning build role with minimal repro.
-- QA `NEEDS_ENVIRONMENT` returns to the lead for the smallest missing target, artifact, access or authority;
-  QA resumes after resolution. It never becomes an inferred pass.
-- Code Review runs only after QA PASS.
+- Build role reports completion but never self-approves a `standard` or `high` slice.
+- QA `PASS` advances; `FAIL` returns to owning build role with minimal repro. Code Review runs only after
+  QA PASS.
 - `CHANGES_REQUESTED` returns to owner, then requires affected/regression QA and focused Review rerun;
-  broaden either pass only when the changed contract or risk surface requires it.
-- `NEEDS_EVIDENCE` returns to the lead for the exact missing review/QA/contract/runtime evidence; Review
-  resumes after it is supplied.
-- No slice or integrated result is done without PASS then APPROVE.
-- If a `NEEDS_*` gap cannot be resolved within scope, stop as blocked and name the next action; do not mark
-  the slice done and do not mislabel the gap as a product defect.
+  broaden either pass only when the changed contract or risk surface requires it. A warning or suggestion
+  is listed but never requests changes on its own.
+- Each gate unit returns to its owner at most twice. A third `FAIL` or `CHANGES_REQUESTED` stops the loop:
+  the lead receives it as `BLOCKED` with the evidence and puts two to four options to the user.
+- `NEEDS_ENVIRONMENT` or `NEEDS_EVIDENCE` returns to the lead for one resolution of the exact missing
+  target, artifact, access or evidence, then the gate resumes. Never an inferred pass. Still missing, stop
+  as blocked with the next action; do not mislabel the gap as a product defect.
+- No slice or integrated result is done without its tier's verify: PASS then APPROVE above `light`.
 - A change to structure or contract after a gate marks the recorded verdict superseded and requires QA then
   Code Review again. This holds whether the verdict lives in a prose handoff or in a written plan bundle.
 - QA never edits production implementation; Reviewer never implements fixes.
 
 In single-session mode, these are separate logical passes and the reduced independence must be disclosed.
 
-## 4. Inline high-quality role contracts
-
-Use only when the named role skill is unavailable:
-
-- **Designer:** accepted Figma/codebase first; research only when needed; build presentational components
-  with complete states, responsive behavior, tokens, motion and accessibility; no behavior wiring.
-- **Frontend:** preserve repo stack; model API/permissions/states before UI; implement client only; verify
-  type/lint/build/tests/browser/a11y/performance as applicable.
-- **Backend:** contract and data safety first; validate/authz at boundaries; reversible migrations; threat
-  pass and unit/integration/contract evidence.
-- **Mobile:** preserve app/platform patterns; model lifecycle/offline/sync/security; consume APIs; verify
-  realistic simulator/device targets and disclose gaps.
-- **DevOps:** resolve exact environment/authority; plan before apply; reproducible artifacts, least
-  privilege, observability and rollback; separate static/plan/live evidence.
-- **QA:** map observable behavior under acceptance/risk to deterministic evidence; no implementation edits;
-  PASS/FAIL/NEEDS_ENVIRONMENT with repro or exact missing target plus residual risk.
-- **Code Review:** consume QA evidence; inspect implementation quality and blast radius; verify findings
-  narrowly; severity + file:line + remediation; advisory
-  APPROVE/CHANGES REQUESTED/NEEDS_EVIDENCE.
-
-These summaries are routing reminders, not sufficient domain knowledge. Read the full role section in
-`domain-coverage-contracts.md` and consult current primary docs for the actual stack.
-
-## 5. Integration
+## 4. Integration
 
 The lead resolves contract and merge conflicts under explicit ownership, runs combined relevant checks,
-and distinguishes per-slice success from integrated success. On an empty repository the lead owns the root
-workspace layout — package boundaries, task runner, shared TS and lint base — since that is what makes one
-owner per file assignable; each package inside it is scaffolded by its layer's role. Update durable docs only for user-visible
-behavior, setup/commands, configuration, contracts, architecture, security or operations changes.
+and distinguishes per-slice success from integrated success. Check every seam on the artifacts rather than
+the reports: what one slice supplies against what the other consumes — an env var one bakes and the other
+reads, a route, a schema, a port. Green gates on both sides do not prove the seam. On an empty repository
+the lead owns the root workspace layout — package boundaries, task runner, shared TS and lint base — since
+that is what makes one owner per file assignable; each package inside it is scaffolded by its layer's role.
+Update durable docs only for user-visible behavior, setup/commands, configuration, contracts, architecture,
+security or operations changes.
 
 Commit, push, PR, deploy and external tracking are separate authorizations. Do not infer them from a
 request to implement or orchestrate.
 
-## 6. Final report
+## 5. Final report
 
-Include:
+The report is as long as the work. A `light` result is three lines: the outcome, the verify commands that
+ran, and the residual risk. A `standard` or `high` result includes:
 
 - outcome and acceptance result;
 - execution mode and whether gates were independent agents or single-session passes;

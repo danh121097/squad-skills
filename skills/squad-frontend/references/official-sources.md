@@ -1,6 +1,6 @@
 # Frontend official sources
 
-Use primary documentation for the repository's exact versions. Do not upgrade because a newer guide exists.
+Docs for the repository's exact versions; a newer guide is no reason to upgrade.
 
 ## Frameworks and rendering
 
@@ -12,8 +12,8 @@ Use primary documentation for the repository's exact versions. Do not upgrade be
 - Nuxt: https://nuxt.com/docs
 - Svelte/SvelteKit: https://svelte.dev/docs
 - Angular: https://angular.dev/
-- TanStack: https://tanstack.com/, React Query https://tanstack.com/query/latest/docs/framework/react/overview,
-  and Vue Query https://tanstack.com/query/latest/docs/framework/vue/overview
+- TanStack: https://tanstack.com/
+- TanStack Query (React/Vue): https://tanstack.com/query/latest/docs/framework/react/overview and https://tanstack.com/query/latest/docs/framework/vue/overview
 - Solid: https://docs.solidjs.com/
 - Astro: https://docs.astro.build/
 - Qwik: https://qwik.dev/docs/
@@ -24,18 +24,14 @@ Use primary documentation for the repository's exact versions. Do not upgrade be
 - shadcn/ui: https://ui.shadcn.com/docs
 - Reka UI: https://reka-ui.com/docs/overview/introduction
 - shadcn-vue: https://www.shadcn-vue.com/docs/introduction
-- beUI (preferred optional source; verify live source/dependencies): https://beui.dev/docs/ai-agents and
-  https://beui.dev/components/motion
+- beUI (preferred optional; verify source and dependencies live): https://beui.dev/docs/ai-agents and https://beui.dev/components/motion
 - Motion: https://motion.dev/docs
 - GSAP: https://gsap.com/docs/v3/
-- Three.js: https://threejs.org/docs/, https://threejs.org/manual/ and
-  https://threejs.org/manual/#en/game
+- Three.js: https://threejs.org/docs/, https://threejs.org/manual/ and https://threejs.org/manual/#en/game
 - Phaser: https://docs.phaser.io/
 - PixiJS: https://pixijs.com/8.x/guides and https://pixijs.com/8.x/guides/getting-started/intro
-- Rive runtimes: https://rive.app/docs/runtimes/getting-started,
-  https://rive.app/docs/runtimes/web/web-js,
-  https://rive.app/docs/runtimes/web/rive-parameters and
-  https://rive.app/docs/runtimes/web/low-level-api-usage
+- Rive runtimes: https://rive.app/docs/runtimes/getting-started
+- Rive web: https://rive.app/docs/runtimes/web/web-js, https://rive.app/docs/runtimes/web/rive-parameters and https://rive.app/docs/runtimes/web/low-level-api-usage
 - Tailwind CSS: https://tailwindcss.com/docs
 - React Hook Form: https://react-hook-form.com/get-started
 - Zod: https://zod.dev/
@@ -56,5 +52,4 @@ Use primary documentation for the repository's exact versions. Do not upgrade be
 - Testing Library: https://testing-library.com/docs/
 - axe-core: https://github.com/dequelabs/axe-core
 
-When behavior is framework-adapter-specific, read that adapter's docs rather than transferring React rules
-to Vue/Svelte/Angular or vice versa.
+Read the matching adapter's docs; never transfer React rules to Vue, Svelte or Angular, or back.

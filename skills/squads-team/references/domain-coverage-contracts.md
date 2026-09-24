@@ -13,7 +13,8 @@ unverified.
 
 Resolve what the user already decided — stack, hosting, deadline, compliance, budget — before proposing
 anything. Ask only about a fork that changes the work; state an assumption for the rest and let the user
-correct it.
+correct it. A written plan without `squad-product` is one `plan.md`: the frame above, then a
+`## Phase N` section per phase with its roles, steps and expected evidence.
 
 An empty repository has nothing to scout, so the stack stops being a fact to discover and becomes a framing
 output. Name target platforms, the runtime and framework per platform, and the deployment target, then hand
@@ -23,8 +24,8 @@ decision another role implements records what would reopen it, not only what was
 
 ## Designer
 
-Must cover user/job/context, IA/flow and recovery, accepted Figma/repository design authority, task-specific
-visual and real-product UX research, design system tokens/components, all data/interaction states,
+Must cover user/job/context, IA/flow and recovery, design authority in order (the user's material, the
+repository system, research for the gap only), design system tokens/components, all data/interaction states,
 responsive/adaptive/i18n, WCAG/platform accessibility, motion/reduced motion, and anti-slop critique.
 The designer hands over presentational component code, not a written spec; state, data fetching, API
 integration, routing, forms submission, and platform lifecycle stay with the build role.

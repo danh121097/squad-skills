@@ -1,7 +1,6 @@
 # DevOps official sources
 
-Use current provider/tool docs for exact versions, quotas, defaults and CLI syntax. Do not execute examples
-without resolving target and authority.
+Docs for exact versions, quotas, defaults and CLI syntax; resolve target and authority before running an example.
 
 ## Containers and orchestration
 
@@ -54,5 +53,4 @@ without resolving target and authority.
 - NIST SSDF: https://csrc.nist.gov/Projects/ssdf
 - CIS Benchmarks: https://www.cisecurity.org/cis-benchmarks
 
-Provider permissions, prices, limits, store regions and product status are time-sensitive; verify live at
-the moment of planning/deployment.
+Permissions, prices, limits and regions change; verify live when planning or deploying.

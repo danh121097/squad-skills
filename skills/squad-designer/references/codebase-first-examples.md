@@ -3,20 +3,19 @@
 Read the example closest to the current stack and platform. These demonstrate decision
 priorities, not fixed visual templates.
 
-## Example 0: Accepted Figma design exists
+## Example 0: The user supplied the design
 
-**Request:** Implement a responsive billing screen from an approved Figma frame.
+**Request:** "Make the pricing page like this" with a screenshot, plus a link to a competitor's live
+checkout "for reference".
 
 **Designer response:**
 
-- Inspect the authoritative frame, linked components, variants, variables, Auto Layout,
-  constraints, and prototype interactions through Figma MCP.
-- Preserve the approved hierarchy and art direction. Map Figma components to repository
-  components and semantic tokens; do not redesign the screen with beUI.
-- Use another reference only for a missing interaction/state, kept consistent with the Figma
-  language.
-- Report missing mobile behavior, error/loading states, or codebase conflicts instead of
-  silently inventing them.
+- The screenshot is accepted intent: keep its hierarchy, grouping and emphasis, mapped onto repository
+  components and semantic tokens. With an accepted Figma frame instead, inspect frames, variants,
+  variables and Auto Layout through Figma MCP to the same end.
+- The link is direction only: take its plan-comparison flow, never its brand, copy or assets.
+- Research only what neither shows — the narrow-viewport layout and the loading and error states — and
+  report a conflict with the codebase instead of silently inventing around it.
 
 ## Example 1: No Figma; existing React/Next.js application
 
@@ -54,20 +53,7 @@ scale, and a shared `motion-tokens.ts`; it lacks a compact animated filter switc
 - Define reusable field, step shell, action bar, and feedback variants. OpenUI stays out of
   scope unless the flow itself contains model-generated UI.
 
-## Example 3: No Figma; greenfield Vue/Nuxt product
-
-**Request:** Establish the first reusable components for a new Nuxt application.
-
-**Designer response:**
-
-- Establish the same semantic token foundation, then use Reka UI as the accessible headless base for
-  dialogs, popovers, menus, tabs, focus management, and keyboard behavior.
-- Want shadcn-like styled open-code components? Use shadcn-vue on top of Reka UI rather than styling
-  every primitive ad hoc.
-- Use Motion for Vue (`motion-v`) for layout continuity and coordinated enter/exit; keep simple hover
-  and color transitions in CSS; reserve GSAP for genuinely complex timelines.
-
-## Example 4: Existing Vue/Nuxt application
+## Example 3: Existing Vue/Nuxt application
 
 **Request:** Bring a beUI-style morphing action panel into a Nuxt product.
 
@@ -83,7 +69,7 @@ React runtime.
   existing transition utility. No React, no parallel tokens, no new motion library.
 - Define a reduced-motion version using instant layout plus short opacity feedback.
 
-## Example 5: Small UI change that needs no redesign
+## Example 4: Small UI change that needs no redesign
 
 **Request:** Add an error message below an existing email field.
 
@@ -94,7 +80,7 @@ React runtime.
 - Do not consult beUI, add a component, or add animation unless the local field pattern
   already includes it.
 
-## Example 6: Existing React Native application
+## Example 5: Existing React Native application
 
 **Request:** Design a transaction row with an expandable detail state.
 
@@ -107,7 +93,7 @@ React runtime.
 - Honor reduce-motion, 44pt/48dp targets, and a grouped `accessibilityLabel`; state that
   verification was compile plus partial render, never a full render gate.
 
-## Example 7: Tablet split-view adaptation
+## Example 6: Tablet split-view adaptation
 
 **Request:** Adapt a settings screen into a two-pane tablet layout.
 

@@ -5,15 +5,10 @@ browser/device/test tooling, Git history, CI or provider access is in question.
 
 ## Specialist skill pairing
 
-Detect specialist skills once per task by inspecting the live skill catalog for the capabilities
-below.
-
-- **Installed** — read this skill's task-relevant references first, then pair the phase-matched
-  specialist skill with this role's contract so it accelerates the phase. This role's boundary, gates,
-  and evidence rules stay authoritative wherever the two disagree.
-- **Absent** — run the native fallback for the same phase at the same standard.
-
-Never auto-install a specialist skill, and never report a skill as run when it does not exist.
+Pair a specialist skill found by inspecting the live skill catalog for the capabilities below; this
+role's boundary, gates, and evidence rules stay authoritative wherever the two disagree. When it is
+absent, run the native fallback at the same standard; never auto-install one, and never report a skill as
+run when it does not exist.
 
 ## Rules
 
@@ -58,8 +53,8 @@ replacement for framework/provider knowledge.
   unavailable rather than inventing an introducer.
 - **No CI/provider access:** validate configuration locally/static where possible; do not claim pipeline or
   deployed state. Request the smallest safe log/status/artifact when required.
-- **No multi-agent runtime:** run Build → QA → Review as distinct passes. State that gates are logical, not
-  independent-agent judgments.
+- **No multi-agent runtime:** where the tier requires gates, run Build → QA → Review as distinct passes.
+  State that gates are logical, not independent-agent judgments.
 
 Track task-owned processes, ports, watchers, browser/device sessions, tunnels, worktrees and temporary
 resources. Reuse safe existing project processes; stop only what this run created or clearly owns.

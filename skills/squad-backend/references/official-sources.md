@@ -1,7 +1,6 @@
 # Backend official sources
 
-Use current primary documentation for the repository's exact versions. This index is a routing surface,
-not permission to upgrade dependencies.
+Docs for the repository's exact versions; never permission to upgrade a dependency.
 
 ## Runtimes and frameworks
 
@@ -52,5 +51,4 @@ not permission to upgrade dependencies.
 - Google SRE books: https://sre.google/books/
 - Twelve-Factor App: https://12factor.net/
 
-When sources disagree, follow the deployed framework/provider version and the more authoritative standard;
-record the decision and date checked.
+On conflict, follow the deployed version and the more authoritative standard; record the date checked.

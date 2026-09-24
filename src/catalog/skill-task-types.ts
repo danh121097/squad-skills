@@ -20,13 +20,9 @@
  * hide payload from the median by leaving it out. What neither check sees is a
  * task type that lists fewer references than the router would really open, so
  * treat a reference list as part of the router when editing either one.
- *
- * `squad-designer` was once absent here because an evaluation budget bound its
- * task types instead. That lane is retired, so its routing table lives here now
- * and is the only record of it.
  */
 // Structurally the `TaskTypeDefinition` the measurement primitive takes, stated
-// here rather than imported so catalog data does not depend on `src/eval/`.
+// here rather than imported so this file stays plain data.
 export interface SkillTaskType {
   /** Reference file names, relative to the skill's `references/` directory. */
   references: string[];
@@ -427,11 +423,8 @@ const team: SkillTaskType[] = [
   },
 ];
 
-// Recovered from the retired `evals/squad-designer/baseline-manifest.yml`, which
-// held these task types while an evaluation budget governed them. With that lane
-// gone the catalog is the only place that records them, so squad-designer is
-// measured on its median loaded set like every other skill instead of falling
-// back to the blunt total-payload bound.
+// squad-designer is measured on its median loaded set like every other skill
+// instead of falling back to the blunt total-payload bound.
 const designer: SkillTaskType[] = [
   {
     id: 'web-new-screen-greenfield',

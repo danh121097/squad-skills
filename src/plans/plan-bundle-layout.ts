@@ -46,6 +46,15 @@ const adrFileName = /^adr-(\d{3,})-([a-z0-9-]+)\.md$/;
 /** The prefix `phases/` reserves. Nothing outside it may open with one. */
 const reservedPhasePrefix = /^phase-\d/;
 const frontMatterPattern = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
+const singleLayout = /^layout:\s*['"]?single['"]?\s*$/m;
+const singlePhaseHeading = /^##\s+Phase\s+(\d+)\b/gim;
+const fencedBlock = /^(```|~~~)[\s\S]*?^\1/gm;
+
+/**
+ * The most phases a single-file plan may hold. Past two, a reader needs the
+ * index and the phase bodies apart, which is what `phases/` is for.
+ */
+export const maxSingleLayoutPhases = 2;
 
 /**
  * Reads a written plan bundle from disk and reports every layout rule it breaks.
@@ -88,14 +97,21 @@ export async function readPlanBundle(bundleRoot: string): Promise<PlanBundleLayo
     );
   }
 
-  if (!directories.includes('phases')) {
-    errors.push(
-      'phases/ is missing; it is the only directory that expresses implementation order.'
-    );
-  }
+  let single = false;
 
   if (files.includes(planIndexFile)) {
-    documents.push(await readDocument(bundleRoot, planIndexFile, 'index', null));
+    const index = await readDocument(bundleRoot, planIndexFile, 'index', null);
+
+    single = index.frontMatter !== null && singleLayout.test(index.frontMatter);
+    documents.push(index);
+
+    if (single) reportSingleLayout(index, directories, errors);
+  }
+
+  if (!single && !directories.includes('phases')) {
+    errors.push(
+      'phases/ is missing; it is the only directory that expresses implementation order. A plan of one or two phases may instead declare `layout: single` and state them as sections of plan.md.'
+    );
   }
 
   documents.push(...(await readPhases(bundleRoot, directories, errors)));
@@ -108,6 +124,39 @@ export async function readPlanBundle(bundleRoot: string): Promise<PlanBundleLayo
   );
 
   return { documents, errors };
+}
+
+/**
+ * A plan small enough to read in one file states its phases as `## Phase N`
+ * sections of `plan.md`. It still has an order, so the sections are counted
+ * rather than trusted, and `phases/` beside it would be a second statement of
+ * the same order.
+ */
+function reportSingleLayout(index: PlanDocument, directories: string[], errors: string[]): void {
+  if (directories.includes('phases')) {
+    errors.push(
+      `phases/: ${planIndexFile} declares \`layout: single\`, so its phases are sections of ${planIndexFile}. Remove phases/ or drop the declaration.`
+    );
+  }
+
+  // A heading inside a fenced example is an illustration, not a phase.
+  const prose = index.body.replace(fencedBlock, '');
+  const numbers = [...prose.matchAll(singlePhaseHeading)].map((match) => Number(match[1]));
+  const sections = numbers.length;
+
+  if (sections === 0) {
+    errors.push(
+      `${planIndexFile}: a single-file plan states each phase as a "## Phase N" section, and none was found.`
+    );
+  } else if (sections > maxSingleLayoutPhases) {
+    errors.push(
+      `${planIndexFile}: ${sections} phase sections exceed the ${maxSingleLayoutPhases} a single-file plan holds; move them into phases/.`
+    );
+  } else if (numbers.some((number, position) => number !== position + 1)) {
+    errors.push(
+      `${planIndexFile}: phase sections are numbered ${numbers.join(', ')}; number them continuously from 1.`
+    );
+  }
 }
 
 async function readPhases(

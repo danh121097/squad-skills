@@ -1,36 +1,24 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { parseDocument } from 'yaml';
-
-import { cardTemplateFileName } from '../src/eval/knowledge-card-schema.ts';
 import {
   describeRegistryDiscoveryFailure,
   extractRegistryUrls,
   findSourceRegistries,
-} from '../src/eval/source-registry-links.ts';
+} from '../src/catalog/source-registry-links.ts';
 
 /**
- * Checks that every cited source still resolves: a knowledge card's
- * `source_url`, and every link in a skill's source registry.
- *
- * `source_status: live` is otherwise an unfalsifiable claim: a person wrote it
- * at review time, nothing re-checks it, and a moved page keeps validating green
- * for as long as the card lives. The registry has the same problem and no field
- * to declare it in — a contributor adds an entry, the vendor reorganizes its
- * documentation, and the skill keeps pointing agents at a 404. This closes both
- * without breaking the contract's non-goal of autonomous ingestion: it reads a
- * **status code and nothing else**. No response body is ever consumed, so no
- * source page can reach the model, the cards, or the report through this script.
+ * Checks that every link in a skill's source registry still resolves. A
+ * vendor reorganizes its documentation and the skill keeps pointing agents at a
+ * 404; this catches that while reading a **status code and nothing else**. No
+ * response body is ever consumed, so no source page can reach the model or the
+ * report through this script.
  *
  * Deliberately outside `pnpm test`: the repository gate is offline, and a check
  * that depends on dozens of third-party hosts is exactly the kind of flake the
  * contract keeps out of it. It runs on pull requests as its own non-blocking
  * job, and before a promotion that consumes these sources.
  */
-const knowledgeDirectories = ['evals/squad-designer/knowledge'];
-
-const frontmatterPattern = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 const requestTimeoutMs = 20_000;
 
 /** Some documentation hosts answer a bare programmatic request with 403. */
@@ -78,10 +66,6 @@ interface LivenessResult {
 const projectRoot = process.cwd();
 const cards: CitedSource[] = [];
 
-for (const directory of knowledgeDirectories) {
-  cards.push(...(await readCards(directory)));
-}
-
 const discovery = await findSourceRegistries(projectRoot);
 
 const discoveryFailure = describeRegistryDiscoveryFailure(discovery);
@@ -95,7 +79,7 @@ const registryRead = await readRegistryLinks(discovery.registries);
 
 // A registry that exists but yields nothing to check is the same blindness one
 // level down: discovery counts it, the guard above cannot fire, and the run
-// reports the remaining cards green without ever saying the file went unread.
+// reports the remaining sources green without ever saying the file went unread.
 if (registryRead.failures.length > 0) {
   for (const failure of registryRead.failures) console.error(failure);
   process.exit(1);
@@ -165,10 +149,8 @@ const blocking = results.filter(
 
 if (blocking.length > 0) {
   console.error(
-    `${blocking.length} of them moved or went away. Re-review those entries and update ` +
-      'source_status, or correct the URL. A card whose source moved is stale even when ' +
-      'every other field is right, and a registry entry pointing at a dead page sends ' +
-      'agents there.'
+    `${blocking.length} of them moved or went away. Correct the URL or drop the entry: ` +
+      'a registry entry pointing at a dead page sends agents there.'
   );
 }
 
@@ -222,47 +204,6 @@ async function readRegistryLinks(files: string[]): Promise<RegistryRead> {
     cards: [...byUrl.values()].sort((left, right) => (left.url < right.url ? -1 : 1)),
     failures,
   };
-}
-
-async function readCards(directory: string): Promise<CitedSource[]> {
-  const absolute = path.join(projectRoot, directory);
-
-  let entries;
-
-  try {
-    entries = await readdir(absolute, { withFileTypes: true });
-  } catch {
-    return [];
-  }
-
-  const found: CitedSource[] = [];
-
-  for (const entry of entries) {
-    if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
-    // The contributor scaffold carries a placeholder URL, not a source.
-    if (entry.name === cardTemplateFileName) continue;
-
-    const relativePath = path.posix.join(directory, entry.name);
-    const source = await readFile(path.join(absolute, entry.name), 'utf8');
-    const frontmatter = source.match(frontmatterPattern)?.[1];
-
-    if (frontmatter === undefined) continue;
-
-    const card = parseDocument(frontmatter).toJS() as Record<string, unknown> | null;
-    const url = card?.source_url;
-
-    if (typeof url !== 'string') continue;
-
-    found.push({
-      declaredStatus: typeof card?.source_status === 'string' ? card.source_status : 'unset',
-      relativePaths: [relativePath],
-      url,
-    });
-  }
-
-  return found.sort((left, right) =>
-    (left.relativePaths[0] ?? '') < (right.relativePaths[0] ?? '') ? -1 : 1
-  );
 }
 
 /**

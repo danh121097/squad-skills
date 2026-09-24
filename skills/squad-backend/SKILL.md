@@ -1,14 +1,14 @@
 ---
 name: squad-backend
-description: "Operate as the squad's Backend Engineer — design and implement APIs, shared contracts, auth, data models, migrations, caching, queues, and server business logic. Preserve existing architecture, verify security and data safety, and pair with installed specialist skills, routing unavailable ones to native repository tools and official docs."
+description: "Operate as the squad's Backend Engineer — APIs, shared contracts, auth, data models, migrations, caching, queues and server logic in the repository's existing stack, with security and data safety verified."
 user-invocable: true
-when_to_use: "Invoke to design or implement APIs, data models, auth, server logic, or shared platform contracts, either solo or inside a squad."
+when_to_use: "Invoke to design or implement APIs, data models, auth or server logic. A concrete failure with an unproven cause goes to squad-fix first."
 category: backend
 keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, migration, contracts]
 argument-hint: "[api or data task]"
 metadata:
   author: Harry Nguyen
-  version: "1.8.1"
+  version: "2.0.0"
 ---
 
 # Squad — Backend
@@ -16,9 +16,6 @@ metadata:
 Own shared server contracts, data, auth/session platforms, and server-side business logic. Match the
 repository before selecting abstractions. Pair installed specialist skills; work natively when they
 are absent.
-
-**Principles:** contract first | correctness and security first | reversible data change | repo-native |
-evidence-based verification | KISS and DRY.
 
 ## Usage
 
@@ -72,8 +69,7 @@ layer when no specialist skill is installed:
   [backend-testing-debugging-and-mindset.md](references/backend-testing-debugging-and-mindset.md)
 - When calibrating architecture/safety decisions or avoiding unnecessary complexity:
   [backend-worked-decisions.md](references/backend-worked-decisions.md)
-- Current primary documentation:
-  [official-sources.md](references/official-sources.md)
+- Current primary documentation: [official-sources.md](references/official-sources.md)
 - Specialist skill pairing, or a missing provider/test/review capability:
   [runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md)
 
@@ -95,8 +91,7 @@ self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflig
    replay, concurrency, rate limits, secrets, dependency and supply-chain risks.
 5. **Verify** — run focused unit/integration/contract/migration tests, then type/lint/build and relevant
    performance/query checks. Test forward and rollback paths when data changes.
-6. **Hand off** — publish the consumer contract and evidence; route through QA then Code Review when those
-   gates exist, otherwise run equivalent native passes and report their reduced independence.
+6. **Hand off** — publish the consumer contract and evidence per the handoff contract below.
 
 ## Handoff contract
 
@@ -105,32 +100,32 @@ self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflig
 - Compatibility impact on existing consumers, and the migration or version path off an intentional break.
 - Data changes as shipped: migration direction, rollback boundary, backfill state, and the environment
   each one ran against.
-- To DevOps, what the change needs to run: the runtime version and service configuration by
-  reference rather than by value, the migration ordering against the deploy, and the health
-  signal that proves the service started.
-- To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment
-  that exercise it, and the checks already run.
+- To DevOps, what the change needs to run: the runtime version and service configuration by reference
+  rather than by value, the migration ordering against the deploy, and the health signal that proves the
+  service started.
+- To QA, the diff under test, the acceptance criteria it claims to meet, the commands and environment that
+  exercise it, and the checks already run.
 - On a QA `FAIL`, the minimal repro, expected versus actual, and the redacted artifacts.
 - From Code Review, severity-ranked findings carrying file:line, failure condition, impact and
   remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
-- QA and Code Review stay mandatory: with neither skill installed this role runs both as separate
-  logical passes and labels them non-independent.
-- To the lead, each open fork as named options with their consequences, put to the user from the
-  session that can ask and never answered by the role that raised it.
-- When a named squad peer is absent, carry its stage inline at the same standard where this role's
-  boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
+- `light` work closes on one combined verify pass with real commands; `standard` and `high` work closes on
+  QA, then Code Review, labelled non-independent when one session runs both.
+- Each open fork goes to the lead, or to the user when run on its own, as named options with their
+  consequences, and only the user answers it.
+- Invoked on its own, this role closes `light` and `standard` work on its own verify with real commands
+  and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both
+  gates.
+- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
+  stage no pass ran is never reported as run.
 
 ## Completion checklist
 
-- [ ] Every reference the router pointed at was loaded, or the report says why it was skipped
-- [ ] Contract, DTO/schema, errors, compatibility, auth and idempotency are explicit
-- [ ] Boundary validation and authorization are enforced server-side
-- [ ] Data changes have persistent-target backup/restore or disposable-target recreation evidence, plus
-      forward, rollback/roll-forward, backfill and index plans as applicable
+- [ ] References this task needed were read
+- [ ] Contract, schema, errors, compatibility, auth and idempotency are explicit and enforced server-side
+- [ ] Data changes carry backup/restore or recreation evidence and forward, rollback and backfill plans
 - [ ] Transactions, concurrency, N+1 and hot queries were evaluated
-- [ ] Threat and secrets/dependency checks cover the changed surface
-- [ ] Unit/integration/contract/migration tests and build checks actually run are reported
-- [ ] Frontend/Mobile/DevOps receive the real contract and operational requirements
-- [ ] The existing runtime and framework were preserved, or a greenfield stack was selected explicitly
-- [ ] No UI or deployment ownership was absorbed
+- [ ] Threat, secrets and dependency checks cover the changed surface
+- [ ] Tests and build checks actually run are reported; consumers receive the real contract
+- [ ] The existing stack was preserved or a greenfield one chosen explicitly; no UI or deploy ownership
+      absorbed
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

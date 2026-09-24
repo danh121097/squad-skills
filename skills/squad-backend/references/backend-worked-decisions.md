@@ -1,63 +1,38 @@
 # Backend worked decisions
 
 Read only when a concrete example will improve an architecture, data-safety, reliability or scope decision.
-Adapt the reasoning to repository evidence; these are not templates or mandatory stacks.
+These are reasoning patterns, not templates.
 
 ## 1. Existing webhook handler needs retry safety
 
-**Context:** A NestJS service already has controllers, services, Prisma transactions and a stable error
-envelope. A payment provider retries webhook delivery.
+**Situation:** A NestJS/Prisma service receives payment webhooks the provider retries.
 
-**Decision:** Preserve the module boundaries. Verify the signature and timestamp before parsing trusted
-fields; store the provider event ID under a unique constraint; apply the business transition and event
-record in one transaction; acknowledge a duplicate as the repository/provider contract requires. Add a
-focused integration test for first delivery, duplicate delivery, invalid signature and concurrent delivery.
+**Decision:** Verify signature and timestamp before trusting fields; store the provider event ID under a
+unique constraint; apply the business transition and the event record in one transaction; acknowledge a
+duplicate as the provider contract requires. Test first, duplicate, invalid-signature and concurrent
+delivery.
 
-**Avoid:** A new event platform, distributed lock or generic webhook framework when the database invariant
-already provides atomic deduplication.
+**Why:** The database invariant already deduplicates atomically. A distributed lock, event platform or
+generic webhook framework adds failure modes without adding a guarantee.
 
 ## 2. Choosing REST, GraphQL or gRPC for a new capability
 
-**Context:** A greenfield service exposes a small external CRUD/search API and an internal high-volume
-stream between controlled services.
+**Situation:** A greenfield service has a small external CRUD/search API and a high-volume internal stream.
 
-**Decision:** Use REST for the external resource contract unless client-driven graph composition is a real
-requirement. Evaluate gRPC streaming for the controlled internal path only when protobuf compatibility,
-deadlines, backpressure and operational tooling are acceptable. Do not introduce GraphQL merely to avoid
-designing endpoints.
+**Decision:** REST for the external contract unless client-driven graph composition is a real requirement.
+gRPC streaming for the internal path only if protobuf compatibility, deadlines, backpressure and tooling are
+acceptable. Never GraphQL merely to avoid designing endpoints; consumer needs decide, not popularity.
 
-**Evidence:** Consumer needs, deployment/network constraints, compatibility ownership, observability and
-load shape—not popularity or benchmark claims.
+## 3. Migration target of uncertain status
 
-## 3. Persistent migration versus disposable test schema
-
-**Shared or production-like target:** Resolve ownership and data volume; verify backup and restore path;
-use expand/contract; make the backfill bounded, resumable and observable; test old/new compatibility and
-lock impact; define rollback or roll-forward.
-
-**Disposable isolated test target:** Prove it is not shared, verify deterministic recreation and fixtures,
-then exercise the migration from representative old state. A point-in-time backup adds no recovery value
-when the target is intentionally recreated.
-
-**Stop:** If target identity or shared/persistent status is uncertain, treat it as persistent until proven
-otherwise.
+**Decision:** If you cannot prove a target is isolated and disposable, treat it as persistent: backup,
+expand/contract, bounded resumable backfill, rollback boundary.
 
 ## 4. Queue retry and exactly-once language
 
-**Context:** A worker sends email after an order transition and may crash after the provider accepts the
-request but before acknowledgement.
+**Situation:** A worker sends email after an order transition and may crash after the provider accepts but
+before acknowledgement.
 
-**Decision:** Assume at-least-once delivery; persist an idempotency key/outbox state; make retries bounded;
-classify transient versus permanent errors; define dead-letter ownership and replay procedure. Say
-“idempotent effect under these invariants,” not “exactly once,” unless every boundary proves that property.
-
-## 5. Small validated CRUD change
-
-**Context:** An established service needs one field and one endpoint using existing auth, validation, ORM
-and test conventions.
-
-**Decision:** Extend the current DTO/schema, service, data access and contract tests. Evaluate compatibility,
-authorization, constraints and migration safety, then stop.
-
-**Avoid:** A repository abstraction, command bus, cache, queue, new service or shared framework without a
-demonstrated second consumer or operational need.
+**Decision:** Assume at-least-once; persist an idempotency key or outbox state; bound retries; split
+transient from permanent errors; name dead-letter ownership and replay. Say "idempotent effect under these
+invariants", never "exactly once", unless every boundary proves it.

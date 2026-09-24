@@ -1,7 +1,6 @@
 # Code review official sources
 
-Use repository/framework official docs first. These standards route cross-cutting review; they do not
-replace exact version documentation.
+Cross-cutting standards; the stack's exact-version docs come first.
 
 - OWASP Top 10: https://owasp.org/www-project-top-ten/
 - OWASP ASVS: https://owasp.org/www-project-application-security-verification-standard/
@@ -20,5 +19,4 @@ replace exact version documentation.
 - Kubernetes: https://kubernetes.io/docs/
 - PostgreSQL: https://www.postgresql.org/docs/current/
 
-For React/Vue/Next/Nuxt/mobile/provider behavior, use that stack's official docs linked by the owning squad
-reference. Do not flag behavior from remembered APIs when current source is cheap to verify.
+For stack or provider behavior, use the owning role's registry; verify before flagging a remembered API.

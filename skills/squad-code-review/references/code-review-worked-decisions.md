@@ -1,58 +1,40 @@
 # Code Review worked decisions
 
-Read when severity, proof, gate outcome or AI-assisted-code critique is ambiguous. Review the real target;
-do not copy these verdicts without matching evidence.
+Read when severity, proof, gate outcome or AI-assisted-code critique is ambiguous.
 
-## 1. Blocking authorization bypass
+## 1. Plausible race without proof
 
-**Evidence:** A route checks that the user is authenticated but loads a record by unscoped ID; another
-tenant can supply that ID. A repository query pattern already scopes by tenant.
+**Situation:** A counter update looks non-atomic, but the called repository method may use a transaction or
+atomic operation you cannot see.
 
-**Finding:** Blocking. Cite the handler/query lines, the cross-tenant trigger and exposed operation. Require
-server-side tenant scoping and a negative integration test. `CHANGES_REQUESTED`.
+**Decision:** Trace the callee and run or inspect a concurrency test. If that evidence is inaccessible,
+return `NEEDS_EVIDENCE` naming the method or test — neither an unproven race nor an approval through
+uncertainty.
 
-**Do not dilute it to:** “Consider improving security.” The failure path and remediation are concrete.
+## 2. Duplication: warning or suggestion
 
-## 2. Plausible race without proof
+**Situation:** New behavior duplicates an existing parser in two paths; both are correct today.
 
-**Evidence:** A counter update looks non-atomic in the diff, but the reviewer cannot see whether the called
-repository method uses a transaction or atomic database operation.
+**Decision:** Warning when the duplicated contract logic has a credible drift path; recommend the existing
+owner. Suggestion when the duplication is tiny and stable and an abstraction would cost more.
 
-**Decision:** Trace the callee and run/inspect a concurrency test. If the required implementation/runtime
-evidence is inaccessible, return `NEEDS_EVIDENCE` naming that method or test—do not report a confirmed race
-and do not approve through uncertainty.
+**Why:** Severity follows the drift risk, not style preference.
 
-## 3. Real maintainability risk, not a blocker
+## 3. AI-slop versus justified structure
 
-**Evidence:** New domain behavior duplicates an existing parser in two paths. Both are currently correct,
-but future contract changes can diverge.
+**Situation:** A new factory/interface pair has one caller and only forwards arguments; the repository
+constructs equivalent cases directly.
 
-**Finding:** Warning when the duplicated contract logic has a credible drift path; propose using the
-existing owner. Keep it a suggestion when duplication is tiny, stable and abstraction would add more cost.
-Do not block solely to enforce personal style.
+**Decision:** Warning or suggestion by real maintenance cost; recommend the local pattern. Never label code
+"AI-generated", rename for taste, or remove an abstraction that protects a boundary, enables testing or
+already has several consumers.
 
-## 4. Expand/contract migration sequencing
+## 4. Clean review with limited environment
 
-**Evidence:** The same release renames a populated column and removes the old field while older application
-instances may still run.
+**Situation:** Diff, callers and tests are inspectable; focused checks pass; the production-like environment
+is not required by acceptance or the changed risk surface.
 
-**Finding:** Blocking compatibility/availability risk. Require an expand phase, compatible reads/writes,
-bounded backfill, switch evidence and later contract phase, plus recovery evidence appropriate to the
-target. Review both migration and deployment ordering.
+**Decision:** `APPROVE`, stating checks run and residual risk.
 
-## 5. AI-slop versus justified structure
-
-**Evidence:** A new factory/interface pair has one caller and only forwards arguments, while the repository
-uses direct construction for equivalent cases.
-
-**Finding:** Warning or suggestion based on real cognitive/maintenance cost; recommend the local pattern.
-Do not label code “AI-generated,” rewrite naming for taste, or remove abstractions that protect a genuine
-boundary, enable testing, or already have multiple consumers.
-
-## 6. Clean review with limited environment
-
-**Evidence:** Diff, callers and tests are inspectable; focused static/unit checks pass; the production-like
-integration environment is not required by acceptance or the changed risk surface.
-
-**Verdict:** `APPROVE` with the checks and residual risk stated. Missing optional evidence is not automatically
-`NEEDS_EVIDENCE`; use that verdict only when the missing item is required for a defensible gate decision.
+**Why:** Missing optional evidence is not `NEEDS_EVIDENCE`; that verdict is only for an item a defensible
+gate decision requires.

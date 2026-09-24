@@ -64,7 +64,7 @@ Include:
 - symptom, expected/actual, root cause and why now;
 - implementation owner(s), files/contracts changed and prevention;
 - pre/post reproduction plus focused and blast-radius evidence;
-- QA and Review verdicts with execution/independence mode;
+- gate tier, and QA and Review verdicts with execution/independence mode where the tier ran them;
 - anything not verified, residual risk and exact next action;
 - docs impact and task-owned process/resource cleanup;
 - authorized external mutations performed, if any.

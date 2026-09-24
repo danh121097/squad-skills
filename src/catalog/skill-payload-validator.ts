@@ -1,7 +1,7 @@
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 
-import { findUnroutedReferences, measureSkillPayload } from '../eval/skill-payload-measurement.ts';
+import { findUnroutedReferences, measureSkillPayload } from './skill-payload-measurement.ts';
 
 import { skillPayloadCeilings } from './skill-payload-ceilings.ts';
 import { minimumTaskTypes, skillTaskTypes } from './skill-task-types.ts';
@@ -35,12 +35,8 @@ export interface SkillPayloadValidationResult {
  * routing that keeps a run cheap. One that declares none has no loaded set to
  * measure, so the total is the only bound available and the ceiling holds it.
  *
- * The measurement primitive lives under `src/eval/` because the evaluation
- * contract needed it first, but the question this asks is a catalog question —
- * is what the catalog ships still the size it was reviewed at — so the check
- * belongs here and runs in `pnpm validate` rather than `pnpm validate:evals`.
- * That matters for the six skills no manifest records: `validate:evals` would
- * never reach them.
+ * The check runs in `pnpm validate`: it asks whether what the catalog ships is
+ * still the size it was reviewed at.
  *
  * Membership is derived from `skills/` rather than from the ceiling table, so a
  * new skill fails until a ceiling is recorded for it. The reverse direction is

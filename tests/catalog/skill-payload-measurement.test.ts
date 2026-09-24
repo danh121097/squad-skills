@@ -11,7 +11,7 @@ import {
   hashContent,
   measureSkillPayload,
   type TaskTypeDefinition,
-} from '../../src/eval/skill-payload-measurement.ts';
+} from '../../src/catalog/skill-payload-measurement.ts';
 
 const temporarySkills: string[] = [];
 

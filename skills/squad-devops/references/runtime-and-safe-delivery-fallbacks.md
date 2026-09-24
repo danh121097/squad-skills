@@ -5,15 +5,10 @@ deployment access, observability, QA or Review capabilities are in question.
 
 ## Specialist skill pairing
 
-Detect specialist skills once per task by inspecting the live skill catalog for the capabilities
-below.
-
-- **Installed** — read this skill's task-relevant references first, then pair the phase-matched
-  specialist skill with this role's contract so it accelerates the phase. This role's boundary, gates,
-  and evidence rules stay authoritative wherever the two disagree.
-- **Absent** — run the native fallback for the same phase at the same standard.
-
-Never auto-install a specialist skill, and never report a skill as run when it does not exist.
+Pair a specialist skill found by inspecting the live skill catalog for the capabilities below; this
+role's boundary, gates, and evidence rules stay authoritative wherever the two disagree. When it is
+absent, run the native fallback at the same standard; never auto-install one, and never report a skill as
+run when it does not exist.
 
 ## Rules
 

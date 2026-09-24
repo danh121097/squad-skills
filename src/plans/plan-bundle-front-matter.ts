@@ -133,6 +133,11 @@ function readMetadata(
       requireDate(values, 'created', at, errors);
       metadata.status = requireEnum(values, 'status', planStatuses, at, errors);
       metadata.revision = requireRevision(values, at, errors);
+
+      if (values.layout !== undefined && values.layout !== 'single') {
+        errors.push(`${at}: "layout" is either absent or "single".`);
+      }
+
       break;
     }
     case 'phase': {

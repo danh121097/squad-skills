@@ -268,8 +268,8 @@ describe('validateCrossSkillContract', () => {
       'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
       'PAIRING-SAFETY-001': roleRuntimes,
       'HANDOFF-PLAN-001': [productSkill, teamSkill],
-      'HANDOFF-PLAN-BUNDLE-001': [productSkill, teamSkill],
-      'QUALITY-PREFLIGHT-PLAN-001': [productPlanDocument, teamSkill],
+      'PLAN-BUNDLE-LAYOUT-001': [productPlanDocument, productQuality].sort(),
+      'QUALITY-PREFLIGHT-PLAN-001': [productPlanDocument, productQuality].sort(),
       'HANDOFF-DECISION-001': [
         backendSkill,
         codeReviewSkill,
@@ -290,8 +290,17 @@ describe('validateCrossSkillContract', () => {
       'HANDOFF-RUNTIME-001': [backendSkill, devopsSkill],
       'HANDOFF-BUILD-001': [devopsSkill, frontendSkill, mobileSkill],
       'HANDOFF-DEPLOY-001': [codeReviewSkill, devopsSkill],
-      'HANDOFF-GATE-001': [...rolesWithAnImplementationSlice, teamSkill].sort(),
+      'HANDOFF-GATE-001': [
+        backendSkill,
+        codeReviewSkill,
+        devopsSkill,
+        frontendSkill,
+        mobileSkill,
+        qaSkill,
+      ],
       'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],
+      'HANDOFF-TIER-001': [fixSkill, teamSkill],
+      'HANDOFF-LOOP-001': [codeReviewSkill, fixSkill, qaSkill, teamSkill],
       'HANDOFF-GATE-003': [fixSkill, teamSkill],
       'HANDOFF-GATE-004': [codeReviewSkill, qaSkill, teamSkill],
       'HANDOFF-RERUN-001': [codeReviewSkill, qaSkill, teamSkill],
@@ -301,7 +310,8 @@ describe('validateCrossSkillContract', () => {
         qaSkill,
         teamSkill,
       ].sort(),
-      'PLAN-BUNDLE-ARTIFACT-001': [productPlanDocument, teamCoordination].sort(),
+      'HANDOFF-SOLO-002': [...rolesWithAnImplementationSlice].sort(),
+      'PLAN-BUNDLE-ARTIFACT-001': [productPlanDocument, productQuality].sort(),
       'PLAN-BUNDLE-SUPERSEDE-001': [productPlanDocument, teamCoordination, teamPipeline].sort(),
       'QUALITY-PREFLIGHT-001': preflightRoles,
       'RETIRED-SPEC-001': [designerEntrypoint, ...designerReferences, ...teamFiles],
@@ -309,6 +319,36 @@ describe('validateCrossSkillContract', () => {
       'RETIRED-SPEC-003': designerReferences,
       'RETIRED-SPEC-004': [designerEntrypoint, ...designerReferences],
       'RETIRED-SPEC-005': [designerEntrypoint, ...designerReferences, ...teamFiles],
+      'RETIRED-SPEC-007': [...rolesWithAnImplementationSlice, teamSkill],
+      'RETIRED-SPEC-008': [codeReviewSkill, qaSkill],
+      'RETIRED-SPEC-009': [
+        productSkill,
+        productPlanDocument,
+        productQuality,
+        teamSkill,
+        teamCoordination,
+      ].sort(),
+      'RETIRED-SPEC-010': [
+        backendSkill,
+        codeReviewSkill,
+        designerEntrypoint,
+        devopsSkill,
+        fixSkill,
+        frontendSkill,
+        mobileSkill,
+        productSkill,
+        qaSkill,
+        teamSkill,
+      ].sort(),
+      'RETIRED-SPEC-011': [
+        ...rolesWithAnImplementationSlice,
+        codeReviewSkill,
+        qaSkill,
+        teamSkill,
+      ].sort(),
+      'RETIRED-SPEC-012': [teamSkill, teamCoordination, teamPipeline].sort(),
+      'RETIRED-SPEC-013': [teamSkill, teamCoordination, teamPipeline].sort(),
+      'RETIRED-SPEC-014': [teamSkill, teamCoordination, teamPipeline].sort(),
       'RETIRED-SPEC-006': [
         productSkill,
         productPlanDocument,
@@ -547,11 +587,11 @@ describe('handoff contract family', () => {
     expect(result.errors).toEqual([]);
   });
 
-  it('binds the written plan bundle shape to Product and the lead fallback', async () => {
-    const planBundle = boundaryClauses.find((clause) => clause.id === 'HANDOFF-PLAN-BUNDLE-001');
-    if (!planBundle) throw new Error('HANDOFF-PLAN-BUNDLE-001 is missing from shipped clauses.');
+  it('binds the written plan shape to the plan contract and its quality bar', async () => {
+    const planBundle = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-LAYOUT-001');
+    if (!planBundle) throw new Error('PLAN-BUNDLE-LAYOUT-001 is missing from shipped clauses.');
 
-    expect([...planBundle.files].sort()).toEqual([productSkill, teamSkill].sort());
+    expect([...planBundle.files].sort()).toEqual([productPlanDocument, productQuality].sort());
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [planBundle],
@@ -563,11 +603,11 @@ describe('handoff contract family', () => {
 
   // The two rules the directory layout adds. Both fail the same way when they
   // drift: a bundle stays readable while saying something untrue about itself.
-  it('binds artifact ownership to the plan contract and the coordination contract', async () => {
+  it('binds artifact ownership to the plan contract and its quality bar', async () => {
     const artifact = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-ARTIFACT-001');
     if (!artifact) throw new Error('PLAN-BUNDLE-ARTIFACT-001 is missing from shipped clauses.');
 
-    expect([...artifact.files].sort()).toEqual([productPlanDocument, teamCoordination].sort());
+    expect([...artifact.files].sort()).toEqual([productPlanDocument, productQuality].sort());
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [artifact],
@@ -593,11 +633,11 @@ describe('handoff contract family', () => {
     expect(result.errors).toEqual([]);
   });
 
-  it('binds detailed phase content to Product and the lead fallback', async () => {
+  it('binds the core phase sections to the plan contract and its quality bar', async () => {
     const planDetail = boundaryClauses.find((clause) => clause.id === 'QUALITY-PREFLIGHT-PLAN-001');
     if (!planDetail) throw new Error('QUALITY-PREFLIGHT-PLAN-001 is missing from shipped clauses.');
 
-    expect([...planDetail.files].sort()).toEqual([productPlanDocument, teamSkill].sort());
+    expect([...planDetail.files].sort()).toEqual([productPlanDocument, productQuality].sort());
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [planDetail],

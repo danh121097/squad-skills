@@ -199,22 +199,16 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [productSkill, teamSkill],
   },
   {
-    id: 'HANDOFF-PLAN-BUNDLE-001',
-    // Product owns written-plan production and the lead owns the inline fallback
-    // when Product is unavailable. Binding both sides prevents one path from
-    // collapsing the requested bundle back into a monolithic plan file.
-    //
-    // Restated 2026-09-09 from a flat directory to the four-directory layout.
-    // The flat shape said where phase files go and nothing about anything else,
-    // so a plan that produced artifacts, decisions and shared background put
-    // them beside the phases — where a reader cannot tell ordered work from
-    // background, and where a handoff named with the phase prefix reads as an
-    // extra phase. What the clause binds now is the root: `plan.md` alone, and
-    // the four named directories. Everything the layout rules out follows from
-    // that sentence being stated the same way on both sides.
+    id: 'PLAN-BUNDLE-LAYOUT-001',
+    // The shape used to be bound on both entrypoints, which made every run of
+    // squad-product and squads-team pay the whole layout sentence whether or
+    // not anyone asked for files. It now lives where a run that writes a plan
+    // reads it: the plan contract, and the quality bar that checks the result.
+    // Two phases or fewer is one file, because a directory for a one-phase
+    // plan was ceremony a reader paid to navigate.
     statement:
-      'a written plan is one directory whose root holds only plan.md and the standard phases, artifacts, adr and references directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative',
-    files: [productSkill, teamSkill],
+      'a written plan of one or two phases is a single plan.md declaring layout: single; a larger one is one directory whose root holds only plan.md and the standard phases, artifacts, adr and references directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative',
+    files: [productPlanDocument, productQuality],
   },
   {
     id: 'PLAN-BUNDLE-ARTIFACT-001',
@@ -224,12 +218,11 @@ export const boundaryClauses: BoundaryClause[] = [
     // named `phase-02-handoff.md` still sorts and reads as a phase, in a
     // directory whose whole job is to hold things that are not phases.
     //
-    // Bound on the two files that describe an artifact being produced: the
-    // Product plan contract, which says what the bundle holds, and the lead's
-    // coordination contract, which is what a run reads while filling it.
+    // Bound on the plan contract, which says what the bundle holds, and the
+    // quality bar that checks it before handover.
     statement:
       'an artifact records its owning phase, owner, revision and status in frontmatter, never in a phase-XX- filename prefix, which phases/ alone reserves',
-    files: [productPlanDocument, teamCoordination],
+    files: [productPlanDocument, productQuality],
   },
   {
     id: 'PLAN-BUNDLE-SUPERSEDE-001',
@@ -249,11 +242,12 @@ export const boundaryClauses: BoundaryClause[] = [
   },
   {
     id: 'QUALITY-PREFLIGHT-PLAN-001',
-    // The detailed Product schema is progressively disclosed, while the lead
-    // must carry the same schema inline when Product is unavailable.
+    // Four sections are required and four are written when they have content.
+    // Eight required sections turned a two-step phase into eight headings,
+    // most of them restating the plan index.
     statement:
-      'each phase file states context and current state; objective and concrete deliverables; required role or roles and their distinct scope boundaries; prerequisites and blocking decisions; ordered work steps; phase-specific acceptance criteria and expected verification evidence; applicable risks and recovery; and the handoff condition',
-    files: [productPlanDocument, teamSkill],
+      'each phase file states its objective and deliverables, its roles and their distinct scopes, ordered work steps, and acceptance criteria with expected evidence; context, prerequisites, risks and handoff are added when they have content',
+    files: [productPlanDocument, productQuality],
   },
   {
     id: 'HANDOFF-DECISION-001',
@@ -283,7 +277,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // named here anyway, because this clause binds who may answer a question
     // rather than who owns an artifact.
     statement:
-      'each open fork as named options with their consequences, put to the user from the session that can ask and never answered by the role that raised it',
+      'each open fork goes to the lead, or to the user when run on its own, as named options with their consequences, and only the user answers it',
     files: everyRoleEntrypoint,
   },
   {
@@ -366,27 +360,47 @@ export const boundaryClauses: BoundaryClause[] = [
   },
   {
     id: 'HANDOFF-GATE-001',
-    // squads-team declares QA and Code Review non-optional. A role running
-    // without those skills installed has to name who carries them, or the
-    // mandatory gate disappears with nothing reporting that it did.
-    //
-    // squad-qa and squad-code-review are not bound here, because "with neither
-    // skill installed" cannot be said by a role that is one of the two. They
-    // owe the same answer in their own terms, which is HANDOFF-GATE-002.
+    // The build roles' half of the gate tiers. Stated in the tier's own terms
+    // rather than as "both gates are mandatory", which is what every slice —
+    // a one-line copy change included — used to pay. The lead and the two
+    // gates carry the full tier definition as HANDOFF-TIER-001; a build role
+    // needs only what closes its own slice.
     statement:
-      'QA and Code Review stay mandatory: with neither skill installed this role runs both as separate logical passes and labels them non-independent',
-    files: [...rolesWithAnImplementationSlice, teamSkill],
+      '`light` work closes on one combined verify pass with real commands; `standard` and `high` work closes on QA, then Code Review, labelled non-independent when one session runs both',
+    files: [backendSkill, codeReviewSkill, devopsSkill, frontendSkill, mobileSkill, qaSkill],
   },
   {
     id: 'HANDOFF-GATE-002',
     // HANDOFF-GATE-001 for the two roles that are themselves the gates. Install
-    // squad-qa alone and Code Review is still mandatory with nobody named to
-    // carry it; the same holds in reverse. "where its boundary allows" keeps QA
-    // out of marking work done, and "reports the gate as unowned" is the honest
-    // answer when the pass cannot be carried at all.
+    // squad-qa alone and Code Review still has to run on tiered work, with
+    // nobody named to carry it; the same holds in reverse. "where its boundary
+    // allows" keeps QA out of marking work done, and "reports the gate as
+    // unowned" is the honest answer when the pass cannot be carried at all.
     statement:
-      "QA and Code Review are both mandatory: when the peer gate's skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned",
+      "On `standard` and `high` work both gates run: when the peer gate's skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned",
     files: [codeReviewSkill, qaSkill],
+  },
+  {
+    id: 'HANDOFF-TIER-001',
+    // Ceremony proportional to risk. `high` is a fixed list rather than a
+    // judgment, because the failure this guards against is a model filing a
+    // risky change as `light`; the lead adds "when in doubt, the higher tier"
+    // in its own gate. Bound on the two roles that decide a tier: the lead,
+    // and squad-fix, which runs as one. The gates carry HANDOFF-GATE-001.
+    statement:
+      '`light` (one owner, no change to a public contract, auth, data or migration, infrastructure or a dependency) closes on one combined verify pass with real commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion) runs both independently where the runtime allows',
+    files: [fixSkill, teamSkill],
+  },
+  {
+    id: 'HANDOFF-LOOP-001',
+    // Nothing capped how often a gate could send work back; only squad-fix
+    // stopped, after three failed attempts, and only for its own loop. Two
+    // returns and then a user decision is that same rule applied to every gate
+    // unit: a third attempt on an unchanged model of the problem is churn, and
+    // choosing between narrowing, reassigning and accepting risk is the user's.
+    statement:
+      'a gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes to the lead as `BLOCKED` with the evidence and two to four options for the user',
+    files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {
     id: 'HANDOFF-GATE-003',
@@ -409,9 +423,9 @@ export const boundaryClauses: BoundaryClause[] = [
     // carries task types whose loaded set this wording changes, so no payload
     // figure moves with it.
     //
-    // Only these two entrypoints state the sequence. The five implementing roles
-    // carry HANDOFF-GATE-001 instead, which binds that both gates are mandatory
-    // rather than which verdict closes each one.
+    // Only these two entrypoints state the sequence. The build roles carry
+    // HANDOFF-GATE-001 instead, which binds what closes each tier rather than
+    // which verdict closes each gate.
     statement: 'must receive QA `PASS`, then Code Review `APPROVE`',
     files: [fixSkill, teamSkill],
   },
@@ -446,8 +460,19 @@ export const boundaryClauses: BoundaryClause[] = [
     // lead that carries QA inline has to report that QA ran, disclosing the
     // reduced independence, and the peer skill never ran in that case either.
     statement:
-      "When a named squad peer is absent, carry its stage inline at the same standard where this role's boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it",
+      "an absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage no pass ran is never reported as run",
     files: [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill],
+  },
+  {
+    id: 'HANDOFF-SOLO-002',
+    // A role called directly is not a squad. Before this clause a lone
+    // `/squad-backend` owed QA and Code Review on every change and either
+    // spawned them or reported itself unfinished; now it verifies with real
+    // commands and hands the gate choice back to the user in one line. `high`
+    // work keeps both gates, because the risk does not shrink with the team.
+    statement:
+      'invoked on its own, this role closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both gates',
+    files: rolesWithAnImplementationSlice,
   },
   {
     id: 'QUALITY-PREFLIGHT-001',
@@ -527,13 +552,60 @@ export const retiredPhrases: RetiredPhrase[] = [
     ],
   },
   {
-    // The flat plan bundle HANDOFF-PLAN-BUNDLE-001 replaced. A file still
+    // Both gates on every slice, the rule gate tiers replaced. A file still
+    // saying so tells a one-line change to run QA and Code Review.
+    id: 'RETIRED-SPEC-007',
+    phrase: 'QA and Code Review stay mandatory',
+    files: [...rolesWithAnImplementationSlice, teamSkill],
+  },
+  {
+    id: 'RETIRED-SPEC-008',
+    phrase: 'QA and Code Review are both mandatory',
+    files: [codeReviewSkill, qaSkill],
+  },
+  {
+    // The flat plan bundle the directory layout replaced. A file still
     // telling a role to put phase files beside the index describes a layout the
     // validator now rejects, and it would be read as the current contract by
     // whichever run opened that file first.
     id: 'RETIRED-SPEC-006',
     phrase: 'phase files live beside the index',
     files: [productSkill, productPlanDocument, productQuality, teamSkill, teamCoordination],
+  },
+  {
+    // The day-first directory name, which did not sort. Plans are named
+    // year-first so a listing is chronological.
+    id: 'RETIRED-SPEC-009',
+    phrase: 'DDMMYYYY-HHmm',
+    files: [productSkill, productPlanDocument, productQuality, teamSkill, teamCoordination],
+  },
+  {
+    id: 'RETIRED-SPEC-010',
+    // The long form of HANDOFF-DECISION-001, before it fit on one line.
+    phrase: 'never answered by the role that raised it',
+    files: everyRoleEntrypoint,
+  },
+  {
+    id: 'RETIRED-SPEC-011',
+    // The long form of HANDOFF-SOLO-001, before it fit on one line.
+    phrase: 'carry its stage inline at the same standard',
+    files: [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill],
+  },
+  {
+    id: 'RETIRED-SPEC-012',
+    // Coordination features removed in 2026-09; see docs/maintainer-notes.md.
+    phrase: '--allow-new-threads',
+    files: [teamSkill, teamCoordination, teamPipeline],
+  },
+  {
+    id: 'RETIRED-SPEC-013',
+    phrase: '--delegate',
+    files: [teamSkill, teamCoordination, teamPipeline],
+  },
+  {
+    id: 'RETIRED-SPEC-014',
+    phrase: 'thread registry',
+    files: [teamSkill, teamCoordination, teamPipeline],
   },
   {
     id: 'RETIRED-SPEC-004',

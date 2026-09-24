@@ -52,14 +52,22 @@ layout, split view, and input modality belong to the adaptive platform reference
 
 ## Evaluation passes
 
-Before handoff, review in order: comprehension (purpose, state, next action are quickly identifiable);
-task (the full job completes, recovers, resumes with realistic data and errors); hierarchy (type, spacing,
-contrast, grouping match information priority); consistency (one system without flattening distinct
-roles); accessibility (keyboard, touch, screen reader, zoom, reduced motion, cognitive clarity);
-responsive (usable across actual supported contexts); craft (alignment, rhythm, typography, states, motion
-are intentional); implementation (maps to repository primitives with bounded additions). Match method to
-risk — heuristic review, cognitive walkthrough, usability testing — and record evidence and unresolved
-assumptions; never claim user validation from expert critique alone.
+Before handoff, review comprehension, the full task with realistic data and errors, hierarchy, consistency,
+accessibility, responsive use and implementation mapping. Match method to risk and never claim user
+validation from expert critique alone.
+
+## Measure loop
+
+Measure the rendered output rather than judging the code:
+
+1. Render at two viewports — the narrowest and widest the product supports.
+2. Run axe or the platform's accessibility scanner, and check text and non-text contrast per surface.
+3. Check hit areas against the platform minimum, overflow with the longest real content, and that reduced
+   motion still reaches every piece of content.
+4. Fix and measure again until the pass is clean, or record exactly what remains and why.
+
+Without a browser, device or scanner, state the tier that ran — compile, partial render or human review —
+and what a build role must still measure. Never install tooling to close the gap.
 
 ## Accessibility
 

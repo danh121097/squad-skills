@@ -25,6 +25,8 @@ Pass every applicable check honestly.
 ### Traceability
 
 - Every acceptance criterion maps to a test, an observation, or a stated risk-based reason it has neither.
+- A test that was skipped, filtered out or never reached the runner leaves its criterion unevidenced,
+  reported at the same volume as a failure.
 - The pass demonstrates observable behavior; implementation-quality concerns are handed to Code Review.
 - The risk surface is covered where it exists: boundary, error, permission, concurrency, lifecycle,
   offline, security, accessibility, performance, compatibility, rollback.

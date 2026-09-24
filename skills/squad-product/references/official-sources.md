@@ -1,11 +1,7 @@
 # Product framing official sources
 
-A constraint that shapes acceptance criteria is verified against the body that publishes it, never against
-memory. This is a routing surface: each entry is the primary publisher of a rule that can change what "done"
-means. It adds no requirement of its own, and reading one is never permission to accept terms, register an
-account, or commit the project to a policy.
-
-Cite what was checked and the date, and state plainly when a constraint could not be verified.
+Verify a constraint that shapes acceptance criteria at its publisher, cite the date, and say when it could not
+be verified. Reading one is never permission to accept terms, register, or commit the project to a policy.
 
 ## Accessibility and inclusion
 
@@ -37,6 +33,5 @@ Cite what was checked and the date, and state plainly when a constraint could no
 - Core Web Vitals: https://web.dev/articles/vitals
 - Web platform reference: https://developer.mozilla.org/docs/Web
 
-A legal or regulatory obligation is checked, never assumed from a summary, and never treated as legal
-advice. When a constraint would materially change scope and cannot be confirmed, record it as an open
-decision the user owns rather than planning around a guess.
+A legal obligation is checked at source, never assumed from a summary or given as legal advice; an
+unconfirmed scope-changing constraint is an open decision the user owns.

@@ -13,7 +13,7 @@ import { minimumTaskTypes, skillTaskTypes } from '../../src/catalog/skill-task-t
 import {
   findUnroutedReferences,
   measureSkillPayload,
-} from '../../src/eval/skill-payload-measurement.ts';
+} from '../../src/catalog/skill-payload-measurement.ts';
 
 /**
  * The manifest budget reaches three skills and binds a loaded-set figure for

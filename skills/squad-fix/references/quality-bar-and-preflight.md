@@ -42,6 +42,7 @@ Pass every applicable check honestly.
 ## Proof to hand over
 
 Give the pre-fix baseline and the post-fix result, the root cause, the files and contracts changed, the
-checks at the level they actually ran, QA and Code Review verdicts with their independence level, and the
-residual risk. A side effect outside accepted scope stops the work and goes to the user with options; it is
-never absorbed silently.
+checks at the level they actually ran, the gate tier with QA and Code Review verdicts and their independence
+level where the tier ran them (or the gate suggestion when run on its own), and the residual risk. A side
+effect outside accepted scope stops the work and goes to the user with options; it is never absorbed
+silently.

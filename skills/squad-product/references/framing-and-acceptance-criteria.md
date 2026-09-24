@@ -34,6 +34,13 @@ usually as someone else's assumption. Two kinds, not interchangeable:
 - **Deferred** — worth doing, not now. State the condition that would pull it forward.
 - **Refused** — deliberately not done. State why, so it is not re-proposed every cycle.
 
+## A request that arrives partly framed
+
+A brief, a brainstorm or a ticket often settles part of the frame — the stack, some criteria, a scope — and
+leaves the rest. Record the framed part as given, produce only the missing part, and name what each gap was
+measured against: the outcome, a non-goal, a criterion that cannot fail, or a phase with no owning role.
+Re-framing what the user settled costs them a review; routing an incomplete frame onward gets it rejected.
+
 ## Criteria that can fail
 
 A criterion is checkable when someone can name the observation that would prove it wrong. If nothing could

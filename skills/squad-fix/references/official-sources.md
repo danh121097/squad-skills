@@ -1,12 +1,7 @@
 # Bugfix official sources
 
-A bug is diagnosed against the behavior the platform actually documents, not against a remembered API. Use
-the owning stack's primary documentation for the repository's exact versions. Every entry below is already
-carried by the squad registry of the role that owns that layer; this index routes cross-stack diagnosis and
-adds no source of its own.
-
-This is a routing surface, not permission to upgrade a dependency, install a tool, or apply an example
-without resolving the target and authority first.
+Diagnose against documented behavior at the repository's exact versions. Routing only: never permission to
+upgrade, install, or run an example before resolving target and authority.
 
 ## Platform behavior
 
@@ -17,8 +12,7 @@ without resolving the target and authority first.
 - Python: https://docs.python.org/3/
 - Go: https://go.dev/doc/
 - Rust: https://doc.rust-lang.org/
-- Apple UI frameworks: https://developer.apple.com/documentation/swiftui and
-  https://developer.apple.com/documentation/uikit
+- Apple UI frameworks: https://developer.apple.com/documentation/swiftui and https://developer.apple.com/documentation/uikit
 - Apple app lifecycle/background: https://developer.apple.com/documentation/uikit/app-and-environment
 - Android lifecycle: https://developer.android.com/topic/libraries/architecture/lifecycle
 
@@ -53,5 +47,4 @@ without resolving the target and authority first.
 - WCAG 2.2: https://www.w3.org/TR/WCAG22/
 - Core Web Vitals: https://web.dev/articles/vitals
 
-When a symptom crosses layers, read the owning layer's documentation before the one the symptom appeared
-in, and record the version and date checked alongside the finding.
+Across layers, read the owning layer's docs first; record version and date checked.

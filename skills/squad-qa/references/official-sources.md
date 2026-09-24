@@ -1,6 +1,6 @@
 # QA and testing official sources
 
-Use primary docs for exact runner/framework versions and standards.
+Docs for exact runner and framework versions.
 
 ## Test frameworks and browser
 
@@ -38,5 +38,4 @@ Use primary docs for exact runner/framework versions and standards.
 - Core Web Vitals: https://web.dev/articles/vitals
 - OpenTelemetry: https://opentelemetry.io/docs/
 
-Do not assume a tool's default timeout, browser, retry, isolation or coverage semantics; verify the exact
-project version and configuration.
+Verify timeout, browser, retry, isolation and coverage defaults against the project's version and config.

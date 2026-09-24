@@ -1,7 +1,7 @@
 # Designer gate and design intake
 
-Read this reference before frontend planning when the request includes Figma, material UI/UX work, a new
-component pattern, or unclear design input.
+Read this reference before frontend planning when the request includes a screenshot, link, brief or
+Figma, material UI/UX work, a new component pattern, or unclear design input.
 
 ## 0. What the Designer stage delivers
 
@@ -16,34 +16,29 @@ authorship. That is not product state and does not move to you — remove it and
 Change the presentational layer only where wiring genuinely requires it, and say what you changed. A
 visual or interaction gap goes back to the Designer stage instead of being redesigned inside the feature.
 
-## 1. Accepted Figma
+## 1. The user's material first
 
-Treat a user-identified accepted Figma file/frame as the primary design intent. Use available Figma MCP to
-inspect components, variants, variables, Auto Layout, constraints, interactions, and assets. Map them to
-repository primitives; do not trigger a full redesign merely because implementation is new.
-
-Trigger Designer only for material gaps: missing responsive behavior, loading/error/empty states,
-ambiguous flow, accessibility conflicts, or a design-system mismatch. Limit the handoff to those gaps and
-preserve the accepted art direction.
+A screenshot, link, brief or accepted Figma the user supplied is the design intent. With Figma MCP
+available, inspect components, variants, variables, Auto Layout, constraints, interactions, and assets. Map
+the material to repository primitives; do not trigger a redesign merely because implementation is new.
 
 ## 2. Trigger Designer
 
-Run the Designer stage first when any condition applies:
+Run the Designer stage only for a design decision still unresolved after the user's material and the
+existing system are considered:
 
-- The request asks to design, redesign, beautify, modernize, improve UX/hierarchy, add substantial motion,
-  or define responsive behavior.
-- No accepted source exists and material flow, IA, layout, hierarchy, component, state, token, or
-  interaction decisions remain.
-- The feature changes a reusable component pattern, token, navigation model, form pattern, accessibility
-  behavior, or cross-screen visual language.
-- Requested UI conflicts with current components/tokens and requires a design decision.
+- the request asks to design, redesign or modernize, and no material covers it;
+- missing responsive behavior, states, flow or accessibility the material leaves open;
+- a change to a reusable component pattern, token, navigation model or cross-screen visual language;
+- requested UI conflicts with current components or tokens.
 
-Designer activation resolves only decisions required by the frontend task; it does not expand scope.
+Designer activation resolves only those decisions and preserves the material's art direction.
 
 ## 3. Do not trigger Designer
 
-Continue directly for logic-only work, a narrow bug fix, a complete accepted design, or a small UI change
-that exactly follows an established local pattern.
+With one build owner and no design-system change, do the presentational work inline. Continue directly
+also for logic-only work, a narrow bug fix, material that covers the screen, or a small UI change that
+follows an established local pattern.
 
 ## 4. Routing
 
@@ -58,10 +53,9 @@ that exactly follows an established local pattern.
 Produce the same artifact the Designer stage would: presentational components plus the rationale, written
 before the behavior wiring, so the boundary survives even without the skill.
 
-1. Resolve Figma or another accepted source.
+1. Resolve the user's material — screenshot, link, brief or Figma.
 2. Scout repository components, tokens, styling, layouts, motion, and accessibility patterns.
-3. If no accepted design exists, research task-specific UI/UX and real-product flows when material design
-   decisions are required.
+3. Research task-specific UI/UX only for what both leave open.
 4. Decide flow, IA, hierarchy, responsive behavior, content behavior, and every applicable state.
 5. Select existing primitives or an approved framework-appropriate greenfield foundation.
 6. Build the presentational components against those primitives, with every state reachable from props and

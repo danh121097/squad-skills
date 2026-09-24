@@ -9,7 +9,7 @@ import {
   extractRegistryUrls,
   findSourceRegistries,
   sourceRegistryFileName,
-} from '../../src/eval/source-registry-links.ts';
+} from '../../src/catalog/source-registry-links.ts';
 
 /**
  * The liveness check named one skill's registry while seven others shipped one,
@@ -102,7 +102,7 @@ describe('findSourceRegistries', () => {
 
   it('reports the skill count when no skill ships a registry, so the caller can refuse', async () => {
     // The silent failure: with registries missing, the run would otherwise check
-    // only knowledge cards and exit green having verified no registry at all.
+    // nothing and exit green having verified no registry at all.
     const discovery = await findSourceRegistries(await makeSkillTree({ 'squad-a': null }));
 
     expect(discovery.registries).toEqual([]);

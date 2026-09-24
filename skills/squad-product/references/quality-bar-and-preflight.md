@@ -7,15 +7,9 @@ pass holds with no other skill installed.
 
 - A solution restated as an outcome, so no cheaper answer was ever considered.
 - Criteria nobody can fail — "intuitive", "performant", "robust" — carried as if they were checks.
-- Non-goals missing, so everything unmentioned is silently in scope.
-- A stack, library or architecture chosen in passing by a role that does not own that decision.
 - Assumptions promoted to decisions between the first draft and the second, losing their labels.
 - Phases that mirror a calendar rather than a dependency, so two of them cannot run in that order.
-- A required capability assigned to the nearest role, or several roles listed without distinct responsibilities.
-- Ceremony: nine artificial phases for a two-file change, or repeated prose that adds no execution detail.
-- Plan files written into the user's repository because they seemed tidy, not because the user asked.
-- A monolithic written plan whose phase summaries hide the steps, checks, risks and handoffs an owner needs.
-- Execution started — a file edited, a role invoked — by the role whose contract ends at the handover.
+- Ceremony: nine artificial phases for a two-file change, or a bundle directory for a one-phase plan.
 
 ## Pre-flight
 
@@ -44,27 +38,19 @@ Pass every applicable check honestly.
 - The first slice is complete for someone, and the plan says whether it buys demand or feasibility evidence.
 - Proportion: the plan is as small as the work.
 
-### Written bundle
+### Written plan
 
-- The root holds `plan.md` and nothing else; `phases/`, `artifacts/`, `adr/` and `references/` hold the rest.
-- Every file under `artifacts/`, `adr/` and `references/` records something that already exists — a gate
-  that ran, a decision the user accepted, background a phase names under `inputs`. No slot was filled to
-  complete the shape.
-- `plan.md` links exactly one `phases/phase-XX-kebab-case-title.md` file for every phase, numbered
-  continuously from `01`.
-- Nothing outside `phases/` carries the `phase-XX-` prefix; an artifact records its owning phase, owner,
-  revision and status in frontmatter instead.
-- Every relative link resolves inside the bundle, and every path a phase declares under `inputs` is linked
-  from its body.
-- The index carries plan-wide authority and navigation; phase details are not duplicated there.
-- Every phase file states context, objective, deliverables, required roles, distinct role scopes,
-  prerequisites, ordered steps, acceptance evidence, risks or recovery where applicable, and its handoff
-  condition.
-- `roles` is always a list. A multi-role phase includes a role-responsibility table with concrete
-  deliverables and producer/consumer handoffs, while live file and agent-instance assignment stays with the lead.
-- Numbering, dependencies and status agree between the index and phase files; each plan-wide criterion
+- Shape: a written plan of one or two phases is a single plan.md declaring layout: single; a larger one is
+  one directory whose root holds only plan.md and the standard phases, artifacts, adr and references
+  directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative.
+- No slot was filled to complete the shape: every ADR, artifact and reference records something that
+  already exists. An artifact records its owning phase, owner, revision and status in frontmatter, never in
+  a phase-XX- filename prefix, which phases/ alone reserves.
+- Each phase file states its objective and deliverables, its roles and their distinct scopes, ordered work
+  steps, and acceptance criteria with expected evidence; context, prerequisites, risks and handoff are added
+  when they have content.
+- Numbering, dependencies and status agree between the index and phase files, and each plan-wide criterion
   traces to expected evidence in at least one phase.
-- Detail exposes omitted scope without inventing implementation choices, files, commands or measurements.
 
 ### Boundary
 

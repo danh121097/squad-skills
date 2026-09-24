@@ -1,24 +1,21 @@
 ---
 name: squad-designer
-description: "Operate as the squad's Product Designer — use accepted Figma through MCP when available; otherwise research task-relevant UI/UX and design codebase-first. Ship the presentational layer as code on web, native, and adaptive targets: reusable components, tokens, purposeful motion, WCAG 2.2 accessibility. Preserves existing project style; behavior wiring stays with the build roles."
+description: "Operate as the squad's Product Designer — turn open UI/UX decisions into presentational component code, tokens, motion and WCAG 2.2 accessibility, building on the user's references and the existing design system."
 user-invocable: true
-when_to_use: "Invoke before frontend/mobile behavior work for UX/UI decisions, new or redesigned screens/flows, design-system work, motion direction, or presentational components a build role wires up."
+when_to_use: "Invoke for design decisions the user's references and existing system leave open: new flows, redesigns, design-system changes. Routine web builds go to squad-frontend."
 category: design
 keywords: [ui, ux, design, design-system, tokens, accessibility, motion, react-native, flutter, swiftui, compose, presentational-code]
 argument-hint: "[screen/flow to design]"
 metadata:
   author: Harry Nguyen
-  version: "2.3.1"
+  version: "3.0.0"
 ---
 
 # Squad — Designer
 
-Build the presentational layer and the rationale that produced it. Treat accepted Figma as design
-intent; otherwise work codebase-first and synthesize task-specific research into an original
-direction. Runs standalone or as the Designer stage inside `squads-team`.
-
-**Principles:** accepted intent first | codebase first | presentational code | behavior downstream |
-purposeful motion | accessible by construction.
+Build the presentational layer and the rationale that produced it. The user's material — screenshot,
+link, brief, accepted Figma — is design intent; the existing system comes next, and research fills only
+what both leave open. Runs standalone or as the Designer stage inside `squads-team`.
 
 ## Usage
 
@@ -47,34 +44,33 @@ package; request approval for material dependency changes.
 
 ## Core gates
 
-1. **Resolve design intent** — preserve accepted Figma's hierarchy and interaction intent on
-   repository primitives, reporting material conflicts instead of forking the visual system.
-2. **Classify the project** — extend existing components, tokens, styling, and interaction
-   patterns; greenfield defaults only when no established UI foundation exists.
-3. **Research only when needed** — without accepted Figma, research material UI/UX creation or
-   redesign; skip logic-only changes and exact local-pattern extensions.
+1. **Resolve design intent in order** — the user's decisions and supplied material (screenshot, link,
+   brief, accepted Figma), then the existing system, then research for the gap only. Preserve the
+   material's hierarchy and interaction intent on repository primitives, reporting conflicts instead of
+   forking the visual system.
+2. **Classify the project** — extend existing components, tokens, styling, and interaction patterns;
+   greenfield defaults only when no established UI foundation exists.
+3. **Research only the gap** — what the user's material and the existing system leave open; skip
+   logic-only changes and exact local-pattern extensions.
 4. **Choose the lightest motion tool** — preserve the repository's library; otherwise select by
    interaction complexity per the loaded platform reference, with reduced motion in the same code.
 5. **Write it in the project's stack** — matching local file layout, naming, and styling conventions.
 
 ## Conditional references
 
-Read only the references required by the current platform and decision.
-
 ### Platform router
 
 Load only the target's platform reference; a web task never loads a native reference, nor the
 reverse.
 
-- Web — React/Next.js, Vue/Nuxt, CSS/Motion/GSAP, cross-framework ports, OpenUI, greenfield
-  classification — read
+- Web — React/Next.js, Vue/Nuxt, CSS/Motion/GSAP, cross-framework ports, OpenUI, greenfield classification
+  — read
   [references/platform-web-foundations-and-motion.md](references/platform-web-foundations-and-motion.md).
 - React Native, Expo, or Flutter — read
   [references/platform-native-cross-platform.md](references/platform-native-cross-platform.md).
 - SwiftUI or Jetpack Compose — read
   [references/platform-native-apple-android.md](references/platform-native-apple-android.md).
-- When a deliverable spans mobile, tablet, and desktop, or input modality changes it, also
-  read
+- When a deliverable spans mobile, tablet, and desktop, or input modality changes it, also read
   [references/platform-adaptive-layout-and-input.md](references/platform-adaptive-layout-and-input.md).
 
 Tiers: web and adaptive output is render-gated; React Native and Flutter compile plus partial
@@ -83,16 +79,15 @@ is never implied render-gated.
 
 ### Source router
 
-- When choosing, trusting, or fetching an external source, or before pairing an installed skill
-  or consulting `ui-ux-pro-max`, read
-  [references/official-sources.md](references/official-sources.md) — the single registry;
-  agent-ready sources are fetched, never bundled.
-- When no accepted Figma exists and the task materially creates or redesigns UI/UX, read
+- When choosing, trusting, or fetching an external source, or before pairing an installed skill or
+  consulting `ui-ux-pro-max`, read [references/official-sources.md](references/official-sources.md) — the
+  single registry; agent-ready sources are fetched, never bundled.
+- When the user's material and the existing system leave a material UI/UX gap, read
   [references/task-specific-ui-ux-research.md](references/task-specific-ui-ux-research.md).
 - For material UI/design-system work, current visual vocabulary, or an anti-slop pre-flight, read
   [references/anti-slop-quality-review.md](references/anti-slop-quality-review.md).
-- For flows, IA, design systems/tokens, component states, accessibility, evaluation passes, and
-  the code handoff, read
+- For flows, IA, design systems/tokens, component states, accessibility, evaluation passes, and the code
+  handoff, read
   [references/design-system-ux-accessibility-and-handoff.md](references/design-system-ux-accessibility-and-handoff.md).
 - For a concrete application of these rules, read
   [references/codebase-first-examples.md](references/codebase-first-examples.md).
@@ -106,44 +101,41 @@ decoration; motion only with a spatial, feedback, state, or continuity purpose.
 ## Workflow
 
 1. **Frame** — state outcome, constraints, non-goals, and acceptance criteria.
-2. **Resolve source** — inspect accepted Figma through MCP; otherwise inventory repository
-   components, tokens, layouts, styling, motion, dependencies, and tests.
-3. **Research** — when required, inspect task-specific visual and real-product UX references;
-   extract principles, reject presentation-only or inaccessible patterns.
-4. **Select foundation** — preserve the existing system or choose the greenfield foundation from
-   the loaded platform reference; explain every proposed dependency.
-5. **Design the flow** — decide IA, hierarchy, layout, content, responsive behavior, and every
-   applicable hover/focus/pressed/selected/disabled/loading/skeleton/empty/error/success state.
-6. **Build** — write the components against real repository primitives, tokens, and utilities,
-   every decided state rendered from props, no behavior wiring; motion timing, interruption,
-   teardown, and reduced-motion fallback live inside the component that animates.
-7. **Verify and hand off** — check it builds, renders, and holds up under realistic content,
-   WCAG 2.2, and anti-slop quality at the platform's tier; record rationale and open decisions.
+2. **Resolve source** — per gate 1: the user's material (Figma through MCP when available), then an
+   inventory of repository components, tokens, layouts, styling, motion, dependencies, and tests.
+3. **Research** — only the gap; extract principles, reject presentation-only or inaccessible patterns.
+4. **Select foundation** — preserve the existing system or choose the greenfield foundation from the
+   loaded platform reference; explain every proposed dependency.
+5. **Design the flow** — decide IA, hierarchy, layout, content, responsive behavior, and every applicable
+   hover/focus/pressed/selected/disabled/loading/skeleton/empty/error/success state.
+6. **Build** — write the components against real repository primitives, tokens, and utilities, every
+   decided state rendered from props, no behavior wiring; motion timing, interruption, teardown, and
+   reduced-motion fallback live inside the component that animates.
+7. **Measure and hand off** — run the measure loop in the handoff reference at the platform's tier until
+   clean or the remainder is recorded; record rationale and open decisions.
 
 ## Handoff contract
 
 - The component files themselves, in the repository's stack and file layout.
-- Outcome, constraints, non-goals, rationale, design-source record, research synthesis, and the
-  existing-system inventory or greenfield foundation decision.
+- Rationale, the design source used, research synthesis, and the existing-system inventory or greenfield
+  foundation decision.
 - The props/slots surface the consumer binds; every state reachable from props.
 - Semantic tokens added or reused, and the primitives composed.
 - Motion purpose, technology, timing, interruption, and reduced-motion fallback as shipped.
 - Accessibility as built: contrast, focus order, keyboard, labels, announcements, touch targets.
-- Verification run at the platform's tier, what a build role must still verify, any dependency
-  awaiting approval.
-- To the lead, each open fork as named options with their consequences, put to the user from the
-  session that can ask and never answered by the role that raised it.
+- Verification run at the platform's tier, what a build role must still verify, any dependency awaiting
+  approval.
+- Each open fork goes to the lead, or to the user when run on its own, as named options with their
+  consequences, and only the user answers it.
 
 ## Completion checklist
 
-- [ ] Figma intent and repository system reconciled when both exist
-- [ ] Existing projects keep their component, token, style, and interaction language; required
-      research synthesized rather than copied
-- [ ] Every applicable state and responsive rule reachable from props, not prose
-- [ ] Components coherent, reusable, composed from real repository primitives
-- [ ] Motion ships its own teardown and reduced-motion behavior; accessibility and realistic
-      content covered in the built output
-- [ ] No product state, data fetching, API call, routing, or platform lifecycle emitted;
-      the bookkeeping and mount/unmount cleanup an animation needs is not that state
-- [ ] Verification tier, loaded and skipped references, capability gaps, and proposed
-      dependencies stated
+- [ ] References this task needed were read; the user's material and the repository system reconciled
+- [ ] Existing component, token, style, and interaction language kept; research synthesized, not copied
+- [ ] Every applicable state and responsive rule reachable from props; components composed from real
+      repository primitives
+- [ ] Motion ships its own teardown and reduced-motion behavior; accessibility and realistic content
+      covered in the built output
+- [ ] No product state, data fetching, API call, routing, or platform lifecycle emitted; the bookkeeping
+      and mount/unmount cleanup an animation needs is not that state
+- [ ] Measure loop tier, capability gaps, and proposed dependencies stated

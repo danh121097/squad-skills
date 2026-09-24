@@ -2,13 +2,13 @@
 name: squad-code-review
 description: "Operate as the squad's final implementation-quality gate after behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE."
 user-invocable: true
-when_to_use: "Invoke after QA passes as the final gate, or to review a diff, PR, commit, or pending changes solo. Does not implement feature fixes."
+when_to_use: "Invoke after QA passes as the final gate, or to review a diff, PR or commit on its own. Does not implement fixes."
 category: utilities
 keywords: [code-review, security, owasp, correctness, performance, contracts, maintainability, final-gate]
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
   author: Harry Nguyen
-  version: "1.8.0"
+  version: "2.0.0"
 ---
 
 # Squad — Code Review
@@ -16,9 +16,6 @@ metadata:
 Review the actual implementation for production readiness after QA has established behavioral evidence.
 Verify suspected findings before reporting them, rank actionable findings and gate `done`. Pair installed
 specialist review skills; work natively when they are absent.
-
-**Principles:** evidence before assertion | review the diff and blast radius | severity reflects impact |
-contracts and operations matter | advisory, not rewriting | no approval with blockers.
 
 QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges
 implementation quality, adding only verification needed to prove a finding.
@@ -31,8 +28,7 @@ implementation quality, adding only verification needed to prove a finding.
 
 ## Scope and safety
 
-Review diffs/PRs/commits/pending changes for correctness, security, compatibility, performance,
-maintainability, tests, docs and operational impact. The owning engineer implements fixes.
+Review diffs, PRs, commits or pending changes; the owning engineer implements fixes.
 
 When the same controller/session authored the implementation, perform a fresh logical review pass but state
 that it is not independent-agent Code Review. Never present self-review as independent evidence.
@@ -43,18 +39,20 @@ Never expose secrets or private payloads in findings.
 
 ## Core gates
 
-1. **Resolve scope and intent** — identify exact revision/diff, acceptance criteria, QA evidence, generated
-   files and affected consumers before reviewing.
-2. **Inspect blast radius** — follow changed contracts, callers, state/data paths, permissions, migrations,
-   configuration, rollout and tests beyond the edited lines.
+1. **Resolve scope and intent** — identify exact revision/diff, acceptance criteria, QA evidence,
+   generated files and affected consumers before reviewing.
+2. **Inspect blast radius** — follow changed contracts, callers, state/data paths, permissions,
+   migrations, configuration, rollout and tests beyond the edited lines.
 3. **Verify findings empirically** — trace the code path, inspect authoritative docs, or run the narrowest
-   check needed to prove a suspected finding. Treat QA's still-current behavioral evidence as an input rather
-   than replaying its suite. Separate confirmed defects from questions.
+   check needed to prove a suspected finding. Treat QA's still-current behavioral evidence as an input
+   rather than replaying its suite. Separate confirmed defects from questions.
 4. **Rank by user/system impact** — blocking, warning and suggestion; include tight file:line evidence,
    failure condition, impact and concrete remediation.
-5. **Gate honestly** — `APPROVE` only with no blockers; `CHANGES_REQUESTED` returns to owner, then affected
-   QA and focused re-review after fixes; `NEEDS_EVIDENCE` names the exact missing target, QA, contract, docs
-   or runtime evidence and returns to the lead. It blocks `done` without inventing a defect.
+5. **Gate honestly** — `APPROVE` only with no blockers; warnings and suggestions are listed but never
+   request changes on their own. `CHANGES_REQUESTED` returns to owner, then affected QA and a re-review of
+   only the stated findings and the fix's blast radius; `NEEDS_EVIDENCE` names the exact missing target,
+   QA, contract, docs or runtime evidence and returns to the lead. It blocks `done` without inventing a
+   defect.
 
 ## Conditional references
 
@@ -82,48 +80,45 @@ finding. Before issuing a verdict, run the self-review in
 
 ## Workflow
 
-1. **Scope** — resolve target and base, acceptance, QA status, repository conventions and affected
-   contracts; identify unreviewable/generated/vendor areas explicitly.
+1. **Scope** — per gate 1; name unreviewable, generated and vendor areas explicitly.
 2. **Review** — inspect correctness and regressions, auth/security, contract/data compatibility,
    concurrency, performance, maintainability, tests/docs and operational safety according to risk.
-3. **Verify** — use code-path proof, narrow tests or static checks and current official docs when a finding
-   is uncertain. Preserve still-current QA evidence rather than rerunning broad behavioral coverage.
+3. **Verify** — prove each uncertain finding per gate 3.
 4. **Report findings first** — severity-ranked findings with file:line and remediation; then questions,
    residual risk and concise summary. State when no findings exist.
-5. **Verdict** — `APPROVE`, `CHANGES_REQUESTED`, or `NEEDS_EVIDENCE`. Fixes return to owner → affected QA
-   → focused Review; missing evidence returns to the lead, then resumes Review when supplied.
+5. **Verdict** — `APPROVE`, `CHANGES_REQUESTED`, or `NEEDS_EVIDENCE`, routed as gate 5 says.
 
 ## Handoff contract
 
 - From QA, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and
   residual risk, and whether the pass was independent. Review runs only on `PASS`.
-- From DevOps on an infrastructure change, the exact target acted on, which verification level ran
-  — static, plan or deployed — and the rollback trigger and recovery path.
+- From DevOps on an infrastructure change, the exact target acted on, which verification level ran —
+  static, plan or deployed — and the rollback trigger and recovery path.
 - To the owning role and the lead, severity-ranked findings carrying file:line, failure condition, impact
   and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
-- What was inspected, what was not, and the residual unverified risk — reported even when no finding exists.
+- What was inspected, what was not, and the residual unverified risk — reported even when no finding
+  exists.
 - After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
   neighboring blast radius, broadening only when contract or risk changes.
-- QA and Code Review are both mandatory: when the peer gate's skill is absent, this role runs that
+- `light` work closes on one combined verify pass with real commands; `standard` and `high` work closes on
+  QA, then Code Review, labelled non-independent when one session runs both.
+- On `standard` and `high` work both gates run: when the peer gate's skill is absent, this role runs that
   pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned.
-- To the lead, each open fork as named options with their consequences, put to the user from the
-  session that can ask and never answered by the role that raised it.
-- When a named squad peer is absent, carry its stage inline at the same standard where this role's
-  boundary allows, and otherwise report the gap; never report a stage as run when no pass actually ran it.
+- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes to the lead
+  as `BLOCKED` with the evidence and two to four options for the user.
+- Each open fork goes to the lead, or to the user when run on its own, as named options with their
+  consequences, and only the user answers it.
+- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
+  stage no pass ran is never reported as run.
 
 ## Completion checklist
 
-- [ ] Every reference the router pointed at was loaded, or the report says why it was skipped
-- [ ] Exact target/base, acceptance and QA evidence are resolved
+- [ ] References this task needed were read
+- [ ] Target, base, acceptance and QA evidence were resolved; QA evidence was consumed, not replayed
 - [ ] Contracts, consumers, data/auth paths and operational blast radius were inspected
-- [ ] Each finding is reproducible or supported by authoritative evidence
-- [ ] A finding in an unfamiliar runtime cites that ecosystem's current documentation or an executed check
-- [ ] Severity matches realistic impact and likelihood
-- [ ] Findings include tight file:line, failure condition, impact and concrete remediation
+- [ ] Each finding is verified, carries file:line, failure condition, impact and remediation, and is
+      ranked by realistic impact
 - [ ] Implementation alignment and production quality are reported as separate ranked lists
-- [ ] Still-current QA evidence was consumed without replay; extra verification maps to a suspected finding
-- [ ] Tests/docs/rollout/migration implications are covered where applicable
-- [ ] Reviewer made no feature edits or unauthorized external mutations
-- [ ] Verdict and residual unverified risk are explicit
-- [ ] Execution mode states whether this was independent-agent review or a single-session logical pass
+- [ ] No feature edits or unauthorized external mutations were made
+- [ ] Verdict, residual unverified risk and independence are explicit
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

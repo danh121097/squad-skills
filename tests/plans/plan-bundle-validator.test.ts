@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { validatePlanBundle } from '../../src/plans/plan-bundle-validator.ts';
 
-const fixtureBundle = path.join(process.cwd(), 'evals/fixtures/plan-bundle/checkout-recovery');
+const fixtureBundle = path.join(process.cwd(), 'tests/fixtures/plan-bundle/checkout-recovery');
 const phaseOne = 'phases/phase-01-cart-persistence-contract.md';
 const temporaryRoots: string[] = [];
 
@@ -422,5 +422,89 @@ describe('validatePlanBundle', () => {
 
       expect(result.errors).toEqual([]);
     });
+  });
+});
+
+const singleFileBundle = path.join(process.cwd(), 'tests/fixtures/plan-bundle/single-file');
+
+async function singleFileWith(mutate: (root: string) => Promise<void>): Promise<string[]> {
+  const root = await mkdtemp(path.join(tmpdir(), 'plan-single-'));
+
+  temporaryRoots.push(root);
+  await cp(singleFileBundle, root, { recursive: true });
+  await mutate(root);
+
+  return (await validatePlanBundle(root)).errors;
+}
+
+describe('validatePlanBundle on a single-file plan', () => {
+  it('accepts the shipped single-file plan with no phases/ directory', async () => {
+    const result = await validatePlanBundle(singleFileBundle);
+
+    expect(result.errors).toEqual([]);
+    expect(result.checkedDocuments).toEqual(['plan.md']);
+  });
+
+  it('still requires phases/ when plan.md does not declare the single layout', async () => {
+    const errors = await singleFileWith((root) =>
+      patch(root, 'plan.md', 'layout: single\n', '')
+    );
+
+    expect(errors.join('\n')).toContain('phases/ is missing');
+  });
+
+  it('rejects phases/ beside a single-file plan', async () => {
+    const errors = await singleFileWith(async (root) => {
+      await cp(path.join(fixtureBundle, 'phases'), path.join(root, 'phases'), { recursive: true });
+    });
+
+    expect(errors.join('\n')).toContain('declares `layout: single`');
+  });
+
+  it('rejects a single-file plan past two phase sections', async () => {
+    const errors = await singleFileWith(async (root) => {
+      const target = path.join(root, 'plan.md');
+      await writeFile(target, `${await readFile(target, 'utf8')}\n## Phase 3 — Audit log\n\nLater.\n`);
+    });
+
+    expect(errors.join('\n')).toContain('3 phase sections exceed the 2');
+  });
+
+  it('rejects a single-file plan with no phase section', async () => {
+    const errors = await singleFileWith(async (root) => {
+      await patch(root, 'plan.md', '## Phase 1 — CSV endpoint', '## CSV endpoint');
+      await patch(root, 'plan.md', '## Phase 2 — Export control', '## Export control');
+    });
+
+    expect(errors.join('\n')).toContain('none was found');
+  });
+
+  it('rejects phase sections that skip a number', async () => {
+    const errors = await singleFileWith((root) =>
+      patch(root, 'plan.md', '## Phase 2 — Export control', '## Phase 3 — Export control')
+    );
+
+    expect(errors.join('\n')).toContain('numbered 1, 3');
+  });
+
+  it('ignores a phase heading inside a fenced example', async () => {
+    const errors = await singleFileWith(async (root) => {
+      const target = path.join(root, 'plan.md');
+      await writeFile(
+        target,
+        `${await readFile(target, 'utf8')}\n\`\`\`md\n## Phase 3 — Example\n\`\`\`\n\n~~~\n## Phase 4 — Example\n~~~\n`
+      );
+    });
+
+    expect(errors).toEqual([]);
+  });
+
+  it('rejects a layout value other than single', async () => {
+    const errors = await singleFileWith(async (root) => {
+      await patch(root, 'plan.md', 'layout: single', 'layout: flat');
+      await cp(path.join(fixtureBundle, 'phases'), path.join(root, 'phases'), { recursive: true });
+    });
+
+    expect(errors.join('\n')).toContain('"layout" is either absent or "single"');
   });
 });
