@@ -97,13 +97,34 @@ reporting an absent peer as run — and even there it reads better paired with t
 This catalog is not clean on that axis. Treat every `Do not` you touch as a candidate for rewriting into the
 behavior it wants.
 
+## Proportionality
+
+Procedure scales with risk, not with the number of roles installed. A one-line fix, a change that follows a
+local pattern, or a prompt that already states its outcome and testable criteria takes the short path: no
+framing pass, no design pass, one combined verify with real commands. Ceremony — a framing pass, a separate QA
+and Code Review, a written plan — is reserved for the work whose risk or ambiguity pays for it. Write a new
+rule with its cheapest applicable path first and the escalation condition second, and never make the short
+path depend on skipping evidence: proportionality removes procedure, not proof.
+
+What the user already supplied is input, not a draft to re-derive. A brief, a screenshot, a reference link or
+stated acceptance criteria settle what they cover; a skill fills only the gap they leave.
+
+## Frontier-model no-ops
+
+The models these skills run on already read before editing, match repository conventions, check an API
+before calling it, and write tests for what they change. An instruction restating a default like these costs
+every run tokens and changes nothing. Keep a sentence only when it encodes a decision the model would
+otherwise get wrong — a threshold, an ordering, an ownership, a stop condition, a safety boundary — and delete
+the rest. When unsure, delete it and name the sentence in the change description, so it can be restored if
+real use shows a regression.
+
 ## Pruning
 
 - **One source of truth per meaning.** Duplication costs maintenance, costs tokens, and inflates a rule's
   apparent rank. Deliberate exceptions exist and are declared where they are made, never left for a reader to
-  discover. `AGENTS.md` documents the standing one: each role's `quality-bar-and-preflight.md` restates rules
-  its working references also carry, because a pre-flight assembled from two files is a pre-flight a run
-  skips. Where the two disagree, the quality bar is current. The other shape is reachability — a rule
+  discover. `AGENTS.md` documents the standing one: each role's `quality-bar-and-preflight.md` may restate
+  rules its working references also carry, and the completion checklist points at it instead of copying it.
+  Where the two disagree, the quality bar is current. The other shape is reachability — a rule
   restated verbatim in a second file because a task type cannot load the first — and it is declared in the
   ceiling comment that pays for it.
 - **The environment is a source of truth.** `package.json` scripts, the directory layout, `--help` output. A
@@ -111,8 +132,7 @@ behavior it wants.
   unwritten convention and the reason behind a choice; leave the one-command lookups where they cannot go
   stale.
 - **Hunt no-ops.** An instruction the model already follows by default pays load to say nothing. The test is
-  model-relative, not reader-relative: two people disagreeing about a no-op disagree about the default, and
-  they settle it by running the skill, not by arguing. When a sentence fails, delete the sentence rather than
+  model-relative, not reader-relative: see "Frontier-model no-ops" above. When a sentence fails, delete the sentence rather than
   trim words from it. The test also grades leading words — one too weak to beat the default is a no-op, and
   the fix is a stronger word rather than a different technique.
 - **Watch for sediment.** Stale layers settle because adding feels safe and removing feels risky. A rule that
@@ -122,5 +142,5 @@ behavior it wants.
 
 `pnpm validate` proves the catalog is consistent, routed and inside its ceilings. What it cannot prove, and
 the evidence a claim about output needs instead, is stated in `AGENTS.md` and not restated here. The part
-that belongs to authoring: `docs/skill-observations.md` is where a real run's evidence is recorded, and an
-observation is a candidate rule, never an edit.
+that belongs to authoring: `docs/skill-observations.md` records what a real run got wrong, and an entry is a
+candidate rule, never an edit.

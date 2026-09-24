@@ -10,8 +10,8 @@ body:
         wrong, missing, or worse than it should have been.
 
         For a defect in this repository's own tooling — the CLI, the validators,
-        the package — open an ordinary issue instead. For a claim you want a
-        knowledge card to carry, use the knowledge card template.
+        the package — open an ordinary issue instead. A maintainer records a
+        confirmed report in `docs/skill-observations.md`.
 
         You do not need to know the fix. A report that only says what happened
         is worth opening; the field for a proposed rule is optional and most
@@ -31,6 +31,7 @@ body:
         - squad-fix
         - squad-frontend
         - squad-mobile
+        - squad-product
         - squad-qa
         - squads-team
         - not sure

@@ -147,7 +147,7 @@ you want to pick the role yourself.
 | Situation                                                                                                                             | Reach for           |
 | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
 | An idea or goal with no acceptance criteria yet, or an empty repository to frame                                                      | `squad-product`     |
-| UI, UX, design-system or motion work — a precondition for material UI, not a preference                                               | `squad-designer`    |
+| A UI, UX, design-system or motion decision that your screenshot, link, brief or Figma and the existing system leave open              | `squad-designer`    |
 | Web UI, client logic and API integration                                                                                              | `squad-frontend`    |
 | APIs, data models, auth, migrations, queues and server logic                                                                          | `squad-backend`     |
 | React Native, Expo, Flutter, SwiftUI or Compose screens and app logic                                                                 | `squad-mobile`      |
@@ -160,60 +160,33 @@ you want to pick the role yourself.
 Two of these are gates rather than builders. `squad-qa` verifies observable behavior against acceptance and
 risk, then issues `PASS`, `FAIL` or `NEEDS_ENVIRONMENT`. `squad-code-review` consumes that evidence, reviews
 implementation quality and issues `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`; it never implements
-the fixes it asks for. `squads-team` runs the whole pipeline and enforces the implement, QA, review, done
-sequence while sizing gate units and reruns to the changed contract and risk surface. Reach for the smallest
-role that fits and let it escalate.
+the fixes it asks for. Reach for the smallest role that fits and let it escalate.
 
-## Develop
+## How the squad runs
 
-Requires Node.js 22.20 or newer. The repository pins pnpm through `package.json`.
+`squads-team` names a gate tier in one line before building:
 
-```sh
-pnpm install
-pnpm test
-pnpm release:check
-```
+| Tier       | When                                                                                                 | Closes on                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `light`    | One owner; no change to a public contract, auth, data or migration, infrastructure or a dependency   | One combined verify pass with real commands            |
+| `standard` | The default                                                                                          | QA `PASS`, then Code Review `APPROVE`                  |
+| `high`     | Auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion | Both gates, run independently where the runtime allows |
 
-`pnpm test` runs TypeScript type checking, formatting verification, Vitest,
-skill-contract validation, knowledge-card validation, and catalog discovery
-through the pinned Skills CLI.
+A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` comes back to you as
+blocked, with the evidence and two to four options. A build role or `squad-fix` called on its own verifies
+with real commands and ends by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both.
+Designer runs only for decisions your own references and the existing design system leave open.
 
-Read [AGENTS.md](AGENTS.md) before contributing with a coding agent.
-Use [the publishing guide](docs/publishing.md) when the local repository and npm
-package are ready to be made public.
+`squads-team` flags, each overriding one default:
 
-## Contribute
-
-[CONTRIBUTING.md](CONTRIBUTING.md) is the contract: the contribution types that
-are accepted, the ones that are rejected and why, the provenance a knowledge
-card must carry, and the evidence a skill-content change must carry before it
-ships.
-
-Two things are worth knowing before you start. Knowledge enters through a
-reviewed card citing a dated first-party source, never through crawling or a
-pasted page. And a change to anything an agent reads at runtime ships on the
-full deterministic gate plus maintainer review — that gate shows the catalog is
-consistent, contract-bound and within its payload ceiling, which is not the same
-as showing the output got better, so a claim that it did needs its own evidence.
-[AGENTS.md](AGENTS.md) states the rule.
-
-If you used one of these skills on real work and its output got something wrong,
-open the [skill output problem](https://github.com/danh121097/squad-skills/issues/new?template=skill-feedback.yml)
-form. You do not need to know the fix.
-[`docs/feedback-and-weekly-improvement.md`](docs/feedback-and-weekly-improvement.md)
-is what happens to a report after that, and
-[`docs/skill-observations.md`](docs/skill-observations.md) is how one becomes a
-rule.
-
-An optional daily GitHub Actions workflow can collect new redacted inbox items
-and `skill-feedback` issues into a draft PR under `plans/feedback/daily/`. It
-runs in the cloud at 00:00 Vietnam time, creates no PR when there is no new
-feedback, and never merges automatically. Local usage logs stay on the machine.
-
-For an individual maintainer observation, ask the agent to save it first, then
-publish that one redacted file with the local helper when you explicitly want a
-branch and draft PR. Running the helper without `--publish` is a no-op preview;
-it requires an authenticated GitHub CLI for the publishing path.
+| Flag                                  | Default without it                                                  |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| `--devs N`                            | every safe ready slice runs; `N` caps parallel build slices         |
+| `--with-mobile`, `--with-designer`    | roles come from scope routing                                       |
+| `--coordinate-only`                   | the lead may implement; with it, the lead only delegates            |
+| `--plan-approval`                     | no pause for build plans; material decisions still go to the user   |
+| `--mode auto\|team\|subagent\|single` | `auto`, the lowest-overhead safe mode                               |
+| `--no-worktree`                       | worktrees used when isolation pays; otherwise overlap is serialized |
 
 ## Skill format
 
@@ -227,10 +200,12 @@ The executable contract is owned by the TypeScript validator and tests. Run
 
 ## Written plans
 
-When a user asks `squad-product` or `squads-team` to write a plan to disk, the result is a navigable bundle:
+When a user asks `squad-product` or `squads-team` to write a plan to disk, the plan is as small as the work.
+One or two phases is a single `plan.md` whose frontmatter declares `layout: single`, with each phase a
+`## Phase N — <title>` section. A larger plan is a navigable bundle:
 
 ```text
-plans/<DDMMYYYY-HHmm>-<topic>/
+plans/<YYMMDD-HHmm>-<topic>/
 ├── plan.md
 ├── phases/
 │   ├── phase-01-<kebab-case-title>.md
@@ -263,8 +238,16 @@ for a reader; the gate itself is still the prose handoff between roles.
 Check a bundle against that contract:
 
 ```sh
-pnpm validate:plan plans/<DDMMYYYY-HHmm>-<topic>
+pnpm validate:plan plans/<YYMMDD-HHmm>-<topic>
 ```
+
+### Migrating from 0.2
+
+- New plan directories are named `<YYMMDD-HHmm>-<topic>`; existing `<DDMMYYYY-HHmm>` directories still
+  validate and need no rename.
+- `--delegate` is gone; use `--coordinate-only`. `--allow-new-threads` and the thread registry are gone;
+  ask for a separate task directly when you want one.
+- QA and Code Review are no longer run on every change: `light` work closes on one combined verify pass.
 
 A plan written under the earlier flat layout still reads fine and no longer validates. Migrate it by moving
 each `phase-XX-*.md` into `phases/`, moving shared background into `references/` and produced work into
