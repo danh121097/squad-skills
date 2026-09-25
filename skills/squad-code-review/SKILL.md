@@ -48,7 +48,8 @@ Never expose secrets or private payloads in findings.
    check needed to prove a suspected finding. Treat QA's still-current behavioral evidence as an input
    rather than replaying its suite. Separate confirmed defects from questions.
 4. **Rank by user/system impact** — blocking, warning and suggestion; include tight file:line evidence,
-   failure condition, impact and concrete remediation.
+   failure condition, impact and concrete remediation. A defect the review reproduces is blocking unless
+   its impact is shown to be cosmetic; a warning is a risk not yet shown to fail.
 5. **Gate honestly** — `APPROVE` only with no blockers; warnings and suggestions are listed but never
    request changes on their own. `CHANGES_REQUESTED` returns to owner, then affected QA and a re-review of
    only the stated findings and the fix's blast radius; `NEEDS_EVIDENCE` names the exact missing target,

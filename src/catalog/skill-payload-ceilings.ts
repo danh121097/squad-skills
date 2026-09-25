@@ -39,7 +39,7 @@
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-backend': 2272, // was 2258
-  'squad-code-review': 2615, // was 2506
+  'squad-code-review': 2640, // was 2615
   'squad-designer': 2003, // was 1989
   'squad-devops': 2109, // was 2095
   'squad-fix': 2771, // was 2662
@@ -47,5 +47,5 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-mobile': 2200, // was 2186
   'squad-product': 2739, // was 2725
   'squad-qa': 2633, // was 2524
-  'squads-team': 3463, // was 3291
+  'squads-team': 3493, // was 3463
 };

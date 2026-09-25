@@ -57,7 +57,8 @@ PR, deploy, mutate data or change external services unless requested or required
    the runtime's structured question tool when it has one, else a numbered list.
 2. **Scout and split** — inspect project instructions, stack, relevant modules, contracts, tests and dirty
    state. Split by capability, map dependencies, assign non-overlapping file ownership, and serialize
-   unavoidable overlap.
+   unavoidable overlap. Slices that must match each other build against one shared contract the lead
+   settles first, with its open questions asked together; a finding in one is checked in the others.
 3. **Design before UI build** — UI work builds on the user's material and the existing system; Designer
    runs only for decisions both leave open.
 4. **No done without gates** — name the gate tier and its reason in one line before building: `light` (one
