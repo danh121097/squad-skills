@@ -126,7 +126,8 @@ decoration; motion only with a spatial, feedback, state, or continuity purpose.
 - Verification run at the platform's tier, what a build role must still verify, any dependency awaiting
   approval.
 - Each open fork goes to the lead, or to the user when run on its own, as named options with their
-  consequences, and only the user answers it.
+  consequences, and only the user answers it, through the runtime's structured question tool when it has
+  one, else a numbered list.
 
 ## Completion checklist
 

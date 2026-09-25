@@ -279,7 +279,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // named here anyway, because this clause binds who may answer a question
     // rather than who owns an artifact.
     statement:
-      'each open fork goes to the lead, or to the user when run on its own, as named options with their consequences, and only the user answers it',
+      "each open fork goes to the lead, or to the user when run on its own, as named options with their consequences, and only the user answers it, through the runtime's structured question tool when it has one, else a numbered list",
     files: everyRoleEntrypoint,
   },
   {
@@ -401,7 +401,18 @@ export const boundaryClauses: BoundaryClause[] = [
     // unit: a third attempt on an unchanged model of the problem is churn, and
     // choosing between narrowing, reassigning and accepting risk is the user's.
     statement:
-      'a gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
+      'a gate returns work to its owner at most twice, counting a reopening of an approved unit the user did not ask for; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
+    files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
+  },
+  {
+    id: 'HANDOFF-APPROVED-001',
+    // The loop cap counted only FAIL and CHANGES_REQUESTED, so a lead that sent
+    // an approved unit's warnings back to its owner restarted both gates with no
+    // limit, and every small follow-up re-ran the unit's original tier. An
+    // approved unit stays closed unless a later defect or the user reopens it,
+    // and a follow-up is tiered on its own diff.
+    statement:
+      "`APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and the lead reopens it only for a defect found later or when the user asks; a follow-up the user asks for is new scope whose tier follows what its own diff changes, not the unit it sits in: docs, comments or tests alone close on the owner's verify with real commands, and a behavior change reruns affected QA and a review of that diff",
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {

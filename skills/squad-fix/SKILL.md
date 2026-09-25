@@ -131,10 +131,17 @@ was. Before declaring the repair complete, run the self-review in
   `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data or
   migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED`
-  to the lead, or to the user when run on its own, with the evidence and two to four options for the user.
+- A gate returns work to its owner at most twice, counting a reopening of an approved unit the user did
+  not ask for; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the
+  evidence and two to four options for the user.
+- `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user,
+  and the lead reopens it only for a defect found later or when the user asks; a follow-up the user asks
+  for is new scope whose tier follows what its own diff changes, not the unit it sits in: docs, comments
+  or tests alone close on the owner's verify with real commands, and a behavior change reruns affected QA
+  and a review of that diff.
 - Each open fork goes to the lead, or to the user when run on its own, as named options with their
-  consequences, and only the user answers it.
+  consequences, and only the user answers it, through the runtime's structured question tool when it has
+  one, else a numbered list.
 - Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light`
   and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa`
   then `/squad-code-review`; `high` work still runs both gates.

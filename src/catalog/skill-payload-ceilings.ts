@@ -38,14 +38,14 @@
  * in git and summarized in `docs/maintainer-notes.md`.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2258, // was 2210
-  'squad-code-review': 2506, // was 2364
-  'squad-designer': 1989, // was 2064
-  'squad-devops': 2095, // was 2047
-  'squad-fix': 2662, // was 2642
-  'squad-frontend': 2467, // was 2419
-  'squad-mobile': 2186, // was 2138
-  'squad-product': 2725, // was 2696
-  'squad-qa': 2524, // was 2389
-  'squads-team': 3291, // was 3226
+  'squad-backend': 2272, // was 2258
+  'squad-code-review': 2615, // was 2506
+  'squad-designer': 2003, // was 1989
+  'squad-devops': 2109, // was 2095
+  'squad-fix': 2771, // was 2662
+  'squad-frontend': 2481, // was 2467
+  'squad-mobile': 2200, // was 2186
+  'squad-product': 2739, // was 2725
+  'squad-qa': 2633, // was 2524
+  'squads-team': 3463, // was 3291
 };

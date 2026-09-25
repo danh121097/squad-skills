@@ -53,7 +53,8 @@ PR, deploy, mutate data or change external services unless requested or required
    installed, or frame inline otherwise, only when the request is vague with no criteria that can fail,
    the repository is empty with no stack chosen, the user asks for a plan, or more than one fork could
    change the phases. For a plan that reaches this gate, each open fork goes to the lead, or to the user
-   when run on its own, as named options with their consequences, and only the user answers it.
+   when run on its own, as named options with their consequences, and only the user answers it, through
+   the runtime's structured question tool when it has one, else a numbered list.
 2. **Scout and split** — inspect project instructions, stack, relevant modules, contracts, tests and dirty
    state. Split by capability, map dependencies, assign non-overlapping file ownership, and serialize
    unavoidable overlap.
@@ -68,11 +69,15 @@ PR, deploy, mutate data or change external services unless requested or required
    coherent set of slices when it names their exact revisions. QA proves observable behavior against
    acceptance and risk; Code Review consumes that evidence and judges implementation quality, adding only
    verification needed to prove a finding. `FAIL` or `CHANGES_REQUESTED` returns to the owning role, and a
-   gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` goes as `BLOCKED`
-   to the lead, or to the user when run on its own, with the evidence and two to four options for the
-   user. `NEEDS_ENVIRONMENT` or `NEEDS_EVIDENCE` returns to the lead for one resolution of the smallest
-   missing capability, artifact, access or decision; still missing, the work is blocked. Neither is
-   eligible for `done`.
+   gate returns work to its owner at most twice, counting a reopening of an approved unit the user did not
+   ask for; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the
+   evidence and two to four options for the user. `APPROVE` closes the unit: its warnings and suggestions
+   go to the final report as options for the user, and the lead reopens it only for a defect found later
+   or when the user asks; a follow-up the user asks for is new scope whose tier follows what its own diff
+   changes, not the unit it sits in: docs, comments or tests alone close on the owner's verify with real
+   commands, and a behavior change reruns affected QA and a review of that diff. `NEEDS_ENVIRONMENT` or
+   `NEEDS_EVIDENCE` returns to the lead for one resolution of the smallest missing capability, artifact,
+   access or decision; still missing, the work is blocked. Neither is eligible for `done`.
 5. **Integrate and verify** — merge/compose only approved slices, run appropriate combined checks, report
    docs impact, residual risk, execution mode and evidence actually obtained.
 
@@ -138,6 +143,7 @@ integrated result, and a missing environment or evidence never becomes completio
 - [ ] UI work rests on the user's material, the existing system, or Designer output
 - [ ] The gate tier was named; every `standard` or `high` slice has QA PASS then Code Review APPROVE
 - [ ] Reruns match the changed surface; a third return or an unresolved NEEDS_* is reported as blocked
+- [ ] No approved unit was reopened without a later defect or the user asking
 - [ ] Integration and combined verification ran, or exact gaps are stated
 - [ ] No unauthorized commit, push, PR, deploy or external mutation; independent and single-session gates
       are distinguished

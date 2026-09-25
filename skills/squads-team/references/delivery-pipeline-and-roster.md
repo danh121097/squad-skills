@@ -74,8 +74,11 @@ Hard rules:
 - `CHANGES_REQUESTED` returns to owner, then requires affected/regression QA and focused Review rerun;
   broaden either pass only when the changed contract or risk surface requires it. A warning or suggestion
   is listed but never requests changes on its own.
-- Each gate unit returns to its owner at most twice. A third `FAIL` or `CHANGES_REQUESTED` stops the loop:
-  the lead receives it as `BLOCKED` with the evidence and puts two to four options to the user.
+- Each gate unit returns to its owner at most twice, a reopening after `APPROVE` the user did not ask for
+  included. A third return stops the loop: the lead receives it as `BLOCKED` with the evidence and puts two
+  to four options to the user.
+- `APPROVE` closes the unit. Its warnings and suggestions go to the final report as options; the lead does
+  not send them back to the owner unless the user asks. A requested follow-up is tiered on its own diff.
 - `NEEDS_ENVIRONMENT` or `NEEDS_EVIDENCE` returns to the lead for one resolution of the exact missing
   target, artifact, access or evidence, then the gate resumes. Never an inferred pass. Still missing, stop
   as blocked with the next action; do not mislabel the gap as a product defect.

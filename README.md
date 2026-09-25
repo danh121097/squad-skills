@@ -172,8 +172,10 @@ the fixes it asks for. Reach for the smallest role that fits and let it escalate
 | `standard` | The default                                                                                          | QA `PASS`, then Code Review `APPROVE`                  |
 | `high`     | Auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion | Both gates, run independently where the runtime allows |
 
-A gate returns work to its owner at most twice; a third `FAIL` or `CHANGES_REQUESTED` comes back to you as
-blocked, with the evidence and two to four options. A build role or `squad-fix` called on its own verifies
+A gate returns work to its owner at most twice; a third return comes back to you as blocked, with the
+evidence and two to four options. `APPROVE` closes a unit: its warnings and suggestions reach you as
+options in the final report instead of going back to the owner, and a follow-up you ask for is tiered on
+its own diff, so a docs or test tweak does not rerun both gates. A build role or `squad-fix` called on its own verifies
 with real commands and ends by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both.
 Designer runs only for decisions your own references and the existing design system leave open.
 

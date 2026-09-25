@@ -100,7 +100,8 @@ the self-review in
   roles and each role's responsibility.
 - With it, the unknowns that could invalidate the plan, every assumption made in place of an answer, and
   the decisions the user still owes: each open fork goes to the lead, or to the user when run on its own,
-  as named options with their consequences, and only the user answers it.
+  as named options with their consequences, and only the user answers it, through the runtime's structured
+  question tool when it has one, else a numbered list.
 - Technical decisions this role did not make are named as open with their owner; a corrected assumption
   reopens framing rather than being patched in. Nothing is reported as accepted until the user accepts it.
 
