@@ -23,9 +23,8 @@ how it is built, and never who runs next.
 /squad-product <idea or outcome> [--plan-file <path> | --plan-dir <path>]
 ```
 
-- `--plan-dir <path>`: write the plan there. `--plan-file <path>` is an accepted alias; when it names
-  `plan.md`, that file's directory is the plan root. Without either flag the plan is stated in the
-  conversation.
+- `--plan-dir <path>` or `--plan-file <path>`: write the plan to that directory or file. Without either flag
+  the plan is stated in the conversation.
 
 ## Scope and safety
 

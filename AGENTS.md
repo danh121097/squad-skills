@@ -78,7 +78,7 @@ checklist`. The catalog validator enforces the sequence.
 - Squad handoffs are contracts stated in prose, not records written to disk. No
   skill writes a QA verdict, review findings, or an API snapshot into a user's
   repository as a handoff record, and no hook enforces a gate. Output a user
-  asked for is unaffected; a written plan bundle is that case.
+  asked for is unaffected; a written plan is that case.
 - Gates are proportional to risk. The squad lead, or a role run on its own,
   names one gate tier before building: `light` (one owner, no change to a public
   contract, auth, data or migration, infrastructure, or a dependency — one
@@ -99,18 +99,18 @@ checklist`. The catalog validator enforces the sequence.
     (`HANDOFF-TIER-*`), and what a role does when a named peer is absent or it
     runs on its own (`HANDOFF-SOLO-*`). Every member binds only entrypoints, and a boundary is stated by
     both the sending and the receiving role.
-  - `PLAN-BUNDLE-*` — the shape of a written plan, bound on
-    `plan-document-contract.md`, the file that owns it, and on the product
-    quality bar that checks it; the layout rule also binds the lead's framing
-    fallback, and the supersede rule the team references that record and
-    advance a gate.
+  - `PLAN-DOCUMENT-*` — the shape of a written plan, bound on
+    `plan-document-contract.md`, the file that owns it, on the product quality
+    bar that checks it, and on the lead's framing fallback.
   - `QUALITY-PREFLIGHT-*` — the pre-flight line the roles share.
+  - `TEST-ECONOMY-*` — what a new or regression test must earn, bound on
+    `squad-fix` and `squad-qa`.
 
   Bind a sentence when it exists in two files and their drifting apart would
   change what a reader is told; a clause that could never fire is maintenance
   with no return.
 
-- A role's `references/quality-bar-and-preflight.md` is the one checklist it runs
+- A role's `references/quality-bar-and-preflight.md`, where it ships one, is the one checklist it runs
   before handing over. The completion checklist in `SKILL.md` holds at most eight
   items and points at the quality bar for detail; the quality bar may restate a
   rule a working reference also carries, and where the two disagree the quality

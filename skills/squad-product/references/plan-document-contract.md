@@ -1,4 +1,4 @@
-# The plan bundle
+# The written plan
 
 Read before writing a plan to files.
 
@@ -12,63 +12,31 @@ are contracts stated in prose. Write it when the user asked for a written plan o
 
 Where the user says. Failing that, the repository's existing planning directory; inside it create
 `<YYMMDD-HHmm>-<kebab-case-topic>/` from the session's local time. If no planning location is established,
-ask rather than inventing one. Never write into an ignored path to avoid the question, and never commit the
-plan unless the user asked for that too.
+ask rather than inventing one. A `--plan-file` path is the plan.md itself, and its directory holds any
+`phases/`. Never write into an ignored path to avoid the question, and never commit the plan unless the user
+asked for that too.
 
 ## Shape
 
-The plan is as small as the work: a written plan of one or two phases is a single `plan.md` declaring
-`layout: single`; a larger one is one directory whose root holds only `plan.md` and the standard `phases`,
-`artifacts`, `adr` and `references` directories, with every phase file in `phases/` named
-`phase-XX-kebab-case-title.md` and every link relative. In a single file each phase is a
-`## Phase N — <title>` section.
+A written plan is one plan.md; a plan too long to read as one file keeps plan.md as the only index and moves
+each phase to phases/phase-XX-kebab-case-title.md, with every link relative. In a single file each phase is
+a `## Phase N — <title>` section. Phases are numbered continuously from `01`, and no other file is created
+unless the user asks for it.
 
-`plan.md` is the entrypoint and the only index. Only `phases/` expresses order, so only phase files carry
-the `phase-XX-` prefix, numbered continuously from `01`. `artifacts/`, `adr/` and `references/` stay absent
-until they hold something that already exists:
+`plan.md` frontmatter: `title`, `status: proposed` and `created`. Body: outcome, given constraints,
+deferred and refused non-goals under separate headings, plan-wide acceptance criteria, one list of labeled
+assumptions, unknowns, open decisions each with its owner, then the phases — as sections, or as a table
+linking each phase file with its roles and dependencies. Given stays marked as given.
 
-- an **ADR** records an accepted decision as `adr/adr-NNN-<kebab-case-title>.md`; an open decision stays
-  in `plan.md` with its owner named. ADR numbers may have gaps; phase numbers may not.
-- an **artifact** records something that ran, so `qa-report.md` exists once QA issued a verdict. An
-  artifact records its owning phase, owner, revision and status in frontmatter, never in a phase-XX-
-  filename prefix, which phases/ alone reserves; a handoff is `artifacts/handoff-to-phase-02.md`.
-- a **reference** holds background a phase names under `inputs`.
-
-## What each file states
-
-`plan.md` frontmatter: `title`, `description`, `status: proposed`, `created`, `revision`, and `layout:
-single` when it is the whole plan. Body: outcome, given constraints, deferred and refused non-goals under
-separate headings, plan-wide acceptance criteria, one list of labeled assumptions, unknowns, open decisions,
-then the phases — as sections, or as a table linking each `phases/` file with its roles, result and
-dependencies. Given stays marked as given.
-
-A phase file's frontmatter: `phase`, `title`, `status`, `revision`, `depends_on` (earlier phase numbers),
-`roles` as a list such as `[squad-backend]`, and `inputs` as relative paths it reads, each linked from the
-body where it is used. Each phase file states its objective and deliverables, its roles and their distinct
-scopes, ordered work steps, and acceptance criteria with expected evidence; context, prerequisites, risks and
-handoff are added when they have content. A multi-role phase adds a table giving each role a deliverable
-and its handoff point; the lead assigns live files and agents later.
-
-An artifact states `phase` (a number or `plan`), `owner`, `revision` and `status` of `draft`, `final` or
-`superseded`. A gate record adds `gate` (`qa` or `code-review`), `verdict` in that gate's vocabulary, and
-`reviewed`: every input it graded with the exact revision. An ADR states `adr`, `title`, `status` and `date`,
-then context, decision and consequences. A reference states `title`.
+Each phase states its objective and deliverables, its roles and their distinct scopes, ordered work steps,
+and acceptance criteria with expected evidence; context, prerequisites, risks and handoff are added when they
+have content. It names the phases it depends on. A multi-role phase gives each role a deliverable and its
+handoff point; the lead assigns live files and agents later.
 
 ## What it does not contain
 
 No stack, architecture or data-model decision (list it as open with its owner), file assignment, branch,
-execution mode, agent instance or verdict from this role. No invented files, commands or measurements:
+execution mode, agent instance, gate verdict or review record. No invented files, commands or measurements:
 detail means completeness, not guesses.
-
-## After work starts
-
-Phases move through `proposed`, `in-progress`, `blocked` and `accepted`.
-
-- A change to structure or contract after a gate marks the recorded verdict superseded and requires QA then
-  Code Review again. Set the old record's `status: superseded` rather than editing its verdict. A Code
-  Review `APPROVE` names the QA `PASS` it followed under `reviewed`.
-- A phase is not `accepted` while a required checkbox or a user approval in its `approvals` list is still
-  open. Put the approval to the user as named options with their consequences, from the session that can
-  ask.
 
 Mark every phase a proposal until the user accepts it, and never restate a labeled assumption as a decision.

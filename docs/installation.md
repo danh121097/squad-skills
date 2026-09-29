@@ -127,10 +127,10 @@ Start a new Codex task after plugin installation so it discovers the catalog.
 Each skill also has a role a coding agent can spawn by name. `squad-skills add`
 generates one definition per installed skill:
 
-| Tool        | Definition                  | Loaded by                                               |
-| ----------- | --------------------------- | ------------------------------------------------------- |
-| Claude Code | `.claude/agents/<name>.md`  | The file's presence                                     |
-| Codex       | `.codex/agents/<name>.toml` | A `config_file` entry under `[agents]` in `config.toml` |
+| Tool        | Definition                  | Loaded by                                                      |
+| ----------- | --------------------------- | -------------------------------------------------------------- |
+| Claude Code | `.claude/agents/<name>.md`  | The file's presence                                            |
+| Codex       | `.codex/agents/<name>.toml` | An `[agents.<name>]` table with `config_file` in `config.toml` |
 
 A definition carries the skill's own name and description and points at the
 installed `SKILL.md`; it never copies the role's content, so editing a skill

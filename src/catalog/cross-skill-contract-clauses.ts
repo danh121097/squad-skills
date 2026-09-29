@@ -16,7 +16,6 @@ const frontendIntake = 'skills/squad-frontend/references/designer-gate-and-desig
 const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-motion-selection.md';
 const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
 const teamPipeline = 'skills/squads-team/references/delivery-pipeline-and-roster.md';
-const teamCoordination = 'skills/squads-team/references/coordination-contract.md';
 // Role entrypoints. The handoff clauses below bind the two ends of a stage
 // boundary, so they name SKILL.md rather than a reference: what a role hands
 // over is part of the contract a reader learns from the entrypoint alone.
@@ -79,16 +78,17 @@ const everyRoleWithAPreflight = [
 const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.md';
 
 /**
- * Every sentence the catalog binds, in four families.
+ * Every sentence the catalog binds, by family.
  *
  * `BOUNDARY-*` says who owns what between the designer and the build roles, as
  * it stands after the designer moved from spec-only to presentational code.
  * `HANDOFF-*` covers a stage boundary in the squad pipeline, and binds only
  * entrypoints, because both ends of a boundary must be readable without loading
- * a reference. `PLAN-BUNDLE-*` binds the shape of a written plan bundle, and is
- * a separate family for that reason: the bundle's schema lives in a reference
- * and a run reaches it by routing there. And `QUALITY-PREFLIGHT-*` binds the
- * pre-flight line the roles share.
+ * a reference. `PLAN-DOCUMENT-*` binds the shape of a written plan, and is a
+ * separate family for that reason: the plan's shape lives in a reference and a
+ * run reaches it by routing there. `DECISION-RECORD-*` binds what a decision
+ * another role builds on must record, `QUALITY-PREFLIGHT-*` the pre-flight
+ * line the roles share, and `TEST-ECONOMY-*` what a new test must earn.
  *
  * Every skill that states one of these carries the same wording, so a reader of
  * any one of them learns the same contract.
@@ -148,47 +148,15 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [productSkill, teamSkill],
   },
   {
-    id: 'PLAN-BUNDLE-LAYOUT-001',
-    // The shape used to be bound on both entrypoints, which made every run of
-    // squad-product and squads-team pay the whole layout sentence whether or
-    // not anyone asked for files. It now lives where a run that writes a plan
-    // reads it: the plan contract, and the quality bar that checks the result.
-    // Two phases or fewer is one file, because a directory for a one-phase
-    // plan was ceremony a reader paid to navigate. The lead's framing fallback
-    // carries it too, for a plan written without squad-product.
+    id: 'PLAN-DOCUMENT-LAYOUT-001',
+    // The shape lives where a run that writes a plan reads it: the plan
+    // contract, the quality bar that checks the result, and the lead's framing
+    // fallback for a plan written without squad-product. One file is the
+    // default because a requested bundle once filled every slot its tree named
+    // (docs/skill-observations.md, entry 7); phases split out only for length.
     statement:
-      'a written plan of one or two phases is a single plan.md declaring layout: single; a larger one is one directory whose root holds only plan.md and the standard phases, artifacts, adr and references directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative',
+      'a written plan is one plan.md; a plan too long to read as one file keeps plan.md as the only index and moves each phase to phases/phase-XX-kebab-case-title.md, with every link relative',
     files: [productPlanDocument, productQuality, teamContracts],
-  },
-  {
-    id: 'PLAN-BUNDLE-ARTIFACT-001',
-    // The half of the layout a reader gets wrong first. Ordering by filename is
-    // the habit the flat bundle taught, and it survives the directory split
-    // unless something says where ownership is written instead: an artifact
-    // named `phase-02-handoff.md` still sorts and reads as a phase, in a
-    // directory whose whole job is to hold things that are not phases.
-    //
-    // Bound on the plan contract, which says what the bundle holds, and the
-    // quality bar that checks it before handover.
-    statement:
-      'an artifact records its owning phase, owner, revision and status in frontmatter, never in a phase-XX- filename prefix, which phases/ alone reserves',
-    files: [productPlanDocument, productQuality],
-  },
-  {
-    id: 'PLAN-BUNDLE-SUPERSEDE-001',
-    // A bundle outlives the framing that produced it, and this is the only rule
-    // that keeps it from outliving its own truth. A verdict names the revisions
-    // it graded; move one and the record is about a document the bundle no
-    // longer holds, which reads exactly like a record about the current one.
-    // Editing the verdict in place is worse than leaving it: it produces an
-    // approval that was never earned against anything.
-    //
-    // Three files, because three readers need it. The plan contract is read
-    // while writing the bundle, the pipeline while advancing a gate, and the
-    // coordination contract while recording one.
-    statement:
-      'a change to structure or contract after a gate marks the recorded verdict superseded and requires QA then Code Review again',
-    files: [productPlanDocument, teamCoordination, teamPipeline],
   },
   {
     id: 'QUALITY-PREFLIGHT-PLAN-001',
@@ -196,7 +164,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // Eight required sections turned a two-step phase into eight headings,
     // most of them restating the plan index.
     statement:
-      'each phase file states its objective and deliverables, its roles and their distinct scopes, ordered work steps, and acceptance criteria with expected evidence; context, prerequisites, risks and handoff are added when they have content',
+      'each phase states its objective and deliverables, its roles and their distinct scopes, ordered work steps, and acceptance criteria with expected evidence; context, prerequisites, risks and handoff are added when they have content',
     files: [productPlanDocument, productQuality],
   },
   {

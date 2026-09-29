@@ -23,9 +23,8 @@ the temporary artifact, and does not publish anything.
 
 ## Publish to GitHub
 
-When ready, authenticate GitHub, create the public repository named
-`squad-skills` under `danh121097`, commit the reviewed files, and push `main`.
-Those external actions are intentionally not automated by this repository.
+Push reviewed commits to `main` of `danh121097/squad-skills`. Pushing is
+intentionally not automated by this repository.
 
 ## Verify the public source
 
@@ -48,7 +47,7 @@ automatically. There is no separate submission form.
 
 ## Publish to npm
 
-After the GitHub source is public, authenticate once:
+Authenticate once:
 
 ```sh
 npm login
@@ -113,6 +112,3 @@ npx squad-skills --version
 npx squad-skills list
 npx squad-skills add --skill squads-team --agent codex --yes
 ```
-
-The release script increments from npm's latest published version; npm does not
-allow a published version to be overwritten.

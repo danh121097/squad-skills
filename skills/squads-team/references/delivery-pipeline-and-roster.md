@@ -62,8 +62,7 @@ Additional rules:
 - The lead sends an approved unit's warnings to the owner only when the user asks.
 - `NEEDS_*` is never an inferred pass or a product defect; still missing after one resolution, stop as
   blocked with the next action.
-- A change to structure or contract after a gate marks the recorded verdict superseded and requires QA then
-  Code Review again. This holds whether the verdict lives in a prose handoff or in a written plan bundle.
+- A change to structure or contract after a gate voids its verdict; QA then Code Review run again.
 - QA never edits production implementation; Reviewer never implements fixes.
 
 In single-session mode these are separate logical passes and the reduced independence must be disclosed.

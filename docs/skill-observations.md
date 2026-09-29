@@ -111,14 +111,16 @@ maintainer records confirmed ones here, newest at the bottom.
   router skill was declined; the need landed as the "Choosing a skill" table in
   `README.md`.
 
-## 7. The plan bundle's file tree read as a manifest — 2026-09-09
+## 7. The written plan's file tree read as a manifest — 2026-09-09
 
-- **Built:** a requested plan bundle for a greenfield SaaS monorepo, then its
+- **Built:** a requested written plan for a greenfield SaaS monorepo, then its
   first phases.
 - **Skill:** `squad-product`, version unknown
-- **Missed:** the bundle reached 67k words across 32 files against 3.5k lines of
+- **Missed:** the plan reached 67k words across 32 files against 3.5k lines of
   source — 83% in optional slots — because the contract drew a tree naming
   eleven files and the run filled every one, including ADRs for decisions the
   plan still listed as pending.
 - **Outcome:** landed 2026-09-09: `artifacts/`, `adr/` and `references/` became
-  slots that stay absent until they hold something.
+  slots that stay absent until they hold something. On 2026-09-29 the slots and
+  the gate records were dropped: a written plan is one `plan.md`, and phases
+  move to `phases/` only when the plan is too long for one file.
