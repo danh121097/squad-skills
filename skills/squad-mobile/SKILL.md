@@ -1,14 +1,12 @@
 ---
 name: squad-mobile
-description: "Operate as the squad's Mobile Engineer — React Native/Expo, Flutter, SwiftUI or Compose screens, API integration, offline/sync, navigation, secure storage and platform-native UX in the existing app stack."
+description: "Operate as the squad's Mobile Engineer — React Native/Expo, Flutter, SwiftUI or Compose screens, API integration, offline/sync, navigation, secure storage and platform-native UX in the existing app stack. Invoke to build a mobile screen or flow with client logic and API integration. Open design decisions go to squad-designer first."
 user-invocable: true
-when_to_use: "Invoke to build a mobile screen or flow with client logic and API integration. Open design decisions go to squad-designer first."
 category: mobile
 keywords: [mobile, react-native, expo, flutter, swiftui, compose, api-integration, offline, sync, ux-flow]
 argument-hint: "[mobile feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — Mobile

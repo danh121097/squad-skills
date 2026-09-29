@@ -1,14 +1,12 @@
 ---
 name: squad-qa
-description: "Operate as the squad's behavioral QA gate — verify observable behavior against acceptance criteria and risk, reproduce failures, test fixes, and issue evidence-backed PASS, FAIL, or NEEDS_ENVIRONMENT verdicts."
+description: "Operate as the squad's behavioral QA gate — verify observable behavior against acceptance criteria and risk, reproduce failures, test fixes, and issue evidence-backed PASS, FAIL, or NEEDS_ENVIRONMENT verdicts. Invoke after a build, to design or run tests, reproduce a bug, or verify a fix, solo or as the QA gate before Code Review."
 user-invocable: true
-when_to_use: "Invoke after a build, to design or run tests, reproduce a bug, or verify a fix, solo or as the QA gate before Code Review."
 category: testing
 keywords: [qa, testing, unit, integration, contract, e2e, playwright, cypress, k6, accessibility, repro]
 argument-hint: "[build/diff to test | bug to reproduce]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — QA

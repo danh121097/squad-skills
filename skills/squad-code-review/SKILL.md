@@ -1,14 +1,12 @@
 ---
 name: squad-code-review
-description: "Operate as the squad's final implementation-quality gate after behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE."
+description: "Operate as the squad's final implementation-quality gate after behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE. Invoke after QA passes as the final gate, or to review a diff, PR or commit on its own. Does not implement fixes."
 user-invocable: true
-when_to_use: "Invoke after QA passes as the final gate, or to review a diff, PR or commit on its own. Does not implement fixes."
 category: utilities
 keywords: [code-review, security, owasp, correctness, performance, contracts, maintainability, final-gate]
 argument-hint: "[#PR | commit | --pending | diff]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — Code Review

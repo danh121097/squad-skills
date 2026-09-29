@@ -34,7 +34,6 @@ describe('readSkillAgentDefinition', () => {
     expect(readSkillAgentDefinition(source)).toEqual({
       description: parsed.description,
       name: parsed.name,
-      whenToUse: parsed.when_to_use ?? '',
     });
   });
 
@@ -49,9 +48,8 @@ describe('readSkillAgentDefinition', () => {
 
 describe('rendering', () => {
   const definition = {
-    description: 'Runs the QA gate.',
+    description: 'Runs the QA gate. Use after a build.',
     name: 'squad-qa',
-    whenToUse: 'Use after a build.',
   };
   const skillPath = '/home/u/.claude/skills/squad-qa/SKILL.md';
 
@@ -59,7 +57,7 @@ describe('rendering', () => {
     expect(renderClaudeAgentFile(definition, skillPath)).toContain(skillPath);
   });
 
-  it('carries both halves of the skill description so the agent is picked the same way', () => {
+  it('carries the whole skill description so the agent is picked the same way', () => {
     expect(renderClaudeAgentFile(definition, skillPath)).toContain(
       'description: "Runs the QA gate. Use after a build."'
     );

@@ -1,14 +1,12 @@
 ---
 name: squad-designer
-description: "Operate as the squad's Product Designer — turn open UI/UX decisions into presentational component code, tokens, motion and WCAG 2.2 accessibility, building on the user's references and the existing design system."
+description: "Operate as the squad's Product Designer — turn open UI/UX decisions into presentational component code, tokens, motion and WCAG 2.2 accessibility, building on the user's references and the existing design system. Invoke for design decisions the user's references and existing system leave open: new flows, redesigns, design-system changes. Routine web builds go to squad-frontend."
 user-invocable: true
-when_to_use: "Invoke for design decisions the user's references and existing system leave open: new flows, redesigns, design-system changes. Routine web builds go to squad-frontend."
 category: design
 keywords: [ui, ux, design, design-system, tokens, accessibility, motion, react-native, flutter, swiftui, compose, presentational-code]
 argument-hint: "[screen/flow to design]"
 metadata:
   author: Harry Nguyen
-  version: "3.0.0"
 ---
 
 # Squad — Designer

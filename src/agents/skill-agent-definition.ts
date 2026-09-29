@@ -17,7 +17,6 @@ import { resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 export interface SkillAgentDefinition {
   description: string;
   name: string;
-  whenToUse: string;
 }
 
 /** Marks a file this CLI wrote, so a reinstall never overwrites a hand-authored one. */
@@ -35,12 +34,7 @@ export function readSkillAgentDefinition(source: string): SkillAgentDefinition |
 
   if (name === null || description === null) return null;
 
-  return { description, name, whenToUse: readScalar(frontmatter, 'when_to_use') ?? '' };
-}
-
-/** What an agent runtime reads to decide when to spawn the role: what it does, then when to use it. */
-export function agentDescription(definition: SkillAgentDefinition): string {
-  return [definition.description, definition.whenToUse].filter((part) => part.length > 0).join(' ');
+  return { description, name };
 }
 
 /** How a generated agent reaches its skill, and what rewrites the file. */
@@ -76,7 +70,7 @@ export function renderAgentBody(
 ): string {
   const frontmatter = [
     `name: ${definition.name}`,
-    `description: ${JSON.stringify(agentDescription(definition))}`,
+    `description: ${JSON.stringify(definition.description)}`,
     ...(context.frontmatter ?? []),
   ];
 

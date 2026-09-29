@@ -1,14 +1,12 @@
 ---
 name: squad-backend
-description: "Operate as the squad's Backend Engineer — APIs, shared contracts, auth, data models, migrations, caching, queues and server logic in the repository's existing stack, with security and data safety verified."
+description: "Operate as the squad's Backend Engineer — APIs, shared contracts, auth, data models, migrations, caching, queues and server logic in the repository's existing stack, with security and data safety verified. Invoke to design or implement APIs, data models, auth or server logic. A concrete failure with an unproven cause goes to squad-fix first."
 user-invocable: true
-when_to_use: "Invoke to design or implement APIs, data models, auth or server logic. A concrete failure with an unproven cause goes to squad-fix first."
 category: backend
 keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, migration, contracts]
 argument-hint: "[api or data task]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — Backend

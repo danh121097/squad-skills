@@ -1,14 +1,12 @@
 ---
 name: squad-devops
-description: "Operate as the squad's DevOps Engineer — containers, CI/CD, IaC, cloud and self-hosted delivery, proxies and TLS, observability, secrets, rollout and rollback, preserving existing infrastructure within explicit deployment scope."
+description: "Operate as the squad's DevOps Engineer — containers, CI/CD, IaC, cloud and self-hosted delivery, proxies and TLS, observability, secrets, rollout and rollback, preserving existing infrastructure within explicit deployment scope. Invoke for CI/CD, containers, Kubernetes, Terraform, cloud or VPS delivery, TLS, observability or release work."
 user-invocable: true
-when_to_use: "Invoke for CI/CD, containers, Kubernetes, Terraform, cloud or VPS delivery, TLS, observability or release work."
 category: dev-tools
 keywords: [devops, docker, kubernetes, helm, cicd, terraform, cloudflare, aws, gcp, deploy, observability, nginx, caddy, traefik, self-host, vps]
 argument-hint: "[infra or deploy task]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — DevOps

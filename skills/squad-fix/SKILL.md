@@ -1,14 +1,12 @@
 ---
 name: squad-fix
-description: "Operate as the squad's Bugfix Controller — reproduce a concrete failure, prove its root cause and blast radius, route the fix to the owning role, and close it with regression evidence."
+description: "Operate as the squad's Bugfix Controller — reproduce a concrete failure, prove its root cause and blast radius, route the fix to the owning role, and close it with regression evidence. Invoke for a concrete bug, regression, failing test or CI/deploy failure. Not for new features; multi-role features go to squads-team."
 user-invocable: true
-when_to_use: "Invoke for a concrete bug, regression, failing test or CI/deploy failure. Not for new features; multi-role features go to squads-team."
 category: utilities
 keywords: [bugfix, debug, root-cause, regression, error, failing-test, ci-failure, routing, qa-gate]
 argument-hint: "[bug, error, log, or failing test] [--quick] [--mode auto|team|subagent|single]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — Fix

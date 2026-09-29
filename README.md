@@ -86,6 +86,11 @@ which the CLI registers after backing that config up. Each definition points at
 the `SKILL.md` just installed rather than copying it, so the skill stays the one
 source of truth.
 
+`squads-team` and `squad-fix` dispatch other roles, and a Claude Code subagent cannot spawn
+subagents. Invoke those two as skills in your main session; spawned by name they fall back to a
+single-session loop and report their gates as not independent. The other eight roles do not spawn
+anyone, so they run the same either way.
+
 Use `--no-agents` to install skills alone. A catalog installed through
 `npx skills add` never runs this CLI, so generate the definitions afterwards:
 

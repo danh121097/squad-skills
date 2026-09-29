@@ -1,14 +1,12 @@
 ---
 name: squad-product
-description: "Operate as the squad's Product role — turn an idea into checkable acceptance criteria, non-goals, a scope cut and phases naming the required roles; write a plan file only when asked. Never implements."
+description: "Operate as the squad's Product role — turn an idea into checkable acceptance criteria, non-goals, a scope cut and phases naming the required roles; write a plan file only when asked. Never implements. Invoke for an idea or vague ask without testable criteria, or an empty repository needing framing. Understood work goes straight to squads-team or a role."
 user-invocable: true
-when_to_use: "Invoke for an idea or vague ask without testable criteria, or an empty repository needing framing. Understood work goes straight to squads-team or a role."
 category: product
 keywords: [product, framing, planning, requirements, acceptance-criteria, scope, non-goals, phases, discovery]
 argument-hint: "[idea or outcome to frame] [--plan-file <path> | --plan-dir <path>]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — Product

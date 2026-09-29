@@ -15,7 +15,7 @@ maintainer records confirmed ones here, newest at the bottom.
 ## N. <short name> — YYYY-MM-DD
 
 - **Built:** what real work was produced, on what stack
-- **Skill:** `<skill>` <version>
+- **Skill:** `<skill>` and the package version or commit
 - **Missed:** what the output got wrong, concretely enough to recognise
 - **Candidate rule:** the rule, and the skill reference that would own it
 - **Outcome:** open | landed <date> in <file> | declined — why

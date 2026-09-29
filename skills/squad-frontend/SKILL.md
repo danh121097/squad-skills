@@ -1,14 +1,12 @@
 ---
 name: squad-frontend
-description: "Operate as the squad's Frontend Engineer — web UI, browser games and interactive graphics, client logic and API integration in the repository's framework, building on the user's design material."
+description: "Operate as the squad's Frontend Engineer — web UI, browser games and interactive graphics, client logic and API integration in the repository's framework, building on the user's design material. Invoke to build web features, client behavior or API integrations. Open design decisions go to squad-designer first; single-role builds stay here."
 user-invocable: true
-when_to_use: "Invoke to build web features, client behavior or API integrations. Open design decisions go to squad-designer first; single-role builds stay here."
 category: frontend
 keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka, motion, gsap, threejs, phaser, pixijs, rive, webgl, browser-game, api-integration, ux-flow]
 argument-hint: "[feature or screen]"
 metadata:
   author: Harry Nguyen
-  version: "2.0.0"
 ---
 
 # Squad — Frontend

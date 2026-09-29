@@ -21,7 +21,6 @@ import type { RoleOverrides } from './role-defaults.ts';
 import { hasRoleOverrides, resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 import type { AgentPreferences } from './skill-agent-definition.ts';
 import {
-  agentDescription,
   generatedMarker,
   readSkillAgentDefinition,
   renderClaudeAgentFile,
@@ -144,7 +143,7 @@ export async function installAgentDefinitions(
       );
       written.push(agentFile);
       registered.push({
-        description: agentDescription(definition),
+        description: definition.description,
         name: definition.name,
       });
     }
