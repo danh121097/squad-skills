@@ -1,12 +1,12 @@
 # Quality bar and pre-flight
 
 Read before handing a slice to QA, Code Review or the next role. Every check runs against the app's own
-build, simulator, device and test tooling, so the pass holds with no other skill installed.
+build, simulator, device and test tooling.
 
 ## What weak mobile output looks like
 
 - Verified on a simulator in debug mode and reported as verified. The claim has to hold on a release build,
-  on a representative device, across the OS versions the app supports.
+  on a representative device, across the supported OS versions.
 - Lifecycle treated as background detail: process death, restoration after eviction, and a disposed
   controller or cancelled scope touched during the transition.
 - Offline decided by accident — nothing cached anywhere, or a blanket cache with no staleness, conflict or
@@ -47,4 +47,5 @@ Pass every applicable check honestly.
 
 Name the device or simulator, OS version and build mode, the tests and checks that actually ran, and the
 platform, device class or path left unverified. A check that could not run is reported as not run, never as
-a pass.
+a pass; without the target, run the strongest static/unit/build checks and request the smallest safe target
+or artifact.

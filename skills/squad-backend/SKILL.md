@@ -13,9 +13,8 @@ metadata:
 
 # Squad — Backend
 
-Own shared server contracts, data, auth/session platforms, and server-side business logic. Match the
-repository before selecting abstractions. Pair installed specialist skills; work natively when they
-are absent.
+Own shared server contracts, data, auth/session platforms, and server-side business logic. Pair installed
+specialist skills; work natively when they are absent.
 
 ## Usage
 
@@ -35,7 +34,8 @@ Before any schema or data mutation, resolve the target environment and prove rec
 persistent, staging and production targets require an appropriate recoverable backup plus tested/credible
 restore path, migration direction and rollback boundary; stop if these cannot be established. For an
 isolated disposable local/test target, verify the recreation/reset and seed/fixture path instead of requiring
-a pointless point-in-time backup. Never mutate production or external systems without explicit scope.
+a pointless point-in-time backup. Never mutate production or external systems without explicit scope. Never auto-install skills, plugins,
+MCP servers, packages or CLIs.
 
 ## Core gates
 
@@ -52,43 +52,36 @@ a pointless point-in-time backup. Never mutate production or external systems wi
 
 ## Conditional references
 
-Read the references required by the task before pairing any skill; they are also the native knowledge
-layer when no specialist skill is installed:
-
 - Existing-versus-greenfield language/framework/runtime selection, or an unfamiliar backend stack:
   [backend-stack-and-runtime-matrix.md](references/backend-stack-and-runtime-matrix.md)
 - Architecture, scaling, distributed systems, consistency or failure design:
   [backend-system-design-and-distributed-systems.md](references/backend-system-design-and-distributed-systems.md)
-- REST/GraphQL/gRPC/events, data modeling, migrations, queues or contracts:
+- REST/GraphQL/gRPC/events, data modeling, migrations, queues or contracts, or data inspection/recovery
+  tooling that is unavailable:
   [backend-api-data-and-messaging.md](references/backend-api-data-and-messaging.md)
 - Threat modeling, authN/authZ, OWASP, privacy, secrets or multi-tenancy:
   [backend-security-auth-and-privacy.md](references/backend-security-auth-and-privacy.md)
 - Capacity, caching, database performance, resilience, SLOs or telemetry:
   [backend-performance-reliability-and-observability.md](references/backend-performance-reliability-and-observability.md)
-- Test strategy, incidents, debugging, code quality or engineering judgment:
-  [backend-testing-debugging-and-mindset.md](references/backend-testing-debugging-and-mindset.md)
 - When calibrating architecture/safety decisions or avoiding unnecessary complexity:
   [backend-worked-decisions.md](references/backend-worked-decisions.md)
-- Current primary documentation: [official-sources.md](references/official-sources.md)
-- Specialist skill pairing, or a missing provider/test/review capability:
-  [runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md)
 
 ## Quality bar
 
-Match the repository before reaching for an abstraction, claim only the guarantees the transport and the
-database actually provide, and verify on a run rather than on a reading. Before handing over, run the
-self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
+Claim only the guarantees the transport and the database actually provide, and verify on a run rather than
+on a reading. Verify version-specific claims against that version's own primary docs; cite version and date.
+Before handing over, run the self-review in
+[quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
 
 ## Workflow
 
 1. **Frame and scout** — capture acceptance criteria; inspect modules, models, API/auth conventions,
    environment boundaries, migrations, tests, and consumers.
-2. **Design contract and data** — specify DTO/schema, error shape, versioning, authN/authZ, pagination,
-   idempotency, transactions, indexes, migration/backfill, compatibility, and failure modes.
-3. **Implement narrowly** — add handlers/services/data access through existing patterns; keep boundary
-   validation and authorization explicit; add caching/queues only for demonstrated needs.
-4. **Run the safety pass** — threat-model sensitive flows; inspect injection, access control, SSRF,
-   replay, concurrency, rate limits, secrets, dependency and supply-chain risks.
+2. **Design contract and data** — apply gates 2 and 3, plus failure modes.
+3. **Implement narrowly** — add handlers/services/data access through existing patterns; add
+   caching/queues only for demonstrated needs.
+4. **Run the safety pass** — apply gate 4 to sensitive flows, plus replay, concurrency, dependency and
+   supply-chain risks.
 5. **Verify** — run focused unit/integration/contract/migration tests, then type/lint/build and relevant
    performance/query checks. Test forward and rollback paths when data changes.
 6. **Hand off** — publish the consumer contract and evidence per the handoff contract below.
@@ -113,22 +106,21 @@ self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflig
   commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- Work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open
-  fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to
-  the lead, or to the user when run on its own, as named options with their consequences; the lead settles
-  only a fork it can show the request, repository or evidence answers, names that source in its report,
-  and puts every other fork to the user, who alone answers it, through the runtime's structured question
-  tool when it has one, else a numbered list.
-- Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light`
-  and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa`
-  then `/squad-code-review`; `high` work still runs both gates.
-- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
-  stage no pass ran is never reported as run.
+- A fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the
+  work, stops the work that depends on it rather than guessing and goes as named options with consequences to
+  the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
+  naming that source, and puts the rest to the user through the runtime's structured question tool, else a
+  numbered list.
+- Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light` and
+  `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then
+  `/squad-code-review`; `high` work runs both as separate agents where the runtime allows, else reports them
+  unowned, never as a self-review.
+- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage
+  no pass ran is never reported as run.
 
 ## Completion checklist
 
-- [ ] References this task needed were read
-- [ ] Contract, schema, errors, compatibility, auth and idempotency are explicit and enforced server-side
+- [ ] The gate 2 contract is explicit and enforced server-side
 - [ ] Data changes carry backup/restore or recreation evidence and forward, rollback and backfill plans
 - [ ] Transactions, concurrency, N+1 and hot queries were evaluated
 - [ ] Threat, secrets and dependency checks cover the changed surface

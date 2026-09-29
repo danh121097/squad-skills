@@ -45,8 +45,7 @@ follows an established local pattern.
 - **Solo with `squad-designer`:** load it, take its component code and rationale as the handoff, then
   resume Frontend and wire behavior into what it built.
 - **Team mode:** ask the orchestrator to run Designer and wait for the component code.
-- **Designer unavailable:** run the bounded inline fallback below. Do not install a skill automatically or
-  report the missing skill as a blocker when the fallback can satisfy the task.
+- **Designer unavailable:** run the bounded inline fallback below.
 
 ## 5. Inline Designer fallback
 

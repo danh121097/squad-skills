@@ -20,8 +20,7 @@ gates.
   the JavaScript thread or on the platform's animation system where the toolkit supports it.
   Whoever writes the animation code owns its lifecycle scoping, teardown, and reduced-motion
   fallback.
-- Cite the official framework docs from the source registry when exact API behavior matters;
-  keep guidance narrow rather than confidently generic.
+- Cite the official framework docs when exact API behavior matters.
 
 ## React Native / Expo
 
@@ -49,7 +48,7 @@ gates.
 - Motion: implicit animated widgets for simple state changes; explicit `AnimationController` work
   only for coordinated sequences, with `MediaQuery.disableAnimations` honored.
 - Accessibility: `Semantics` widgets, sufficient contrast in both themes, and text scaling
-  verified at large `textScaleFactor`.
+  verified at a large `TextScaler`.
 
 ## Handoff additions for this tier
 

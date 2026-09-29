@@ -4,26 +4,27 @@ Use for public/internal contracts, persistence, migrations, streaming, webhooks 
 
 ## Contract design
 
-For every operation define input/output schema, validation, authN/authZ, error taxonomy, idempotency,
-pagination, filtering/sorting, concurrency control, rate/quota behavior, observability and compatibility.
-Generate/publish machine-readable schemas when the stack supports them; test consumers and providers.
+Beyond the gate 2 fields, define per operation filtering/sorting, concurrency control and rate/quota
+behavior. Generate/publish machine-readable schemas when the stack supports them; test consumers and
+providers, and publish schemas/examples, rollout order and test fixtures so consumers never infer behavior
+from implementation internals.
 
 ### REST/HTTP
 
-Use resource/action semantics that match the domain; correct methods/status/cache headers; cursor pagination
+Resource/action semantics that match the domain; correct methods/status/cache headers; cursor pagination
 for mutable/high-volume collections; ETag/version for optimistic concurrency; Problem Details or the
 repository's stable error envelope. Avoid leaking existence across authorization boundaries.
 
 ### GraphQL
 
-Design schema around domain capabilities; enforce field-level authorization, input limits, depth/complexity
-budgets, persisted/allowlisted operations where warranted, batching/DataLoader, cursor connections and
-resolver observability. Treat introspection and subscriptions according to threat and environment.
+Enforce field-level authorization, input limits, depth/complexity budgets, persisted/allowlisted operations
+where warranted, batching/DataLoader and resolver observability. Treat introspection and subscriptions
+according to threat and environment.
 
 ### gRPC/RPC
 
-Preserve protobuf field numbers and compatibility; set deadlines, cancellation, status mapping, retries,
-message limits, streaming backpressure and reflection exposure. Use mTLS/service identity as required.
+Preserve protobuf field numbers and compatibility; set deadlines, cancellation, status mapping, message
+limits, streaming backpressure and reflection exposure.
 
 ### WebSocket/SSE/webhooks
 
@@ -33,20 +34,23 @@ secret rotation.
 
 ## Data modeling
 
-- Start from invariants and query/write patterns.
-- Relational: constraints, normalization, transaction boundaries, isolation, indexes and execution plans.
-- Document: aggregate boundaries, schema validation, document growth, indexes and transaction needs.
-- Key/value/cache: key cardinality, TTL, eviction, stampede prevention and invalidation ownership.
-- Search/vector/time-series/graph: treat as specialized projections unless they own authoritative state.
-- Multi-tenancy: tenant key in every boundary, isolation strategy, index design and administrative access.
+Start from invariants and query/write patterns. Search/vector/time-series/graph stores are specialized
+projections unless they own authoritative state. Multi-tenancy: tenant key in every boundary, isolation
+strategy, index design and administrative access.
 
 ## Migrations and data changes
 
-Resolve the target first. For shared/persistent/staging/production data, create or verify a recoverable
-backup and credible restore path before mutation. For an isolated disposable local/test target, verify its
-recreation/reset and deterministic seed/fixture path. Prefer expand → backfill → dual/read compatibility →
-switch → contract. Make backfills resumable, bounded, observable and idempotent. Test forward, rollback or
-roll-forward, old/new application compatibility, lock duration and representative data.
+Resolve the target first, and satisfy the recovery rule in Scope and safety. Prefer expand → backfill →
+dual/read compatibility → switch → contract. Make backfills resumable, bounded, observable and idempotent.
+Test forward, rollback or roll-forward, old/new application compatibility, lock duration and representative
+data.
+
+When data inspection or recovery tooling is unavailable, do not mutate data to compensate. For
+shared/persistent targets, produce the migration/rollback plan and request the smallest safe backup/restore
+access or artifact needed; a backup that cannot be restored or whose target/scope is unknown does not
+satisfy the persistent-data gate. For an isolated disposable target, prove its recreation/reset and
+deterministic seed/fixture path. Never claim a migration or query plan was verified when it was only
+reasoned about statically.
 
 ## Messaging and jobs
 
@@ -56,12 +60,6 @@ timeout, retention/replay and consumer lag. Never acknowledge before durable eff
 
 ## Transactions and concurrency
 
-Choose isolation and locking from invariants. Use optimistic versioning for low-conflict workflows;
-pessimistic locks for short critical sections. Detect lost update, write skew, duplicate request, double
-spend, stale cache and out-of-order event paths. Keep external calls outside DB transactions when possible.
-
-## Contract handoff
-
-Publish schemas/examples, error codes, auth/scopes, idempotency rules, pagination, event/webhook semantics,
-compatibility window, rollout order, observability and test fixtures. Consumers must not infer behavior
-from implementation internals.
+Choose isolation and locking from invariants: optimistic versioning for low-conflict workflows, pessimistic
+locks for short critical sections. Detect lost update, write skew, duplicate request, double spend, stale
+cache and out-of-order event paths. Keep external calls outside DB transactions when possible.

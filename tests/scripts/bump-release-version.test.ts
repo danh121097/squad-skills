@@ -7,7 +7,6 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   pluginManifestPaths,
   replaceManifestVersion,
-  writeManifestPair,
   writeManifestSet,
 } from '../../scripts/bump-release-version.ts';
 
@@ -38,25 +37,6 @@ describe('replaceManifestVersion', () => {
     expect(() => replaceManifestVersion('{"name":"example"}', '1.0.0')).toThrow(
       'top-level version field'
     );
-  });
-
-  it('restores the package manifest if the plugin write fails', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'release-version-'));
-    temporaryRoots.push(root);
-    const packagePath = path.join(root, 'package.json');
-    const pluginPath = path.join(root, 'plugin.json');
-    const original = '{"version":"1.0.0"}\n';
-    await writeFile(packagePath, original, 'utf8');
-    await mkdir(pluginPath);
-
-    expect(() =>
-      writeManifestPair(packagePath, { original, updated: '{"version":"1.0.1"}\n' }, pluginPath, {
-        original,
-        updated: '{"version":"1.0.1"}\n',
-      })
-    ).toThrow('rollback');
-
-    await expect(readFile(packagePath, 'utf8')).resolves.toBe(original);
   });
 
   it('updates the package, Claude plugin and Codex plugin as one manifest set', async () => {

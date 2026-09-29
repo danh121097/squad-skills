@@ -74,7 +74,8 @@ moment of use; its content is never bundled into a skill.
 `pnpm check:links` requests every link in a skill's source registry and reads
 **the status code only** — the response body is never consumed. A host that
 refuses a script, or rate-limits it, counts as unreachable rather than dead. It
-runs on pull requests as its own job and is not part of `pnpm test`.
+runs weekly, on demand, and on a pull request that edits a registry, as its own
+CI job, and is not part of `pnpm test`.
 
 ## Skill observations
 

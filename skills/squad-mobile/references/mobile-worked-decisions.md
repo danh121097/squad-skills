@@ -30,8 +30,3 @@ platform will not prompt again.
 **Decision:** Request at the moment of use with the reason visible; design the denied and
 permanently-denied paths — what still works and where the settings route is. Never assume a second prompt
 appears.
-
-## 4. Performance numbers come from release builds on hardware
-
-**Decision:** Take start-up, frame-rate, memory and size numbers from a release build on a device. A
-simulator or debug-build result is evidence about the simulator or debug build only.

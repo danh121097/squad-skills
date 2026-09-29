@@ -16,7 +16,6 @@ more than the ones it looks for.
 - Polished comments, generated tests, invented APIs and broad try/catch taken at face value.
 - Only the edited hunks read, with renamed, deleted, generated and configuration paths skipped.
 - The reviewer quietly fixing what it is judging.
-- A self-review reported as an independent gate.
 
 ## Pre-flight
 
@@ -43,11 +42,10 @@ Pass every applicable check honestly.
 - Each finding carries file:line, failure condition, impact and one concrete remediation.
 - Findings are deduplicated to one per cause, with the affected locations listed under it.
 - Implementation alignment and production quality are ranked as separate lists; neither is folded into the other.
-- Warnings and suggestions never request changes on their own; tests, docs, rollout and migration
-  implications are covered where they apply.
+- Tests, docs, rollout and migration implications are covered where they apply.
 
 ## Proof to hand over
 
 State the verdict, what was inspected and what was not, the checks that ran, and the residual risk. A
 review with no findings still reports all of it. Say whether this was independent-agent review or a
-single-session logical pass; never present a self-review as independent evidence.
+single-session logical pass.

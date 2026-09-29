@@ -1,30 +1,26 @@
 # Design, platform, and lifecycle gates
 
-Read for material mobile UI/UX work or when offline, lifecycle, secure storage, deep links, push,
-biometrics, IAP, accessibility, or performance is affected.
+Read for material mobile UI/UX work or when offline, lifecycle, permissions, deep links, push, biometrics or
+IAP is affected.
 
 ## Design gate
 
-The designer hands over presentational component code, not a written spec: screens and components that
-render in the app's framework, with props and slots left open for you to bind, plus the rationale behind
-them. Wire behavior into that code instead of rebuilding it: state, data fetching, API integration,
-routing, forms submission, and platform lifecycle stay with the build role, so navigation, offline, and
-lifecycle behavior are yours to add without altering the visual language.
+The designer hands over presentational component code, not a written spec. Wire behavior into that code
+instead of rebuilding it: state, data fetching, API integration, routing, forms submission, and platform
+lifecycle stay with the build role, so navigation, offline, and lifecycle behavior are yours to add without
+altering the visual language.
 
-Motion ownership follows authorship: whoever writes the animation code owns its lifecycle scoping,
-teardown, and reduced-motion fallback. Verify designer-authored motion against real device behavior;
-re-own it only when you rewrite it.
+Motion ownership follows authorship: whoever writes the animation code owns its lifecycle scoping, teardown,
+and reduced-motion fallback. Verify designer-authored motion on a real device; re-own it only when you
+rewrite it.
 
-- Treat the user's material — screenshot, link, brief or accepted Figma — as design intent and map it to
-  existing app components and platform conventions.
-- Trigger `squad-designer` only for design decisions the material and the existing system leave open:
-  new UX, adaptive behavior, interaction, accessibility, states, or cross-screen component language.
-- Skip Designer for logic-only work, narrow bugs, material that covers the screen, exact local patterns,
-  and a single build owner with no design-system change — that owner does the presentational work.
-- If Designer is unavailable, inspect the codebase, research task-specific mobile flows when needed, then
-  build the presentational components inline — hierarchy, navigation surface, states, platform adaptation
-  and accessibility — before wiring behavior into them.
-- Report a visual or interaction gap back to the Designer stage; do not redesign inside the feature.
+- Trigger `squad-designer` only for design decisions the user's material and the existing system leave open:
+  new UX, adaptive behavior, interaction, accessibility, states, or cross-screen component language. Logic-only
+  work, narrow bugs, screens the material covers, exact local patterns and a single build owner with no
+  design-system change skip it.
+- Without Designer, build the presentational components inline — hierarchy, navigation surface, states,
+  platform adaptation and accessibility — before wiring behavior into them. Report a visual or interaction gap
+  back to the Designer stage instead of redesigning inside the feature.
 
 ## Platform and lifecycle model
 
@@ -38,15 +34,3 @@ Specify applicable behavior for:
 - push foreground/background/tap paths, duplication and stale destination;
 - biometric unavailable/changed/locked-out and secure fallback;
 - purchase pending/cancelled/restored/failed and server-side entitlement validation.
-
-## Security and privacy
-
-Use Keychain/Keystore or the framework's secure-storage abstraction for credentials. Store the minimum
-offline data, define retention/clear-on-logout behavior, redact logs/crash reports, and validate all
-external payloads. Client-side permissions and purchase state never replace server authorization.
-
-## Performance and accessibility
-
-Assess cold/warm start, memory, frame drops, list rendering, image/network use, bundle/app size and battery
-only where the change can affect them. Verify labels, focus order, screen reader behavior, contrast,
-touch targets, text scaling, reduced motion and keyboard/switch access as applicable.

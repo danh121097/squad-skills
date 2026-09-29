@@ -1,7 +1,7 @@
 # Quality bar and pre-flight
 
 Read before declaring a repair complete. Every check is performed against the recorded baseline and the
-repository's own commands, so the pass holds with no other skill installed.
+repository's own commands.
 
 ## What weak bugfix output looks like
 
@@ -23,8 +23,8 @@ Pass every applicable check honestly.
 
 ### Cause
 
-- Symptom, minimal repro or static proof, expected versus actual, the exact defect, and why it surfaced now.
-- Blast radius mapped: callers, consumers, contracts, data, permissions, timing and supported platforms.
+- Gate 4's root-cause contract holds, with the blast radius mapped across callers, consumers, contracts,
+  data, permissions, timing and supported platforms.
 - The implementation owner follows the broken contract, not the layer where the symptom appeared.
 
 ### Fix

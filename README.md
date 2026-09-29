@@ -241,13 +241,7 @@ why a handoff is `artifacts/handoff-to-phase-02.md`. A gate recorded in `artifac
 graded — and once one of those moves, that verdict is marked superseded and the gates rerun. The record is
 for a reader; the gate itself is still the prose handoff between roles.
 
-Check a bundle against that contract:
-
-```sh
-pnpm validate:plan plans/<YYMMDD-HHmm>-<topic>
-```
-
-A plan written under the earlier flat layout still reads fine and no longer validates. Migrate it by moving
+A plan written under the earlier flat layout still reads fine. Migrate it to this layout by moving
 each `phase-XX-*.md` into `phases/`, moving shared background into `references/` and produced work into
 `artifacts/`, renaming any `phase-XX-` artifact to drop the reserved prefix, adding the frontmatter each
 kind now states, and repointing the links in `plan.md`.

@@ -35,12 +35,15 @@ sensitive device state.
 Track each emulator/simulator, packager, watcher, build daemon, port and temporary device resource started
 by the task. Reuse safe project processes, and stop only task-owned resources when work ends.
 
+Verify version-specific claims against that version's own primary docs; cite version and date. Never
+auto-install skills, plugins, MCP servers, packages or CLIs.
+
 ## Core gates
 
 1. **Preserve the app** — match its framework, architecture, navigation, state, components, platform
    conventions, native modules, build configuration, accessibility and test patterns.
 2. **Resolve design first** — the user's material, the existing system, or Designer-authored components
-   define UI work; build the presentational layer inline when Designer is unavailable or not needed.
+   define UI work; without Designer, build the presentational layer inline.
 3. **Model lifecycle and connectivity** — foreground/background, process death, offline, retries, stale
    cache, conflict resolution, permissions, deep links and interrupted flows are first-class states.
 4. **Keep secrets secure** — use platform secure storage and server-enforced authorization; never treat
@@ -50,24 +53,17 @@ by the task. Reuse safe project processes, and stop only task-owned resources wh
 
 ## Conditional references
 
-- For Figma/Designer routing, platform UX states, offline/sync, secure storage, push/deep links, IAP and
-  performance gates, read
+- For Figma/Designer routing and the platform lifecycle states (offline/sync, permissions, push/deep links,
+  biometrics, IAP), read
   [references/design-platform-and-lifecycle-gates.md](references/design-platform-and-lifecycle-gates.md).
-- For existing-versus-new-app stack selection, React Native/Expo, Flutter, Swift/iOS, Kotlin/Android,
-  KMP/Compose Multiplatform, .NET MAUI, Capacitor, app architecture, state, navigation, networking and
-  offline data, read
+- For existing-versus-new-app stack selection, app architecture, state, navigation, networking and offline
+  data, read
   [references/mobile-stack-architecture-and-data.md](references/mobile-stack-architecture-and-data.md).
-- For mobile threat model, privacy, performance, test layers, release/store and observability, read
+- For mobile threat model, secure storage, privacy, performance, test layers, release/store, and
+  crash/ANR/render/network/build diagnosis paths, read
   [references/mobile-security-performance-testing-and-release.md](references/mobile-security-performance-testing-and-release.md).
-- For crash/ANR/render/network/build diagnosis and mobile engineering mindset, read
-  [references/mobile-debugging-and-mindset.md](references/mobile-debugging-and-mindset.md).
 - When calibrating a lifecycle, offline, permission or evidence decision against concrete cases, read
   [references/mobile-worked-decisions.md](references/mobile-worked-decisions.md).
-- For current primary documentation, read
-  [references/official-sources.md](references/official-sources.md).
-- Before choosing tools for a phase, and when specialist skills, devices, QA, Review, or browser/docs
-  tools are in question, read
-  [references/runtime-capability-fallbacks.md](references/runtime-capability-fallbacks.md).
 
 ## Quality bar
 
@@ -110,21 +106,20 @@ implemented. Before handing over, run the self-review in
   commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- Work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open
-  fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to
-  the lead, or to the user when run on its own, as named options with their consequences; the lead settles
-  only a fork it can show the request, repository or evidence answers, names that source in its report,
-  and puts every other fork to the user, who alone answers it, through the runtime's structured question
-  tool when it has one, else a numbered list.
-- Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light`
-  and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa`
-  then `/squad-code-review`; `high` work still runs both gates.
-- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
-  stage no pass ran is never reported as run.
+- A fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the
+  work, stops the work that depends on it rather than guessing and goes as named options with consequences to
+  the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
+  naming that source, and puts the rest to the user through the runtime's structured question tool, else a
+  numbered list.
+- Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light` and
+  `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then
+  `/squad-code-review`; `high` work runs both as separate agents where the runtime allows, else reports them
+  unowned, never as a self-review.
+- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage
+  no pass ran is never reported as run.
 
 ## Completion checklist
 
-- [ ] References this task needed were read
 - [ ] Existing app stack and platform patterns are preserved, or a new-app stack was chosen explicitly
 - [ ] UI rests on the user's material, the existing system, or Designer output, with every applicable
       state

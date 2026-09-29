@@ -1,54 +1,22 @@
-import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { boundaryClauses, retiredPhrases } from '../../src/catalog/cross-skill-contract-clauses.ts';
+import { boundaryClauses } from '../../src/catalog/cross-skill-contract-clauses.ts';
 import {
   normalizeProse,
   validateCrossSkillContract,
   type BoundaryClause,
-  type RetiredPhrase,
 } from '../../src/catalog/cross-skill-contract-validator.ts';
 
 const temporaryProjects: string[] = [];
 
 const designerEntrypoint = 'skills/squad-designer/SKILL.md';
-const designerHandoff =
-  'skills/squad-designer/references/design-system-ux-accessibility-and-handoff.md';
-const designerMotion = 'skills/squad-designer/references/platform-web-foundations-and-motion.md';
-const designerNativeAppleAndroid =
-  'skills/squad-designer/references/platform-native-apple-android.md';
-const designerNativeCross = 'skills/squad-designer/references/platform-native-cross-platform.md';
-const designerReferences = [
-  'skills/squad-designer/references/anti-slop-quality-review.md',
-  'skills/squad-designer/references/codebase-first-examples.md',
-  designerHandoff,
-  'skills/squad-designer/references/official-sources.md',
-  'skills/squad-designer/references/platform-adaptive-layout-and-input.md',
-  designerNativeAppleAndroid,
-  designerNativeCross,
-  designerMotion,
-  'skills/squad-designer/references/task-specific-ui-ux-research.md',
-];
 const frontendIntake = 'skills/squad-frontend/references/designer-gate-and-design-intake.md';
-const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-motion-selection.md';
-const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
 const teamPipeline = 'skills/squads-team/references/delivery-pipeline-and-roster.md';
-const teamFiles = [teamPipeline, 'skills/squads-team/references/domain-coverage-contracts.md'];
 const teamCoordination = 'skills/squads-team/references/coordination-contract.md';
-const designerSources = 'skills/squad-designer/references/official-sources.md';
-// Sorted, because the pinning assertion sorts each clause's file list.
-const roleRuntimes = [
-  'skills/squad-backend/references/runtime-capability-fallbacks.md',
-  'skills/squad-code-review/references/review-runtime-and-verdict.md',
-  'skills/squad-devops/references/runtime-and-safe-delivery-fallbacks.md',
-  'skills/squad-fix/references/runtime-capability-fallbacks.md',
-  'skills/squad-frontend/references/runtime-capability-fallbacks.md',
-  'skills/squad-mobile/references/runtime-capability-fallbacks.md',
-  'skills/squad-qa/references/test-strategy-runtime-and-verdict.md',
-];
 
 // Role entrypoints, the two ends every HANDOFF-* clause binds.
 const backendSkill = 'skills/squad-backend/SKILL.md';
@@ -87,12 +55,6 @@ const sharedClause: BoundaryClause = {
   files: [designerFile, frontendFile],
 };
 
-const retiredFixture: RetiredPhrase = {
-  id: 'FIXTURE-RETIRED-001',
-  phrase: 'not production code',
-  files: [designerFile],
-};
-
 afterEach(async () => {
   await Promise.all(
     temporaryProjects
@@ -110,7 +72,6 @@ describe('validateCrossSkillContract', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [sharedClause],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -126,7 +87,6 @@ describe('validateCrossSkillContract', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [sharedClause],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -140,7 +100,6 @@ describe('validateCrossSkillContract', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [sharedClause],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toHaveLength(1);
@@ -157,7 +116,6 @@ describe('validateCrossSkillContract', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [sharedClause],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toHaveLength(1);
@@ -171,7 +129,6 @@ describe('validateCrossSkillContract', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [sharedClause],
-      retiredPhrases: [],
     });
 
     expect(result.errors.some((error) => error.includes('could not be read'))).toBe(true);
@@ -184,26 +141,11 @@ describe('validateCrossSkillContract', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [{ ...sharedClause, files: [designerFile] }],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([
       'FIXTURE-BOUNDARY-001: a boundary clause must bind at least two files.',
     ]);
-  });
-
-  it('fails when retired spec-era wording survives', async () => {
-    const projectRoot = await createProject({
-      [designerFile]: '# Designer\n\nProduce **specs, not production code**.\n',
-    });
-
-    const result = await validateCrossSkillContract(projectRoot, {
-      clauses: [],
-      retiredPhrases: [retiredFixture],
-    });
-
-    expect(result.errors).toHaveLength(1);
-    expect(result.errors[0]).toContain('retired');
   });
 
   it('holds the shipped skills to the current role boundary', async () => {
@@ -213,159 +155,8 @@ describe('validateCrossSkillContract', () => {
     expect(result.checkedFiles.length).toBeGreaterThan(0);
   });
 
-  it('reports a retired-phrase file that cannot be read', async () => {
-    const projectRoot = await createProject({});
-
-    const result = await validateCrossSkillContract(projectRoot, {
-      clauses: [],
-      retiredPhrases: [retiredFixture],
-    });
-
-    expect(result.errors).toEqual([`FIXTURE-RETIRED-001: ${designerFile} could not be read.`]);
-  });
-
-  // A clause only binds the files that name the boundary. A designer reference
-  // no clause names can still tell the designer to hand over a document, so the
-  // retired-phrase sweep has to cover the whole skill, including files added later.
-  it('sweeps every shipped designer file for retired wording', async () => {
-    const references = await readdir(path.join(process.cwd(), 'skills/squad-designer/references'));
-    const designerFiles = [
-      designerEntrypoint,
-      ...references
-        .filter((file) => file.endsWith('.md'))
-        .map((file) => `skills/squad-designer/references/${file}`),
-    ];
-    const swept = new Set(retiredPhrases.flatMap((phrase) => phrase.files));
-
-    expect(designerFiles.filter((file) => !swept.has(file))).toEqual([]);
-  });
-
-  // Pins the whole inventory. Asserting only "no errors" lets a bound path be
-  // dropped from a clause without any test noticing: the remaining files still
-  // agree, so the gate stays green while its coverage silently shrinks.
-  it('pins every shipped clause and retired phrase to its exact file set', () => {
-    const inventory = Object.fromEntries(
-      [...boundaryClauses, ...retiredPhrases].map((entry) => [entry.id, [...entry.files].sort()])
-    );
-
-    expect(inventory).toEqual({
-      'BOUNDARY-ARTIFACT-001': [designerEntrypoint, frontendIntake, mobileGates, ...teamFiles],
-      'BOUNDARY-LOGIC-001': [designerEntrypoint, frontendIntake, mobileGates, ...teamFiles],
-      'BOUNDARY-MOTION-001': [
-        designerNativeAppleAndroid,
-        designerNativeCross,
-        designerMotion,
-        frontendMotion,
-        mobileGates,
-      ],
-      'DECISION-RECORD-001': [
-        'skills/squad-backend/references/backend-stack-and-runtime-matrix.md',
-        'skills/squad-devops/references/platform-iac-and-delivery-matrix.md',
-        frontendMotion,
-        'skills/squad-mobile/references/mobile-stack-architecture-and-data.md',
-        'skills/squads-team/references/domain-coverage-contracts.md',
-      ].sort(),
-      'PAIRING-DETECT-001': [designerSources, ...roleRuntimes, teamCoordination].sort(),
-      'PAIRING-AUTHORITY-001': [designerSources, ...roleRuntimes].sort(),
-      'PAIRING-SAFETY-001': roleRuntimes,
-      'HANDOFF-PLAN-001': [productSkill, teamSkill],
-      'PLAN-BUNDLE-LAYOUT-001': [productPlanDocument, productQuality, teamContracts].sort(),
-      'QUALITY-PREFLIGHT-PLAN-001': [productPlanDocument, productQuality].sort(),
-      'HANDOFF-DECISION-001': [
-        backendSkill,
-        codeReviewSkill,
-        designerEntrypoint,
-        devopsSkill,
-        fixSkill,
-        frontendSkill,
-        mobileSkill,
-        productSkill,
-        qaSkill,
-        teamSkill,
-      ].sort(),
-      'HANDOFF-API-001': [backendSkill, frontendSkill, mobileSkill],
-      'HANDOFF-QA-001': [...rolesWithAnImplementationSlice, qaSkill].sort(),
-      'HANDOFF-VERDICT-001': [codeReviewSkill, qaSkill],
-      'HANDOFF-FINDINGS-001': [codeReviewSkill, ...rolesWithAnImplementationSlice].sort(),
-      'HANDOFF-REPRO-001': [qaSkill, ...rolesWithAnImplementationSlice].sort(),
-      'HANDOFF-RUNTIME-001': [backendSkill, devopsSkill],
-      'HANDOFF-BUILD-001': [devopsSkill, frontendSkill, mobileSkill],
-      'HANDOFF-DEPLOY-001': [codeReviewSkill, devopsSkill],
-      'HANDOFF-GATE-002': [codeReviewSkill, qaSkill],
-      'HANDOFF-TIER-001': [
-        backendSkill,
-        codeReviewSkill,
-        devopsSkill,
-        fixSkill,
-        frontendSkill,
-        mobileSkill,
-        qaSkill,
-        teamSkill,
-      ],
-      'HANDOFF-LOOP-001': [codeReviewSkill, fixSkill, qaSkill, teamSkill],
-      'HANDOFF-APPROVED-001': [codeReviewSkill, fixSkill, qaSkill, teamSkill],
-      'TEST-ECONOMY-001': [fixSkill, qaSkill],
-      'HANDOFF-GATE-003': [fixSkill, teamSkill],
-      'HANDOFF-GATE-004': [codeReviewSkill, qaSkill, teamSkill],
-      'HANDOFF-RERUN-001': [codeReviewSkill, qaSkill, teamSkill],
-      'HANDOFF-SOLO-001': [
-        ...rolesWithAnImplementationSlice,
-        codeReviewSkill,
-        qaSkill,
-        teamSkill,
-      ].sort(),
-      'HANDOFF-SOLO-002': [...rolesWithAnImplementationSlice].sort(),
-      'HANDOFF-SOLO-003': [codeReviewSkill, qaSkill],
-      'PLAN-BUNDLE-ARTIFACT-001': [productPlanDocument, productQuality].sort(),
-      'PLAN-BUNDLE-SUPERSEDE-001': [productPlanDocument, teamCoordination, teamPipeline].sort(),
-      'QUALITY-PREFLIGHT-001': preflightRoles,
-      'RETIRED-SPEC-001': [designerEntrypoint, ...designerReferences, ...teamFiles],
-      'RETIRED-SPEC-002': [designerEntrypoint, designerHandoff, teamPipeline],
-      'RETIRED-SPEC-003': designerReferences,
-      'RETIRED-SPEC-004': [designerEntrypoint, ...designerReferences],
-      'RETIRED-SPEC-005': [designerEntrypoint, ...designerReferences, ...teamFiles],
-      'RETIRED-SPEC-007': [...rolesWithAnImplementationSlice, teamSkill],
-      'RETIRED-SPEC-008': [codeReviewSkill, qaSkill],
-      'RETIRED-SPEC-009': [
-        productSkill,
-        productPlanDocument,
-        productQuality,
-        teamSkill,
-        teamCoordination,
-      ].sort(),
-      'RETIRED-SPEC-010': [
-        backendSkill,
-        codeReviewSkill,
-        designerEntrypoint,
-        devopsSkill,
-        fixSkill,
-        frontendSkill,
-        mobileSkill,
-        productSkill,
-        qaSkill,
-        teamSkill,
-      ].sort(),
-      'RETIRED-SPEC-011': [
-        ...rolesWithAnImplementationSlice,
-        codeReviewSkill,
-        qaSkill,
-        teamSkill,
-      ].sort(),
-      'RETIRED-SPEC-012': [teamSkill, teamCoordination, teamPipeline].sort(),
-      'RETIRED-SPEC-013': [teamSkill, teamCoordination, teamPipeline].sort(),
-      'RETIRED-SPEC-014': [teamSkill, teamCoordination, teamPipeline].sort(),
-      'RETIRED-SPEC-006': [
-        productSkill,
-        productPlanDocument,
-        productQuality,
-        teamSkill,
-        teamCoordination,
-      ].sort(),
-    });
-  });
-
   it('binds each shipped clause to at least two files and keeps ids unique', () => {
-    const ids = [...boundaryClauses, ...retiredPhrases].map((entry) => entry.id);
+    const ids = boundaryClauses.map((entry) => entry.id);
 
     expect(new Set(ids).size).toBe(ids.length);
     expect(boundaryClauses.every((clause) => clause.files.length >= 2)).toBe(true);
@@ -450,7 +241,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [solo],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -468,7 +258,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [api],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toHaveLength(1);
@@ -511,7 +300,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [sequence],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toHaveLength(1);
@@ -529,7 +317,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [sequence],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toHaveLength(1);
@@ -549,7 +336,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [boundary],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toHaveLength(1);
@@ -568,7 +354,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(projectRoot, {
       clauses: [rerun],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toHaveLength(1);
@@ -586,7 +371,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [preflight],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -602,7 +386,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [planBundle],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -618,7 +401,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [artifact],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -634,7 +416,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [supersede],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -648,7 +429,6 @@ describe('handoff contract family', () => {
 
     const result = await validateCrossSkillContract(process.cwd(), {
       clauses: [planDetail],
-      retiredPhrases: [],
     });
 
     expect(result.errors).toEqual([]);
@@ -677,80 +457,6 @@ describe('normalizeProse', () => {
     expect(normalizeProse('state stays with [squad-frontend](../squad-frontend/SKILL.md)')).toBe(
       'state stays with squad-frontend'
     );
-  });
-});
-
-describe('retired-phrase detection', () => {
-  const retired: RetiredPhrase[] = [
-    { files: ['a.md'], id: 'RETIRED-FIXTURE', phrase: 'pairing is optional' },
-  ];
-
-  const check = async (contents: string) =>
-    validateCrossSkillContract(await createProject({ 'a.md': contents }), {
-      clauses: [],
-      retiredPhrases: retired,
-    });
-
-  it('fails when the retired wording is stated as the live rule', async () => {
-    expect((await check('pairing is optional for this role.')).errors).toHaveLength(1);
-  });
-
-  it('passes wording that no longer contains the retired phrase', async () => {
-    // "is no longer optional" does not contain "is optional"; the phrase is
-    // gone, so nothing is being suppressed here.
-    expect((await check('pairing is no longer optional for this role.')).errors).toEqual([]);
-  });
-
-  it.each([
-    ['a trailing retirement note', 'The stance that pairing is optional was retired.'],
-    ['an ordinary sentence containing "cannot"', 'A run cannot start while pairing is optional.'],
-    ['a nearby negation', 'This is not a suggestion. pairing is optional only in theory.'],
-  ])('still fails on %s without an explicit opt-out', async (_label, contents) => {
-    // Nearby English is not consent. Inferring it from a marker list silenced
-    // the gate on ordinary prose, which is the failure direction that matters:
-    // a drift detector that quietly stops detecting is worse than a noisy one.
-    expect((await check(contents)).errors).toHaveLength(1);
-  });
-
-  it('names the opt-out in the failure so the fix is discoverable', async () => {
-    const result = await check('pairing is optional for this role.');
-
-    expect(result.errors[0]).toContain('retired-phrase-ok: RETIRED-FIXTURE');
-  });
-
-  it('passes a file that opts out explicitly', async () => {
-    const contents = [
-      '<!-- retired-phrase-ok: RETIRED-FIXTURE -->',
-      '',
-      'The retired wording was "pairing is optional"; pairing is now detected per task.',
-    ].join('\n');
-
-    expect((await check(contents)).errors).toEqual([]);
-  });
-
-  it("does not let one file's opt-out cover another", async () => {
-    const projectRoot = await createProject({
-      'a.md': 'pairing is optional here.',
-      'b.md': '<!-- retired-phrase-ok: RETIRED-FIXTURE -->',
-    });
-
-    const result = await validateCrossSkillContract(projectRoot, {
-      clauses: [],
-      retiredPhrases: [
-        { files: ['a.md', 'b.md'], id: 'RETIRED-FIXTURE', phrase: 'pairing is optional' },
-      ],
-    });
-
-    expect(result.errors).toHaveLength(1);
-    expect(result.errors[0]).toContain('a.md');
-  });
-
-  it('reads retired wording inside a fenced block, which a clause check would skip', async () => {
-    // A fenced handoff template is shipped instruction text, not an
-    // illustrative sample, so the two checks normalize differently.
-    const contents = ['Use this template:', '', '```md', 'pairing is optional', '```'].join('\n');
-
-    expect((await check(contents)).errors).toHaveLength(1);
   });
 });
 

@@ -40,10 +40,9 @@ describe('plugin agent definitions', () => {
   it.each(skillNames)("agents/%s.md still matches that skill's SKILL.md", async (name) => {
     const committed = await readFile(path.join(agentsRoot, `${name}.md`), 'utf8');
 
-    expect(
-      committed,
-      `agents/${name}.md is stale — regenerate it from skills/${name}/SKILL.md`
-    ).toBe(renderPluginAgentFile(await definitionOf(name)));
+    expect(committed, `agents/${name}.md is stale — run pnpm agents:generate`).toBe(
+      renderPluginAgentFile(await definitionOf(name))
+    );
   });
 
   // A skill missing from the table ships an agent with no effort, silently

@@ -11,7 +11,7 @@ evidence into permission to ship.
 - A retry that passed once, reported as a fix.
 - Determinism bought with a longer sleep instead of an observable readiness signal.
 - Order, clock, shared data or a live third party left as hidden inputs.
-- `PASS` issued because the environment was unavailable, or confidence language standing in for a run.
+- Confidence language standing in for a run.
 - Cascading assertions chased instead of the first causal failure.
 - Requirements invented through testing: a check asserting behavior no accepted criterion asked for.
 - "Not observed", "not tested", "cannot reproduce" and "verified absent" used interchangeably.
@@ -52,5 +52,4 @@ Pass every applicable check honestly.
 State the verdict, the commands and environment, the build or commit under test, what each check covered,
 and the residual risk. `FAIL` carries a minimal repro with expected versus actual and the owning role.
 `NEEDS_ENVIRONMENT` names the exact missing target, artifact or access and the smallest next action. Say
-whether this was independent-agent QA or a single-session logical pass. Unavailable evidence is never a
-pass.
+whether this was independent-agent QA or a single-session logical pass.

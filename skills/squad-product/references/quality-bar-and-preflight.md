@@ -27,8 +27,8 @@ Pass every applicable check honestly.
 
 - No stack, architecture, data-model or UI/UX decision was made here; each one the plan depends on is listed
   as open with its owner named.
-- Every assumption is labeled, in a list the user can correct in one pass.
-- Each open fork carries a default, so the user can accept instead of composing an answer.
+- Every assumption is labeled, in a list the user can correct in one pass, and each open fork carries a
+  default.
 
 ### Phases
 
@@ -36,7 +36,6 @@ Pass every applicable check honestly.
   must be true before work starts.
 - The order follows dependency, and no two parallel phases share the same files.
 - The first slice is complete for someone, and the plan says whether it buys demand or feasibility evidence.
-- Proportion: the plan is as small as the work.
 
 ### Written plan
 

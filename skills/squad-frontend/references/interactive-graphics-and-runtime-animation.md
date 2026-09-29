@@ -47,10 +47,8 @@ Cap catch-up after tab suspension instead of replaying an unbounded backlog. Abs
 touch and gamepad into game actions so device bindings do not leak into rules. Define which layer owns focus,
 page scrolling and pause when the canvas loses visibility or input capture.
 
-Phaser supplies many game systems but each Scene still gets an explicit lifecycle and communication boundary.
-Three.js and PixiJS require deliberate choices for collision/physics, ECS, navigation, audio and asset/world
-streaming; absence is a valid choice when the game does not need one. Rive state machines own presentation
-transitions; gameplay rules stay in code and drive their named inputs.
+Each Phaser Scene gets an explicit lifecycle and communication boundary. Rive state machines own
+presentation transitions; gameplay rules stay in code and drive their named inputs.
 
 ## Own one lifecycle
 
@@ -77,8 +75,6 @@ URLs with progress, timeout, decode and error states. Verify CORS, content type,
 parsing. External assets and metadata are untrusted input; keep credentials out of client URLs and reject
 unsupported or unexpectedly large payloads at the boundary available to the application.
 
-Preload only what the first interaction needs. Lazy-load routes, runtimes and optional scenes; use atlases,
-compressed textures/models and shared parsed assets only when measurements justify their lifecycle cost.
 
 ## Accessibility and interaction
 
@@ -88,15 +84,14 @@ pixels. Support the accepted keyboard, pointer, touch and gamepad paths without 
 opt-in accessibility overlay can expose selected objects, but still verify the resulting DOM and focus path.
 
 Reduced motion preserves meaning and reachability: disable camera shake, parallax and nonessential continuous
-motion; offer pause/stop for continuing animation; replace essential motion with an accepted static or lower-
-motion state. Prevent canvas input from trapping page scroll, browser shortcuts or assistive navigation.
+motion; replace essential motion with an accepted static or lower-motion state. Prevent canvas input from
+trapping page scroll, browser shortcuts or assistive navigation.
 
 ## Performance and verification
 
-Set budgets from the target experience and measure a production build. Inspect main-thread/frame time, long
-tasks, memory/GPU growth, draw calls, scene/object count, triangles, overdraw, texture dimensions, DPR,
-bundle/WASM transfer and decode/startup time as applicable. Avoid per-frame allocation and reactive framework
-updates; batch/cull/atlas/instance only against a measured bottleneck.
+Set budgets from the target experience and measure a production build: frame time, memory/GPU growth, draw
+calls, DPR and bundle/WASM transfer as applicable. Avoid per-frame allocation and reactive framework updates;
+batch/cull/atlas/instance only against a measured bottleneck.
 
 Keep simulation and state transitions deterministic outside rendering where possible. Test fixed-step logic,
 seed randomness, and cover scene changes, pause/resume/restart, win/loss, save migration, asset failure,
@@ -106,6 +101,5 @@ artboard/state-machine/input contract separately from screenshot output. Use bro
 rendering, with explicit tolerance and stable assets; a unit snapshot of engine objects is not proof of pixels
 or interaction.
 
-Report the chosen runtime and version, ownership boundary, renderer/fallback path, asset strategy, lifecycle
-and cleanup evidence, accessibility equivalent, target browser/device, measurements and anything the
-available environment could not verify.
+Report the chosen runtime and version, ownership boundary, fallback path, cleanup evidence, accessibility
+equivalent, measurements and what the environment could not verify.

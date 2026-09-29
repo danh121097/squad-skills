@@ -72,14 +72,13 @@ pnpm release --release-type major --otp 123456
 ```
 
 The script first checks the registry, selects a version that is greater than or
-equal to the manifest version, updates all three manifests atomically, and then runs the
-unpublished-version guard. Because those manifest edits are intentional, the
+equal to the manifest version, and updates all three manifests atomically. Because those manifest edits are intentional, the
 final publish passes pnpm's `--no-git-checks` after the clean-tree preflight;
 unrelated local changes are rejected before any version is written. A manifest
 version already ahead of npm is preserved so a failed publish can be retried
 after committing or stashing the synchronized version bump. Registry errors
 fail closed; an E404 means the package has no published version yet and keeps
-the current manifest version. The final `pnpm publish --access public` runs
+the current manifest version. npm itself refuses a version it already has. The final `pnpm publish --access public` runs
 `prepublishOnly` and so repeats `pnpm release:check`.
 
 `--otp` carries the npm one-time password and is required whenever the account

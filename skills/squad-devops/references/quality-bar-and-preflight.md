@@ -40,6 +40,11 @@ Pass every applicable check honestly.
 - Logs, metrics, traces and alert ownership cover the changed path.
 - On self-hosted targets: reverse proxy and TLS renewal, process supervision, and a restore actually run.
 
+- Destructive and replacement paths, permissions, probes, rollback and stateful restore were exercised on an
+  ephemeral or staged target before production.
+- A pipeline or deploy failure was diagnosed from the exact run ID, commit/artifact digest and first failed
+  stage, comparing desired config, rendered plan and live state before any mutation.
+
 ### Safety
 
 - Least privilege on every identity touched; secrets referenced by scope, never inlined or echoed.
@@ -50,3 +55,6 @@ Pass every applicable check honestly.
 Report static validation, plan or diff, deployed smoke check and production observation as separate levels,
 naming the exact target for each. State the rollback readiness, what was not verified live, and which
 task-owned resources were stopped. A level that did not run is reported as not run, never as a pass.
+Missing apply/deploy access is not permission to work around controls: run the local build or container
+check, stop at the highest authorized level, and give the operator the exact next command and the expected
+health and rollback criteria.

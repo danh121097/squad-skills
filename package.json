@@ -39,11 +39,12 @@
   },
   "packageManager": "pnpm@10.17.1",
   "scripts": {
+    "agents:generate": "node scripts/generate-plugin-agents.ts",
     "build": "obuild",
     "coverage": "vitest run --coverage --coverage.include='src/**/*.ts'",
     "check:links": "node scripts/check-source-liveness.ts",
-    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" \".github/**/*.md\" README.md AGENTS.md CLAUDE.md CONTRIBUTING.md \"docs/**/*.md\" \"tests/fixtures/**/*.md\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" \".github/**/*.md\" README.md AGENTS.md CLAUDE.md CONTRIBUTING.md \"docs/**/*.md\" \"tests/fixtures/**/*.md\"",
+    "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" \".github/**/*.md\" README.md AGENTS.md CLAUDE.md CONTRIBUTING.md \"docs/**/*.md\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" build.config.mjs package.json tsconfig.json \".github/workflows/*.yml\" \".github/**/*.md\" README.md AGENTS.md CLAUDE.md CONTRIBUTING.md \"docs/**/*.md\"",
     "pack:check": "node scripts/check-package-contents.ts",
     "prepublishOnly": "pnpm release:check",
     "release": "node scripts/release.ts",
@@ -52,8 +53,7 @@
     "test": "pnpm type-check && pnpm format:check && pnpm test:unit && pnpm validate && pnpm skills:list",
     "test:unit": "vitest run",
     "type-check": "tsc --noEmit",
-    "validate": "node scripts/validate-skills.ts",
-    "validate:plan": "node scripts/validate-plan-bundle.ts"
+    "validate": "node scripts/validate-skills.ts"
   },
   "dependencies": {
     "skills": "1.5.23"
@@ -64,7 +64,6 @@
     "obuild": "^0.4.22",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
-    "vite": "8.2.2",
     "vitest": "^4.0.17",
     "yaml": "^2.8.3"
   }

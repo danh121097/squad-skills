@@ -129,18 +129,6 @@ function updatedManifest(path: string, version: string): { original: string; upd
   return { original: source, updated };
 }
 
-export function writeManifestPair(
-  packagePath: string,
-  packageSource: { original: string; updated: string },
-  pluginPath: string,
-  pluginSource: { original: string; updated: string }
-): void {
-  writeManifestSet([
-    { path: packagePath, ...packageSource },
-    { path: pluginPath, ...pluginSource },
-  ]);
-}
-
 export function writeManifestSet(
   manifests: Array<{ path: string; original: string; updated: string }>
 ): void {

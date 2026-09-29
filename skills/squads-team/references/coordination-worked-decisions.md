@@ -1,7 +1,7 @@
 # Coordination worked decisions
 
 Read when routing, ownership, execution mode or a gate outcome is ambiguous. Every example is
-**constructed** from this skill's hard gates and the shared role contract, not from a recorded run.
+**constructed** from this skill's core gates and the shared role contract, not from a recorded run.
 
 ## 1. Requested parallelism the ownership cannot support
 
@@ -44,6 +44,6 @@ Independent slices enter their own gates as soon as they finish.
 
 **Situation:** Backend changes the accepted error shape while Frontend and DevOps are running.
 
-**Decision:** Send Frontend a `DELTA` naming the new revision and the checks to rerun; its gate verdicts are
-invalidated. DevOps keeps its verdicts and is not interrupted — it consumes nothing that changed. A peer
-message alone cannot move the contract.
+**Decision:** Tell Frontend what changed and which checks to rerun; its gate verdicts are invalidated.
+DevOps keeps its verdicts and is not interrupted — it consumes nothing that changed. A peer message alone
+cannot move the contract.
