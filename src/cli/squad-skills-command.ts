@@ -12,17 +12,20 @@
  * source never runs this code, which is what `squad-skills agents` is for.
  */
 import type { AgentScope } from '../agents/agent-installation.ts';
+import { defaultEffortByRole, parseEffortOverrides } from '../agents/role-effort-defaults.ts';
 
 /** The two flags this CLI owns, read once and carried rather than re-scanned. */
-type AgentPreferences = Pick<AgentPlan, 'effort' | 'model'>;
+type AgentPreferences = Pick<AgentPlan, 'effort' | 'model' | 'roleEfforts'>;
 
 export interface AgentPlan {
   agents: string[];
-  /** Reasoning effort to write into a generated Claude Code agent file, if any. */
+  /** Reasoning effort for every Claude Code agent file, over the catalog default. */
   effort: string | null;
   force: boolean;
   /** Model to write into a generated Claude Code agent file, if any. */
   model: string | null;
+  /** Reasoning effort for named roles, over both `effort` and the catalog default. */
+  roleEfforts: Record<string, string>;
   scope: AgentScope;
   skills: string[];
 }
@@ -41,9 +44,10 @@ const addCommands = new Set(['add', 'install', 'i']);
 const noAgentsFlag = '--no-agents';
 const everyFlag = '--all';
 const listOptionFlags = ['--agent', '-a', '--skill', '-s'];
-// Per-machine preferences, never catalog content: this package ships to
-// everyone, so a model name belongs in the invocation that writes one user's
-// agent files and nowhere in `skills/`.
+// A model is a per-machine preference, never catalog content: this package
+// ships to everyone, so a model name belongs in the invocation that writes one
+// user's agent files and nowhere in `skills/`. Effort has catalog defaults in
+// `role-effort-defaults.ts`, and this flag overrides them.
 const modelFlags = ['--model'];
 const effortFlags = ['--effort'];
 
@@ -93,6 +97,14 @@ export function createCliAction(
     };
   }
 
+  if (preferences.kind === 'error') {
+    return {
+      kind: 'print',
+      message: `${preferences.message}\n\n${createHelpText()}`,
+      exitCode: 1,
+    };
+  }
+
   if (addCommands.has(command)) {
     const canonical = expandEveryFlag(normalizeListOptions(strippedArguments));
 
@@ -133,10 +145,22 @@ export function createCliAction(
  * keeps that stripping unconditional: no vector has to stay readable by two
  * consumers that disagree about whether the preference flags are still in it.
  */
-function readPreferences(arguments_: string[]): AgentPreferences {
+function readPreferences(
+  arguments_: string[]
+): ({ kind: 'ok' } & AgentPreferences) | { kind: 'error'; message: string } {
+  const effort = parseEffortOverrides(
+    readRepeatedOption(arguments_, effortFlags).flatMap((value) =>
+      value.split(',').map((part) => part.trim())
+    )
+  );
+
+  if (effort.kind === 'error') return effort;
+
   return {
-    effort: readScalarOption(arguments_, effortFlags),
+    kind: 'ok',
+    effort: effort.effort,
     model: readScalarOption(arguments_, modelFlags),
+    roleEfforts: effort.roleEfforts,
   };
 }
 
@@ -152,6 +176,7 @@ function createAgentPlan(arguments_: string[], preferences: AgentPreferences): A
     effort: preferences.effort,
     force: arguments_.includes('--force'),
     model: preferences.model,
+    roleEfforts: preferences.roleEfforts,
     scope: arguments_.includes('--global') || arguments_.includes('-g') ? 'global' : 'project',
     skills: readListOption(arguments_, ['--skill', '-s'], []),
   };
@@ -181,18 +206,56 @@ function readScalarOption(arguments_: string[], flags: string[]): string | null 
   return null;
 }
 
-/** The flag a caller wrote with no usable value, so the run stops instead of guessing. */
-function findMalformedScalarOption(arguments_: string[]): string | null {
-  for (const flags of [modelFlags, effortFlags]) {
-    const written = arguments_.some(
-      (argument) =>
-        flags.includes(argument) || flags.some((flag) => argument.startsWith(`${flag}=`))
-    );
+/**
+ * Every value a repeatable flag carries, one per occurrence, with null in place
+ * of an occurrence that has no usable value. `--effort` is the one repeatable
+ * scalar: each occurrence names a level for every role or for one role.
+ */
+function readOptionOccurrences(arguments_: string[], flags: string[]): (string | null)[] {
+  const occurrences: (string | null)[] = [];
 
-    if (written && readScalarOption(arguments_, flags) === null) return flags[0] as string;
+  for (const [index, argument] of arguments_.entries()) {
+    const inlineFlag = flags.find((flag) => argument.startsWith(`${flag}=`));
+
+    if (inlineFlag !== undefined) {
+      const value = argument.slice(inlineFlag.length + 1).trim();
+      occurrences.push(value.length > 0 ? value : null);
+      continue;
+    }
+
+    if (!flags.includes(argument)) continue;
+
+    const value = arguments_[index + 1]?.trim() ?? '';
+    occurrences.push(value.length > 0 && !value.startsWith('-') ? value : null);
   }
 
-  return null;
+  return occurrences;
+}
+
+function readRepeatedOption(arguments_: string[], flags: string[]): string[] {
+  return readOptionOccurrences(arguments_, flags).filter((value) => value !== null);
+}
+
+/**
+ * The flag a caller wrote with no usable value, so the run stops instead of
+ * guessing. For `--effort` that is any occurrence, and any comma-separated part
+ * of one, left empty: `--effort high --effort=` reads as a slip, not as `high`.
+ */
+function findMalformedScalarOption(arguments_: string[]): string | null {
+  const modelWritten = arguments_.some(
+    (argument) =>
+      modelFlags.includes(argument) || modelFlags.some((flag) => argument.startsWith(`${flag}=`))
+  );
+
+  if (modelWritten && readScalarOption(arguments_, modelFlags) === null) {
+    return modelFlags[0] as string;
+  }
+
+  const effortMalformed = readOptionOccurrences(arguments_, effortFlags).some(
+    (value) => value === null || value.split(',').some((part) => part.trim() === '')
+  );
+
+  return effortMalformed ? (effortFlags[0] as string) : null;
 }
 
 /**
@@ -406,6 +469,35 @@ function ensureCopyInstallation(arguments_: string[]): string[] {
   return [...arguments_, '--copy'];
 }
 
+function formatDefaultEfforts(): string {
+  const byLevel = new Map<string, string[]>();
+
+  for (const [role, level] of Object.entries(defaultEffortByRole)) {
+    byLevel.set(level, [...(byLevel.get(level) ?? []), role]);
+  }
+
+  return [...byLevel].map(([level, roles]) => wrapHelpLine(`  ${level}: `, roles)).join('\n');
+}
+
+/** Wraps a list at the help text's width, continuing under its first item. */
+function wrapHelpLine(prefix: string, items: string[]): string {
+  const lines = [prefix];
+
+  for (const [index, item] of items.entries()) {
+    const text = index < items.length - 1 ? `${item},` : item;
+    const current = lines[lines.length - 1] as string;
+
+    if (current.length > prefix.length && current.length + 1 + text.length > 78) {
+      lines.push(`${' '.repeat(prefix.length)}${text}`);
+    } else {
+      lines[lines.length - 1] =
+        current.length > prefix.length ? `${current} ${text}` : current + text;
+    }
+  }
+
+  return lines.join('\n');
+}
+
 function createHelpText(): string {
   return `Squad Skills
 
@@ -433,7 +525,10 @@ Agent options:
                     given alongside it wins, so --all --agent codex stays
                     codex-only
   --model           Write this model into each Claude Code agent file
-  --effort          Write this reasoning effort into each Claude Code agent file
+  --effort          Override the reasoning effort in Claude Code agent files:
+                    a level for every role, or <skill>=<level> for one.
+                    Repeatable or comma-separated. Levels: low, medium, high,
+                    xhigh, max, or inherit to follow the session's effort
 
 Examples:
   squad-skills list
@@ -441,6 +536,7 @@ Examples:
   squad-skills add --skill squad-frontend --global --agent codex
   squad-skills agents --global
   squad-skills agents --global --agent claude-code --model opus --effort medium
+  squad-skills agents --global --effort squad-qa=high,squad-frontend=low
 
 Claude Code reads an agent from .claude/agents/<name>.md. Codex reads one from
 .codex/agents/<name>.toml and loads it only once config.toml names it, so this
@@ -448,8 +544,11 @@ CLI registers it there and backs the file up first. Codex agents are written at
 global scope only, and carry no model field: Codex takes a subagent default from
 [agents] default_subagent_model in config.toml instead.
 
---model and --effort are machine preferences, not catalog content. They are
-written only where the caller asks for them, so a reinstall keeps them.
+Each role's Claude Code agent carries a default effort:
+${formatDefaultEfforts()}
+--effort overrides it; a role named with <skill>=<level> wins over a bare
+level. --model is a machine preference with no default. Every install
+regenerates these files, so pass the same flags again to keep an override.
 
 All other options after add or list are forwarded to the Skills CLI.`;
 }

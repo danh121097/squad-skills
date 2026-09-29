@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { defaultEffortByRole } from '../../src/agents/role-effort-defaults.ts';
 import {
   readSkillAgentDefinition,
   renderPluginAgentFile,
@@ -43,6 +44,12 @@ describe('plugin agent definitions', () => {
       committed,
       `agents/${name}.md is stale — regenerate it from skills/${name}/SKILL.md`
     ).toBe(renderPluginAgentFile(await definitionOf(name)));
+  });
+
+  // A skill missing from the table ships an agent with no effort, silently
+  // following the session instead of the level its role was given.
+  it('gives every skill a default effort, and no skill that is not shipped', () => {
+    expect(Object.keys(defaultEffortByRole).sort()).toEqual(skillNames);
   });
 
   it('reaches the skill by name, not by a path that only exists on one machine', async () => {

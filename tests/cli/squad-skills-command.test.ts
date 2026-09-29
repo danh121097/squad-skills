@@ -54,6 +54,7 @@ describe('createCliAction', () => {
         effort: null,
         force: false,
         model: null,
+        roleEfforts: {},
         scope: 'project',
         skills: ['squads-team'],
       },
@@ -69,6 +70,7 @@ describe('createCliAction', () => {
         effort: null,
         force: false,
         model: null,
+        roleEfforts: {},
         scope: 'project',
         skills: [],
       },
@@ -154,6 +156,7 @@ describe('createCliAction', () => {
         effort: null,
         force: true,
         model: null,
+        roleEfforts: {},
         scope: 'global',
         skills: [],
       },
@@ -170,6 +173,7 @@ describe('createCliAction', () => {
         effort: 'medium',
         force: false,
         model: 'opus',
+        roleEfforts: {},
         scope: 'project',
         skills: [],
       },
@@ -202,6 +206,56 @@ describe('createCliAction', () => {
     });
   });
 
+  it('reads a level for every role and levels for named roles', () => {
+    expect(
+      createCliAction(
+        [
+          'agents',
+          '--global',
+          '--effort',
+          'xhigh',
+          '--effort=squad-qa=inherit',
+          '--effort',
+          'squad-fix=low, squad-designer=max',
+        ],
+        packageRoot,
+        '0.1.0'
+      )
+    ).toMatchObject({
+      agentPlan: {
+        effort: 'xhigh',
+        roleEfforts: { 'squad-designer': 'max', 'squad-fix': 'low', 'squad-qa': 'inherit' },
+      },
+    });
+  });
+
+  // Each of these would otherwise write a level nobody meant, or pick one of
+  // two the caller gave by position.
+  it.each([
+    [['--effort', 'hgh'], 'the level must be one of'],
+    [['--effort', 'squad-qaa=high'], 'squad-qaa is not a skill in this catalog'],
+    [['--effort', '=high'], 'no skill is named'],
+    [['--effort', 'squad-qa=high', '--effort', 'squad-qa=low'], 'squad-qa both high and low'],
+    [['--effort', 'high,low'], 'both high and low'],
+    [['--effort', 'high', '--effort='], 'needs a value'],
+    [['--effort', 'squad-qa=high,'], 'needs a value'],
+  ])('refuses the effort override %j', (flags, message) => {
+    const action = createCliAction(['agents', '--global', ...flags], packageRoot, '0.1.0');
+
+    expect(action).toMatchObject({ kind: 'print', exitCode: 1 });
+    expect(action.kind === 'print' && action.message).toContain(message);
+  });
+
+  it('accepts the same level given twice for one target', () => {
+    expect(
+      createCliAction(
+        ['agents', '--effort', 'squad-qa=high', '--effort', 'squad-qa=high'],
+        packageRoot,
+        '0.1.0'
+      )
+    ).toMatchObject({ agentPlan: { roleEfforts: { 'squad-qa': 'high' } } });
+  });
+
   // A value-based filter would drop the first `opus` too and forward
   // `--skill` with nothing after it.
   it('strips a preference value by position, not by the value itself', () => {
@@ -214,6 +268,7 @@ describe('createCliAction', () => {
         effort: null,
         force: false,
         model: 'opus',
+        roleEfforts: {},
         scope: 'project',
         skills: ['opus'],
       },

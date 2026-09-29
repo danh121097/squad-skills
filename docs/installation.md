@@ -99,7 +99,9 @@ The agent definitions are committed at `agents/`, one per skill, and a plugin ag
 reaches its role by skill name because a plugin installs both halves at once.
 `pnpm test` regenerates each one from its `SKILL.md` and fails if the committed
 file has fallen behind, so a skill description never drifts away from the agent
-that carries it.
+that carries it. Each plugin agent carries its role's default reasoning effort
+and no model; a plugin install takes no `--effort` flag, so a different level
+needs the npm CLI's agent files instead.
 
 ## As a Codex plugin
 

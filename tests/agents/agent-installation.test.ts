@@ -141,6 +141,36 @@ describe('installAgentDefinitions', () => {
     expect(claude).toContain('effort: medium');
     expect(codex).not.toContain('model: opus');
     expect(result.messages.join('\n')).toContain('Ignored --model and --effort for codex');
+
+    const roleOnly = await request({ roleEfforts: { 'squad-qa': 'inherit' } });
+
+    expect(roleOnly.messages.join('\n')).toContain('Ignored --model and --effort for codex');
+  });
+
+  it("writes each role's default effort, and a named role's override over a bare one", async () => {
+    await installSkillInto('.claude', 'squad-qa');
+    await installSkillInto('.claude', 'squad-fix');
+    await installSkillInto('.claude', 'squads-team');
+    const effortOf = async (name: string) =>
+      (await readFile(path.join(home, `.claude/agents/${name}.md`), 'utf8')).match(
+        /^effort: (.+)$/m
+      )?.[1];
+
+    await request({ agents: ['claude-code'], skills: ['squad-qa', 'squad-fix'] });
+
+    expect(await effortOf('squad-qa')).toBe('medium');
+    expect(await effortOf('squad-fix')).toBe('high');
+
+    await request({
+      agents: ['claude-code'],
+      effort: 'low',
+      roleEfforts: { 'squad-fix': 'xhigh', 'squad-qa': 'inherit' },
+      skills: ['squad-qa', 'squad-fix', 'squads-team'],
+    });
+
+    expect(await effortOf('squad-qa')).toBeUndefined();
+    expect(await effortOf('squad-fix')).toBe('xhigh');
+    expect(await effortOf('squads-team')).toBe('low');
   });
 
   // The message is worth nothing if it fires when nobody asked.

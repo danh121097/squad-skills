@@ -79,9 +79,9 @@ describe('rendering', () => {
     expect(file).toContain('\nmodel: opus\neffort: medium\n---\n');
   });
 
-  // The default has to stay clean: this package installs for everyone, and a
-  // model nobody asked for would be catalog content pretending to be a setting.
-  it('writes neither when the caller named neither', () => {
+  // A model nobody asked for would be catalog content pretending to be a
+  // setting. Effort arrives already resolved for the role, by the installer.
+  it('writes neither when given neither', () => {
     const file = renderClaudeAgentFile(definition, '/skills/squad-qa/SKILL.md');
 
     expect(file).not.toContain('model:');
