@@ -53,7 +53,7 @@ describe('installAgentDefinitions', () => {
 
     expect(result.written).toHaveLength(2);
     expect(claude).toContain(path.join(home, '.claude/skills/squad-qa/SKILL.md'));
-    expect(codex).toContain('[agents.squad-qa]');
+    expect(codex).toMatch(/^developer_instructions = '''$/m);
     expect(codex).toContain(path.join(home, '.agents/skills/squad-qa/SKILL.md'));
   });
 

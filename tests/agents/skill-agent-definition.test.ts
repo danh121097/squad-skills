@@ -88,11 +88,13 @@ describe('rendering', () => {
     expect(file).not.toContain('effort:');
   });
 
-  it('wraps the same body in the TOML table Codex loads', () => {
+  // Codex reads this file as a config layer: under a table header the key is not
+  // top level and the spawned role silently gets no instructions.
+  it('puts the same body in a top-level developer_instructions key', () => {
     const rendered = renderCodexAgentFile(definition, skillPath);
 
-    expect(rendered).toContain('[agents.squad-qa]');
-    expect(rendered).toContain("developer_instructions = '''");
+    expect(rendered).not.toMatch(/^\[/m);
+    expect(rendered).toMatch(/^developer_instructions = '''$/m);
     expect(rendered).toContain(renderClaudeAgentFile(definition, skillPath));
   });
 

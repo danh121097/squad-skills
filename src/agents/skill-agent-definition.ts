@@ -147,9 +147,10 @@ function installedSkillContext(installedSkillPath: string): AgentBodyContext {
 }
 
 /**
- * Codex reads an agent from a TOML table whose `developer_instructions` holds
- * the whole Markdown definition. A literal string cannot escape its own
- * delimiter, so a body containing one is refused rather than silently
+ * Codex loads the file `config.toml` names as a config layer, so
+ * `developer_instructions` must be a top-level key holding the whole Markdown
+ * definition; under a table header Codex spawns the role with no instructions
+ * and reports nothing. A literal string cannot escape its own delimiter, so a body containing one is refused rather than silently
  * truncated; no shipped skill contains one and a test holds that.
  */
 export function renderCodexAgentFile(
@@ -165,7 +166,6 @@ export function renderCodexAgentFile(
   }
 
   return `# ${generatedMarker}. Reinstalling regenerates this file.
-[agents.${definition.name}]
 developer_instructions = '''
 ${body}'''
 `;
