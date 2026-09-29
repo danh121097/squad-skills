@@ -77,7 +77,7 @@ Use the repository's configured report location, else report in the conversation
 summary, evidence, risks and unresolved questions; final output states execution mode and independence.
 
 Gate verdicts are exact: QA `PASS | FAIL | NEEDS_ENVIRONMENT`; Code Review `APPROVE | CHANGES_REQUESTED |
-NEEDS_EVIDENCE`. `BLOCKED` is a lead status, not a verdict: a third return from one gate, or a `NEEDS_*` still
-missing after its one resolution. `NEEDS_ENVIRONMENT` (a required target, service, device, fixture or access
-is unavailable) and `NEEDS_EVIDENCE` (evidence too thin for a defensible verdict) are neither success nor
-product failure, and neither permits `done`. Do not translate these silently into a runtime's task statuses.
+NEEDS_EVIDENCE`. `BLOCKED` is a lead status, not a verdict: a third return for one unit, counted across
+both gates, or a `NEEDS_*` still missing after its one resolution. `NEEDS_ENVIRONMENT` (a required target,
+service, device, fixture or access is unavailable) and `NEEDS_EVIDENCE` (evidence too thin for a defensible
+verdict) are neither success nor product failure, and neither permits `done`. Do not translate these silently into a runtime's task statuses.

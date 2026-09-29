@@ -58,6 +58,13 @@ endless FAIL / CHANGES_REQUESTED cycle into a decision the user makes. Verify
 evidence stays mandatory in every tier: the change removed procedure, not
 proof.
 
+The cap was first counted per gate, so QA and Code Review could each return a
+unit twice, and with the reruns after every fix one unit could reach about ten
+agent passes. It now counts both gates together. Output keeps its bar because
+the count bounds attempts, not scrutiny: each return carries every finding the
+gate has, so one fix pass addresses all of them, and a third return reaches the
+user with evidence and options instead of shipping the unit.
+
 ## Quality bar and checklist
 
 The quality bar is the copy a role runs in one piece before it hands over; a

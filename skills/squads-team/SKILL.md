@@ -68,13 +68,14 @@ changes each need their own authorization.
    `high` slice must receive QA `PASS`, then Code Review `APPROVE`; one verdict may cover a coherent set of
    slices when it names their exact revisions. QA proves observable behavior against acceptance and risk; Code
    Review consumes that evidence and judges implementation quality, adding only verification needed to prove a
-   finding. `FAIL` or `CHANGES_REQUESTED` returns to the owning role, and a gate returns a unit to its owner
-   at most twice; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the
-   evidence and two to four options for the user. `APPROVE` closes the unit: its warnings and suggestions go
-   to the final report as options for the user, and it reopens only for a defect found later or when the user
-   asks; a follow-up the user asks for is new scope tiered on its own diff. `NEEDS_ENVIRONMENT` or
-   `NEEDS_EVIDENCE` returns to the lead for one resolution of the smallest missing capability, artifact,
-   access or decision; still missing, the work is blocked. Neither is eligible for `done`.
+   finding. `FAIL` or `CHANGES_REQUESTED` returns to the owning role, and QA and Code Review together return a
+   unit to its owner at most twice, each time with every finding; a third return goes as `BLOCKED` to the
+   lead, or to the user when run on its own, with the evidence and two to four options for the user. `APPROVE`
+   closes the unit: its warnings and suggestions go to the final report as options for the user, and it
+   reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
+   tiered on its own diff. `NEEDS_ENVIRONMENT` or `NEEDS_EVIDENCE` returns to the lead for one resolution of
+   the smallest missing capability, artifact, access or decision; still missing, the work is blocked. Neither
+   is eligible for `done`.
 5. **Integrate and verify** — merge/compose only approved slices, run appropriate combined checks, report
    docs impact, residual risk, execution mode and evidence actually obtained.
 

@@ -122,8 +122,9 @@ was. Before declaring the repair complete, run the self-review in
   `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data or
   migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- A gate returns a unit to its owner at most twice; a third return goes as `BLOCKED` to the lead, or to the
-  user when run on its own, with the evidence and two to four options for the user.
+- QA and Code Review together return a unit to its owner at most twice, each time with every finding; a third
+  return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four
+  options for the user.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
   it reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
   tiered on its own diff.

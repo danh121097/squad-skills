@@ -325,8 +325,12 @@ export const boundaryClauses: BoundaryClause[] = [
     // returns and then a user decision is that same rule applied to every gate
     // unit: a third attempt on an unchanged model of the problem is churn, and
     // choosing between narrowing, reassigning and accepting risk is the user's.
+    // Counted per gate, QA and Review could each return twice, so one unit ran
+    // up to ten agent passes; the count is per unit. A gate that returns
+    // findings one at a time would spend that budget on its own drip, so each
+    // return carries all of them.
     statement:
-      'a gate returns a unit to its owner at most twice; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
+      'QA and Code Review together return a unit to its owner at most twice, each time with every finding; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {

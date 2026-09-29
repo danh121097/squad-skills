@@ -107,8 +107,9 @@ finding. Before issuing a verdict, run the self-review in
 - In a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this
   role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate
   as unowned.
-- A gate returns a unit to its owner at most twice; a third return goes as `BLOCKED` to the lead, or to the
-  user when run on its own, with the evidence and two to four options for the user.
+- QA and Code Review together return a unit to its owner at most twice, each time with every finding; a third
+  return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four
+  options for the user.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
   it reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
   tiered on its own diff.
