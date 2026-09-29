@@ -35,6 +35,13 @@ describe('registerCodexAgents', () => {
     expect(result.source).toBe(config);
   });
 
+  // TOML allows a quoted key; appending a second table for it breaks the config.
+  it('recognizes an entry written with a quoted key', () => {
+    const quoted = config.replace('[agents.tester]', '[agents."tester"]');
+
+    expect(registerCodexAgents(quoted, ['tester']).source).toBe(quoted);
+  });
+
   // Reinstalling is the normal case, so a second run must not grow the file.
   it('is idempotent across repeated runs', () => {
     const once = registerCodexAgents(config, ['squad-qa', 'squad-fix']).source;

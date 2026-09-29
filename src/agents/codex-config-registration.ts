@@ -50,7 +50,9 @@ export function registerCodexAgents(source: string, names: string[]): CodexRegis
 function hasAgentEntry(source: string, name: string): boolean {
   return source
     .split(/\r?\n/)
-    .some((line) => tableHeaderPattern.exec(line)?.[1] === `agents.${name}`);
+    .some(
+      (line) => tableHeaderPattern.exec(line)?.[1]?.replace(/["'\s]/g, '') === `agents.${name}`
+    );
 }
 
 function insertIntoAgentsTable(source: string, entries: string[]): string {
