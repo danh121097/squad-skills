@@ -163,7 +163,7 @@ describe('installAgentDefinitions', () => {
     await request({ agents: ['claude-code'], skills: ['squad-qa', 'squad-fix'] });
 
     expect(await fieldOf('squad-qa', 'effort')).toBe('medium');
-    expect(await fieldOf('squad-fix', 'effort')).toBe('high');
+    expect(await fieldOf('squad-fix', 'effort')).toBe('medium');
     expect(await fieldOf('squad-qa', 'model')).toBe('sonnet');
     expect(await fieldOf('squad-fix', 'model')).toBe('opus');
 

@@ -100,8 +100,7 @@ npx squad-skills agents --global
 
 Each Claude Code subagent file carries a model and a reasoning effort for its
 role. `squads-team`, `squad-product`, `squad-fix` and `squad-code-review` run on
-`opus`; the other roles run on `sonnet`. Effort is `high` for every role except
-`squad-designer` and `squad-qa`, which run at `medium`. `--model` and `--effort`
+`opus`; the other roles run on `sonnet`. Every role runs at `medium` effort. `--model` and `--effort`
 override them, with a bare value for every role or `<skill>=<value>` for one,
 and `inherit` drops the field so the role follows the session:
 

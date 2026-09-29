@@ -4,9 +4,9 @@
  *
  * Both are catalog defaults that follow from what the role does. Roles that
  * frame scope, prove causes or give the final verdict run on `opus`; roles that
- * build, verify or design against settled criteria run on `sonnet`. Roles that
- * frame scope, build, prove causes or gate risk get `high` effort; roles that
- * verify or design against criteria and a system already settled get `medium`.
+ * build, verify or design against settled criteria run on `sonnet`. Every role
+ * runs at `medium` effort: the model already chosen for a role carries its
+ * depth, and a higher effort spends tokens on every turn of every run.
  *
  * A caller overrides every role with a bare value, or one role with
  * `<skill>=<value>`, and `inherit` drops the field so the agent follows the
@@ -35,16 +35,16 @@ export const defaultModelByRole: Readonly<Record<string, string>> = {
 };
 
 export const defaultEffortByRole: Readonly<Record<string, string>> = {
-  'squad-backend': 'high',
-  'squad-code-review': 'high',
+  'squad-backend': 'medium',
+  'squad-code-review': 'medium',
   'squad-designer': 'medium',
-  'squad-devops': 'high',
-  'squad-fix': 'high',
-  'squad-frontend': 'high',
-  'squad-mobile': 'high',
-  'squad-product': 'high',
+  'squad-devops': 'medium',
+  'squad-fix': 'medium',
+  'squad-frontend': 'medium',
+  'squad-mobile': 'medium',
+  'squad-product': 'medium',
   'squad-qa': 'medium',
-  'squads-team': 'high',
+  'squads-team': 'medium',
 };
 
 /** What a caller asked for: one value for every role, and values for named roles. */
