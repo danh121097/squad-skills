@@ -42,10 +42,10 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-code-review': 2640, // was 2615
   'squad-designer': 2003, // was 1989
   'squad-devops': 2109, // was 2095
-  'squad-fix': 2771, // was 2662
+  'squad-fix': 2828, // was 2771
   'squad-frontend': 2481, // was 2467
   'squad-mobile': 2200, // was 2186
   'squad-product': 2739, // was 2725
-  'squad-qa': 2633, // was 2524
+  'squad-qa': 2690, // was 2633
   'squads-team': 3493, // was 3463
 };

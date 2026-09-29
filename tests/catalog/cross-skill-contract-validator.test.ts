@@ -304,6 +304,7 @@ describe('validateCrossSkillContract', () => {
       ],
       'HANDOFF-LOOP-001': [codeReviewSkill, fixSkill, qaSkill, teamSkill],
       'HANDOFF-APPROVED-001': [codeReviewSkill, fixSkill, qaSkill, teamSkill],
+      'TEST-ECONOMY-001': [fixSkill, qaSkill],
       'HANDOFF-GATE-003': [fixSkill, teamSkill],
       'HANDOFF-GATE-004': [codeReviewSkill, qaSkill, teamSkill],
       'HANDOFF-RERUN-001': [codeReviewSkill, qaSkill, teamSkill],

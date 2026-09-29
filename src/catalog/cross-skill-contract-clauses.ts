@@ -416,6 +416,17 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {
+    id: 'TEST-ECONOMY-001',
+    // Models over-test: private helpers, mocks of the code under test, one
+    // scenario repeated at every layer, exports added only so a test can reach
+    // in. The two roles that write and judge closing tests carry one rule for
+    // what a new test must earn, and the one check a machine can run: a
+    // regression test fails before the fix.
+    statement:
+      "a new test protects behavior or a contract no other test already owns, at the strongest stable boundary and through the public surface, with no test-only export and no mock of the logic under test; a regression test fails on the pre-fix code for the bug's reason, and a test that breaks this is a finding",
+    files: [fixSkill, qaSkill],
+  },
+  {
     id: 'HANDOFF-GATE-003',
     // TIER-001 and GATE-002 bind who owns a gate when a peer is missing. Neither
     // binds what closes a stage, so `squads-team` hard gate 4 and the

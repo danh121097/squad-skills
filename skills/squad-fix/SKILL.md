@@ -139,6 +139,10 @@ was. Before declaring the repair complete, run the self-review in
   for is new scope whose tier follows what its own diff changes, not the unit it sits in: docs, comments
   or tests alone close on the owner's verify with real commands, and a behavior change reruns affected QA
   and a review of that diff.
+- A new test protects behavior or a contract no other test already owns, at the strongest stable boundary
+  and through the public surface, with no test-only export and no mock of the logic under test; a
+  regression test fails on the pre-fix code for the bug's reason, and a test that breaks this is a
+  finding.
 - Each open fork goes to the lead, or to the user when run on its own, as named options with their
   consequences, and only the user answers it, through the runtime's structured question tool when it has
   one, else a numbered list.
