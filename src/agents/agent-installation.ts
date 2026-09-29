@@ -15,11 +15,13 @@
 import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+import type { CodexAgentEntry } from './codex-config-registration.ts';
 import { registerCodexAgents } from './codex-config-registration.ts';
 import type { RoleOverrides } from './role-defaults.ts';
 import { hasRoleOverrides, resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 import type { AgentPreferences } from './skill-agent-definition.ts';
 import {
+  agentDescription,
   generatedMarker,
   readSkillAgentDefinition,
   renderClaudeAgentFile,
@@ -113,7 +115,7 @@ export async function installAgentDefinitions(
       );
     }
 
-    const registered: string[] = [];
+    const registered: CodexAgentEntry[] = [];
 
     for (const definition of definitions) {
       const installedSkillFile = await findInstalledSkill(target.skillsRoots, definition.name);
@@ -141,7 +143,10 @@ export async function installAgentDefinitions(
         'utf8'
       );
       written.push(agentFile);
-      registered.push(definition.name);
+      registered.push({
+        description: agentDescription(definition),
+        name: definition.name,
+      });
     }
 
     if (target.codexConfigFile !== undefined && registered.length > 0) {
@@ -228,7 +233,10 @@ function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTa
   };
 }
 
-async function registerInCodexConfig(configFile: string, names: string[]): Promise<string[]> {
+async function registerInCodexConfig(
+  configFile: string,
+  agents: CodexAgentEntry[]
+): Promise<string[]> {
   let source: string;
 
   try {
@@ -237,7 +245,7 @@ async function registerInCodexConfig(configFile: string, names: string[]): Promi
     source = '';
   }
 
-  const result = registerCodexAgents(source, names);
+  const result = registerCodexAgents(source, agents);
 
   if (result.added.length === 0) return [];
 

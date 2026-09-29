@@ -38,6 +38,11 @@ export function readSkillAgentDefinition(source: string): SkillAgentDefinition |
   return { description, name, whenToUse: readScalar(frontmatter, 'when_to_use') ?? '' };
 }
 
+/** What an agent runtime reads to decide when to spawn the role: what it does, then when to use it. */
+export function agentDescription(definition: SkillAgentDefinition): string {
+  return [definition.description, definition.whenToUse].filter((part) => part.length > 0).join(' ');
+}
+
 /** How a generated agent reaches its skill, and what rewrites the file. */
 export interface AgentBodyContext {
   /**
@@ -69,13 +74,9 @@ export function renderAgentBody(
   definition: SkillAgentDefinition,
   context: AgentBodyContext
 ): string {
-  const description = [definition.description, definition.whenToUse]
-    .filter((part) => part.length > 0)
-    .join(' ');
-
   const frontmatter = [
     `name: ${definition.name}`,
-    `description: ${JSON.stringify(description)}`,
+    `description: ${JSON.stringify(agentDescription(definition))}`,
     ...(context.frontmatter ?? []),
   ];
 

@@ -11,8 +11,16 @@
  * model or reasoning setting from being reset.
  */
 
-const agentsTablePattern = /^\s*\[agents\]\s*$/;
-const tableHeaderPattern = /^\s*\[([^\]]+)\]\s*$/;
+// TOML allows a comment after a table header; a header that does not match here
+// is appended a second time, and a duplicate table is a config Codex cannot parse.
+const agentsTablePattern = /^\s*\[agents\]\s*(?:#.*)?$/;
+const tableHeaderPattern = /^\s*\[([^\]]+)\]\s*(?:#.*)?$/;
+
+/** An agent to register, with the text Codex reads to decide when to spawn it. */
+export interface CodexAgentEntry {
+  description: string;
+  name: string;
+}
 
 export interface CodexRegistrationResult {
   added: string[];
@@ -20,25 +28,28 @@ export interface CodexRegistrationResult {
   source: string;
 }
 
-export function registerCodexAgents(source: string, names: string[]): CodexRegistrationResult {
+export function registerCodexAgents(
+  source: string,
+  agents: CodexAgentEntry[]
+): CodexRegistrationResult {
   const added: string[] = [];
   const alreadyRegistered: string[] = [];
-  const missing: string[] = [];
+  const missing: CodexAgentEntry[] = [];
 
-  for (const name of names) {
-    if (hasAgentEntry(source, name)) alreadyRegistered.push(name);
-    else missing.push(name);
+  for (const agent of agents) {
+    if (hasAgentEntry(source, agent.name)) alreadyRegistered.push(agent.name);
+    else missing.push(agent);
   }
 
   if (missing.length === 0) return { added, alreadyRegistered, source };
 
-  const entries = missing.flatMap((name) => [
+  const entries = missing.flatMap(({ description, name }) => [
     `  [agents.${name}]`,
     `    config_file = "agents/${name}.toml"`,
-    `    description = ${JSON.stringify(name)}`,
+    `    description = ${JSON.stringify(description)}`,
   ]);
 
-  added.push(...missing);
+  added.push(...missing.map(({ name }) => name));
 
   return {
     added,
