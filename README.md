@@ -105,9 +105,10 @@ npx squad-skills agents --global --model squad-qa=opus,squad-designer=inherit --
 ```
 
 Every install regenerates these files, so pass the same flags again to keep an
-override. Codex takes no per-agent model or effort; set
-`[agents] default_subagent_model` in `~/.codex/config.toml` instead, and the CLI
-says so rather than dropping the flag silently.
+override. Codex takes no per-agent model or effort; set `[agents]`
+`default_subagent_model` and `default_subagent_reasoning_effort` in
+`~/.codex/config.toml` instead, and the CLI says so rather than dropping the
+flag silently.
 
 See [the installation guide](docs/installation.md) for local-checkout commands,
 installation scope, copy versus symlink behavior, and publishing notes.
@@ -135,12 +136,8 @@ npx skills add danh121097/squad-skills \
   --skill squad-frontend --global --agent codex
 ```
 
-This route installs skills only. The upstream Skills CLI has no hook a source
-repository can use, so generate the subagent definitions after it:
-
-```sh
-npx squad-skills agents --global
-```
+This route installs skills only; generate the subagents afterwards with
+`npx squad-skills agents --global`, as above.
 
 ## Choosing a skill
 
@@ -205,50 +202,39 @@ The executable contract is owned by the TypeScript validator and tests. Run
 
 ## Written plans
 
-When a user asks `squad-product` or `squads-team` to write a plan to disk, the plan is as small as the work.
-One or two phases is a single `plan.md` whose frontmatter declares `layout: single`, with each phase a
-`## Phase N — <title>` section. A larger plan is a navigable bundle:
+Plans stay in the conversation unless you ask `squad-product` or `squads-team` to write one to disk, or pass
+`squad-product` a `--plan-dir` / `--plan-file`. A written plan is one `plan.md`, with each phase a `## Phase N — <title>`
+section. A plan too long to read as one file keeps `plan.md` as the only index and moves each phase to
+`phases/phase-XX-<kebab-case-title>.md`:
 
 ```text
 plans/<YYMMDD-HHmm>-<topic>/
 ├── plan.md
-├── phases/
-│   ├── phase-01-<kebab-case-title>.md
-│   └── phase-02-<kebab-case-title>.md
-├── artifacts/
-│   ├── product-contract.md
-│   ├── qa-report.md
-│   ├── code-review.md
-│   └── handoff-to-phase-02.md
-├── adr/
-│   └── adr-001-<kebab-case-title>.md
-└── references/
-    ├── domain-model.md
-    └── technical-stack.md
+└── phases/
+    ├── phase-01-<kebab-case-title>.md
+    └── phase-02-<kebab-case-title>.md
 ```
 
-`plan.md` is the entrypoint and the only index: it owns the outcome, boundaries, acceptance and the phase
-table. Each linked phase file carries the context, deliverables, ordered work, phase-specific checks, risks
-and handoff needed to execute that phase. A phase declares one or more required Squad roles—for example
-`squad-backend` and `squad-devops`—and gives each a distinct responsibility; the lead assigns live files and
-agent instances later. Conversational plans remain in the conversation unless the user asks for files.
+`plan.md` owns the outcome, constraints, non-goals, acceptance criteria, labeled assumptions, open decisions
+and the phase list. Each phase names its required Squad roles — for example `squad-backend` and
+`squad-devops` — with a distinct responsibility for each, its ordered work and the evidence that proves it
+done; the lead assigns live files and agents later. A plan never records a gate verdict: gates hand off in
+prose between roles.
 
-Only `phases/` states the running order, so only phase files carry the `phase-XX-` prefix. `artifacts/`
-holds what a phase produced, `adr/` one decision per file, and `references/` the background every phase
-reads and none of them owns; each records its owning phase in frontmatter rather than in its name, which is
-why a handoff is `artifacts/handoff-to-phase-02.md`. A gate recorded in `artifacts/` names the revisions it
-graded — and once one of those moves, that verdict is marked superseded and the gates rerun. The record is
-for a reader; the gate itself is still the prose handoff between roles.
+## Upgrading
 
-A plan written under the earlier flat layout still reads fine. Migrate it to this layout by moving
-each `phase-XX-*.md` into `phases/`, moving shared background into `references/` and produced work into
-`artifacts/`, renaming any `phase-XX-` artifact to drop the reserved prefix, adding the frontmatter each
-kind now states, and repointing the links in `plan.md`.
+### From 0.3 to 0.4
 
-### Migrating from 0.2 to 0.3
+- A written plan is one `plan.md`; phases move to `phases/` only when the plan is too long. A plan written
+  by 0.3 still reads, but `artifacts/`, `adr/`, `references/` and gate records are no longer written.
+- Claude Code agent files now carry a per-role `model` and `effort`. Pass `--model inherit` or
+  `--effort inherit` to keep following the session's.
+- `--model` and `--effort` both accept a bare value for every role or `<skill>=<value>` for one.
+
+### From 0.2 to 0.3
 
 - New plan directories are named `<YYMMDD-HHmm>-<topic>`; existing `<DDMMYYYY-HHmm>` directories still
-  validate and need no rename.
+  read and need no rename.
 - `--delegate` is gone; use `--coordinate-only`. `--allow-new-threads` and the thread registry are gone;
   ask for a separate task directly when you want one.
 - QA and Code Review are no longer run on every change: `light` work closes on one combined verify pass.
@@ -261,7 +247,6 @@ MIT. See [LICENSE](LICENSE).
 
 ## Discovery
 
-After this repository is public, run the documented GitHub smoke install once.
-Public GitHub skills become eligible for skills.sh discovery through anonymous
-Skills CLI installation telemetry; the npm package remains an additional
-distribution path and does not replace the GitHub source.
+skills.sh discovers and ranks public GitHub skills from anonymous Skills CLI
+installation telemetry; the npm package is an additional distribution path and
+does not replace the GitHub source.

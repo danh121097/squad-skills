@@ -10,10 +10,9 @@ gate 1 of `SKILL.md`. Before spawning any role, produce the outcome in the user'
 that bind it, explicit non-goals, and acceptance criteria a run can actually check; a criterion nothing can
 check is replaced or recorded as unverified. Resolve what the user already decided — stack, hosting,
 deadline, compliance, budget — before proposing anything, and ask only about a fork that changes the work.
-Without `squad-product`, a written plan follows the same shape: a written plan of one or two
-phases is a single plan.md declaring layout: single; a larger one is one directory whose root holds only
-plan.md and the standard phases, artifacts, adr and references directories, with every phase file in
-phases/ named phase-XX-kebab-case-title.md and every link relative.
+Without `squad-product`, a written plan follows the same shape: a written plan is one plan.md; a plan too
+long to read as one file keeps plan.md as the only index and moves each phase to
+phases/phase-XX-kebab-case-title.md, with every link relative.
 
 An empty repository has nothing to scout, so the stack becomes a framing output. Name target platforms, the
 runtime and framework per platform, and the deployment target, then hand each to the role that owns it.

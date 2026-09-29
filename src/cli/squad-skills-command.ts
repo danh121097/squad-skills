@@ -526,8 +526,9 @@ Examples:
 Claude Code reads an agent from .claude/agents/<name>.md. Codex reads one from
 .codex/agents/<name>.toml and loads it only once config.toml names it, so this
 CLI registers it there and backs the file up first. Codex agents are written at
-global scope only, and carry no model field: Codex takes a subagent default from
-[agents] default_subagent_model in config.toml instead.
+global scope only, and carry no model or effort field: Codex takes subagent
+defaults from [agents] default_subagent_model and
+default_subagent_reasoning_effort in config.toml instead.
 
 Each role's Claude Code agent carries a default model:
 ${formatDefaults(defaultModelByRole)}

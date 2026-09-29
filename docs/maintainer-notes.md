@@ -45,8 +45,8 @@ A stage boundary is stated by both the sending and the receiving role: an edge
 only its sender describes leaves the receiver no contract to refuse an
 incomplete handoff, which is how every return edge stood before
 `HANDOFF-REPRO-001`. `HANDOFF-*` members bind only entrypoints because both ends
-of a boundary have to be readable without loading a reference. `PLAN-BUNDLE-*`
-is its own family because the bundle schema is progressively disclosed.
+of a boundary have to be readable without loading a reference. `PLAN-DOCUMENT-*`
+is its own family because the written plan's shape is progressively disclosed.
 
 ## Gate tiers and loop caps
 

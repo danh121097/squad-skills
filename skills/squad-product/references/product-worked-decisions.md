@@ -38,15 +38,3 @@ three deferred, each with the condition that would pull it forward.
 
 **Rule:** State the property — a queue with at-least-once delivery and a dead-letter path — never the
 technology. Choosing the queue belongs to Backend; naming it hands that role an argument, not a requirement.
-
-## 5. The written plan that put everything at the root
-
-**Arrived:** "Write the plan to disk." The draft put `plan.md`, three `phase-XX-` files, `domain-model.md`,
-`test-strategy.md` and `phase-02-handoff.md` side by side.
-
-**Correction:** The root no longer separates ordered phases from background or produced artifacts, and
-`phase-02-handoff.md` reads as a fourth phase. Move background to `references/`, produced work to
-`artifacts/`, decisions to `adr/`, and rename the handoff `handoff-to-phase-02.md`.
-
-**Rule:** Only `phases/` states order, and only phase files carry its prefix. Everything else records its
-owning phase in frontmatter.

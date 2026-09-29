@@ -9,7 +9,7 @@ pass holds with no other skill installed.
 - Criteria nobody can fail — "intuitive", "performant", "robust" — carried as if they were checks.
 - Assumptions promoted to decisions between the first draft and the second, losing their labels.
 - Phases that mirror a calendar rather than a dependency, so two of them cannot run in that order.
-- Ceremony: nine artificial phases for a two-file change, or a bundle directory for a one-phase plan.
+- Ceremony: nine artificial phases for a two-file change, or phase files for a one-phase plan.
 
 ## Pre-flight
 
@@ -39,17 +39,14 @@ Pass every applicable check honestly.
 
 ### Written plan
 
-- Shape: a written plan of one or two phases is a single plan.md declaring layout: single; a larger one is
-  one directory whose root holds only plan.md and the standard phases, artifacts, adr and references
-  directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative.
-- No slot was filled to complete the shape: every ADR, artifact and reference records something that
-  already exists. An artifact records its owning phase, owner, revision and status in frontmatter, never in
-  a phase-XX- filename prefix, which phases/ alone reserves.
-- Each phase file states its objective and deliverables, its roles and their distinct scopes, ordered work
+- Shape: a written plan is one plan.md; a plan too long to read as one file keeps plan.md as the only index
+  and moves each phase to phases/phase-XX-kebab-case-title.md, with every link relative.
+- No file was created to complete a shape: nothing beyond plan.md and its phase files unless the user asked.
+- Each phase states its objective and deliverables, its roles and their distinct scopes, ordered work
   steps, and acceptance criteria with expected evidence; context, prerequisites, risks and handoff are added
   when they have content.
-- Numbering, dependencies and status agree between the index and phase files, and each plan-wide criterion
-  traces to expected evidence in at least one phase.
+- Numbering and dependencies agree between the index and phase files, and each plan-wide criterion traces
+  to expected evidence in at least one phase.
 
 ### Boundary
 

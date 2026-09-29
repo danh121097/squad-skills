@@ -16,7 +16,8 @@ import {
  *
  * Deliberately outside `pnpm test`: the repository gate is offline, and a check
  * that depends on dozens of third-party hosts is exactly the kind of flake the
- * contract keeps out of it. It runs weekly and on demand as its own CI job.
+ * contract keeps out of it. It runs weekly, on demand, and on a pull request
+ * that edits a registry, as its own CI job.
  */
 const requestTimeoutMs = 20_000;
 

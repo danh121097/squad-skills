@@ -81,14 +81,3 @@ NEEDS_EVIDENCE`. `BLOCKED` is a lead status, not a verdict: a third return from 
 missing after its one resolution. `NEEDS_ENVIRONMENT` (a required target, service, device, fixture or access
 is unavailable) and `NEEDS_EVIDENCE` (evidence too thin for a defensible verdict) are neither success nor
 product failure, and neither permits `done`. Do not translate these silently into a runtime's task statuses.
-
-### A gate recorded in a written plan
-
-A plan on disk records what happened for a reader; it never opens a stage. When the lead records a gate
-there:
-
-- the record names its verdict in the gate's own vocabulary and every input it graded with the exact
-  revision; a Code Review `APPROVE` names the QA `PASS` it followed;
-- a change to structure or contract after a gate marks the recorded verdict superseded and requires QA then
-  Code Review again — mark the old record superseded rather than editing its verdict;
-- a phase is not marked accepted while a required checkbox or a user approval it declared is still open.

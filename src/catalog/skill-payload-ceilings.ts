@@ -32,7 +32,8 @@
  *
  * Every figure below was re-recorded on 2026-09-29, after generic knowledge,
  * source registries, runtime-fallback boilerplate and in-skill repeats were cut
- * and the shared fork, loop and approve clauses were shortened.
+ * and the shared fork, loop and approve clauses were shortened; the product and
+ * team figures again after the written plan was reduced to one file by default.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
  */
@@ -44,7 +45,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-fix': 2415, // was 2889
   'squad-frontend': 1971, // was 2542
   'squad-mobile': 1929, // was 2261
-  'squad-product': 2489, // was 2794
+  'squad-product': 2392, // was 2489
   'squad-qa': 2267, // was 2763
-  'squads-team': 2928, // was 3557
+  'squads-team': 2893, // was 2928
 };

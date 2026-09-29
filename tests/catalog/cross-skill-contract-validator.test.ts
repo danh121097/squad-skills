@@ -15,8 +15,6 @@ const temporaryProjects: string[] = [];
 
 const designerEntrypoint = 'skills/squad-designer/SKILL.md';
 const frontendIntake = 'skills/squad-frontend/references/designer-gate-and-design-intake.md';
-const teamPipeline = 'skills/squads-team/references/delivery-pipeline-and-roster.md';
-const teamCoordination = 'skills/squads-team/references/coordination-contract.md';
 
 // Role entrypoints, the two ends every HANDOFF-* clause binds.
 const backendSkill = 'skills/squad-backend/SKILL.md';
@@ -178,17 +176,17 @@ describe('validateCrossSkillContract', () => {
  * artifact, so there is no second owner for BOUNDARY-* to disagree with.
  */
 /**
- * The PLAN-BUNDLE-* family is the inverse of HANDOFF-*: its wording lives in
- * references, because the bundle's schema is progressively disclosed and a run
- * reaches it by routing there. What keeps it from drifting into a second schema
+ * The PLAN-DOCUMENT-* family is the inverse of HANDOFF-*: its wording lives in
+ * references, because the plan's shape is progressively disclosed and a run
+ * reaches it by routing there. What keeps it from drifting into a second shape
  * is that every member is bound on the plan contract itself — the one file that
- * owns what a bundle holds. A clause the plan contract does not state is a rule
- * some other file invented.
+ * owns what a written plan holds. A clause the plan contract does not state is
+ * a rule some other file invented.
  */
-describe('plan bundle contract family', () => {
-  const planClauses = boundaryClauses.filter((clause) => clause.id.startsWith('PLAN-BUNDLE-'));
+describe('plan document contract family', () => {
+  const planClauses = boundaryClauses.filter((clause) => clause.id.startsWith('PLAN-DOCUMENT-'));
 
-  it('binds every plan-bundle clause on the plan contract that owns the schema', () => {
+  it('binds every plan-document clause on the plan contract that owns the shape', () => {
     expect(planClauses.length).toBeGreaterThan(0);
 
     for (const clause of planClauses) {
@@ -377,45 +375,15 @@ describe('handoff contract family', () => {
   });
 
   it('binds the written plan shape to the plan contract, its quality bar and the lead fallback', async () => {
-    const planBundle = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-LAYOUT-001');
-    if (!planBundle) throw new Error('PLAN-BUNDLE-LAYOUT-001 is missing from shipped clauses.');
+    const planLayout = boundaryClauses.find((clause) => clause.id === 'PLAN-DOCUMENT-LAYOUT-001');
+    if (!planLayout) throw new Error('PLAN-DOCUMENT-LAYOUT-001 is missing from shipped clauses.');
 
-    expect([...planBundle.files].sort()).toEqual(
+    expect([...planLayout.files].sort()).toEqual(
       [productPlanDocument, productQuality, teamContracts].sort()
     );
 
     const result = await validateCrossSkillContract(process.cwd(), {
-      clauses: [planBundle],
-    });
-
-    expect(result.errors).toEqual([]);
-  });
-
-  // The two rules the directory layout adds. Both fail the same way when they
-  // drift: a bundle stays readable while saying something untrue about itself.
-  it('binds artifact ownership to the plan contract and its quality bar', async () => {
-    const artifact = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-ARTIFACT-001');
-    if (!artifact) throw new Error('PLAN-BUNDLE-ARTIFACT-001 is missing from shipped clauses.');
-
-    expect([...artifact.files].sort()).toEqual([productPlanDocument, productQuality].sort());
-
-    const result = await validateCrossSkillContract(process.cwd(), {
-      clauses: [artifact],
-    });
-
-    expect(result.errors).toEqual([]);
-  });
-
-  it('binds the superseded-verdict rule to the three files that record one', async () => {
-    const supersede = boundaryClauses.find((clause) => clause.id === 'PLAN-BUNDLE-SUPERSEDE-001');
-    if (!supersede) throw new Error('PLAN-BUNDLE-SUPERSEDE-001 is missing from shipped clauses.');
-
-    expect([...supersede.files].sort()).toEqual(
-      [productPlanDocument, teamCoordination, teamPipeline].sort()
-    );
-
-    const result = await validateCrossSkillContract(process.cwd(), {
-      clauses: [supersede],
+      clauses: [planLayout],
     });
 
     expect(result.errors).toEqual([]);

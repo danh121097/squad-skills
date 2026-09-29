@@ -96,7 +96,7 @@ clone or pull request needed. A maintainer records a confirmed report in
 ```text
 contributor PR
    |- registry entry / example / skill content / tooling
-   |- CI: catalog contract + payload ceilings + tests
+   |- CI: pnpm release:check (catalog contract, payload ceilings, tests, package)
    |- maintainer: source review (rights, authority, applicability)
    `- merge
 ```
