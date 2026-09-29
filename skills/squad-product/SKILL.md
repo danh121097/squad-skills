@@ -98,10 +98,13 @@ the self-review in
 - To `squads-team` or the user, the outcome in the user's own terms, the constraints and explicit
   non-goals, acceptance criteria a run can actually check, and the phases with the required Squad role or
   roles and each role's responsibility.
-- With it, the unknowns that could invalidate the plan, every assumption made in place of an answer, and
-  the decisions the user still owes: each open fork goes to the lead, or to the user when run on its own,
-  as named options with their consequences, and only the user answers it, through the runtime's structured
-  question tool when it has one, else a numbered list.
+- With it, the unknowns that could invalidate the plan and every assumption made in place of an answer.
+  Work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open
+  fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to
+  the lead, or to the user when run on its own, as named options with their consequences; the lead settles
+  only a fork it can show the request, repository or evidence answers, names that source in its report,
+  and puts every other fork to the user, who alone answers it, through the runtime's structured question
+  tool when it has one, else a numbered list.
 - Technical decisions this role did not make are named as open with their owner; a corrected assumption
   reopens framing rather than being patched in. Nothing is reported as accepted until the user accepts it.
 

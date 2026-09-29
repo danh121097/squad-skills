@@ -52,9 +52,13 @@ PR, deploy, mutate data or change external services unless requested or required
    criteria that can fail, state that frame yourself in at most ten lines. Call `squad-product` when
    installed, or frame inline otherwise, only when the request is vague with no criteria that can fail,
    the repository is empty with no stack chosen, the user asks for a plan, or more than one fork could
-   change the phases. For a plan that reaches this gate, each open fork goes to the lead, or to the user
-   when run on its own, as named options with their consequences, and only the user answers it, through
-   the runtime's structured question tool when it has one, else a numbered list.
+   change the phases. A plan that reaches this gate follows the fork rule. Work this role cannot settle
+   from the request, the repository or evidence, or is unsure of, is an open fork when it changes the
+   work: the role stops what depends on it rather than guessing, and returns it to the lead, or to the
+   user when run on its own, as named options with their consequences; the lead settles only a fork it can
+   show the request, repository or evidence answers, names that source in its report, and puts every other
+   fork to the user, who alone answers it, through the runtime's structured question tool when it has one,
+   else a numbered list.
 2. **Scout and split** — inspect project instructions, stack, relevant modules, contracts, tests and dirty
    state. Split by capability, map dependencies, assign non-overlapping file ownership, and serialize
    unavoidable overlap. Slices that must match each other build against one shared contract the lead

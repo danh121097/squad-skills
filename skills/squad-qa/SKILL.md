@@ -122,9 +122,13 @@ verdict, run the self-review in
   and through the public surface, with no test-only export and no mock of the logic under test; a
   regression test fails on the pre-fix code for the bug's reason, and a test that breaks this is a
   finding.
-- Each open fork goes to the lead, or to the user when run on its own, as named options with their
-  consequences, and only the user answers it, through the runtime's structured question tool when it has
-  one, else a numbered list.
+- Work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open
+  fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to
+  the lead, or to the user when run on its own, as named options with their consequences; the lead settles
+  only a fork it can show the request, repository or evidence answers, names that source in its report,
+  and puts every other fork to the user, who alone answers it, through the runtime's structured question
+  tool when it has one, else a numbered list. A `NEEDS_ENVIRONMENT` verdict naming its missing input is
+  this role's fork return.
 - An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
   stage no pass ran is never reported as run.
 

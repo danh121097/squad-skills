@@ -83,10 +83,12 @@ Once a coherent gate unit is ready, the lead launches one QA pass over its exact
 Code Review after `PASS`. A high-risk or independently shippable slice remains its own unit. Fixes return
 to the same owner when possible.
 
-A child agent has no channel to the user: a question it writes is read only by the lead. It returns the fork
-as two to four named options with their consequences, and the lead puts it to the user before the phase
-that depends on it starts — never deciding it on the user's behalf. An unanswered fork blocks its phase the
-way a `NEEDS_*` verdict does.
+A child agent has no channel to the user: a question it writes is read only by the lead. It returns the fork,
+including a doubt it cannot settle, as two to four named options with their consequences, and stops the
+work that depends on it. The lead answers only a fork it can show the request, repository or evidence
+settles, names that source in its final report, and resumes the child; every other fork goes to the user
+before the phase that depends on it starts — never decided on the user's behalf. An unanswered fork blocks
+its phase the way a `NEEDS_*` verdict does.
 
 ## 5. Single-session role loop
 

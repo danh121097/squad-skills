@@ -33,19 +33,21 @@
  * Every figure below was re-recorded on 2026-09-24, after the catalog was cut
  * down to risk-tiered gates, one-line bound handoffs and shorter references,
  * then raised where every role that can run on its own took the tier list, the
- * gates took their solo rule, and the lead's plan fallback took the layout.
+ * gates took their solo rule, the lead's plan fallback took the layout, and
+ * every role took the fork rule that stops on doubt and lets the lead settle
+ * only what it can show.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2272, // was 2258
-  'squad-code-review': 2640, // was 2615
-  'squad-designer': 2003, // was 1989
-  'squad-devops': 2109, // was 2095
-  'squad-fix': 2828, // was 2771
-  'squad-frontend': 2481, // was 2467
-  'squad-mobile': 2200, // was 2186
-  'squad-product': 2739, // was 2725
-  'squad-qa': 2690, // was 2633
-  'squads-team': 3493, // was 3463
+  'squad-backend': 2333, // was 2272
+  'squad-code-review': 2713, // was 2640
+  'squad-designer': 2064, // was 2003
+  'squad-devops': 2170, // was 2109
+  'squad-fix': 2889, // was 2828
+  'squad-frontend': 2542, // was 2481
+  'squad-mobile': 2261, // was 2200
+  'squad-product': 2794, // was 2739
+  'squad-qa': 2763, // was 2690
+  'squads-team': 3557, // was 3493
 };

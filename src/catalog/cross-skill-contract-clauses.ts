@@ -278,8 +278,17 @@ export const boundaryClauses: BoundaryClause[] = [
     // boundary is bound on the build roles by BOUNDARY-ARTIFACT-001 — and is
     // named here anyway, because this clause binds who may answer a question
     // rather than who owns an artifact.
+    //
+    // "is unsure of" and "stops what depends on it" close the other way a
+    // child drifts: treating its own doubt as not a fork, then building past
+    // it. "when it changes the work" keeps a doubt that changes nothing a
+    // labeled assumption. The lead settles only what it can show the request,
+    // repository or evidence answers, and names that source, so a question
+    // the controlling session can prove never reaches the user while a choice
+    // nothing in the work decides still goes to the user alone — the default
+    // whenever the lead cannot show the answer.
     statement:
-      "each open fork goes to the lead, or to the user when run on its own, as named options with their consequences, and only the user answers it, through the runtime's structured question tool when it has one, else a numbered list",
+      "work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to the lead, or to the user when run on its own, as named options with their consequences; the lead settles only a fork it can show the request, repository or evidence answers, names that source in its report, and puts every other fork to the user, who alone answers it, through the runtime's structured question tool when it has one, else a numbered list",
     files: everyRoleEntrypoint,
   },
   {

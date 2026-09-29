@@ -113,9 +113,12 @@ self-review in [quality-bar-and-preflight.md](references/quality-bar-and-preflig
   commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- Each open fork goes to the lead, or to the user when run on its own, as named options with their
-  consequences, and only the user answers it, through the runtime's structured question tool when it has
-  one, else a numbered list.
+- Work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open
+  fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to
+  the lead, or to the user when run on its own, as named options with their consequences; the lead settles
+  only a fork it can show the request, repository or evidence answers, names that source in its report,
+  and puts every other fork to the user, who alone answers it, through the runtime's structured question
+  tool when it has one, else a numbered list.
 - Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light`
   and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa`
   then `/squad-code-review`; `high` work still runs both gates.

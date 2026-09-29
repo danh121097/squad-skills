@@ -122,9 +122,13 @@ finding. Before issuing a verdict, run the self-review in
   for is new scope whose tier follows what its own diff changes, not the unit it sits in: docs, comments
   or tests alone close on the owner's verify with real commands, and a behavior change reruns affected QA
   and a review of that diff.
-- Each open fork goes to the lead, or to the user when run on its own, as named options with their
-  consequences, and only the user answers it, through the runtime's structured question tool when it has
-  one, else a numbered list.
+- Work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open
+  fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to
+  the lead, or to the user when run on its own, as named options with their consequences; the lead settles
+  only a fork it can show the request, repository or evidence answers, names that source in its report,
+  and puts every other fork to the user, who alone answers it, through the runtime's structured question
+  tool when it has one, else a numbered list. A `NEEDS_EVIDENCE` verdict naming its missing input is this
+  role's fork return.
 - An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a
   stage no pass ran is never reported as run.
 
