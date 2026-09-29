@@ -62,7 +62,6 @@ const backend: SkillTaskType[] = [
     references: [
       'backend-stack-and-runtime-matrix.md',
       'backend-system-design-and-distributed-systems.md',
-      'official-sources.md',
       'quality-bar-and-preflight.md',
     ],
   },
@@ -79,25 +78,20 @@ const backend: SkillTaskType[] = [
     id: 'performance-investigation',
     references: [
       'backend-performance-reliability-and-observability.md',
-      'backend-testing-debugging-and-mindset.md',
       'quality-bar-and-preflight.md',
     ],
   },
-  {
-    id: 'test-and-debug',
-    references: ['backend-testing-debugging-and-mindset.md', 'quality-bar-and-preflight.md'],
-  },
-  { id: 'degraded-runtime-fallback', references: ['runtime-capability-fallbacks.md'] },
+  { id: 'test-and-debug', references: ['quality-bar-and-preflight.md'] },
+  { id: 'data-tooling-unavailable', references: ['backend-api-data-and-messaging.md'] },
 ];
 
 const codeReview: SkillTaskType[] = [
   {
     id: 'feature-diff-review',
     references: [
-      'cross-stack-review-dimensions.md',
       'quality-bar-and-preflight.md',
-      'review-methodology-debugging-and-mindset.md',
       'review-runtime-and-verdict.md',
+      'review-stages-and-diff-notes.md',
     ],
   },
   {
@@ -112,8 +106,8 @@ const codeReview: SkillTaskType[] = [
     id: 'implementation-alignment-pass',
     references: [
       'quality-bar-and-preflight.md',
-      'review-methodology-debugging-and-mindset.md',
       'review-runtime-and-verdict.md',
+      'review-stages-and-diff-notes.md',
     ],
   },
   {
@@ -124,18 +118,12 @@ const codeReview: SkillTaskType[] = [
       'review-runtime-and-verdict.md',
     ],
   },
-  {
-    id: 'standard-lookup',
-    references: ['official-sources.md', 'review-runtime-and-verdict.md'],
-  },
-  // The heaviest task in the catalog after squads-team's planning task, and
-  // deliberately so: reviewing a runtime the reviewer has no defect model for
-  // needs the generic lenses and the per-ecosystem signatures together, or the
-  // review is generic where it most needs not to be.
+  // Reviewing a runtime the reviewer has no defect model for needs the
+  // per-ecosystem signatures beside the review dimensions, or the review is
+  // generic where it most needs not to be.
   {
     id: 'unfamiliar-runtime-review',
     references: [
-      'cross-stack-review-dimensions.md',
       'language-runtime-review-signatures.md',
       'quality-bar-and-preflight.md',
       'review-runtime-and-verdict.md',
@@ -174,7 +162,7 @@ const devops: SkillTaskType[] = [
   },
   {
     id: 'deploy-failure-diagnosis',
-    references: ['devops-testing-debugging-and-mindset.md', 'quality-bar-and-preflight.md'],
+    references: ['quality-bar-and-preflight.md'],
   },
   {
     id: 'delivery-decision-calibration',
@@ -182,54 +170,31 @@ const devops: SkillTaskType[] = [
   },
   {
     id: 'topology-selection-greenfield',
-    references: [
-      'official-sources.md',
-      'platform-iac-and-delivery-matrix.md',
-      'quality-bar-and-preflight.md',
-    ],
+    references: ['platform-iac-and-delivery-matrix.md', 'quality-bar-and-preflight.md'],
   },
-  { id: 'degraded-runtime-fallback', references: ['runtime-and-safe-delivery-fallbacks.md'] },
 ];
 
 const fix: SkillTaskType[] = [
   {
     id: 'diagnose-and-route',
-    references: [
-      'bug-routing-and-ownership.md',
-      'diagnosis-root-cause-and-fix-loop.md',
-      'runtime-capability-fallbacks.md',
-    ],
+    references: ['bug-routing-and-ownership.md', 'diagnosis-root-cause-and-fix-loop.md'],
   },
   {
     id: 'root-cause-to-fix',
     references: [
       'diagnosis-root-cause-and-fix-loop.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
       'verification-qa-review-and-reporting.md',
     ],
   },
   {
     id: 'regression-evidence',
-    references: [
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-      'verification-qa-review-and-reporting.md',
-    ],
+    references: ['quality-bar-and-preflight.md', 'verification-qa-review-and-reporting.md'],
   },
   {
     id: 'bugfix-calibration',
-    references: [
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-      'worked-bugfix-examples.md',
-    ],
+    references: ['quality-bar-and-preflight.md', 'worked-bugfix-examples.md'],
   },
-  {
-    id: 'source-lookup',
-    references: ['official-sources.md', 'runtime-capability-fallbacks.md'],
-  },
-  { id: 'degraded-runtime-fallback', references: ['runtime-capability-fallbacks.md'] },
 ];
 
 const frontend: SkillTaskType[] = [
@@ -239,63 +204,41 @@ const frontend: SkillTaskType[] = [
       'designer-gate-and-design-intake.md',
       'frontend-architecture-state-data-and-forms.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'state-data-and-forms',
-    references: [
-      'frontend-architecture-state-data-and-forms.md',
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-    ],
+    references: ['frontend-architecture-state-data-and-forms.md', 'quality-bar-and-preflight.md'],
   },
   {
     id: 'accessibility-security-performance',
     references: [
       'frontend-security-accessibility-and-performance.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'stack-selection-greenfield',
-    references: [
-      'frontend-stack-and-motion-selection.md',
-      'official-sources.md',
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-    ],
+    references: ['frontend-stack-and-motion-selection.md', 'quality-bar-and-preflight.md'],
   },
   {
     id: 'motion-and-interactive-graphics',
     references: [
       'frontend-security-accessibility-and-performance.md',
       'frontend-stack-and-motion-selection.md',
-      'frontend-testing-debugging-and-mindset.md',
+      'frontend-testing-and-debugging.md',
       'interactive-graphics-and-runtime-animation.md',
-      'official-sources.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'test-and-debug',
-    references: [
-      'frontend-testing-debugging-and-mindset.md',
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-    ],
+    references: ['frontend-testing-and-debugging.md', 'quality-bar-and-preflight.md'],
   },
   {
     id: 'frontend-decision-calibration',
-    references: [
-      'frontend-worked-decisions.md',
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-    ],
+    references: ['frontend-worked-decisions.md', 'quality-bar-and-preflight.md'],
   },
-  { id: 'degraded-runtime-fallback', references: ['runtime-capability-fallbacks.md'] },
 ];
 
 const mobile: SkillTaskType[] = [
@@ -305,7 +248,6 @@ const mobile: SkillTaskType[] = [
       'design-platform-and-lifecycle-gates.md',
       'mobile-stack-architecture-and-data.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
     ],
   },
   {
@@ -314,43 +256,30 @@ const mobile: SkillTaskType[] = [
       'design-platform-and-lifecycle-gates.md',
       'mobile-stack-architecture-and-data.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'stack-selection-new-app',
-    references: [
-      'mobile-stack-architecture-and-data.md',
-      'official-sources.md',
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-    ],
+    references: ['mobile-stack-architecture-and-data.md', 'quality-bar-and-preflight.md'],
   },
   {
     id: 'security-performance-and-release',
     references: [
       'mobile-security-performance-testing-and-release.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'crash-and-jank-diagnosis',
     references: [
-      'mobile-debugging-and-mindset.md',
+      'mobile-security-performance-testing-and-release.md',
       'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
     ],
   },
   {
     id: 'mobile-decision-calibration',
-    references: [
-      'mobile-worked-decisions.md',
-      'quality-bar-and-preflight.md',
-      'runtime-capability-fallbacks.md',
-    ],
+    references: ['mobile-worked-decisions.md', 'quality-bar-and-preflight.md'],
   },
-  { id: 'degraded-runtime-fallback', references: ['runtime-capability-fallbacks.md'] },
 ];
 
 const qa: SkillTaskType[] = [
@@ -358,8 +287,8 @@ const qa: SkillTaskType[] = [
     id: 'scenario-design-and-run',
     references: [
       'quality-bar-and-preflight.md',
+      'test-selection-and-oracles.md',
       'test-strategy-runtime-and-verdict.md',
-      'testing-domains-and-tooling-matrix.md',
     ],
   },
   {
@@ -380,11 +309,7 @@ const qa: SkillTaskType[] = [
   },
   {
     id: 'reproduce-and-verify-fix',
-    references: [
-      'qa-debugging-and-mindset.md',
-      'quality-bar-and-preflight.md',
-      'test-strategy-runtime-and-verdict.md',
-    ],
+    references: ['quality-bar-and-preflight.md', 'test-strategy-runtime-and-verdict.md'],
   },
   {
     id: 'verdict-calibration',
@@ -393,10 +318,6 @@ const qa: SkillTaskType[] = [
       'quality-bar-and-preflight.md',
       'test-strategy-runtime-and-verdict.md',
     ],
-  },
-  {
-    id: 'tooling-lookup',
-    references: ['official-sources.md', 'test-strategy-runtime-and-verdict.md'],
   },
 ];
 
@@ -456,7 +377,6 @@ const designer: SkillTaskType[] = [
     references: [
       'anti-slop-quality-review.md',
       'design-system-ux-accessibility-and-handoff.md',
-      'official-sources.md',
       'platform-web-foundations-and-motion.md',
     ],
   },
@@ -466,13 +386,11 @@ const designer: SkillTaskType[] = [
     references: ['design-system-ux-accessibility-and-handoff.md'],
   },
   { id: 'local-pattern-extension', references: ['codebase-first-examples.md'] },
-  { id: 'degraded-runtime-fallback', references: ['official-sources.md'] },
   {
     id: 'native-cross-platform-build',
     references: [
       'anti-slop-quality-review.md',
       'design-system-ux-accessibility-and-handoff.md',
-      'official-sources.md',
       'platform-native-cross-platform.md',
     ],
   },
@@ -481,7 +399,6 @@ const designer: SkillTaskType[] = [
     references: [
       'anti-slop-quality-review.md',
       'design-system-ux-accessibility-and-handoff.md',
-      'official-sources.md',
       'platform-native-apple-android.md',
     ],
   },

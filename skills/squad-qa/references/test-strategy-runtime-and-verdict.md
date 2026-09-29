@@ -1,43 +1,13 @@
-# Test strategy, runtime pairing, and verdict
+# Test strategy and verdict
 
 Read before designing scenarios or selecting tools, and whenever test runners, browsers/devices,
 services or observability are in question.
 
-## Specialist skill pairing
-
-Pair a specialist skill found by inspecting the live skill catalog for the capabilities below; this
-role's boundary, gates, and evidence rules stay authoritative wherever the two disagree. When it is
-absent, run the native fallback at the same standard; never auto-install one, and never report a skill as
-run when it does not exist.
-
 ## Risk matrix
 
-Select applicable behavioral dimensions; implementation structure belongs to Code Review. Do not run every
-category mechanically:
-
-- behavior: happy path, boundary values, invalid input, error and recovery;
-- state: loading, empty, stale, retry, cancellation, partial success and idempotency;
-- access: unauthenticated, unauthorized, role/tenant isolation and sensitive-field handling;
-- timing: concurrency, race, ordering, retry, timeout and duplicate delivery;
-- compatibility: API/schema, browser/device/OS, migration and backward compatibility;
-- UX: navigation, keyboard/focus, screen reader, contrast, reduced motion and responsive/adaptive layout;
-- performance: hot path, latency, memory, throughput, bundle/startup and regressions;
-- operations: deploy smoke, health, observability and rollback when infrastructure changed.
-
-## Capability mapping
-
-| Need | Pair when installed | Native fallback |
-|---|---|---|
-| Scout/scenarios | Scout/scenario skills | Inspect diff/tests/contracts and derive matrix directly |
-| Unit/integration | Test skills | Run repository-native test commands and fixtures |
-| Web/e2e | Web-testing and browser skills | Use installed runner/browser or report unavailable target |
-| Mobile | Mobile test/device skill | Use repository simulator/emulator/device tooling |
-| Performance | k6/web-perf/provider tools | Use existing benchmarks/profilers or state the gap |
-| Security smoke | Security scanner | Run existing scanners and targeted manual misuse cases |
-| Repro/debug | Debug skill | Trace the failing path and minimize it directly |
-
-Never auto-install a runner, browser, SDK, skill, plugin, MCP server or service. Do not claim a
-browser/device/load/deploy check ran without that environment.
+Select the gate-2 dimensions that apply; implementation structure belongs to Code Review. Do not run
+every category mechanically. Add operations (deploy smoke, health, observability, rollback) when
+infrastructure changed.
 
 ## Evidence contract
 
@@ -46,15 +16,14 @@ limitation. Redact tokens, credentials, personal data and private payloads.
 
 On a fix rerun, retain evidence whose behavior, contract and environment are unchanged. Rerun the failed or
 affected checks plus neighboring regression coverage; widen only when the delta changes the risk surface.
+Never mutate production data without authority.
 
 ## Verdict
 
 ### PASS
 
 - Acceptance coverage: criteria and evidence.
-- Regression/risk coverage: what was checked.
-- Environment: where it ran.
-- Residual risk: what remains unverified and why.
+- Regression/risk coverage, environment, and residual risk with why it remains unverified.
 - Next gate: Code Review.
 
 ### FAIL
@@ -76,6 +45,5 @@ affected checks plus neighboring regression coverage; widen only when the delta 
 - Smallest safe next action and owner (the lead, or the user when QA runs on its own), plus the QA scope to
   resume afterward.
 
-Use `FAIL` only when evidence demonstrates a product/test defect or unmet criterion. Use
-`NEEDS_ENVIRONMENT` when required evidence cannot be obtained in the current environment. It blocks `done`,
-returns to the lead (or the user, run on its own) for resolution and resumes at QA; it never becomes PASS by inference.
+Use `FAIL` only when evidence demonstrates a product/test defect or unmet criterion. `NEEDS_ENVIRONMENT`
+blocks `done`, returns to the lead (or the user, run on its own) for resolution and resumes at QA.

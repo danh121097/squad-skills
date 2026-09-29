@@ -12,14 +12,14 @@ imply these deliverables passed automated render, contrast, or axe checks.
 - Same boundary as every platform: inert presentational views with data passed in. Navigation
   stacks, view models, repositories, persistence, and lifecycle stay with `squad-mobile`.
 - Follow the platform's design language first — Apple Human Interface Guidelines for SwiftUI,
-  Material 3 for Compose (both in the source registry) — then the app's established deviations
+  Material 3 for Compose — then the app's established deviations
   from it. A cross-platform product ports the brand, not one platform's idioms onto the other.
 - Prefer system components, system typography, and system colors before custom drawing; custom
   visuals must state what the system component could not do.
 - Honor the OS reduce-motion setting and dynamic text sizing in the component that animates or
   sets type; whoever writes the animation code owns its lifecycle scoping, teardown, and
   reduced-motion fallback. Test layouts at the largest supported accessibility text size.
-- Keep guidance narrow and cite official docs when exact modifier or API behavior matters.
+- Cite official docs when exact modifier or API behavior matters.
 
 ## SwiftUI
 

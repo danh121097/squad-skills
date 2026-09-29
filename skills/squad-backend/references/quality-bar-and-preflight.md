@@ -47,6 +47,9 @@ Pass every applicable check honestly.
 
 - The change follows repository patterns, and any new module earns its boundary.
 - Failure paths are tested alongside success: duplicate, concurrent, expired, unauthorized, empty.
+- Boundary tests use real DB/cache/broker in ephemeral environments; time, randomness and retries are
+  controllable; migration tests run on representative old schema/data.
+- Diagnosis never mutates production data without explicit authority and a backup, and redacts logs.
 
 ## Proof to hand over
 

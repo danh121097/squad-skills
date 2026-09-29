@@ -1,17 +1,10 @@
-import type { BoundaryClause, RetiredPhrase } from './cross-skill-contract-validator.ts';
+import type { BoundaryClause } from './cross-skill-contract-validator.ts';
 
 const designerSkill = 'skills/squad-designer/SKILL.md';
 const designerMotion = 'skills/squad-designer/references/platform-web-foundations-and-motion.md';
-const designerHandoff =
-  'skills/squad-designer/references/design-system-ux-accessibility-and-handoff.md';
-const designerExamples = 'skills/squad-designer/references/codebase-first-examples.md';
-const designerQuality = 'skills/squad-designer/references/anti-slop-quality-review.md';
-const designerResearch = 'skills/squad-designer/references/task-specific-ui-ux-research.md';
-const designerSources = 'skills/squad-designer/references/official-sources.md';
 const designerNativeCross = 'skills/squad-designer/references/platform-native-cross-platform.md';
 const designerNativeAppleAndroid =
   'skills/squad-designer/references/platform-native-apple-android.md';
-const designerAdaptive = 'skills/squad-designer/references/platform-adaptive-layout-and-input.md';
 // The DECISION-RECORD-001 files below are the four selection references plus the
 // lead's framing fallback: the places a choice is made that another role then
 // builds on. They are references, not entrypoints, so the clause costs a median
@@ -24,24 +17,6 @@ const frontendMotion = 'skills/squad-frontend/references/frontend-stack-and-moti
 const mobileGates = 'skills/squad-mobile/references/design-platform-and-lifecycle-gates.md';
 const teamPipeline = 'skills/squads-team/references/delivery-pipeline-and-roster.md';
 const teamCoordination = 'skills/squads-team/references/coordination-contract.md';
-// Each role states the specialist skill pairing contract in the reference its
-// own router points at for tool selection, so the file names differ by role.
-const backendRuntime = 'skills/squad-backend/references/runtime-capability-fallbacks.md';
-const codeReviewRuntime = 'skills/squad-code-review/references/review-runtime-and-verdict.md';
-const devopsRuntime = 'skills/squad-devops/references/runtime-and-safe-delivery-fallbacks.md';
-const fixRuntime = 'skills/squad-fix/references/runtime-capability-fallbacks.md';
-const frontendRuntime = 'skills/squad-frontend/references/runtime-capability-fallbacks.md';
-const mobileRuntime = 'skills/squad-mobile/references/runtime-capability-fallbacks.md';
-const qaRuntime = 'skills/squad-qa/references/test-strategy-runtime-and-verdict.md';
-const roleRuntimes = [
-  backendRuntime,
-  codeReviewRuntime,
-  devopsRuntime,
-  fixRuntime,
-  frontendRuntime,
-  mobileRuntime,
-  qaRuntime,
-];
 // Role entrypoints. The handoff clauses below bind the two ends of a stage
 // boundary, so they name SKILL.md rather than a reference: what a role hands
 // over is part of the contract a reader learns from the entrypoint alone.
@@ -108,9 +83,6 @@ const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.m
  *
  * `BOUNDARY-*` says who owns what between the designer and the build roles, as
  * it stands after the designer moved from spec-only to presentational code.
- * `PAIRING-*` binds how a role detects an installed specialist skill, which side
- * is authoritative when both are present, and that it may never report an absent
- * skill as run.
  * `HANDOFF-*` covers a stage boundary in the squad pipeline, and binds only
  * entrypoints, because both ends of a boundary must be readable without loading
  * a reference. `PLAN-BUNDLE-*` binds the shape of a written plan bundle, and is
@@ -160,29 +132,6 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [backendMatrix, devopsMatrix, frontendMotion, mobileStack, teamContracts],
   },
   {
-    id: 'PAIRING-DETECT-001',
-    // The team contract detects once per run rather than per task, so the
-    // clause binds the mechanism both share, not the cadence they do not.
-    statement: 'by inspecting the live skill catalog for',
-    files: [...roleRuntimes, designerSources, teamCoordination],
-  },
-  {
-    id: 'PAIRING-AUTHORITY-001',
-    // Deliberately starts after the subject: roles say "this role's boundary,
-    // gates, and evidence rules", the designer says "this skill's boundary,
-    // source lanes, and quality bar". What must not drift is which side wins.
-    statement: 'stay authoritative wherever the two disagree',
-    files: [...roleRuntimes, designerSources],
-  },
-  {
-    id: 'PAIRING-SAFETY-001',
-    // The designer is not bound: its entrypoint carries the never-auto-install
-    // rule in "Scope and boundary", and its registry states the same ban in the
-    // registry's own words rather than repeating this sentence.
-    statement: 'never report a skill as run when it does not exist',
-    files: roleRuntimes,
-  },
-  {
     id: 'HANDOFF-PLAN-001',
     // The first edge in the pipeline, and the last one to be stated at both
     // ends. `squads-team` accepts `[goal | plan-path]` and hard gate 1 says to
@@ -206,8 +155,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // reads it: the plan contract, and the quality bar that checks the result.
     // Two phases or fewer is one file, because a directory for a one-phase
     // plan was ceremony a reader paid to navigate. The lead's framing fallback
-    // carries it too: a plan written without squad-product still has to pass
-    // `pnpm validate:plan`.
+    // carries it too, for a plan written without squad-product.
     statement:
       'a written plan of one or two phases is a single plan.md declaring layout: single; a larger one is one directory whose root holds only plan.md and the standard phases, artifacts, adr and references directories, with every phase file in phases/ named phase-XX-kebab-case-title.md and every link relative',
     files: [productPlanDocument, productQuality, teamContracts],
@@ -288,7 +236,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // nothing in the work decides still goes to the user alone — the default
     // whenever the lead cannot show the answer.
     statement:
-      "work this role cannot settle from the request, the repository or evidence, or is unsure of, is an open fork when it changes the work: the role stops what depends on it rather than guessing, and returns it to the lead, or to the user when run on its own, as named options with their consequences; the lead settles only a fork it can show the request, repository or evidence answers, names that source in its report, and puts every other fork to the user, who alone answers it, through the runtime's structured question tool when it has one, else a numbered list",
+      "a fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the work, stops the work that depends on it rather than guessing and goes as named options with consequences to the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers, naming that source, and puts the rest to the user through the runtime's structured question tool, else a numbered list",
     files: everyRoleEntrypoint,
   },
   {
@@ -410,7 +358,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // unit: a third attempt on an unchanged model of the problem is churn, and
     // choosing between narrowing, reassigning and accepting risk is the user's.
     statement:
-      'a gate returns work to its owner at most twice, counting a reopening of an approved unit the user did not ask for; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
+      'a gate returns a unit to its owner at most twice; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {
@@ -421,7 +369,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // approved unit stays closed unless a later defect or the user reopens it,
     // and a follow-up is tiered on its own diff.
     statement:
-      "`APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and the lead reopens it only for a defect found later or when the user asks; a follow-up the user asks for is new scope whose tier follows what its own diff changes, not the unit it sits in: docs, comments or tests alone close on the owner's verify with real commands, and a behavior change reruns affected QA and a review of that diff",
+      '`APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and it reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope tiered on its own diff',
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {
@@ -483,8 +431,7 @@ export const boundaryClauses: BoundaryClause[] = [
   },
   {
     id: 'HANDOFF-SOLO-001',
-    // The squad-peer analog of PAIRING-SAFETY-001, which covers an absent
-    // specialist skill rather than an absent role. "where this role's boundary
+    // "where this role's boundary
     // allows" is load-bearing: QA may not carry an implementer's stage, and no
     // role may absorb one the boundary clauses put somewhere else.
     //
@@ -504,7 +451,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // commands and hands the gate choice back to the user in one line. `high`
     // work keeps both gates, because the risk does not shrink with the team.
     statement:
-      'invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both gates',
+      'invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work runs both as separate agents where the runtime allows, else reports them unowned, never as a self-review',
     files: rolesWithAnImplementationSlice,
   },
   {
@@ -526,144 +473,5 @@ export const boundaryClauses: BoundaryClause[] = [
     // caught a paraphrase.
     statement: 'The quality-bar pre-flight ran; failed checks were fixed or reported',
     files: everyRoleWithAPreflight,
-  },
-];
-
-/**
- * Spec-era wording that contradicts the clauses above. Retired phrases sweep
- * the whole designer surface, not only the files a clause binds: a reference
- * that no clause names can still tell the designer to hand over a document, and
- * that contradiction ships even though every bound file agrees.
- */
-export const retiredPhrases: RetiredPhrase[] = [
-  {
-    id: 'RETIRED-SPEC-001',
-    phrase: 'not production code',
-    files: [
-      designerSkill,
-      designerAdaptive,
-      designerExamples,
-      designerHandoff,
-      designerMotion,
-      designerNativeAppleAndroid,
-      designerNativeCross,
-      designerQuality,
-      designerResearch,
-      designerSources,
-      teamContracts,
-      teamPipeline,
-    ],
-  },
-  {
-    id: 'RETIRED-SPEC-005',
-    phrase: 'never production code',
-    files: [
-      designerSkill,
-      designerAdaptive,
-      designerExamples,
-      designerHandoff,
-      designerMotion,
-      designerNativeAppleAndroid,
-      designerNativeCross,
-      designerQuality,
-      designerResearch,
-      designerSources,
-      teamContracts,
-      teamPipeline,
-    ],
-  },
-  {
-    id: 'RETIRED-SPEC-002',
-    phrase: 'implementation-ready design specs',
-    files: [designerSkill, designerHandoff, teamPipeline],
-  },
-  {
-    // Deliberately excludes SKILL.md: the entrypoint carries this wording
-    // legitimately inside BOUNDARY-ARTIFACT-001 ("not a written spec").
-    id: 'RETIRED-SPEC-003',
-    phrase: 'written spec',
-    files: [
-      designerAdaptive,
-      designerExamples,
-      designerHandoff,
-      designerMotion,
-      designerNativeAppleAndroid,
-      designerNativeCross,
-      designerQuality,
-      designerResearch,
-      designerSources,
-    ],
-  },
-  {
-    // Both gates on every slice, the rule gate tiers replaced. A file still
-    // saying so tells a one-line change to run QA and Code Review.
-    id: 'RETIRED-SPEC-007',
-    phrase: 'QA and Code Review stay mandatory',
-    files: [...rolesWithAnImplementationSlice, teamSkill],
-  },
-  {
-    id: 'RETIRED-SPEC-008',
-    phrase: 'QA and Code Review are both mandatory',
-    files: [codeReviewSkill, qaSkill],
-  },
-  {
-    // The flat plan bundle the directory layout replaced. A file still
-    // telling a role to put phase files beside the index describes a layout the
-    // validator now rejects, and it would be read as the current contract by
-    // whichever run opened that file first.
-    id: 'RETIRED-SPEC-006',
-    phrase: 'phase files live beside the index',
-    files: [productSkill, productPlanDocument, productQuality, teamSkill, teamCoordination],
-  },
-  {
-    // The day-first directory name, which did not sort. Plans are named
-    // year-first so a listing is chronological.
-    id: 'RETIRED-SPEC-009',
-    phrase: 'DDMMYYYY-HHmm',
-    files: [productSkill, productPlanDocument, productQuality, teamSkill, teamCoordination],
-  },
-  {
-    id: 'RETIRED-SPEC-010',
-    // The long form of HANDOFF-DECISION-001, before it fit on one line.
-    phrase: 'never answered by the role that raised it',
-    files: everyRoleEntrypoint,
-  },
-  {
-    id: 'RETIRED-SPEC-011',
-    // The long form of HANDOFF-SOLO-001, before it fit on one line.
-    phrase: 'carry its stage inline at the same standard',
-    files: [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill],
-  },
-  {
-    id: 'RETIRED-SPEC-012',
-    // Coordination features removed in 2026-09; see docs/maintainer-notes.md.
-    phrase: '--allow-new-threads',
-    files: [teamSkill, teamCoordination, teamPipeline],
-  },
-  {
-    id: 'RETIRED-SPEC-013',
-    phrase: '--delegate',
-    files: [teamSkill, teamCoordination, teamPipeline],
-  },
-  {
-    id: 'RETIRED-SPEC-014',
-    phrase: 'thread registry',
-    files: [teamSkill, teamCoordination, teamPipeline],
-  },
-  {
-    id: 'RETIRED-SPEC-004',
-    phrase: 'markdown handoff',
-    files: [
-      designerSkill,
-      designerAdaptive,
-      designerExamples,
-      designerHandoff,
-      designerMotion,
-      designerNativeAppleAndroid,
-      designerNativeCross,
-      designerQuality,
-      designerResearch,
-      designerSources,
-    ],
   },
 ];

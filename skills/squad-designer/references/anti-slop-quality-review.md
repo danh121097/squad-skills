@@ -11,20 +11,19 @@ Resolve conflicts in this order:
    intent; "for reference" is direction; an unclear one is a single fork to the lead.
 3. Existing repository components, tokens, content density and interaction language.
 4. Task-specific UX evidence from real products.
-5. Critique layers: [Taste Skill](https://www.tasteskill.dev/), `ui-ux-pro-max`, and this checklist.
+5. Critique layers: [Taste Skill](https://www.tasteskill.dev/), `ui-ux-pro-max`, and this checklist. Read
+   `ui-ux-pro-max` as reference data; never hand it the design task.
 
 A critique layer may name generic output or missing craft. It never silently redesigns the user's material,
-replaces a working design system, introduces a fashionable stack or expands scope. Inspect the live skill
-catalog for an installed Taste Skill variant and load only the one the task needs; never auto-install it,
-and never claim it ran when only this checklist did. Skip critique layers for logic-only changes, narrow
-fixes and exact local-pattern extensions unless an audit was asked for.
+replaces a working design system, introduces a fashionable stack or expands scope. Skip critique layers for
+logic-only changes, narrow fixes and exact local-pattern extensions unless an audit was asked for.
 
 ## Know the current vocabulary
 
 Rejecting trends requires knowing them: current type scale and weight, spacing rhythm, surface and
 elevation, component anatomy, motion character, and agent-native primitives such as streaming output,
 tool-call display and approval surfaces. Knowing the vocabulary is not adopting it; product fit decides
-what ships. When `ui-ux-pro-max` is installed, name the direction against its data rather than memory.
+what ships.
 
 ## Pre-flight
 

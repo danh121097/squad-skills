@@ -40,8 +40,7 @@ checklist`. The catalog validator enforces the sequence.
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
   `catalog/` for skill-catalog checks, payload measurement and source-registry
   links, `agents/` for subagent definitions generated
-  from installed skills, `plans/` for the written-plan-bundle structure, `release/`
-  for the version arithmetic the publish preflight imports — and mirror that
+  from installed skills, `release/` for the version arithmetic the publish preflight imports — and mirror that
   layout in `tests/`.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
   so every `SKILL.md` change must pass the repository gate.
@@ -62,9 +61,9 @@ checklist`. The catalog validator enforces the sequence.
   its plugin and gets named agents from the npm CLI. The two plugin manifests
   share product metadata exactly; tests reject drift, and `pnpm release` updates
   both plugin versions with `package.json`. Neither directory is packaged for npm.
-- The files in `agents/`, one per skill, are committed. A test regenerates each
-  from its `SKILL.md` and fails on drift — repair a failure by regenerating,
-  never by editing the agent. A generated definition points at the installed
+- The files in `agents/`, one per skill, are committed. A test renders each
+  from its `SKILL.md` and fails on drift — repair a failure with
+  `pnpm agents:generate`, never by editing the agent. A generated definition points at the installed
   `SKILL.md` and never restates a role. `src/agents/` carries its own
   frontmatter reader because the published CLI cannot import `yaml`; a test pins
   it against a real YAML parse of every shipped skill. `squad-skills agents`
@@ -79,11 +78,7 @@ checklist`. The catalog validator enforces the sequence.
 - Squad handoffs are contracts stated in prose, not records written to disk. No
   skill writes a QA verdict, review findings, or an API snapshot into a user's
   repository as a handoff record, and no hook enforces a gate. Output a user
-  asked for is unaffected; a written plan bundle is that case, and
-  `pnpm validate:plan` reads its records rather than deciding anything. Bundle
-  structure rules live in `src/plans/` and are checked against the bundles
-  `tests/fixtures/plan-bundle/` ships plus mutations of them, never against a
-  user's repository during a run.
+  asked for is unaffected; a written plan bundle is that case.
 - Gates are proportional to risk. The squad lead, or a role run on its own,
   names one gate tier before building: `light` (one owner, no change to a public
   contract, auth, data or migration, infrastructure, or a dependency — one
@@ -98,8 +93,6 @@ checklist`. The catalog validator enforces the sequence.
   - `BOUNDARY-*` — who owns an artifact between the designer and the build roles.
   - `DECISION-RECORD-*` — what a decision another role builds on must record,
     bound on the selection references where such a choice is made.
-  - `PAIRING-*` — how a role detects an installed specialist skill, which side
-    is authoritative, and that an absent skill is never reported as run.
   - `HANDOFF-*` — a stage boundary: what crosses it, who owns a gate when the
     peer skill is absent, which verdict closes a stage, how many times a gate
     may return work (`HANDOFF-LOOP-*`), which tier a change runs
@@ -112,7 +105,6 @@ checklist`. The catalog validator enforces the sequence.
     fallback, and the supersede rule the team references that record and
     advance a gate.
   - `QUALITY-PREFLIGHT-*` — the pre-flight line the roles share.
-  - `RETIRED-SPEC-*` — retired wording, failed wherever it survives.
 
   Bind a sentence when it exists in two files and their drifting apart would
   change what a reader is told; a clause that could never fire is maintenance
@@ -127,8 +119,6 @@ checklist`. The catalog validator enforces the sequence.
   mobile and devops — names the existing-versus-greenfield fork in its own router
   line and its own completion checklist, in its own domain's words. No clause
   binds this, so check it by hand when adding a role or rewriting a router.
-- `tests/fixtures/plan-bundle/` holds the bundles the plan validator is tested
-  against. It is test data, not product, and ships in neither distribution path.
 
 ## Contribution boundary
 
@@ -162,26 +152,18 @@ checklist`. The catalog validator enforces the sequence.
 
 - Focused unit test: `pnpm test:unit tests/catalog/skill-validator.test.ts`
 - Catalog contract: `pnpm validate`
-- Written plan bundle: `pnpm validate:plan <plan-directory>` — root layout
-  (a single `plan.md`, or `plan.md` plus `phases/`), continuous phase numbering,
-  the `phase-XX-` prefix reserved to `phases/`, resolving relative links,
-  frontmatter by document kind, a Code Review `APPROVE` naming the QA `PASS` it
-  followed, superseded evidence, and a phase file held out of `accepted` by an
-  open checkbox or pending approval (a single-file plan has no phase files, so
-  this check does not reach it). Not part of `pnpm test`; the fixture bundles are
-  validated through `tests/plans/`.
 - Catalog discovery: `pnpm skills:list`
 - Source liveness: `pnpm check:links` — requests every link in a skill's source
-  registry and reads the status code only. Needs network, so it runs on pull
-  requests as its own non-blocking job, not in `pnpm test`.
+  registry and reads the status code only. Needs network, so it runs weekly, on
+  demand, and on a pull request that edits a registry, as its own CI job, not in
+  `pnpm test`.
 - Coverage: `pnpm coverage` — on demand, never a gate and never a threshold.
 - Definition of done: `pnpm test`
 - Pre-publication gate: `pnpm release:check`
 - Release: `pnpm release [--release-type patch|minor|major] [--otp <code>]`.
   It checks npm's latest published version, defaults to a patch bump, requires a
   clean working tree, updates `package.json`, `.claude-plugin/plugin.json` and
-  `.codex-plugin/plugin.json` together, asserts the version is unpublished, and
-  publishes with `--no-git-checks`. The publish runs `prepublishOnly` and so
+  `.codex-plugin/plugin.json` together, and publishes with `--no-git-checks`. The publish runs `prepublishOnly` and so
   repeats the full gate. A manifest version already ahead of npm is preserved so
   a failed publish can be retried. `pnpm release --dry-run` reports the selected
   version without writing or publishing. Registry failures fail closed; an E404

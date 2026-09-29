@@ -7,13 +7,9 @@ browser, test and build tooling, so the pass holds with no other skill installed
 
 - A screen that renders one state. Loading, empty, error, stale, offline, permission-denied and long-content
   paths exist in the product but not in the component.
-- Tests bound to the implementation: internal selectors, a mocked child that is the behavior under test, a
-  fixed sleep standing in for a deterministic event.
 - A hydration mismatch hidden behind client-only rendering instead of reconciled with the server data.
 - Effects that never clean up — listeners, timers, observers, subscriptions, object URLs, animation
   instances — so a second mount leaks or double-fires.
-- Derived state duplicated into a store, dishonest effect dependencies, memoization added before any
-  measurement asked for it.
 - Motion with no lifecycle: nothing cancels on unmount, interruption is undefined, and the reduced-motion
   path removes the transform that was the only thing bringing content into view.
 - Accessibility and performance asserted from clean code. A scrollable track with no tab stop and a 3.4:1

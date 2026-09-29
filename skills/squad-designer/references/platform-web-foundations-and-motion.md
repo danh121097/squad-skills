@@ -1,9 +1,8 @@
 # Platform: web foundations and motion
 
-Read this reference for a web target — classifying an existing versus greenfield web project,
-selecting a React/Next.js or Vue/Nuxt UI foundation, porting an interaction across frameworks,
-choosing web animation technology, or evaluating OpenUI. Native targets load their own platform
-reference instead. Do not use these defaults to replace a working local system.
+Read this reference for a web target — classifying an existing versus greenfield web project, choosing a
+UI foundation, or choosing web animation technology. Native targets load their own platform reference
+instead. Do not use these defaults to replace a working local system.
 
 ## 1. Existing codebase
 
@@ -14,42 +13,15 @@ Reuse and extend them before proposing anything new.
 When accepted Figma also exists, preserve its design intent but map it onto repository primitives. Report
 material conflicts; do not silently fork the visual system.
 
-Do not introduce shadcn, Reka UI, Motion, GSAP, beUI, or another foundation merely because it is listed
-below. A new dependency requires a demonstrated gap and explicit approval.
+Do not introduce shadcn, Reka UI, Motion, GSAP, or another foundation merely because it is listed below. A
+new dependency requires a demonstrated gap and explicit approval.
 
-## 2. Greenfield React/Next.js
+## 2. Greenfield
 
-- Establish semantic color, typography, spacing, radius, surface, focus, and motion tokens first.
-- Prefer shadcn/ui for accessible open-code components.
-- Use selected beUI source/components for purposeful animated patterns; inspect live source and dependencies
-  before adoption and keep the set coherent.
-- Use Motion for React for component-state, layout, gesture, enter/exit, and ordinary scroll-linked motion.
-- Reserve GSAP for requirements that need its timeline or plugin model.
+Establish semantic color, typography, spacing, radius, surface, focus, and motion tokens first, then compose
+from shadcn/ui (React/Next.js) or Reka UI, with shadcn-vue as the styled layer (Vue/Nuxt).
 
-beUI is a preferred optional source, not a dependency or authority over the repository/design contract;
-its entrypoints live in the source registry. Fetch its agent guide live, verify availability, source,
-license and dependencies before adopting a component, and if a deep link moves, use the catalog root or
-implement the same accepted behavior with local primitives.
-
-## 3. Greenfield Vue/Nuxt
-
-- Establish the same semantic token foundation before composing screens.
-- Prefer Reka UI for accessible unstyled primitives, keyboard behavior, focus management, and composition.
-- Style with the project's chosen CSS/Tailwind token layer.
-- When a shadcn-like styled open-code layer is desired, use shadcn-vue, whose primitives are powered by
-  Reka UI. Raw Reka primitives are not themselves a complete styled component system.
-- Use Motion for Vue (`motion-v`) for component-state, layout, gesture, enter/exit, and ordinary
-  scroll-linked motion.
-- Reserve GSAP for requirements that need its timeline or plugin model.
-
-## 4. Cross-framework adaptation
-
-Port the design and behavior contract—not framework syntax. Translate component states, controlled state,
-slots/children, focus and keyboard behavior, layout continuity, timing, responsive behavior, and semantic
-tokens through the target framework's native composition model. Never paste React components into Vue or
-Vue components into React.
-
-## 5. Animation decision
+## 3. Animation decision
 
 Choose the lightest tool that satisfies the behavior:
 
@@ -59,11 +31,8 @@ Choose the lightest tool that satisfies the behavior:
 - **GSAP:** precise multi-step timelines, tightly synchronized choreography across many targets,
   ScrollTrigger pin/scrub/snap sequences, or advanced SVG/canvas work.
 
-Do not let Motion and GSAP control the same elements or interaction. Define ownership boundaries. For
-GSAP, ship lifecycle-scoped selectors, teardown/revert of timelines, contexts and ScrollTriggers,
-responsive variants, and a reduced-motion fallback in the component you write.
-
-Use CSS instead of installing a motion dependency for an effect CSS handles cleanly.
+Do not let Motion and GSAP control the same elements or interaction. Scope GSAP selectors to the component
+and revert timelines, contexts and ScrollTriggers on teardown.
 
 ### Scroll-driven integration
 
@@ -89,16 +58,4 @@ presentational components it ships, alongside interaction intent, spatial model,
 character. Frontend and mobile own motion they add while wiring behavior — route transitions, data-driven
 and platform-lifecycle animation — plus bundle/performance verification of the whole app.
 
-The greenfield defaults appear in both skills so each can run alone; maintain them as one policy and
-resolve conflict in this order: accepted design, existing repository system, then these defaults.
-
-## 6. Generative UI terminology
-
-- **AI-assisted UI implementation:** an agent writes stable application components during development.
-  beUI, shadcn, Reka, and Motion may be used without OpenUI.
-- **Runtime Generative UI:** the shipped product asks a model to emit an abstract UI tree while running,
-  and a renderer maps it to registered allowed components.
-
-Use the beUI OpenUI guide, registered in the source registry, only for the second behavior. OpenUI is
-not a default dependency for normal screens. Treat that guide as changing external documentation and
-verify it live before relying on exact APIs.
+Resolve conflicts in this order: accepted design, existing repository system, then these defaults.

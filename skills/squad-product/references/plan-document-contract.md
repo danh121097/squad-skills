@@ -56,9 +56,9 @@ then context, decision and consequences. A reference states `title`.
 
 ## What it does not contain
 
-No stack, architecture or data-model decision — list it as open with its owner. No file assignments,
-branches, execution mode or agent instances. No verdict or sign-off from this role. No invented files,
-commands or measurements: detail means completeness, not guesses.
+No stack, architecture or data-model decision (list it as open with its owner), file assignment, branch,
+execution mode, agent instance or verdict from this role. No invented files, commands or measurements:
+detail means completeness, not guesses.
 
 ## After work starts
 

@@ -30,24 +30,21 @@
  * is a second way out that the total never offered — route the new content to
  * the tasks that need it, and the median does not move at all.
  *
- * Every figure below was re-recorded on 2026-09-24, after the catalog was cut
- * down to risk-tiered gates, one-line bound handoffs and shorter references,
- * then raised where every role that can run on its own took the tier list, the
- * gates took their solo rule, the lead's plan fallback took the layout, and
- * every role took the fork rule that stops on doubt and lets the lead settle
- * only what it can show.
+ * Every figure below was re-recorded on 2026-09-29, after generic knowledge,
+ * source registries, runtime-fallback boilerplate and in-skill repeats were cut
+ * and the shared fork, loop and approve clauses were shortened.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2333, // was 2272
-  'squad-code-review': 2713, // was 2640
-  'squad-designer': 2064, // was 2003
-  'squad-devops': 2170, // was 2109
-  'squad-fix': 2889, // was 2828
-  'squad-frontend': 2542, // was 2481
-  'squad-mobile': 2261, // was 2200
-  'squad-product': 2794, // was 2739
-  'squad-qa': 2763, // was 2690
-  'squads-team': 3557, // was 3493
+  'squad-backend': 2033, // was 2333
+  'squad-code-review': 2179, // was 2713
+  'squad-designer': 2064, // was 2064
+  'squad-devops': 2009, // was 2170
+  'squad-fix': 2415, // was 2889
+  'squad-frontend': 1971, // was 2542
+  'squad-mobile': 1929, // was 2261
+  'squad-product': 2489, // was 2794
+  'squad-qa': 2267, // was 2763
+  'squads-team': 2928, // was 3557
 };

@@ -16,8 +16,7 @@ import {
  *
  * Deliberately outside `pnpm test`: the repository gate is offline, and a check
  * that depends on dozens of third-party hosts is exactly the kind of flake the
- * contract keeps out of it. It runs on pull requests as its own non-blocking
- * job.
+ * contract keeps out of it. It runs weekly and on demand as its own CI job.
  */
 const requestTimeoutMs = 20_000;
 
@@ -45,7 +44,6 @@ const requestHeaders = {
 const accessControlledStatuses = new Set([401, 403, 418, 429]);
 
 interface CitedSource {
-  declaredStatus: string;
   /** Every file citing this URL. A source shared by two registries is one request. */
   relativePaths: string[];
   url: string;
@@ -121,44 +119,30 @@ await Promise.all(
   })
 );
 
-let mismatches = 0;
-
 for (const result of results) {
-  const { cited } = result;
-  const agrees = result.state === cited.declaredStatus;
-
-  if (!agrees) mismatches += 1;
-
   console.log(
-    `${agrees ? 'ok  ' : 'FAIL'} ${result.state.padEnd(11)} expected ${cited.declaredStatus.padEnd(5)} ${result.detail.padEnd(24)} ${cited.url}  (${cited.relativePaths.join(', ')})`
+    `${result.state === 'dead' ? 'FAIL' : 'ok  '} ${result.state.padEnd(11)} ${result.detail.padEnd(24)} ${result.cited.url}  (${result.cited.relativePaths.join(', ')})`
   );
 }
-
-console.log(
-  `\n${results.length} cited source(s) checked; ${mismatches} disagree with the status they are recorded as having.`
-);
 
 // `unreachable` is not `dead`: a network fault is this machine's problem, not
 // the source's, and failing the run for it would train reviewers to ignore this.
-// The test is per-result — an earlier version asked whether *any* result was
-// reachable, so one live source turned every network fault in the same run into
-// a failure, which is exactly the noise this exemption exists to prevent.
-const blocking = results.filter(
-  (result) => result.state !== result.cited.declaredStatus && result.state !== 'unreachable'
-);
+// The test is per-result, so one live source never excuses a dead one.
+const dead = results.filter((result) => result.state === 'dead');
 
-if (blocking.length > 0) {
+console.log(`\n${results.length} cited source(s) checked; ${dead.length} moved or went away.`);
+
+if (dead.length > 0) {
   console.error(
-    `${blocking.length} of them moved or went away. Correct the URL or drop the entry: ` +
-      'a registry entry pointing at a dead page sends agents there.'
+    'Correct the URL or drop the entry: a registry entry pointing at a dead page sends agents there.'
   );
 }
 
-process.exit(blocking.length > 0 ? 1 : 0);
+process.exit(dead.length > 0 ? 1 : 0);
 
 /**
- * Registry links carry no declared status, so they are expected to be live: an
- * entry is a source this repository tells agents to use.
+ * Every registry link is expected to be live: an entry is a source this
+ * repository tells agents to use.
  *
  * Deduplicated across files rather than within one. Roles deliberately share
  * sources — a bugfix registry routes to the owning layer's docs — so per-file
@@ -193,7 +177,7 @@ async function readRegistryLinks(files: string[]): Promise<RegistryRead> {
       const existing = byUrl.get(url);
 
       if (existing === undefined) {
-        byUrl.set(url, { declaredStatus: 'live', relativePaths: [file], url });
+        byUrl.set(url, { relativePaths: [file], url });
       } else {
         existing.relativePaths.push(file);
       }

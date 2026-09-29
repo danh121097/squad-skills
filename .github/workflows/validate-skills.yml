@@ -11,15 +11,16 @@ on:
   # pull request. 02:00 UTC Monday.
   schedule:
     - cron: '0 2 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   validate:
-    # The scheduled run exists only for source liveness; re-running the offline
-    # gate on a repository nobody has touched proves nothing.
-    if: github.event_name != 'schedule'
+    # The scheduled and manual runs exist only for source liveness; re-running
+    # the offline gate on a repository nobody has touched proves nothing.
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -100,35 +101,48 @@ jobs:
   # gate above because it depends on third-party hosts: a slow documentation
   # site must not fail a contributor's pull request, and `pnpm test` stays
   # offline and deterministic. It reads status codes only and never a body.
-  #
-  # The same job serves two audiences, so its failure mode depends on the event.
-  # On a pull request it only reports, and a dead source never blocks a
-  # contributor whose change had nothing to do with it. On the weekly schedule it
-  # is allowed to fail, because a green run nobody is notified about is the same
-  # as not checking at all.
+  # It runs on the weekly schedule and on demand, and fails so a dead source
+  # notifies the maintainer.
   source-links:
+    # A pull request runs it only when it edits a source registry, so a new dead
+    # link is caught by the change that adds it and unrelated changes stay quiet.
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    continue-on-error: ${{ github.event_name == 'pull_request' }}
 
     steps:
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+          fetch-depth: 0
+
+      - name: Detect source-registry changes
+        id: registries
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" != pull_request ] ||
+            ! git diff --quiet "$BASE_SHA" HEAD -- 'skills/*/references/official-sources.md'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up pnpm
+        if: steps.registries.outputs.changed == 'true'
         uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
 
       - name: Set up Node.js
+        if: steps.registries.outputs.changed == 'true'
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
           cache: pnpm
 
       - name: Install dependencies
+        if: steps.registries.outputs.changed == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Report source-registry liveness
+        if: steps.registries.outputs.changed == 'true'
         run: pnpm check:links

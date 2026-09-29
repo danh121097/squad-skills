@@ -86,7 +86,6 @@ function main(): void {
   run('scripts/bump-release-version.ts', bumpArgs);
   if (dryRun) return;
 
-  run('scripts/assert-version-unpublished.ts', []);
   execFileSync('pnpm', publishCommandArgs(publishArgs), { stdio: 'inherit' });
 }
 

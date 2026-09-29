@@ -97,8 +97,8 @@ makes this the only single-command route to both:
 
 The agent definitions are committed at `agents/`, one per skill, and a plugin agent
 reaches its role by skill name because a plugin installs both halves at once.
-`pnpm test` regenerates each one from its `SKILL.md` and fails if the committed
-file has fallen behind, so a skill description never drifts away from the agent
+`pnpm agents:generate` rewrites each one from its `SKILL.md`, and `pnpm test`
+fails if a committed file has fallen behind, so a skill description never drifts away from the agent
 that carries it. Each plugin agent carries its role's default reasoning effort
 and no model; a plugin install takes no `--effort` flag, so a different level
 needs the npm CLI's agent files instead.
