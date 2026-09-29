@@ -12,7 +12,7 @@
  * pins it against a real YAML parse of every shipped skill.
  */
 
-import { resolveRoleEffort } from './role-effort-defaults.ts';
+import { resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 
 export interface SkillAgentDefinition {
   description: string;
@@ -43,7 +43,7 @@ export interface AgentBodyContext {
   /**
    * Extra frontmatter lines, already `key: value`. Only Claude Code's formats
    * take them: Codex's agent table has no model or effort of its own. The plugin
-   * ships to every user, so it carries the catalog's default effort and no model.
+   * takes no flags, so it carries the catalog's default model and effort.
    */
   frontmatter?: string[];
   /** The sentence telling the agent where its skill is. */
@@ -53,11 +53,8 @@ export interface AgentBodyContext {
 }
 
 /**
- * What one Claude Code agent file carries, already resolved for its role.
- * Nothing in `skills/` names a model: this package is installed by everyone,
- * and the right model is a property of who is running it, not of the role. A
- * model reaches a file only when the invocation that wrote it asked for one.
- * Effort starts from the role's catalog default in `role-effort-defaults.ts`.
+ * What one Claude Code agent file carries, already resolved for its role from
+ * the catalog defaults in `role-defaults.ts` and the caller's overrides.
  */
 export interface AgentPreferences {
   effort?: string | null;
@@ -132,7 +129,10 @@ function renderPreferenceLines(preferences: AgentPreferences): string[] {
  */
 export function renderPluginAgentFile(definition: SkillAgentDefinition): string {
   return renderAgentBody(definition, {
-    frontmatter: renderPreferenceLines({ effort: resolveRoleEffort(definition.name) }),
+    frontmatter: renderPreferenceLines({
+      effort: resolveRoleEffort(definition.name),
+      model: resolveRoleModel(definition.name),
+    }),
     instruction: `Load the \`${definition.name}\` skill bundled with this plugin and follow it for this task.`,
     origin: 'Regenerated from that file; edits here are overwritten.',
   });

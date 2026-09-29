@@ -147,30 +147,37 @@ describe('installAgentDefinitions', () => {
     expect(roleOnly.messages.join('\n')).toContain('Ignored --model and --effort for codex');
   });
 
-  it("writes each role's default effort, and a named role's override over a bare one", async () => {
+  it("writes each role's default model and effort, and a named role's override over a bare one", async () => {
     await installSkillInto('.claude', 'squad-qa');
     await installSkillInto('.claude', 'squad-fix');
     await installSkillInto('.claude', 'squads-team');
-    const effortOf = async (name: string) =>
+    const fieldOf = async (name: string, field: string) =>
       (await readFile(path.join(home, `.claude/agents/${name}.md`), 'utf8')).match(
-        /^effort: (.+)$/m
+        new RegExp(`^${field}: (.+)$`, 'm')
       )?.[1];
 
     await request({ agents: ['claude-code'], skills: ['squad-qa', 'squad-fix'] });
 
-    expect(await effortOf('squad-qa')).toBe('medium');
-    expect(await effortOf('squad-fix')).toBe('high');
+    expect(await fieldOf('squad-qa', 'effort')).toBe('medium');
+    expect(await fieldOf('squad-fix', 'effort')).toBe('high');
+    expect(await fieldOf('squad-qa', 'model')).toBe('sonnet');
+    expect(await fieldOf('squad-fix', 'model')).toBe('opus');
 
     await request({
       agents: ['claude-code'],
       effort: 'low',
+      model: 'haiku',
       roleEfforts: { 'squad-fix': 'xhigh', 'squad-qa': 'inherit' },
+      roleModels: { 'squad-fix': 'sonnet', 'squad-qa': 'inherit' },
       skills: ['squad-qa', 'squad-fix', 'squads-team'],
     });
 
-    expect(await effortOf('squad-qa')).toBeUndefined();
-    expect(await effortOf('squad-fix')).toBe('xhigh');
-    expect(await effortOf('squads-team')).toBe('low');
+    expect(await fieldOf('squad-qa', 'effort')).toBeUndefined();
+    expect(await fieldOf('squad-fix', 'effort')).toBe('xhigh');
+    expect(await fieldOf('squads-team', 'effort')).toBe('low');
+    expect(await fieldOf('squad-qa', 'model')).toBeUndefined();
+    expect(await fieldOf('squad-fix', 'model')).toBe('sonnet');
+    expect(await fieldOf('squads-team', 'model')).toBe('haiku');
   });
 
   // The message is worth nothing if it fires when nobody asked.

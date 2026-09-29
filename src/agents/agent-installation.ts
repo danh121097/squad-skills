@@ -16,8 +16,8 @@ import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path';
 
 import { registerCodexAgents } from './codex-config-registration.ts';
-import type { EffortOverrides } from './role-effort-defaults.ts';
-import { hasEffortOverrides, resolveRoleEffort } from './role-effort-defaults.ts';
+import type { RoleOverrides } from './role-defaults.ts';
+import { hasRoleOverrides, resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 import type { AgentPreferences } from './skill-agent-definition.ts';
 import {
   generatedMarker,
@@ -33,13 +33,15 @@ export interface AgentInstallationRequest {
   /** Overrides every role's default effort in its Claude Code agent file. */
   effort?: string | null;
   force: boolean;
-  /** Written into a Claude Code agent file when the caller asked for it. */
+  /** Overrides every role's default model in its Claude Code agent file. */
   model?: string | null;
   homeDirectory: string;
   packageRoot: string;
   projectRoot: string;
   /** Overrides named roles' effort, over `effort` and the catalog default. */
   roleEfforts?: Record<string, string>;
+  /** Overrides named roles' model, over `model` and the catalog default. */
+  roleModels?: Record<string, string>;
   scope: AgentScope;
   skills: string[];
 }
@@ -96,10 +98,14 @@ export async function installAgentDefinitions(
     }
 
     await mkdir(target.agentsDirectory, { recursive: true });
-    const overrides: EffortOverrides = { effort: request.effort, roleEfforts: request.roleEfforts };
-    const asked = request.model != null || hasEffortOverrides(overrides);
+    const overrides: RoleOverrides = {
+      effort: request.effort,
+      model: request.model,
+      roleEfforts: request.roleEfforts,
+      roleModels: request.roleModels,
+    };
 
-    if (asked && !target.carriesPreferences) {
+    if (hasRoleOverrides(overrides) && !target.carriesPreferences) {
       messages.push(
         `Ignored --model and --effort for ${tool}: this CLI writes them into Claude Code agent files only. ` +
           'Codex reads a subagent default from [agents] default_subagent_model and ' +
@@ -126,7 +132,7 @@ export async function installAgentDefinitions(
 
       const preferences: AgentPreferences = {
         effort: resolveRoleEffort(definition.name, overrides),
-        model: request.model,
+        model: resolveRoleModel(definition.name, overrides),
       };
 
       await writeFile(

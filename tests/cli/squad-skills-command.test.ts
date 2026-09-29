@@ -55,6 +55,7 @@ describe('createCliAction', () => {
         force: false,
         model: null,
         roleEfforts: {},
+        roleModels: {},
         scope: 'project',
         skills: ['squads-team'],
       },
@@ -71,6 +72,7 @@ describe('createCliAction', () => {
         force: false,
         model: null,
         roleEfforts: {},
+        roleModels: {},
         scope: 'project',
         skills: [],
       },
@@ -157,6 +159,7 @@ describe('createCliAction', () => {
         force: true,
         model: null,
         roleEfforts: {},
+        roleModels: {},
         scope: 'global',
         skills: [],
       },
@@ -174,6 +177,7 @@ describe('createCliAction', () => {
         force: false,
         model: 'opus',
         roleEfforts: {},
+        roleModels: {},
         scope: 'project',
         skills: [],
       },
@@ -182,11 +186,19 @@ describe('createCliAction', () => {
     });
   });
 
-  it('reads a model on the agents command', () => {
+  it('reads a model for every role and models for named roles', () => {
     expect(
-      createCliAction(['agents', '--global', '--model=sonnet'], packageRoot, '0.1.0')
+      createCliAction(
+        ['agents', '--global', '--model=sonnet', '--model', 'squad-fix=opus, squad-qa=inherit'],
+        packageRoot,
+        '0.1.0'
+      )
     ).toMatchObject({
-      agentPlan: { effort: null, model: 'sonnet' },
+      agentPlan: {
+        effort: null,
+        model: 'sonnet',
+        roleModels: { 'squad-fix': 'opus', 'squad-qa': 'inherit' },
+      },
     });
   });
 
@@ -200,7 +212,7 @@ describe('createCliAction', () => {
   });
 
   // The value lands verbatim in frontmatter, so a newline would add a key.
-  it.each(['opus\neffort: low', '[a]', ':x', 'a:'])(
+  it.each(['opus\neffort: low', '[a]', ':x', 'a:', 'squad-fix=opus\neffort: low', 'opus,x\ny'])(
     'refuses %j, which is not a model id',
     (model) => {
       expect(createCliAction(['agents', `--model=${model}`], packageRoot, '0.1.0')).toMatchObject({
@@ -256,7 +268,10 @@ describe('createCliAction', () => {
     [['--effort', 'high,low'], 'both high and low'],
     [['--effort', 'high', '--effort='], 'needs a value'],
     [['--effort', 'squad-qa=high,'], 'needs a value'],
-  ])('refuses the effort override %j', (flags, message) => {
+    [['--model', 'squad-qaa=opus'], 'squad-qaa is not a skill in this catalog'],
+    [['--model', 'opus,sonnet'], 'both opus and sonnet'],
+    [['--model', 'squad-qa=opus', '--model='], 'needs a value'],
+  ])('refuses the override %j', (flags, message) => {
     const action = createCliAction(['agents', '--global', ...flags], packageRoot, '0.1.0');
 
     expect(action).toMatchObject({ kind: 'print', exitCode: 1 });
@@ -286,6 +301,7 @@ describe('createCliAction', () => {
         force: false,
         model: 'opus',
         roleEfforts: {},
+        roleModels: {},
         scope: 'project',
         skills: ['opus'],
       },

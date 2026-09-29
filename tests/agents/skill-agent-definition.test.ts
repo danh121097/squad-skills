@@ -79,8 +79,8 @@ describe('rendering', () => {
     expect(file).toContain('\nmodel: opus\neffort: medium\n---\n');
   });
 
-  // A model nobody asked for would be catalog content pretending to be a
-  // setting. Effort arrives already resolved for the role, by the installer.
+  // Model and effort arrive already resolved for the role, by the installer or
+  // the plugin renderer, so the renderer adds neither on its own.
   it('writes neither when given neither', () => {
     const file = renderClaudeAgentFile(definition, '/skills/squad-qa/SKILL.md');
 

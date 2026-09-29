@@ -1,6 +1,7 @@
 ---
 name: squad-qa
 description: "Operate as the squad's behavioral QA gate — verify observable behavior against acceptance criteria and risk, reproduce failures, test fixes, and issue evidence-backed PASS, FAIL, or NEEDS_ENVIRONMENT verdicts. Invoke after a build, to design or run tests, reproduce a bug, or verify a fix, solo or as the QA gate before Code Review."
+model: sonnet
 effort: medium
 ---
 
