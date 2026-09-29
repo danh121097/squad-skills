@@ -93,20 +93,19 @@ Use `--no-agents` to install skills alone. A catalog installed through
 npx squad-skills agents --global
 ```
 
-Each Claude Code subagent file carries a reasoning effort for its role: `high`
-for every role except `squad-designer` and `squad-qa`, which run at `medium`.
-`--effort` overrides it, with a bare level for every role or `<skill>=<level>`
-for one, and `inherit` drops the field so the role follows the session's
-effort. `--model` writes a model into every file:
+Each Claude Code subagent file carries a model and a reasoning effort for its
+role. `squads-team`, `squad-product`, `squad-fix` and `squad-code-review` run on
+`opus`; the other roles run on `sonnet`. Effort is `high` for every role except
+`squad-designer` and `squad-qa`, which run at `medium`. `--model` and `--effort`
+override them, with a bare value for every role or `<skill>=<value>` for one,
+and `inherit` drops the field so the role follows the session:
 
 ```sh
-npx squad-skills agents --global --model sonnet --effort squad-qa=high,squad-designer=inherit
+npx squad-skills agents --global --model squad-qa=opus,squad-designer=inherit --effort squad-qa=high
 ```
 
 Every install regenerates these files, so pass the same flags again to keep an
-override. No skill in this catalog names a model. Which one to run is a property
-of your machine, not of the role, so it lives in the command that writes your
-files. Codex takes no per-agent model or effort; set
+override. Codex takes no per-agent model or effort; set
 `[agents] default_subagent_model` in `~/.codex/config.toml` instead, and the CLI
 says so rather than dropping the flag silently.
 

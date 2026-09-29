@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { defaultEffortByRole } from '../../src/agents/role-effort-defaults.ts';
+import { defaultEffortByRole, defaultModelByRole } from '../../src/agents/role-defaults.ts';
 import {
   readSkillAgentDefinition,
   renderPluginAgentFile,
@@ -45,9 +45,10 @@ describe('plugin agent definitions', () => {
     );
   });
 
-  // A skill missing from the table ships an agent with no effort, silently
-  // following the session instead of the level its role was given.
-  it('gives every skill a default effort, and no skill that is not shipped', () => {
+  // A skill missing from a table ships an agent with no model or effort,
+  // silently following the session instead of what its role was given.
+  it('gives every skill a default model and effort, and no skill that is not shipped', () => {
+    expect(Object.keys(defaultModelByRole).sort()).toEqual(skillNames);
     expect(Object.keys(defaultEffortByRole).sort()).toEqual(skillNames);
   });
 
