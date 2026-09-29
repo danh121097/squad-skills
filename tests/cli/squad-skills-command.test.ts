@@ -199,6 +199,23 @@ describe('createCliAction', () => {
     });
   });
 
+  // The value lands verbatim in frontmatter, so a newline would add a key.
+  it.each(['opus\neffort: low', '[a]', ':x', 'a:'])(
+    'refuses %j, which is not a model id',
+    (model) => {
+      expect(createCliAction(['agents', `--model=${model}`], packageRoot, '0.1.0')).toMatchObject({
+        kind: 'print',
+        exitCode: 1,
+      });
+    }
+  );
+
+  it('keeps preference flags out of list discovery', () => {
+    expect(
+      createCliAction(['list', '--model', 'opus', '--effort=low'], packageRoot, '0.1.0')
+    ).toMatchObject({ arguments: ['add', packageRoot, '--list'] });
+  });
+
   it('refuses an empty effort value', () => {
     expect(createCliAction(['agents', '--effort='], packageRoot, '0.1.0')).toMatchObject({
       kind: 'print',

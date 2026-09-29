@@ -50,6 +50,7 @@ const listOptionFlags = ['--agent', '-a', '--skill', '-s'];
 // `role-effort-defaults.ts`, and this flag overrides them.
 const modelFlags = ['--model'];
 const effortFlags = ['--effort'];
+const modelPattern = /^[A-Za-z0-9](?:[\w.:/[\]-]*[\w\]/-])?$/;
 
 export function createCliAction(
   arguments_: string[],
@@ -128,7 +129,7 @@ export function createCliAction(
     return {
       kind: 'delegate',
       agentPlan: null,
-      arguments: ['add', packageRoot, '--list', ...forwardedArguments],
+      arguments: ['add', packageRoot, '--list', ...strippedArguments],
     };
   }
 
@@ -156,10 +157,18 @@ function readPreferences(
 
   if (effort.kind === 'error') return effort;
 
+  // The value is written verbatim into YAML frontmatter, so anything beyond a
+  // model id's own characters could smuggle in a second key.
+  const model = readScalarOption(arguments_, modelFlags);
+
+  if (model !== null && !modelPattern.test(model)) {
+    return { kind: 'error', message: `--model ${JSON.stringify(model)} is not a model id.` };
+  }
+
   return {
     kind: 'ok',
     effort: effort.effort,
-    model: readScalarOption(arguments_, modelFlags),
+    model,
     roleEfforts: effort.roleEfforts,
   };
 }
