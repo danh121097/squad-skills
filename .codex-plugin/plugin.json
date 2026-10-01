@@ -1,6 +1,6 @@
 {
   "name": "squad-skills",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A role-specialized engineering squad — Product, Designer, Frontend, Backend, Mobile, DevOps, QA and Code Review — as skills, each also spawnable as a subagent.",
   "author": {
     "name": "Harry Nguyen",
