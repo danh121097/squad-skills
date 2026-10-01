@@ -82,10 +82,10 @@ checklist`. The catalog validator enforces the sequence.
 - Gates are proportional to risk. The squad lead, or a role run on its own,
   names one gate tier before building: `light` (one owner, no change to a public
   contract, auth, data or migration, infrastructure, or a dependency — one
-  combined verify pass with real commands), `standard` (the default — QA, then
-  Code Review), or `high` (a fixed list: auth or permissions, payment, data or
-  migration, production infrastructure or secrets, data deletion — QA, then Code
-  Review, independent where the runtime allows). When in doubt, the higher tier.
+  combined verify pass with real commands), `standard` (the default — QA and
+  Code Review together), or `high` (a fixed list: auth or permissions, payment, data or
+  migration, production infrastructure or secrets, data deletion — QA and Code
+  Review together, independent where the runtime allows). When in doubt, the higher tier.
   Every tier requires evidence from commands that ran.
 - The cross-skill contract in `src/catalog/cross-skill-contract-clauses.ts`
   binds wording that has to read the same in every file that states it, checked

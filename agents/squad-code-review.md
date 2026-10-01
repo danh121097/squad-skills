@@ -1,6 +1,6 @@
 ---
 name: squad-code-review
-description: "Operate as the squad's final implementation-quality gate after behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE. Invoke after QA passes as the final gate, or to review a diff, PR or commit on its own. Does not implement fixes."
+description: "Operate as the squad's implementation-quality gate beside behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE. Invoke alongside QA as the second gate, or to review a diff, PR or commit on its own. Does not implement fixes."
 model: opus
 effort: medium
 ---

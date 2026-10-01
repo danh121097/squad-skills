@@ -45,8 +45,8 @@ Use the runtime's native team, task and message APIs by their live schema; respe
 lead owns tasks, merge decisions, user approvals and the final report, and dispatches each task as its
 dependencies clear. In subagent mode children report to the lead and do not hand work to each other.
 
-Once a coherent gate unit is ready, launch one QA pass over its exact slice revisions, then one Code Review
-after `PASS`. A high-risk or independently shippable slice is its own unit. Fixes return to the same owner.
+Once a coherent gate unit is ready, launch one QA pass and one Code Review over its exact slice revisions
+together. A high-risk or independently shippable slice is its own unit. Fixes return to the same owner.
 
 A child has no channel to the user, so it returns a fork as gate 1 of `SKILL.md` says. The lead names the
 source in its final report and resumes the child; an unanswered fork blocks its phase like a `NEEDS_*`
@@ -56,8 +56,8 @@ verdict.
 
 One controller, sequentially: enter the build role and implement only its scope; on `light` close with the
 combined verify pass; otherwise run a distinct QA pass from acceptance and risk without editing
-implementation, then after `PASS` a fresh Code Review pass consuming QA evidence. Returns follow gate 4 of
-`SKILL.md`. This preserves logical gates but not independent judgment: say so in the final report and never
+implementation, then a fresh Code Review pass consuming QA evidence, both before any return. Returns follow
+gate 4 of `SKILL.md`. This preserves logical gates but not independent judgment: say so in the final report and never
 call a self-check independent.
 
 ## 6. Context lifecycle

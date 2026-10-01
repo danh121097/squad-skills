@@ -289,7 +289,7 @@ describe('handoff contract family', () => {
     // The strip has to have removed something, or the case would pass for the
     // wrong reason on any future renumbering of the hard gates.
     expect(withoutHardGate).not.toEqual(team);
-    expect(normalizeProse(withoutHardGate)).toContain('qa pass then code review approve');
+    expect(normalizeProse(withoutHardGate)).toContain('qa pass and code review approve');
 
     const projectRoot = await createProject({
       [teamSkill]: withoutHardGate,
@@ -310,7 +310,7 @@ describe('handoff contract family', () => {
 
     const projectRoot = await createProject({
       [teamSkill]: `# Team\n\nEvery slice must receive QA ${sequence.statement}.\n`,
-      [fixSkill]: '# Fix\n\nEvery fix slice must receive Code Review `APPROVE`, then QA `PASS`.\n',
+      [fixSkill]: '# Fix\n\nEvery fix slice must receive Code Review `APPROVE` and QA `PASS`.\n',
     });
 
     const result = await validateCrossSkillContract(projectRoot, {

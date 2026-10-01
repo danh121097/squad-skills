@@ -35,19 +35,22 @@
  * and the shared fork, loop and approve clauses were shortened; the product and
  * team figures again after the written plan was reduced to one file by default.
  * Code review, fix, QA and team rose by five words each when the gate loop cap
- * moved from per gate to per unit.
+ * moved from per gate to per unit, then again when QA and Code Review began
+ * running together, a return carried both gates' findings, a behavior-preserving
+ * fix reran only the existing suite, and QA and Review split the dimensions they
+ * had both claimed.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-backend': 2033, // was 2333
-  'squad-code-review': 2184, // was 2179
+  'squad-code-review': 2212, // was 2184
   'squad-designer': 2064, // was 2064
   'squad-devops': 2009, // was 2170
-  'squad-fix': 2420, // was 2415
+  'squad-fix': 2424, // was 2420
   'squad-frontend': 1971, // was 2542
   'squad-mobile': 1929, // was 2261
   'squad-product': 2392, // was 2489
-  'squad-qa': 2272, // was 2267
-  'squads-team': 2898, // was 2893
+  'squad-qa': 2295, // was 2272
+  'squads-team': 2908, // was 2898
 };

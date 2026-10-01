@@ -62,14 +62,14 @@ changes each need their own authorization.
    runs only for decisions both leave open.
 4. **No done without gates** — name the gate tier and its reason in one line before building: `light` (one
    owner, no change to a public contract, auth, data or migration, infrastructure or a dependency) closes on
-   one combined verify pass with real commands; `standard`, the default, runs QA then Code Review; `high`
+   one combined verify pass with real commands; `standard`, the default, runs QA and Code Review together; `high`
    (auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion) runs
    both independently where the runtime allows. When in doubt, take the higher tier. Every `standard` or
-   `high` slice must receive QA `PASS`, then Code Review `APPROVE`; one verdict may cover a coherent set of
+   `high` slice must receive QA `PASS` and Code Review `APPROVE`; one verdict may cover a coherent set of
    slices when it names their exact revisions. QA proves observable behavior against acceptance and risk; Code
    Review consumes that evidence and judges implementation quality, adding only verification needed to prove a
    finding. `FAIL` or `CHANGES_REQUESTED` returns to the owning role, and QA and Code Review together return a
-   unit to its owner at most twice, each time with every finding; a third return goes as `BLOCKED` to the
+   unit to its owner at most twice, each time with every finding from both gates; a third return goes as `BLOCKED` to the
    lead, or to the user when run on its own, with the evidence and two to four options for the user. `APPROVE`
    closes the unit: its warnings and suggestions go to the final report as options for the user, and it
    reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
@@ -125,7 +125,7 @@ result, and a missing environment or evidence never becomes completion.
   [references/coordination-contract.md](references/coordination-contract.md).
 - Each role returns its artifact, the evidence at the level it actually ran, and the gaps it could not
   close; the lead composes these and never upgrades a gap into a result.
-- After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
+- After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and
   neighboring blast radius, broadening only when contract or risk changes.
 - An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage
   no pass ran is never reported as run.
@@ -135,7 +135,7 @@ result, and a missing environment or evidence never becomes completion.
 - [ ] Outcome, constraints, non-goals and acceptance criteria are explicit; each phase names its roles
 - [ ] Project was scouted before the split; every edited file has one owner and overlap was serialized
 - [ ] UI work rests on the user's material, the existing system, or Designer output
-- [ ] The gate tier was named; every `standard` or `high` slice has QA PASS then Code Review APPROVE
+- [ ] The gate tier was named; every `standard` or `high` slice has QA PASS and Code Review APPROVE
 - [ ] Reruns match the changed surface; a third return or an unresolved NEEDS_* is reported as blocked
 - [ ] No approved unit was reopened without a later defect or the user asking
 - [ ] Integration and combined verification ran, or exact gaps are stated

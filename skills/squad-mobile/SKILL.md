@@ -101,7 +101,7 @@ implemented. Before handing over, run the self-review in
   remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - In a squad run the lead names the gate tier: `light` (one owner, no change to a public contract, auth,
   data or migration, infrastructure or a dependency) closes on one combined verify pass with real
-  commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
+  commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
 - A fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the

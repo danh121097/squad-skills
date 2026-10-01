@@ -11,7 +11,7 @@ Consume current QA behavioral evidence, then select implementation-quality dimen
 - compatibility: API/schema/types/events/env/config, migrations, clients and rollback;
 - performance: hot paths, N+1, rendering, memory, I/O, bundle/startup and infrastructure cost;
 - maintainability: repository conventions, clarity, duplication, ownership and error handling;
-- verification: test quality, missing regression cases, docs/runbook and observability impact;
+- verification: docs/runbook and observability impact, and tests that mirror the implementation (missing cases are QA's);
 - delivery: feature flags, rollout, migration sequencing, health signals and rollback.
 
 ## Severity

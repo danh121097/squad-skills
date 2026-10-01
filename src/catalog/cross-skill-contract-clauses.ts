@@ -306,7 +306,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // lead, because a role invoked alone names its own tier and can only file
     // auth or migration work as `high` if it carries the list.
     statement:
-      '`light` (one owner, no change to a public contract, auth, data or migration, infrastructure or a dependency) closes on one combined verify pass with real commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion) runs both independently where the runtime allows',
+      '`light` (one owner, no change to a public contract, auth, data or migration, infrastructure or a dependency) closes on one combined verify pass with real commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion) runs both independently where the runtime allows',
     files: [
       backendSkill,
       codeReviewSkill,
@@ -328,9 +328,12 @@ export const boundaryClauses: BoundaryClause[] = [
     // Counted per gate, QA and Review could each return twice, so one unit ran
     // up to ten agent passes; the count is per unit. A gate that returns
     // findings one at a time would spend that budget on its own drip, so each
-    // return carries all of them.
+    // return carries all of them. Run in sequence, a Review blocker found after
+    // QA PASS voided QA's evidence and cost a second QA pass; the gates run on
+    // one revision and a return carries both gates' findings, so one fix pass
+    // answers both.
     statement:
-      'QA and Code Review together return a unit to its owner at most twice, each time with every finding; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
+      'QA and Code Review together return a unit to its owner at most twice, each time with every finding from both gates; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {
@@ -363,23 +366,24 @@ export const boundaryClauses: BoundaryClause[] = [
     // names, the order, or who issues the pass — a review-before-QA rewrite, or
     // an implementer self-certifying its own `PASS`, both left the gate green.
     //
-    // The statement therefore carries four things and each is load-bearing:
+    // The statement therefore carries three things and each is load-bearing:
     // `must receive` (the slice does not issue its own verdict), `QA` (the
-    // producer, which a subjectless fragment left open), the order, and the two
-    // verdict names. An earlier draft bound only "`PASS`, then Code Review
-    // `APPROVE`"; a probe rewriting `squad-fix` to "the owning role must return
-    // `PASS`" passed it, which is the independence TIER-001 and GATE-002 exist
-    // to protect.
+    // producer, which a subjectless fragment left open), and the two verdict
+    // names. The gates run on one revision, so the statement binds which
+    // verdicts close a slice, no longer the order they arrive in. An earlier
+    // draft bound only "`PASS`, then Code Review `APPROVE`"; a probe rewriting
+    // `squad-fix` to "the owning role must return `PASS`" passed it, which is
+    // the independence TIER-001 and GATE-002 exist to protect.
     //
     // `squad-fix` was reworded to match `squads-team` rather than the reverse:
     // the lead owns the pipeline rule, and `squad-fix` restates it. Neither file
     // carries task types whose loaded set this wording changes, so no payload
     // figure moves with it.
     //
-    // Only these two entrypoints state the sequence. The build roles carry
+    // Only these two entrypoints state the closing verdicts. The build roles carry
     // HANDOFF-TIER-001 instead, which binds what closes each tier rather than
     // which verdict closes each gate.
-    statement: 'must receive QA `PASS`, then Code Review `APPROVE`',
+    statement: 'must receive QA `PASS` and Code Review `APPROVE`',
     files: [fixSkill, teamSkill],
   },
   {
@@ -398,7 +402,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // Both gates and their lead carry the same delta-sized return edge so a fix
     // does not silently restart unaffected work or skip affected evidence.
     statement:
-      'After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and neighboring blast radius, broadening only when contract or risk changes',
+      'After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and neighboring blast radius, broadening only when contract or risk changes',
     files: [codeReviewSkill, qaSkill, teamSkill],
   },
   {

@@ -31,7 +31,7 @@
     "websiteURL": "https://github.com/danh121097/squad-skills",
     "defaultPrompt": [
       "Coordinate this change with the smallest safe squad.",
-      "Run behavioral QA, then review implementation quality.",
+      "Run behavioral QA and review implementation quality.",
       "Route this bug to its owning engineering role."
     ]
   }

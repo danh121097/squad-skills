@@ -65,6 +65,20 @@ the count bounds attempts, not scrutiny: each return carries every finding the
 gate has, so one fix pass addresses all of them, and a third return reaches the
 user with evidence and options instead of shipping the unit.
 
+Review used to start only after QA `PASS`. A blocker Review found by reading
+code QA's tests never reached voided QA's evidence, so one fix cost a second QA
+pass and a second Review: the loop users saw. The gates now run on one revision
+and a return carries both gates' findings, so one fix pass answers both; Review
+consumes QA's evidence before its verdict rather than before it starts. The
+price is Review work spent on a revision QA then fails, accepted because those
+findings still reach the same fix pass. A fix that changes no observable
+behavior reruns the existing suite instead of a new QA pass.
+
+QA and Review also split the dimensions they had both claimed. QA executes
+security, performance and rollback checks; Review judges them statically. Test
+adequacy is QA's, and Review reports a test only when it mirrors the
+implementation.
+
 ## Quality bar and checklist
 
 The quality bar is the copy a role runs in one piece before it hands over; a

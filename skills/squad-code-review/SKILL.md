@@ -1,6 +1,6 @@
 ---
 name: squad-code-review
-description: "Operate as the squad's final implementation-quality gate after behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE. Invoke after QA passes as the final gate, or to review a diff, PR or commit on its own. Does not implement fixes."
+description: "Operate as the squad's implementation-quality gate beside behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE. Invoke alongside QA as the second gate, or to review a diff, PR or commit on its own. Does not implement fixes."
 user-invocable: true
 category: utilities
 keywords: [code-review, security, owasp, correctness, performance, contracts, maintainability, final-gate]
@@ -11,8 +11,7 @@ metadata:
 
 # Squad — Code Review
 
-Review the actual implementation for production readiness, after QA has established behavioral evidence
-in a squad run.
+Review the actual implementation for production readiness, alongside QA's behavioral pass in a squad run.
 Verify suspected findings before reporting them, rank actionable findings and gate `done`. Pair installed
 specialist review skills; work natively when they are absent.
 
@@ -39,8 +38,8 @@ own primary docs; cite version and date. Never auto-install skills, plugins, MCP
 
 ## Core gates
 
-1. **Resolve scope and intent** — identify exact revision/diff, acceptance criteria, QA evidence,
-   generated files and affected consumers before reviewing.
+1. **Resolve scope and intent** — identify exact revision/diff, acceptance criteria, generated files and
+   affected consumers before reviewing; QA evidence is consumed before the verdict.
 2. **Inspect blast radius** — follow changed contracts, callers, state/data paths, permissions,
    migrations, configuration, rollout and tests beyond the edited lines.
 3. **Verify findings empirically** — trace the code path, inspect authoritative docs, or run the narrowest
@@ -86,18 +85,19 @@ finding. Before issuing a verdict, run the self-review in
 ## Handoff contract
 
 - From QA, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and
-  residual risk, and whether the pass was independent. In a squad run, Review runs only on `PASS`.
+  residual risk, and whether the pass was independent. In a squad run Review starts with QA, and `APPROVE`
+  needs QA `PASS` on that revision.
 - From DevOps on an infrastructure change, the exact target acted on, which verification level ran —
   static, plan or deployed — and the rollback trigger and recovery path.
 - To the owning role and the lead, severity-ranked findings carrying file:line, failure condition, impact
   and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - What was inspected, what was not, and the residual unverified risk — reported even when no finding
   exists.
-- After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
+- After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and
   neighboring blast radius, broadening only when contract or risk changes.
 - In a squad run the lead names the gate tier: `light` (one owner, no change to a public contract, auth,
   data or migration, infrastructure or a dependency) closes on one combined verify pass with real
-  commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
+  commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
 - Invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own
@@ -107,7 +107,7 @@ finding. Before issuing a verdict, run the self-review in
 - In a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this
   role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate
   as unowned.
-- QA and Code Review together return a unit to its owner at most twice, each time with every finding; a third
+- QA and Code Review together return a unit to its owner at most twice, each time with every finding from both gates; a third
   return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four
   options for the user.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
@@ -123,8 +123,8 @@ finding. Before issuing a verdict, run the self-review in
 
 ## Completion checklist
 
-- [ ] Target, base, acceptance and QA evidence were resolved; QA evidence was consumed, not replayed, or
-      its absence recorded as residual risk
+- [ ] Target, base and acceptance were resolved; QA evidence was consumed before the verdict, not replayed,
+      or its absence recorded as residual risk
 - [ ] Contracts, consumers, data/auth paths and operational blast radius were inspected
 - [ ] Each finding is verified, carries file:line, failure condition, impact and remediation, and is
       ranked by realistic impact

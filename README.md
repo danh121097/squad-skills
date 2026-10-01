@@ -158,12 +158,12 @@ you want to pick the role yourself.
 | CI/CD, containers, IaC, reverse proxy and TLS, observability, release and rollback                                                    | `squad-devops`      |
 | A bug, regression, failing test, broken build or CI/deploy failure whose owner is unproven, or that wants a diagnosis-to-fix pipeline | `squad-fix`         |
 | Test design, a reproduction, or a fix that needs an evidence-backed verdict                                                           | `squad-qa`          |
-| A diff, PR or branch that needs a final review gate before it ships                                                                   | `squad-code-review` |
+| A diff, PR or branch that needs an implementation review before it ships                                                              | `squad-code-review` |
 | Work spanning several roles, or work needing independent QA and review gates                                                          | `squads-team`       |
 
 Two of these are gates rather than builders. `squad-qa` verifies observable behavior against acceptance and
-risk, then issues `PASS`, `FAIL` or `NEEDS_ENVIRONMENT`. `squad-code-review` consumes that evidence, reviews
-implementation quality and issues `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`; it never implements
+risk, then issues `PASS`, `FAIL` or `NEEDS_ENVIRONMENT`. `squad-code-review` runs beside it on the same revision, consumes that
+evidence before its verdict, reviews implementation quality and issues `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`; it never implements
 the fixes it asks for. Reach for the smallest role that fits and let it escalate.
 
 ## How the squad runs
@@ -173,14 +173,14 @@ the fixes it asks for. Reach for the smallest role that fits and let it escalate
 | Tier       | When                                                                                                 | Closes on                                              |
 | ---------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | `light`    | One owner; no change to a public contract, auth, data or migration, infrastructure or a dependency   | One combined verify pass with real commands            |
-| `standard` | The default                                                                                          | QA `PASS`, then Code Review `APPROVE`                  |
+| `standard` | The default                                                                                          | QA `PASS` and Code Review `APPROVE`, run together      |
 | `high`     | Auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion | Both gates, run independently where the runtime allows |
 
-QA and Code Review together return work to its owner at most twice, each time with every finding they
-have; a third return comes back to you as blocked, with the evidence and two to four options. `APPROVE`
+QA and Code Review together return work to its owner at most twice, each time with every finding from both
+gates, so one fix pass answers both; a third return comes back to you as blocked, with the evidence and two to four options. `APPROVE`
 closes a unit: its warnings and suggestions reach you as options in the final report instead of going
 back to the owner, and a follow-up you ask for is tiered on its own diff, so a docs or test tweak does
-not rerun both gates. A build role or `squad-fix` called on its own verifies with real commands and ends
+not rerun both gates, and a fix that changes no observable behavior reruns only the existing suite. A build role or `squad-fix` called on its own verifies with real commands and ends
 by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both. Designer runs only for
 decisions your own references and the existing design system leave open.
 

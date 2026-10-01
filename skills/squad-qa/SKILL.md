@@ -45,7 +45,8 @@ and date. Never auto-install skills, plugins, MCP servers, packages or CLIs.
    criterion whose test was skipped, filtered out or never reached the runner is unevidenced, reported at
    the same volume as a failure.
 2. **Test the behavioral risk surface** — cover relevant happy path, boundaries, errors, permissions,
-   concurrency, lifecycle/offline, security, accessibility, performance, compatibility and rollback.
+   concurrency, lifecycle/offline, accessibility and compatibility; security, performance and rollback as
+   executed checks only, since Code Review judges them statically.
 3. **Keep evidence deterministic** — no arbitrary sleeps, uncontrolled remote data or order dependence;
    isolate or explain environmental flakiness. A subject that is stochastic by construction is evidenced
    by a stated sample and threshold, never by treating its variance as a defect.
@@ -93,11 +94,11 @@ A suite that cannot fail is not coverage. Before issuing a verdict, run the self
 - On `FAIL`, to the owning role: the minimal repro, expected versus actual, and the redacted artifacts.
 - On `NEEDS_ENVIRONMENT`, to the lead, or to the user when run on its own: the exact gap and the smallest
   next action.
-- After code changes, QA reruns affected and regression checks; Review verifies the finding, fix and
+- After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and
   neighboring blast radius, broadening only when contract or risk changes.
 - In a squad run the lead names the gate tier: `light` (one owner, no change to a public contract, auth,
   data or migration, infrastructure or a dependency) closes on one combined verify pass with real
-  commands; `standard`, the default, runs QA then Code Review; `high` (auth or permissions, payment, data
+  commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
 - Invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own
@@ -107,7 +108,7 @@ A suite that cannot fail is not coverage. Before issuing a verdict, run the self
 - In a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this
   role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate
   as unowned.
-- QA and Code Review together return a unit to its owner at most twice, each time with every finding; a third
+- QA and Code Review together return a unit to its owner at most twice, each time with every finding from both gates; a third
   return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four
   options for the user.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
