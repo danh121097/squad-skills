@@ -80,8 +80,8 @@ security or operations changes.
 
 ## 5. Final report
 
-The report is as long as the work. A `light` result is three lines: the outcome, the verify commands that
-ran, and the residual risk. A `standard` or `high` result adds the acceptance result, execution mode and
+The report is as long as the work. A `light` result states the outcome, the verify commands that ran, and
+the residual risk. A `standard` or `high` result adds the acceptance result, execution mode and
 whether gates were independent agents or single-session passes, the role/ownership map, evidence at the
 level actually verified, QA and Code Review verdicts, any unresolved `NEEDS_*` or blocked state with the
 next action, docs impact, residual risks, unresolved questions, and any external mutation with its scope.

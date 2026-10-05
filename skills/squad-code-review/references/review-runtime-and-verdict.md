@@ -1,6 +1,6 @@
 # Review severity and report shape
 
-Read before review, and whenever QA evidence or docs lookup is in question.
+Read before review: dimensions, severity definitions and the finding format.
 
 ## Review dimensions
 

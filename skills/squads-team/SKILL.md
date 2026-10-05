@@ -46,7 +46,7 @@ changes each need their own authorization.
 1. **Frame first** — reuse an accepted plan: the outcome in the user's own terms, the constraints and explicit
    non-goals, acceptance criteria a run can actually check, and the phases with the required Squad role or
    roles and each role's responsibility. When the prompt already states an outcome and criteria that can fail,
-   state that frame yourself in at most ten lines. Call `squad-product` when installed, or frame inline
+   state that frame yourself, brief and checkable. Call `squad-product` when installed, or frame inline
    otherwise, only when the request is vague with no criteria that can fail, the repository is empty with no
    stack chosen, the user asks for a plan, or more than one fork could change the phases. A plan that reaches
    this gate follows the fork rule. A fork the request, repository or evidence cannot settle, or the role is

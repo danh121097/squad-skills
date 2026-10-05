@@ -1,18 +1,18 @@
 # DevOps worked decisions
 
-Read when a delivery, pipeline-trust or supply-path decision is ambiguous. **Observed** examples happened in
-a run this catalog's maintainers recorded.
+Read when a delivery, pipeline-trust or supply-path decision is ambiguous. **Observed** examples come from
+recorded runs.
 
 ## 1. One contract asserted in three places
 
 **Situation:** The packaged file list lived in the manifest, a release-readiness check and a
 package-contents check. They disagreed on one entry; the release gate went red, and because it was the only
-job running the full suite, tests, build and packaging did not run for six days.
+job running the full suite, tests, build and packaging silently stopped running until someone noticed.
 
 **Decision:** Pin a multi-owner contract in a test, not prose, and fix every copy in one commit. Then check
 what else the red gate was silently skipping.
 
-**Why:** The visible failure was one file name; the damage was six days of unrun checks. **Observed.**
+**Why:** The visible failure was one file name; the damage was every check behind it going unrun. **Observed.**
 
 ## 2. The pipeline enforces isolation, not the reviewer
 
@@ -27,7 +27,7 @@ its variable, triggers on a fork-writable event, or reads a stored secret.
 **Situation:** Ignoring documentation changes in CI looks like a cheap saving.
 
 **Decision:** Not when the shipped product is those files. Filter only what provably cannot affect the
-artifact. **Observed:** this catalog's payload is Markdown.
+artifact. **Observed:** a repository whose shipped product is Markdown.
 
 ## 4. A third-party check does not belong in the blocking gate
 

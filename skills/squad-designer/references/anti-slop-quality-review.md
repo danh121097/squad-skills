@@ -20,10 +20,7 @@ logic-only changes, narrow fixes and exact local-pattern extensions unless an au
 
 ## Know the current vocabulary
 
-Rejecting trends requires knowing them: current type scale and weight, spacing rhythm, surface and
-elevation, component anatomy, motion character, and agent-native primitives such as streaming output,
-tool-call display and approval surfaces. Knowing the vocabulary is not adopting it; product fit decides
-what ships.
+Rejecting trends requires knowing them; product fit decides what ships.
 
 ## Pre-flight
 
@@ -37,8 +34,10 @@ Run it on the rendered output, not on the code, and revise before handoff:
 5. Components share tokens, anatomy, radii, borders, shadows, icons and state behavior.
 6. Content is data: per-item metadata is authored per item, counts follow the data, and containers grow
    with the longest real string rather than one repeated placeholder.
-7. No gradient, glow, glass, bento grid, pill, card stack, oversized heading, blob, icon, chart or
-   animation without product meaning, and nothing copied from a reference.
+7. No gradient, glow, glass, bento grid, pill, card stack, oversized heading, blob, icon, chart,
+   cream or off-white page background, italic accent word in a headline, numbered 01/02/03 section
+   label, monospace micro-label or animation without product meaning, and nothing copied from a
+   reference.
 8. Motion explains space, feedback, state or continuity; frequent actions feel immediate.
 9. Focus, keyboard, touch, loading, error and reduced-motion behavior are designed, not defaulted.
 10. The measure loop in

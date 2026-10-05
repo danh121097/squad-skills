@@ -29,7 +29,7 @@ differently.
 **Evidence:** Production behavior is correct; the test waits a fixed duration for a readiness event and
 fails under load.
 
-**Route:** QA repairs the synchronization — no longer sleeps, no retries hiding the failure. If the app
+**Route:** QA repairs the synchronization: no sleeps, no retries hiding the failure. If the app
 never emits a reliable readiness state users or tests need, route that missing behavior to the build role.
 
 ## 5. Unknown cross-stack timeout

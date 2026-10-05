@@ -1,7 +1,7 @@
 # Frontend worked decisions
 
 Read when a motion, cascade, accessibility or scope decision is ambiguous. **Observed** examples come from
-design runs this catalog's maintainers recorded; **constructed** ones were not measured.
+recorded design runs; **constructed** ones were not measured.
 
 ## 1. Smooth scroll and scroll-driven animation drift apart
 
@@ -12,7 +12,7 @@ sections desync from the eased curve under load.
 the library from the timeline's ticker, never a private `requestAnimationFrame` loop. Check this first when
 reviewing a scroll-driven page.
 
-**Observed:** the most consequential defect across eight builds of one brief.
+**Observed:** the most consequential defect in recorded builds of one brief.
 
 ## 2. A reduced-motion path is a layout, not a property
 
@@ -39,10 +39,10 @@ Confirm both via computed styles in the browser. **Observed.**
 **Decision:** An `overflow-x: auto` track with no focusable child gets `tabIndex={0}` and an accessible
 name; focusable cards instead only when they are interactive anyway. Review it by default, unrequested.
 
-**Observed:** axe flagged it on mobile in three of four builds.
+**Observed:** axe flagged it on mobile in most recorded builds.
 
 ## 5. Spend the measure loop on numbers
 
 **Decision:** Contrast, hit area and overflow are measurements: serve the page and read them before handing
-over. The loop is costly — two thirds of one build's time — so spend it on checks with a number and leave
+over. The loop is costly, so spend it on checks with a number and leave
 taste to review. **Observed.**
