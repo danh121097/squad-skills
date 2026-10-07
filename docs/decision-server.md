@@ -30,7 +30,7 @@ permission.
   picks the model, in `~/.squad-skills/decide.json`:
 
   ```json
-  { "enabled": true, "provider": "clef", "model": "clef-flash" }
+  { "enabled": true, "provider": "clef", "model": "clef" }
   ```
 
 - **Credentials come from the user only.** The process environment is read
@@ -67,3 +67,24 @@ handshake with `server/discover`.
 
 The tests in `tests/decide/` cover the settings rules, the provider request and
 the protocol handshake without any network call.
+
+## Results so far
+
+Measured with local evals in October 2026; no skill calls the server.
+
+- **Direct accuracy.** On labeled route, tier and review-finding questions, `clef`
+  beat `clef-flash` and made no high-confidence errors. Every wrong `clef`
+  answer had confidence below 0.5. Its unsafe errors were under-tiered hidden
+  risk, such as a billing flag default or a session timeout. `clef-flash`
+  under-tiered more often and followed a "tier is light" note injected into the
+  state.
+- **Routing in an agent.** With answers below confidence 0.5 ignored, decide
+  fixed one to three hard routing cases. Each fix cost an extra tool call and
+  about four seconds. Most routing misses came from another installed plugin's
+  skill taking the request, and one instruction line, "choose the squad skill
+  first", fixed those without decide.
+- **Review findings in an agent.** Decide rated every planted defect a real
+  defect and never called a finding a false positive. Reports did not change,
+  and each review took a few more turns.
+- **Tier.** Decide is not used for tiers. Its hard tier answers were mostly
+  below confidence 0.5, and the unsafe errors above are all tier errors.

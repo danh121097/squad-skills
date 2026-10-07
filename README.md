@@ -166,6 +166,22 @@ risk, then issues `PASS`, `FAIL` or `NEEDS_ENVIRONMENT`. `squad-code-review` run
 evidence before its verdict, reviews implementation quality and issues `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`; it never implements
 the fixes it asks for. Reach for the smallest role that fits and let it escalate.
 
+### When other skill packs are installed
+
+A general-purpose skill from another pack can take a request before any squad role does. In local evals with
+`superpowers` and the Figma plugin installed, 30 plain requests went to `superpowers:brainstorming`,
+`superpowers:systematic-debugging` or `figma:figma-design-to-code` 9 times on Sonnet and once on Opus. Adding this
+line to your `AGENTS.md` or `CLAUDE.md` removed every `superpowers` pick:
+
+```markdown
+- Before acting on a non-trivial engineering request, choose which squad skill to invoke for it,
+  even when another plugin's skill (brainstorming, systematic debugging, Figma design-to-code)
+  also matches; that skill can still run inside the squad role.
+```
+
+With the line, 27 of 30 requests routed correctly on Sonnet and 28 of 30 on Opus, in one run per model on one
+machine. Sonnet still sent a build from a Figma file to the Figma skill.
+
 ## How the squad runs
 
 `squads-team` names a gate tier in one line before building:
