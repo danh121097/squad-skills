@@ -41,16 +41,23 @@
  * had both claimed.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
+ *
+ * The eight implementation/lead/gate entrypoints now carry a user-assigned
+ * external gate handoff. Its owner, pending status and exact-diff evidence must
+ * be reachable from either session with only that role installed, so it cannot
+ * live solely in the lead's coordination reference. The figures below record
+ * that contract and its solo/fallback exceptions after the prose rewrite;
+ * designer and product are unchanged.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2033, // was 2333
-  'squad-code-review': 2212, // was 2184
+  'squad-backend': 2116, // was 2033
+  'squad-code-review': 2308, // was 2212
   'squad-designer': 2064, // was 2064
-  'squad-devops': 2009, // was 2170
-  'squad-fix': 2424, // was 2420
-  'squad-frontend': 1971, // was 2542
-  'squad-mobile': 1929, // was 2261
+  'squad-devops': 2092, // was 2009
+  'squad-fix': 2517, // was 2424
+  'squad-frontend': 2045, // was 1971
+  'squad-mobile': 2012, // was 1929
   'squad-product': 2392, // was 2489
-  'squad-qa': 2295, // was 2272
-  'squads-team': 2908, // was 2898
+  'squad-qa': 2377, // was 2295
+  'squads-team': 2987, // was 2908
 };

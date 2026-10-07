@@ -294,7 +294,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // allows" keeps QA out of marking work done, and "reports the gate as
     // unowned" is the honest answer when the pass cannot be carried at all.
     statement:
-      "in a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned",
+      'in a squad run on `standard` and `high` work both gates run: when the peer gate has no external owner and its skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned',
     files: [codeReviewSkill, qaSkill],
   },
   {
@@ -416,7 +416,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // lead that carries QA inline has to report that QA ran, disclosing the
     // reduced independence, and the peer skill never ran in that case either.
     statement:
-      "an absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage no pass ran is never reported as run",
+      "for a stage without an external owner, an absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage no pass ran is never reported as run",
     files: [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill],
   },
   {
@@ -427,8 +427,17 @@ export const boundaryClauses: BoundaryClause[] = [
     // commands and hands the gate choice back to the user in one line. `high`
     // work keeps both gates, because the risk does not shrink with the team.
     statement:
-      'invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work runs both as separate agents where the runtime allows, else reports them unowned, never as a self-review',
+      'invoked on its own, this role names the tier itself, the higher one when in doubt; without an external gate assignment it closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work keeps both gates: run unassigned gates as separate agents where the runtime allows, else report them unowned, never as a self-review',
     files: rolesWithAnImplementationSlice,
+  },
+  {
+    id: 'HANDOFF-EXTERNAL-001',
+    // A user-assigned session owns the gate even when this runtime cannot reach
+    // it. Both ends need the exception so an absent-peer fallback does not
+    // duplicate the pass, and solo closure does not hide a pending verdict.
+    statement:
+      "when the user assigns QA or Code Review to another named session, hand off the exact diff (including pending changes), acceptance, commands, results, environment and gaps instead of duplicating that gate locally. Keep local verification, the tier and unassigned gates' normal workflow; report the assigned gate pending until its verdict covers that diff and relevant environment. Implementation ready is not task done while an assigned gate is pending",
+    files: [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill],
   },
   {
     id: 'HANDOFF-SOLO-003',

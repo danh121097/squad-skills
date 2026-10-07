@@ -45,8 +45,9 @@ Use the runtime's native team, task and message APIs by their live schema; respe
 lead owns tasks, merge decisions, user approvals and the final report, and dispatches each task as its
 dependencies clear. In subagent mode children report to the lead and do not hand work to each other.
 
-Once a coherent gate unit is ready, launch one QA pass and one Code Review over its exact slice revisions
-together. A high-risk or independently shippable slice is its own unit. Fixes return to the same owner.
+Once a coherent gate unit is ready, launch its locally owned QA and Code Review passes together over the
+same exact slice revisions; externally assigned gates follow the entrypoint's handoff contract. A
+high-risk or independently shippable slice is its own unit. Fixes return to the same owner.
 
 A child has no channel to the user, so it returns a fork as gate 1 of `SKILL.md` says. The lead names the
 source in its final report and resumes the child; an unanswered fork blocks its phase like a `NEEDS_*`
@@ -54,11 +55,12 @@ verdict.
 
 ## 5. Single-session role loop
 
-One controller, sequentially: enter the build role and implement only its scope; on `light` close with the
-combined verify pass; otherwise run a distinct QA pass from acceptance and risk without editing
-implementation, then a fresh Code Review pass consuming QA evidence, both before any return. Returns follow
-gate 4 of `SKILL.md`. This preserves logical gates but not independent judgment: say so in the final report and never
-call a self-check independent.
+One controller, sequentially: implement the build role's scope and verify locally. On `light`, the combined
+verify pass suffices, subject to any assigned external gate. On `standard` or `high`, run only locally
+owned gates: distinct QA from acceptance and risk without editing implementation, then fresh Code Review
+consuming QA evidence. External assignments follow the entrypoint's handoff contract; collect both gates'
+findings before any return. Returns follow gate 4 of `SKILL.md`. Logical passes in the implementer's
+session are not independent judgment; disclose that in the final report.
 
 ## 6. Context lifecycle
 
@@ -70,6 +72,14 @@ its independence.
 
 Reach a peer role or specialist skill through the runtime's own skill or agent invocation, one per call. A
 role named only in narration did not run, and a report must not credit it.
+
+External ownership requires the user's explicit assignment, not an app name or another open session.
+Assign QA and Code Review separately. Hand off in prose through an authorized channel, or return the
+handoff for the user to relay when this runtime cannot reach the session. A pending external verdict is
+not an absent peer to replace inline. Before accepting it, compare its base, revision and pending changes
+with the actual diff; a branch name or HEAD alone does not identify uncommitted work. Retain valid
+evidence, and rerun affected scope when the diff or relevant environment changes. An additional review
+the user requests after approval is an explicit second opinion, not a restarted pipeline.
 
 ## 8. Status and reports
 

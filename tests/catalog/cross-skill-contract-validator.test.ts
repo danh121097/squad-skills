@@ -263,6 +263,82 @@ describe('handoff contract family', () => {
     expect(result.errors[0]).toContain(backendSkill);
   });
 
+  it.each([
+    {
+      file: frontendSkill,
+      drift: 'infers ownership from an open app',
+      from: 'when the user assigns QA or Code Review to another named session',
+      to: 'when another app is open',
+    },
+    {
+      file: frontendSkill,
+      drift: 'closes work before the external verdict',
+      from: 'Implementation ready is not task done while an assigned gate is pending',
+      to: 'Implementation ready closes the task before the external verdict',
+    },
+    {
+      file: codeReviewSkill,
+      drift: 'accepts a revision without pending changes',
+      from: 'the exact diff (including pending changes)',
+      to: 'the committed revision alone',
+    },
+    {
+      file: codeReviewSkill,
+      drift: 'accepts a verdict without matching its target',
+      from: 'until its verdict covers that diff and relevant environment',
+      to: 'until any verdict arrives',
+    },
+  ])('fails when a gate handoff $drift', async ({ file, from, to }) => {
+    const external = boundaryClauses.find((clause) => clause.id === 'HANDOFF-EXTERNAL-001');
+    if (!external) throw new Error('HANDOFF-EXTERNAL-001 is missing from shipped clauses.');
+
+    expect([...external.files].sort()).toEqual(
+      [...rolesWithAnImplementationSlice, codeReviewSkill, qaSkill, teamSkill].sort()
+    );
+
+    const divergent = external.statement.replace(from, to);
+    expect(divergent).not.toEqual(external.statement);
+    const projectRoot = await createProject(
+      Object.fromEntries(
+        external.files.map((target) => [
+          target,
+          `# Role\n\n${target === file ? divergent : external.statement}.\n`,
+        ])
+      )
+    );
+
+    const result = await validateCrossSkillContract(projectRoot, { clauses: [external] });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(file);
+    expect(result.errors[0]).toContain(external.id);
+  });
+
+  it('fails when a high-tier builder duplicates an externally assigned gate', async () => {
+    const solo = boundaryClauses.find((clause) => clause.id === 'HANDOFF-SOLO-002');
+    if (!solo) throw new Error('HANDOFF-SOLO-002 is missing from shipped clauses.');
+
+    expect([...solo.files].sort()).toEqual([...rolesWithAnImplementationSlice].sort());
+    const duplicated = solo.statement.replace(
+      'run unassigned gates as separate agents',
+      'run both gates as separate agents'
+    );
+    expect(duplicated).not.toEqual(solo.statement);
+    const projectRoot = await createProject(
+      Object.fromEntries(
+        solo.files.map((file) => [
+          file,
+          `# Role\n\n${file === backendSkill ? duplicated : solo.statement}.\n`,
+        ])
+      )
+    );
+
+    const result = await validateCrossSkillContract(projectRoot, { clauses: [solo] });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(backendSkill);
+  });
+
   // The gate sequence was unbound until the handoff-artifact decision looked for
   // what protected it and found nothing did. TIER-001 binds which tiers run both
   // gates; this binds who issues the pass, which verdict closes each gate,

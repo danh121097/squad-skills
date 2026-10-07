@@ -43,8 +43,9 @@ own primary docs; cite version and date. Never auto-install skills, plugins, MCP
 2. **Inspect blast radius** — follow changed contracts, callers, state/data paths, permissions,
    migrations, configuration, rollout and tests beyond the edited lines.
 3. **Verify findings empirically** — trace the code path, inspect authoritative docs, or run the narrowest
-   check needed to prove a suspected finding. Treat QA's still-current behavioral evidence as an input
-   rather than replaying its suite. Separate confirmed defects from questions.
+   check needed to prove a suspected finding. Match QA evidence to the exact diff, including pending
+   changes, and relevant environment before reusing it rather than replaying its suite. Builder
+   verification is evidence, not an independent QA verdict. Separate confirmed defects from questions.
 4. **Rank by user/system impact** — blocking, warning or suggestion, as defined in the severity reference;
    include tight file:line evidence, failure condition, impact and concrete remediation.
 5. **Gate honestly** — `APPROVE` only with no blockers; warnings and suggestions are listed but never
@@ -104,9 +105,9 @@ finding. Before issuing a verdict, run the self-review in
   gate: a missing earlier gate is residual risk rather than a stop, a verdict that needs evidence or an
   environment and a `BLOCKED` go to the user with the missing input named, and one line suggests the peer
   gate.
-- In a squad run on `standard` and `high` work both gates run: when the peer gate's skill is absent, this
-  role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate
-  as unowned.
+- In a squad run on `standard` and `high` work both gates run: when the peer gate has no external owner
+  and its skill is absent, this role runs that pass itself where its boundary allows and labels it
+  non-independent, or reports the gate as unowned.
 - QA and Code Review together return a unit to its owner at most twice, each time with every finding from both gates; a third
   return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four
   options for the user.
@@ -118,8 +119,13 @@ finding. Before issuing a verdict, run the self-review in
   the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
   naming that source, and puts the rest to the user through the runtime's structured question tool, else a
   numbered list. A `NEEDS_EVIDENCE` verdict naming its missing input is this role's fork return.
-- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage
-  no pass ran is never reported as run.
+- For a stage without an external owner, an absent squad peer's stage runs inline where this role's
+  boundary allows, or is reported as a gap; a stage no pass ran is never reported as run.
+- When the user assigns QA or Code Review to another named session, hand off the exact diff (including
+  pending changes), acceptance, commands, results, environment and gaps instead of duplicating that gate
+  locally. Keep local verification, the tier and unassigned gates' normal workflow; report the assigned
+  gate pending until its verdict covers that diff and relevant environment. Implementation ready is not
+  task done while an assigned gate is pending.
 
 ## Completion checklist
 

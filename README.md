@@ -184,6 +184,37 @@ not rerun both gates, and a fix that changes no observable behavior reruns only 
 by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both. Designer runs only for
 decisions your own references and the existing design system leave open.
 
+### Gates in another session
+
+The same rules apply in Herdr, Claude Desktop and Codex. By default, each skill follows its normal
+workflow. Explicitly assigning QA or Code Review to another named session transfers that gate instead
+of adding a second local pass. Assign the gates separately; an external reviewer does not automatically
+own QA. Local verification and the tier's requirements remain in place, including independence for
+`high` work where the runtime allows.
+
+For example, in the builder session:
+
+> Use `squads-team` to implement this change. Your session owns implementation, local verification and
+> any QA required by the tier. The Codex reviewer session owns Code Review; hand off the exact diff and
+> evidence to it.
+
+In the reviewer session:
+
+> Use `squad-code-review` on the handed-off diff. Consume matching QA evidence and add only checks
+> needed to verify findings or resolve missing evidence. Return the verdict and findings to the owner.
+
+Either model can take either role. An app name or another open session alone assigns no gate. When
+sessions cannot communicate, the builder returns the handoff in prose for you to relay: base, revision
+and pending changes, acceptance criteria, commands, results, environment and gaps. A branch name or HEAD
+alone does not identify an uncommitted diff.
+
+The builder may report implementation ready, with external review pending; the task is not done until
+assigned gates return their required passing verdicts on that diff. Builder verification alone is not
+an independent QA `PASS`. Retain valid evidence after fixes and rerun affected checks; a requested
+second opinion after approval does not restart the whole pipeline.
+
+### Orchestrator flags
+
 `squads-team` flags, each overriding one default:
 
 | Flag                                  | Default without it                                                  |

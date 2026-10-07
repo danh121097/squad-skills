@@ -93,7 +93,8 @@ was. Before declaring the repair complete, run the self-review in
    unrelated user changes and public contracts unless the accepted repair intentionally changes one.
 6. **Verify** — rerun the baseline; run focused then blast-radius checks appropriate to the failure; inspect
    side effects and clean up task-owned processes/resources.
-7. **Gate by tier** — `light`, and `standard` when run on its own, close on step 6 as the combined verify
+7. **Gate by tier** — apply external assignments in the handoff contract first; otherwise `light`, and
+   `standard` when run on its own, close on step 6 as the combined verify
    pass. Otherwise QA runs a distinct behavioral pass, then Review consumes its evidence and inspects
    implementation quality and cause alignment. `FAIL` and `CHANGES_REQUESTED` return to owner; `NEEDS_*`
    returns to lead.
@@ -137,12 +138,17 @@ was. Before declaring the repair complete, run the self-review in
   the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
   naming that source, and puts the rest to the user through the runtime's structured question tool, else a
   numbered list.
-- Invoked on its own, this role names the tier itself, the higher one when in doubt, then closes `light` and
-  `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then
-  `/squad-code-review`; `high` work runs both as separate agents where the runtime allows, else reports them
-  unowned, never as a self-review.
-- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage
-  no pass ran is never reported as run.
+- Invoked on its own, this role names the tier itself, the higher one when in doubt; without an external
+  gate assignment it closes `light` and `standard` work on its own verify with real commands and ends with
+  one line suggesting `/squad-qa` then `/squad-code-review`; `high` work keeps both gates: run unassigned
+  gates as separate agents where the runtime allows, else report them unowned, never as a self-review.
+- For a stage without an external owner, an absent squad peer's stage runs inline where this role's
+  boundary allows, or is reported as a gap; a stage no pass ran is never reported as run.
+- When the user assigns QA or Code Review to another named session, hand off the exact diff (including
+  pending changes), acceptance, commands, results, environment and gaps instead of duplicating that gate
+  locally. Keep local verification, the tier and unassigned gates' normal workflow; report the assigned
+  gate pending until its verdict covers that diff and relevant environment. Implementation ready is not
+  task done while an assigned gate is pending.
 
 ## Completion checklist
 

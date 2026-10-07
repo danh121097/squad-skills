@@ -110,7 +110,7 @@ result, and a missing environment or evidence never becomes completion.
 4. **Design/plan gates** — run Designer per gate 3; collect build plans when approval is enabled.
 5. **Implement** — dispatch every ready slice; advance newly unblocked work without waiting for unrelated
    siblings.
-6. **Verify by tier** — per gate 4.
+6. **Verify by tier** — per gate 4; externally assigned gates follow the handoff contract.
 7. **Integrate** — combine approved work, check each seam on the artifacts — what one slice supplies
    against what the other consumes: env vars, routes, schemas — rather than on the reports, run combined
    checks, and update durable docs only when behavior/setup/contracts/architecture changed.
@@ -127,8 +127,13 @@ result, and a missing environment or evidence never becomes completion.
   close; the lead composes these and never upgrades a gap into a result.
 - After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and
   neighboring blast radius, broadening only when contract or risk changes.
-- An absent squad peer's stage runs inline where this role's boundary allows, or is reported as a gap; a stage
-  no pass ran is never reported as run.
+- For a stage without an external owner, an absent squad peer's stage runs inline where this role's
+  boundary allows, or is reported as a gap; a stage no pass ran is never reported as run.
+- When the user assigns QA or Code Review to another named session, hand off the exact diff (including
+  pending changes), acceptance, commands, results, environment and gaps instead of duplicating that gate
+  locally. Keep local verification, the tier and unassigned gates' normal workflow; report the assigned
+  gate pending until its verdict covers that diff and relevant environment. Implementation ready is not
+  task done while an assigned gate is pending.
 
 ## Completion checklist
 
