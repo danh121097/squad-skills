@@ -54,6 +54,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  vi.useRealTimers();
   vi.unstubAllGlobals();
   await rm(root, { recursive: true, force: true });
 });
@@ -69,7 +70,7 @@ describe('decide', () => {
       })
     );
 
-    const outcome = await decide(request, { env: credentials, home, projectDir });
+    const outcome = await decide(request, { env: credentials, home, projectDir }, new Map());
 
     expect(outcome).toEqual({
       status: 'decided',
@@ -86,22 +87,94 @@ describe('decide', () => {
     expect(JSON.parse(String(init?.body))).toEqual({ model: 'clef-flash', ...request });
   });
 
-  it('reports a provider error without echoing the credential', async () => {
+  it('reports a provider error without echoing the credential, and calls again next time', async () => {
     await enableClefFlash();
-    fetchMock.mockResolvedValue(
+    fetchMock.mockImplementation(async () =>
       Response.json(
         { success: false, errors: [{ message: 'Authentication error for secret-token' }] },
         { status: 401 }
       )
     );
+    const cooldowns = new Map();
 
-    const outcome = await decide(request, { env: credentials, home, projectDir });
+    const outcome = await decide(request, { env: credentials, home, projectDir }, cooldowns);
+    await decide(request, { env: credentials, home, projectDir }, cooldowns);
 
     expect(outcome).toEqual({
       status: 'failed',
       reason: 'Clef request failed (HTTP 401): Authentication error for [redacted]',
     });
     expect(JSON.stringify(outcome)).not.toContain('secret-token');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('stops calling an exhausted account until the daily reset at 00:00 UTC', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-07T15:00:00Z'));
+    await enableClefFlash();
+    fetchMock.mockResolvedValueOnce(
+      Response.json(
+        {
+          success: false,
+          errors: [{ code: 3036, message: 'You have used up your daily free allocation' }],
+        },
+        { status: 429 }
+      )
+    );
+    const context = { env: credentials, home, projectDir };
+    const cooldowns = new Map();
+
+    const first = await decide(request, context, cooldowns);
+    const second = await decide(request, context, cooldowns);
+
+    const unavailable = {
+      status: 'unavailable',
+      reason: 'Clef request failed (HTTP 429): You have used up your daily free allocation',
+      retryAt: '2026-10-08T00:00:00.000Z',
+    };
+    expect(first).toEqual(unavailable);
+    expect(second).toEqual(unavailable);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    vi.setSystemTime(new Date('2026-10-08T00:00:00Z'));
+    fetchMock.mockResolvedValueOnce(
+      Response.json({ success: true, errors: [], result: { answers, usage: null } })
+    );
+    expect((await decide(request, context, cooldowns)).status).toBe('decided');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it.each<{ name: string; headers: Record<string, string>; retryAt: string }>([
+    {
+      name: 'Retry-After seconds',
+      headers: { 'Retry-After': '30' },
+      retryAt: '2026-10-07T15:00:30.000Z',
+    },
+    {
+      name: 'a Retry-After date',
+      headers: { 'Retry-After': 'Wed, 07 Oct 2026 15:05:00 GMT' },
+      retryAt: '2026-10-07T15:05:00.000Z',
+    },
+    { name: 'no Retry-After', headers: {}, retryAt: '2026-10-07T15:01:00.000Z' },
+    {
+      name: 'a Retry-After past the reset',
+      headers: { 'Retry-After': '86400' },
+      retryAt: '2026-10-08T00:00:00.000Z',
+    },
+  ])('backs off a rate limit with $name', async ({ headers, retryAt }) => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-07T15:00:00Z'));
+    await enableClefFlash();
+    fetchMock.mockResolvedValue(
+      Response.json(
+        { success: false, errors: [{ code: 3040, message: 'Capacity temporarily exceeded' }] },
+        { status: 429, headers }
+      )
+    );
+
+    const outcome = await decide(request, { env: credentials, home, projectDir }, new Map());
+
+    expect(outcome).toMatchObject({ status: 'unavailable', retryAt });
   });
 
   it.each([
@@ -120,7 +193,7 @@ describe('decide', () => {
   ])('makes no network call when $name', async ({ setup, env }) => {
     await setup();
 
-    const outcome = await decide(request, { env, home, projectDir });
+    const outcome = await decide(request, { env, home, projectDir }, new Map());
 
     expect(outcome.status).toBe('disabled');
     expect(fetchMock).not.toHaveBeenCalled();

@@ -7,6 +7,7 @@
  * A decision is advice. Nothing here acts on an answer.
  */
 import { clefProvider } from './clef-provider.ts';
+import { ProviderUnavailableError, type ProviderCooldowns } from './provider-unavailable.ts';
 import {
   readCredentials,
   resolveDecisionSelection,
@@ -37,7 +38,8 @@ export interface DecisionProvider {
 export type DecisionOutcome =
   | ({ status: 'decided'; model: string; provider: string } & ProviderAnswer)
   | { status: 'disabled'; reason: string }
-  | { status: 'failed'; reason: string };
+  | { status: 'failed'; reason: string }
+  | { status: 'unavailable'; reason: string; retryAt: string };
 
 const decisionProviders: Record<string, DecisionProvider> = {
   [clefProvider.name]: clefProvider,
@@ -55,9 +57,19 @@ export function readDecisionRequest(input: unknown): DecisionRequest | string {
   return { state, questions: questions as Record<string, unknown> };
 }
 
+function unavailable(error: ProviderUnavailableError): DecisionOutcome {
+  return { status: 'unavailable', reason: error.message, retryAt: error.retryAt.toISOString() };
+}
+
+/**
+ * `cooldowns` belongs to the caller's process: once a provider reports a quota
+ * or rate limit, later calls on the same credentials answer "unavailable"
+ * without a network call until its retry time.
+ */
 export async function decide(
   request: DecisionRequest,
-  context: DecisionContext
+  context: DecisionContext,
+  cooldowns: ProviderCooldowns
 ): Promise<DecisionOutcome> {
   const selection = await resolveDecisionSelection(context);
   if (!selection.enabled) return { status: 'disabled', reason: selection.reason };
@@ -88,10 +100,26 @@ export async function decide(
     };
   }
 
+  const cooldownKey = JSON.stringify([
+    provider.name,
+    ...provider.credentialNames.map((name) => credentials.values[name]),
+  ]);
+  const cooldown = cooldowns.get(cooldownKey);
+  if (cooldown !== undefined) {
+    if (Date.now() < cooldown.retryAt.getTime()) return unavailable(cooldown);
+    cooldowns.delete(cooldownKey);
+  }
+
   try {
     const answer = await provider.decide(request, selection.model, credentials.values);
     return { status: 'decided', provider: provider.name, model: selection.model, ...answer };
   } catch (error) {
+    if (error instanceof ProviderUnavailableError) {
+      // Calls in flight together can each hit a limit; the latest retry time wins.
+      const open = cooldowns.get(cooldownKey);
+      if (open === undefined || open.retryAt < error.retryAt) cooldowns.set(cooldownKey, error);
+      return unavailable(error);
+    }
     return { status: 'failed', reason: error instanceof Error ? error.message : String(error) };
   }
 }

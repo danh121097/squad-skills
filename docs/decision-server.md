@@ -50,6 +50,14 @@ permission.
 Any unreadable settings file turns the tool off. When it is off, `decide`
 returns `"status": "disabled"` with the reason and makes no network call.
 
+When the provider answers HTTP 429 or Cloudflare error 3036 (the daily free
+allocation is used up), `decide` returns `"status": "unavailable"` with a
+`retryAt` time, and later calls on the same account return the same answer
+without a network call until then. A used-up allocation waits for the reset
+at 00:00 UTC. Any other limit waits for the `Retry-After` header, or 60
+seconds without one, and never past that reset. The server keeps this in
+memory, so a restart calls the provider again.
+
 ## Run it
 
 Register it for your user only, so no committed `.mcp.json` carries it:
@@ -65,8 +73,9 @@ The server speaks the MCP versions that open with an `initialize` handshake,
 2025-11-25 and earlier. It does not implement 2026-07-28, which replaced that
 handshake with `server/discover`.
 
-The tests in `tests/decide/` cover the settings rules, the provider request and
-the protocol handshake without any network call.
+The tests in `tests/decide/` cover the settings rules, the provider request,
+the quota and rate-limit backoff and the protocol handshake without any network
+call.
 
 ## Results so far
 

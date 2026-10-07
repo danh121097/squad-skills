@@ -14,6 +14,7 @@ import os from 'node:os';
 import process from 'node:process';
 import readline from 'node:readline';
 
+import type { ProviderCooldowns } from './provider-unavailable.ts';
 import { decide, readDecisionRequest } from './semantic-decision.ts';
 
 // Only the versions with the `initialize` handshake. 2026-07-28 replaced it with
@@ -26,13 +27,17 @@ const supportedProtocolVersions = new Set([
   '2024-11-05',
 ]);
 
+// Lives as long as the server, so a quota or rate limit is hit once, not on every call.
+const cooldowns: ProviderCooldowns = new Map();
+
 const decideTool = {
   name: 'decide',
   description:
     'Ask a fast decision model a constrained question about a state and get back one typed answer per question ' +
     'with probabilities. Advisory only: an answer never authorizes an action, lowers a gate tier or drops a ' +
     'finding. Off unless the user enabled it in ~/.squad-skills/decide.json; when it reports "disabled", decide ' +
-    'without it.',
+    'without it. When it reports "unavailable", the provider is out of quota or rate-limited: decide without it ' +
+    'and do not call it again before "retryAt".',
   inputSchema: {
     type: 'object',
     properties: {
@@ -75,11 +80,11 @@ async function callTool(params: Record<string, unknown> | undefined) {
   const request = readDecisionRequest(params.arguments);
   if (typeof request === 'string') return toolResult({ status: 'failed', reason: request }, true);
 
-  const outcome = await decide(request, {
-    env: process.env,
-    home: os.homedir(),
-    projectDir: process.cwd(),
-  });
+  const outcome = await decide(
+    request,
+    { env: process.env, home: os.homedir(), projectDir: process.cwd() },
+    cooldowns
+  );
   return toolResult(outcome, outcome.status === 'failed');
 }
 
