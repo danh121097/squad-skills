@@ -40,8 +40,9 @@ checklist`. The catalog validator enforces the sequence.
 - Group repository tooling under `src/` by concern — `cli/` for the npm adapter,
   `catalog/` for skill-catalog checks, payload measurement and source-registry
   links, `agents/` for subagent definitions generated
-  from installed skills, `release/` for the version arithmetic the publish preflight imports — and mirror that
-  layout in `tests/`.
+  from installed skills, `release/` for the version arithmetic the publish preflight imports, `decide/` for
+  the local decision MCP server that `dist/` does not bundle — and mirror that
+  layout in `tests/`. `docs/decision-server.md` states its opt-in and scope rules.
 - Do not configure CI to ignore Markdown changes. Skill payloads are Markdown,
   so every `SKILL.md` change must pass the repository gate.
 - Every skill carries a payload ceiling in
