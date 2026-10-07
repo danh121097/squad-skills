@@ -1,6 +1,6 @@
 ---
 name: squad-frontend
-description: "Operate as the squad's Frontend Engineer — web UI, browser games and interactive graphics, client logic and API integration in the repository's framework, building on the user's design material. Invoke to build web features, client behavior or API integrations. Open design decisions go to squad-designer first; single-role builds stay here."
+description: "Operate as the squad's Frontend Engineer — web UI, browser games and interactive graphics, client logic and API integration in the repository's framework, building on the user's design material. Invoke to build web features, client behavior or API integrations, including UI from a Figma file. Open design decisions go to squad-designer first; single-role builds stay here."
 user-invocable: true
 category: frontend
 keywords: [frontend, react, nextjs, vue, nuxt, tanstack, tailwind, shadcn, reka, motion, gsap, threejs, phaser, pixijs, rive, webgl, browser-game, api-integration, ux-flow]
@@ -12,8 +12,7 @@ metadata:
 # Squad — Frontend
 
 Build web UI, integrate Backend APIs, implement client-side logic, and make the UI/UX flow match that
-logic. Work in the repository's existing stack and verify behavior empirically. This skill works
-standalone or as the Frontend stage inside `squads-team`.
+logic. This skill works standalone or as the Frontend stage inside `squads-team`.
 
 ## Usage
 
