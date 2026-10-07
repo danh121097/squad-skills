@@ -181,8 +181,8 @@ line to your `AGENTS.md` or `CLAUDE.md` removed every `superpowers` pick:
 
 With the line, 27 of 30 requests routed correctly on Sonnet and 28 of 30 on Opus, in one run per model on one
 machine. Sonnet still sent most web builds from a Figma file to the Figma skill; naming that case in the
-`squad-frontend` description brought them to 6 of 9 runs. A Figma screen for an Expo app still went to the
-Figma skill.
+`squad-frontend` description brought them to 6 of 9 runs, and the same in `squad-mobile` brought Expo, Flutter
+and SwiftUI builds from 7 of 18 to 14 of 18. The rest still go to `figma:figma-design-to-code`.
 
 ## How the squad runs
 
