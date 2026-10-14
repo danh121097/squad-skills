@@ -48,13 +48,17 @@
  * live solely in the lead's coordination reference. The figures below record
  * that contract and its solo/fallback exceptions after the prose rewrite;
  * designer and product are unchanged.
+ *
+ * Fix rose by 50 words when it gained the `thread` mode: it cannot reach the
+ * team's coordination reference, so the read-back, pending-launch, patch and
+ * report-back rules that make the mode safe must sit in its own entrypoint.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-backend': 2116, // was 2033
   'squad-code-review': 2308, // was 2212
   'squad-designer': 2064, // was 2064
   'squad-devops': 2092, // was 2009
-  'squad-fix': 2517, // was 2424
+  'squad-fix': 2567, // was 2517
   'squad-frontend': 2045, // was 1971
   'squad-mobile': 2012, // was 1929
   'squad-product': 2392, // was 2489

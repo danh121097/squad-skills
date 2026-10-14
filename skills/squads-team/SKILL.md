@@ -4,7 +4,7 @@ description: "Orchestrate a role-specialized squad (Designer, Frontend, Backend,
 user-invocable: true
 category: dev-tools
 keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code-review, worktree]
-argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--coordinate-only] [--plan-approval] [--mode auto|team|subagent|single] [--no-worktree]"
+argument-hint: "[goal | plan-path] [--devs N] [--with-mobile] [--with-designer] [--coordinate-only] [--plan-approval] [--mode auto|team|thread|subagent|single] [--no-worktree]"
 metadata:
   author: Harry Nguyen
 ---
@@ -30,7 +30,7 @@ Flags are semantic controls read by the lead, not npm CLI options. Each override
 | `--with-mobile`, `--with-designer` | roles come from scope routing |
 | `--coordinate-only` | the lead may implement; with it, the lead only delegates |
 | `--plan-approval` | no pause for build plans; material decisions still go to the user |
-| `--mode auto\|team\|subagent\|single` | `auto`, the lowest-overhead safe mode |
+| `--mode auto\|team\|thread\|subagent\|single` | `auto`, the lowest-overhead safe mode |
 | `--no-worktree` | worktrees used when isolation pays; without them, overlap is serialized |
 
 ## Scope and safety
@@ -106,7 +106,7 @@ result, and a missing environment or evidence never becomes completion.
    decision instead of inferring one. For a concrete failure, prove root cause and blast radius before
    role assignment.
 3. **Route and own** — select roles, assign files and dependencies, identify the ready frontier, then select
-   team/subagent/single execution mode from live capabilities.
+   team/thread/subagent/single execution mode from live capabilities.
 4. **Design/plan gates** — run Designer per gate 3; collect build plans when approval is enabled.
 5. **Implement** — dispatch every ready slice; advance newly unblocked work without waiting for unrelated
    siblings.

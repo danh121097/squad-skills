@@ -112,6 +112,8 @@ The thread registry, `--allow-new-threads`, the `--delegate` alias, the
 five-rung context ladder and the `ACK` / `BLOCKED` packets were removed in
 2026-09. They were rarely used and cost every squad run payload; `BLOCKED` is now
 a status of `RESULT`, and an acknowledgement is implicit.
+The `thread` mode added later is a different feature: it runs workers of one
+squad run as child sessions the user can open, not separate top-level threads.
 
 ## Payload ceiling history
 

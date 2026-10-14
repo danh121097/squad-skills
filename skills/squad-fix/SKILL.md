@@ -4,7 +4,7 @@ description: "Operate as the squad's Bugfix Controller — reproduce a concrete 
 user-invocable: true
 category: utilities
 keywords: [bugfix, debug, root-cause, regression, error, failing-test, ci-failure, routing, qa-gate]
-argument-hint: "[bug, error, log, or failing test] [--quick] [--mode auto|team|subagent|single]"
+argument-hint: '[bug, error, log, or failing test] [--quick] [--mode auto|team|thread|subagent|single]'
 metadata:
   author: Harry Nguyen
 ---
@@ -18,13 +18,16 @@ skills and multi-agent runtimes; run natively when they are absent.
 ## Usage
 
 ```text
-/squad-fix <bug, error, log, or failing test> [--quick] [--mode auto|team|subagent|single]
+/squad-fix <bug, error, log, or failing test> [--quick] [--mode auto|team|thread|subagent|single]
 ```
 
 - `--quick`: reduce planning ceremony only for an obvious syntax/type/lint or narrow single-owner defect;
   baseline, root-cause proof, regression verification and the tier's gates still apply.
-- `--mode auto|team|subagent|single`: `auto` chooses the lowest-overhead safe live mode for the repair's
-  ownership and risk. If the user forces an unavailable mode, report the missing capability.
+- `--mode auto|team|thread|subagent|single`: `auto` chooses the lowest-overhead safe live mode for the
+  repair's ownership and risk. Report a forced unavailable mode; `thread` then falls back to
+  subagents. `thread` runs each worker as your child session the user can open, given the exact diff as a
+  patch; hold a launch the user must start, have each thread send its result to your session when it can,
+  copy each result on return, and treat an unreadable thread as unavailable.
 
 ## Scope and safety
 

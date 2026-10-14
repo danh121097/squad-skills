@@ -5,8 +5,8 @@ mode, spawning agents, assigning files, using worktrees or falling back to a sin
 
 ## 1. Runtime discovery
 
-Count a capability — agent teams, subagents, worktrees, task boards, named squad skills — only after a
-read-only probe confirms it in this run; otherwise choose the next lower safe mode and say what was missing.
+Count a capability — agent teams, subagents, threads, worktrees, task boards, named squad skills — only after
+a read-only probe confirms it in this run; otherwise choose the next lower safe mode and say what was missing.
 Detect specialist skills once per run from the live skill catalog. Role boundaries, gates and evidence rules
 stay authoritative over a paired skill; `domain-coverage-contracts.md` stands in for an absent role skill.
 
@@ -16,8 +16,13 @@ Select the lowest-overhead safe mode that preserves ownership and risk-appropria
 2. **Subagent:** bounded slices or an independent gate materially improve concurrency or risk coverage.
 3. **Peer-team:** several independent slices and gate handoffs justify native messaging and task boards.
 
-A forced mode that is unavailable returns to the user; in `auto`, fall back and report it. `--devs N` caps
-concurrent build slices — never a quota of tasks and never a count of gates.
+**Thread** sits outside this ladder: every slice or gate runs as a child session the user can open and the
+lead can read and message. `auto` picks it only when the user, directly or in standing instructions, asks to
+watch or open workers; a fallback never lands on it.
+
+A forced mode that is unavailable returns to the user, except `thread`, which falls back to subagent mode; in
+`auto`, fall back. Report every fallback. `--devs N` caps concurrent build slices — never a quota of tasks
+and never a count of gates.
 
 ## 2. Task contract
 
@@ -39,17 +44,29 @@ moves acceptance, ownership or a dependency without the lead.
   repository, when supported, and when isolation benefit exceeds merge cost.
 - Preserve dirty user changes. Never force-push or destructively reset.
 
-## 4. Peer-team and subagent modes
+## 4. Peer-team, thread and subagent modes
 
 Use the runtime's native team, task and message APIs by their live schema; respect concurrency limits. The
 lead owns tasks, merge decisions, user approvals and the final report, and dispatches each task as its
 dependencies clear. In subagent mode children report to the lead and do not hand work to each other.
 
+A thread starts from its task contract alone, which names its base: the revision, pending changes as a patch
+when it starts in a fresh checkout, and for a gate the exact slice diff. Start it from the lead's own
+repository so the user finds it beside the lead. Where the runtime only offers a launch the user starts, say
+so, name each pending launch, reuse it rather than create another, and hold that slice until it runs; offer
+subagent mode for a slice still unlaunched. Where a thread can message the lead, its contract names the lead's
+session and has it send its full result there on finishing; otherwise ask the user to say when it is done. The
+lead reads each thread's diff and result, copies the result into its own record as soon as it returns,
+messages it for returns, and brings changes back by merge or reviewed copy; a thread is the lead's child, not
+an external owner under §7. A thread the lead cannot read back is unavailable; one closed before its result
+was copied did not run.
+
 Once a coherent gate unit is ready, launch its locally owned QA and Code Review passes together over the
 same exact slice revisions; externally assigned gates follow the entrypoint's handoff contract. A
 high-risk or independently shippable slice is its own unit. Fixes return to the same owner.
 
-A child has no channel to the user, so it returns a fork as gate 1 of `SKILL.md` says. The lead names the
+A child has no channel to the user, so it returns a fork as gate 1 of `SKILL.md` says; a decision the user
+makes inside a thread comes back in that thread's result. The lead names the
 source in its final report and resumes the child; an unanswered fork blocks its phase like a `NEEDS_*`
 verdict.
 

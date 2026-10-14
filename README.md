@@ -235,14 +235,14 @@ second opinion after approval does not restart the whole pipeline.
 
 `squads-team` flags, each overriding one default:
 
-| Flag                                  | Default without it                                                  |
-| ------------------------------------- | ------------------------------------------------------------------- |
-| `--devs N`                            | every safe ready slice runs; `N` caps parallel build slices         |
-| `--with-mobile`, `--with-designer`    | roles come from scope routing                                       |
-| `--coordinate-only`                   | the lead may implement; with it, the lead only delegates            |
-| `--plan-approval`                     | no pause for build plans; material decisions still go to the user   |
-| `--mode auto\|team\|subagent\|single` | `auto`, the lowest-overhead safe mode                               |
-| `--no-worktree`                       | worktrees used when isolation pays; otherwise overlap is serialized |
+| Flag                                          | Default without it                                                                         |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `--devs N`                                    | every safe ready slice runs; `N` caps parallel build slices                                |
+| `--with-mobile`, `--with-designer`            | roles come from scope routing                                                              |
+| `--coordinate-only`                           | the lead may implement; with it, the lead only delegates                                   |
+| `--plan-approval`                             | no pause for build plans; material decisions still go to the user                          |
+| `--mode auto\|team\|thread\|subagent\|single` | `auto`, the lowest-overhead safe mode; `thread` runs each worker as a session you can open |
+| `--no-worktree`                               | worktrees used when isolation pays; otherwise overlap is serialized                        |
 
 ## Skill format
 
