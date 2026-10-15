@@ -75,6 +75,43 @@ describe('registerCodexAgents', () => {
     expect(registerCodexAgents('', [qa]).source).toContain('[agents]');
   });
 
+  // A second `[agents]` header beside a dotted `agents.*` key is a TOML
+  // redefinition, so Codex would refuse the whole config.
+  it.each([
+    ['a root dotted key', 'agents.max_threads = 4\n'],
+    ['a dotted agent entry', 'agents.tester.config_file = "agents/tester.toml"\n'],
+    ['an inline table', 'agents = { max_threads = 4 }\n'],
+    ['a dotted key inside the table', '[agents]\ntester.config_file = "agents/tester.toml"\n'],
+  ])('leaves a config that defines agents with %s unedited', (_label, source) => {
+    const result = registerCodexAgents(source, [qa]);
+
+    expect(result.source).toBe(source);
+    expect(result.added).toEqual([]);
+    expect(result.manualEntries).toContain('[agents.squad-qa]');
+  });
+
+  it.each([
+    ['a root dotted key', 'agents.squad-qa.config_file = "agents/squad-qa.toml"\n'],
+    ['a dotted key inside the table', '[agents]\nsquad-qa.config_file = "agents/squad-qa.toml"\n'],
+    ['an inline entry', '[agents]\nsquad-qa = { config_file = "agents/squad-qa.toml" }\n'],
+  ])('recognizes an entry registered with %s', (_label, source) => {
+    const result = registerCodexAgents(source, [qa]);
+
+    expect(result.alreadyRegistered).toEqual(['squad-qa']);
+    expect(result.manualEntries).toBeUndefined();
+    expect(result.source).toBe(source);
+  });
+
+  it.each([['[ agents ]'], ['["agents"]']])(
+    'adds to a %s table instead of a second one',
+    (header) => {
+      const result = registerCodexAgents(`${header}\nmax_threads = 4\n`, [qa]);
+
+      expect(result.source.match(/^\s*\[\s*["']?agents["']?\s*\]/gm)).toHaveLength(1);
+      expect(result.source).toContain('[agents.squad-qa]');
+    }
+  );
+
   it('keeps the blank line that separates the agents table from the next one', () => {
     expect(registerCodexAgents(config, [qa]).source).toContain('\n\n[projects."/tmp/example"]');
   });

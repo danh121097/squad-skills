@@ -49,6 +49,8 @@ const helpFlags = new Set(['--help', '-h']);
 const versionFlags = new Set(['--version', '-v']);
 const addCommands = new Set(['add', 'install', 'i']);
 const noAgentsFlag = '--no-agents';
+// Skills CLI flags that make `add` list or print help instead of installing.
+const readOnlyAddFlags = new Set(['--list', '-l', '--help', '-h']);
 const everyFlag = '--all';
 const listOptionFlags = ['--agent', '-a', '--skill', '-s'];
 // Model and effort have catalog defaults in `role-defaults.ts`, and these
@@ -115,9 +117,12 @@ export function createCliAction(
 
     return {
       kind: 'delegate',
-      agentPlan: forwardedArguments.includes(noAgentsFlag)
-        ? null
-        : createAgentPlan(canonical, preferences),
+      // A listing or help request installs nothing, so it must write nothing.
+      agentPlan:
+        forwardedArguments.includes(noAgentsFlag) ||
+        canonical.some((argument) => readOnlyAddFlags.has(argument))
+          ? null
+          : createAgentPlan(canonical, preferences),
       arguments: ['add', packageRoot, ...ensureCopyInstallation(canonical)],
     };
   }

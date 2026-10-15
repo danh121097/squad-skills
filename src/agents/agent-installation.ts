@@ -8,11 +8,11 @@
  * this code, which is why `squad-skills agents` exists as its own command.
  *
  * Two rules keep it safe to run repeatedly: a file without the generated marker
- * is never overwritten, and the Codex config is backed up before its first
- * edit in a run.
+ * is never overwritten, and the Codex config is backed up once, before the
+ * first edit this CLI makes, and that backup is kept.
  */
 
-import { copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { access, copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import type { CodexAgentEntry } from './codex-config-registration.ts';
@@ -246,14 +246,34 @@ async function registerInCodexConfig(
 
   const result = registerCodexAgents(source, agents);
 
+  if (result.manualEntries !== undefined) {
+    return [
+      `${configFile} defines agents with dotted keys or an inline table, so it was left unedited. Add these entries to it:\n${result.manualEntries}`,
+    ];
+  }
+
   if (result.added.length === 0) return [];
 
-  if (source.length > 0) await copyFile(configFile, `${configFile}.squad-skills-backup`);
-  else await mkdir(path.dirname(configFile), { recursive: true });
+  // The first backup is the user's own config; a later run must not replace it
+  // with a copy this CLI already edited.
+  if (source.length > 0) {
+    if (!(await fileExists(`${configFile}.squad-skills-backup`))) {
+      await copyFile(configFile, `${configFile}.squad-skills-backup`);
+    }
+  } else await mkdir(path.dirname(configFile), { recursive: true });
 
   await writeFile(configFile, result.source, 'utf8');
 
   return [`Registered ${result.added.join(', ')} in ${configFile}.`];
+}
+
+async function fileExists(file: string): Promise<boolean> {
+  try {
+    await access(file);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function findInstalledSkill(roots: string[], name: string): Promise<string | null> {

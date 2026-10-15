@@ -222,6 +222,18 @@ describe('createCliAction', () => {
     }
   );
 
+  // The Skills CLI only lists or prints help for these, so writing agent
+  // definitions after it exits would change a home directory on a read-only call.
+  it.each([['--list'], ['-l'], ['--help'], ['-h'], ['--skill', 'squad-qa', '--list']])(
+    'plans no agent definitions for add %s',
+    (...flags) => {
+      expect(createCliAction(['add', ...flags], packageRoot, '0.1.0')).toMatchObject({
+        kind: 'delegate',
+        agentPlan: null,
+      });
+    }
+  );
+
   it('keeps preference flags out of list discovery', () => {
     expect(
       createCliAction(['list', '--model', 'opus', '--effort=low'], packageRoot, '0.1.0')

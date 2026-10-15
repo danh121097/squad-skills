@@ -75,6 +75,32 @@ describe('installAgentDefinitions', () => {
     expect(await readFile(`${configFile}.squad-skills-backup`, 'utf8')).toBe('model = "gpt-5.6"\n');
   });
 
+  it('keeps the first backup when a later run edits the config again', async () => {
+    await installSkillInto('.agents', 'squad-qa');
+    await installSkillInto('.agents', 'squad-fix');
+    const configFile = path.join(home, '.codex/config.toml');
+    await mkdir(path.dirname(configFile), { recursive: true });
+    await writeFile(configFile, 'model = "gpt-5.6"\n');
+
+    await request({ agents: ['codex'], skills: ['squad-qa'] });
+    await request({ agents: ['codex'], skills: ['squad-fix'] });
+
+    expect(await readFile(`${configFile}.squad-skills-backup`, 'utf8')).toBe('model = "gpt-5.6"\n');
+    expect(await readFile(configFile, 'utf8')).toContain('[agents.squad-fix]');
+  });
+
+  it('prints the entries to add when the config defines agents with dotted keys', async () => {
+    await installSkillInto('.agents', 'squad-qa');
+    const configFile = path.join(home, '.codex/config.toml');
+    await mkdir(path.dirname(configFile), { recursive: true });
+    await writeFile(configFile, 'agents.max_threads = 4\n');
+
+    const result = await request({ agents: ['codex'] });
+
+    expect(await readFile(configFile, 'utf8')).toBe('agents.max_threads = 4\n');
+    expect(result.messages.join('\n')).toContain('[agents.squad-qa]');
+  });
+
   it('does not overwrite an agent file it did not generate', async () => {
     await installSkillInto('.claude', 'squad-qa');
     const agentFile = path.join(home, '.claude/agents/squad-qa.md');

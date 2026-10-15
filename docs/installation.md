@@ -150,8 +150,12 @@ Notes:
 - Codex definitions are written at global scope only, because this CLI has not
   verified where a project-scope Codex config lives. Claude Code supports both.
 - Registering a Codex agent edits `config.toml`. The CLI copies it to
-  `config.toml.squad-skills-backup` before its first edit in a run, appends only
-  entries that are missing, and never rewrites one that already exists.
+  `config.toml.squad-skills-backup` before its first edit and keeps that first
+  copy on later runs, appends only entries that are missing, and never rewrites
+  one that already exists. A config that defines `agents` with dotted keys or an
+  inline table is left unedited, and the entries to add are printed instead.
+- `add --list` and `add --help` only list or print help, so they write no agent
+  definitions.
 - A file the CLI did not generate is never replaced. It is reported and kept
   unless `--force` is passed.
 - A definition is written only where the matching skill is actually installed.
