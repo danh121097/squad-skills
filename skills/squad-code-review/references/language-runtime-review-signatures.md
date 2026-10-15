@@ -1,15 +1,13 @@
 # Language and runtime review signatures
 
 Use when the diff runs on a language or runtime this review has no established defect model for. This
-answers detection — what the defect looks like in a diff and what confirms it — not selection. The owning
-squad's stack matrix answers selection; keep the two separate rather than merging them.
+answers detection: what the defect looks like in a diff and what confirms it.
 
 ## Reading an unfamiliar ecosystem
 
 Resolve four things before judging any line: the concurrency model, the error model, the resource-lifetime
 rule and the dependency manifest with its runtime version. A defect claim in an unfamiliar language needs
-that ecosystem's current documentation or an executed check behind it. A remembered idiom is not evidence,
-and the burden is higher here, not lower, because the reviewer cannot fall back on familiarity.
+that ecosystem's current documentation or an executed check behind it. A remembered idiom is not evidence.
 
 ## Signatures
 

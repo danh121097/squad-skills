@@ -23,8 +23,6 @@ build, simulator, device and test tooling.
 
 ## Pre-flight
 
-Pass every applicable check honestly.
-
 ### Lifecycle and data
 
 - Foreground, background, process death, restoration, offline, retry, stale cache and conflict paths are

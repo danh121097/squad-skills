@@ -27,8 +27,6 @@ Verify current regions, egress limits, backup pricing and IPv6 support at planni
 
 ## Reverse proxy selection
 
-Choose by operating model, not popularity.
-
 | Proxy | Choose when | Cost |
 | --- | --- | --- |
 | Caddy | Small/medium hosts, automatic HTTPS, minimal configuration | Fewer tuning knobs |
@@ -63,7 +61,7 @@ from `Type=notify` or an explicit health probe, not from process liveness.
 volumes for state, env files outside version control. Run Compose under a systemd unit so the stack returns
 after host reboot.
 
-Do not mix both for one service. Choose the layer that owns restart, logs and rollout; keep the other out.
+Give each service one owner of restart, logs and rollout: systemd or Compose, not both.
 
 ## Zero-downtime on a single host
 

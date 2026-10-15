@@ -5,15 +5,15 @@ Use for public/internal contracts, persistence, migrations, streaming, webhooks 
 ## Contract design
 
 Beyond the gate 2 fields, define per operation filtering/sorting, concurrency control and rate/quota
-behavior. Generate/publish machine-readable schemas when the stack supports them; test consumers and
-providers, and publish schemas/examples, rollout order and test fixtures so consumers never infer behavior
-from implementation internals.
+behavior. Generate machine-readable schemas when the stack supports them and publish them with examples, rollout
+order and test fixtures, so consumers never infer behavior from implementation internals; test consumers
+and providers.
 
 ### REST/HTTP
 
 Resource/action semantics that match the domain; correct methods/status/cache headers; cursor pagination
 for mutable/high-volume collections; ETag/version for optimistic concurrency; Problem Details or the
-repository's stable error envelope. Avoid leaking existence across authorization boundaries.
+repository's stable error envelope. Answer absent and unauthorized resources identically across authorization boundaries.
 
 ### GraphQL
 
@@ -49,14 +49,13 @@ When data inspection or recovery tooling is unavailable, do not mutate data to c
 shared/persistent targets, produce the migration/rollback plan and request the smallest safe backup/restore
 access or artifact needed; a backup that cannot be restored or whose target/scope is unknown does not
 satisfy the persistent-data gate. For an isolated disposable target, prove its recreation/reset and
-deterministic seed/fixture path. Never claim a migration or query plan was verified when it was only
-reasoned about statically.
+deterministic seed/fixture path. Report a migration or query plan reasoned about only statically as unverified.
 
 ## Messaging and jobs
 
-Choose queue versus event stream by semantics, not throughput marketing. Define producer schema/version,
+Choose queue versus event stream by semantics. Define producer schema/version,
 partition/order key, acknowledgement, retry/dead-letter, poison message, dedupe/idempotency, visibility
-timeout, retention/replay and consumer lag. Never acknowledge before durable effect unless loss is allowed.
+timeout, retention/replay and consumer lag. Acknowledge after the durable effect unless loss is allowed.
 
 ## Transactions and concurrency
 

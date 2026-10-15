@@ -35,7 +35,7 @@ reassignment.
 
 ## Designer trigger
 
-Do not trigger Designer for a typo, broken token reference, overflow regression, missing focus state or
-other repair that clearly follows accepted Figma/local patterns. Trigger Designer when the repair requires
+Designer stays out of a typo, broken token reference, overflow regression, missing focus state or other
+repair that clearly follows accepted Figma/local patterns. Trigger Designer when the repair requires
 a new flow, changes hierarchy/navigation, introduces a new interaction model, or resolves conflicting UX
 requirements without an accepted source.

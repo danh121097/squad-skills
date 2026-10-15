@@ -6,8 +6,8 @@ porting a design across frameworks, or implementing non-trivial animation.
 ## 1. Existing codebase
 
 Preserve the repository's framework, components, tokens, CSS strategy, motion utilities, API/state
-patterns, accessibility semantics, and interaction language. Reuse or extend local primitives. Do not add
-the preferred greenfield stack merely to standardize the project.
+patterns, accessibility semantics, and interaction language. Reuse or extend local primitives rather than adding
+the greenfield stack.
 
 A new UI or motion dependency requires a concrete gap, compatibility/performance assessment, and user
 approval.
@@ -26,7 +26,7 @@ Establish semantic tokens and reusable variants before feature composition.
 ## 3. Animation implementation
 
 CSS covers local hover, color, opacity and small transforms; add Motion or GSAP only for what CSS cannot
-do cleanly. Do not let Motion and GSAP control the same elements. Scope selectors to the component. Create
+do cleanly. Give each element one animation owner, Motion or GSAP. Scope selectors to the component. Create
 animation inside the framework lifecycle; revert/kill timelines, contexts, listeners and ScrollTriggers on
 teardown. Verify that animation does not block input, cause layout shift, retain detached DOM, or violate
 the performance budget.
@@ -35,14 +35,14 @@ the performance budget.
 
 Motion ownership follows authorship: whoever writes the animation code owns its lifecycle scoping,
 teardown, and reduced-motion fallback. Motion arriving inside designer-authored presentational components
-is already scoped and cleaned up there — verify it, do not re-own it. Frontend owns the motion it writes
+is already scoped and cleaned up there — verify it rather than re-owning it. Frontend owns the motion it writes
 while wiring behavior, such as route transitions and data-driven animation, plus dependency approval and
 bundle/performance verification of the whole app.
 
 ## 4. Cross-framework port
 
 Port the UX contract, component state, keyboard/focus behavior, timing, reduced motion and tokens through
-the target framework's native composition model, never by pasting components across frameworks.
+the target framework's native composition model rather than pasting components across frameworks.
 
 ## 5. Selection output
 

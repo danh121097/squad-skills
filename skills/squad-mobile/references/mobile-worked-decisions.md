@@ -18,7 +18,7 @@ navigation and form state from persisted values, not memory. Exercise the transi
 **Situation:** A mutation queued offline replays on reconnect; the user may background the app mid-flight.
 
 **Decision:** Give each write a client-generated idempotency key the server honours, bound retries, and keep
-"queued", "sent" and "confirmed" separate locally. Never say "synced" unless the server contract proves it.
+"queued", "sent" and "confirmed" separate locally. Say "synced" only when the server contract proves it.
 
 **Why:** A flag flipped on send reports success for a request no server accepted.
 
@@ -28,5 +28,5 @@ navigation and form state from persisted values, not memory. Exercise the transi
 platform will not prompt again.
 
 **Decision:** Request at the moment of use with the reason visible; design the denied and
-permanently-denied paths — what still works and where the settings route is. Never assume a second prompt
-appears.
+permanently-denied paths — what still works and where the settings route is. Treat the second prompt
+as unavailable.

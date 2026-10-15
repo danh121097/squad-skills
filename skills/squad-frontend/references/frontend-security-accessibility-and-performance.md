@@ -15,12 +15,12 @@ payments, multi-tenant data, complex widgets and performance-sensitive routes.
 
 ## Accessibility
 
-Semantic HTML and native controls before ARIA; WCAG 2.2 and WAI-ARIA Authoring Practices for custom widgets.
+Follow WCAG 2.2 and WAI-ARIA Authoring Practices for custom widgets, native controls first.
 Manage focus after dialogs, route transitions, deletion, validation and asynchronous content. Automated
 checks are incomplete: test the accessibility tree plus at least one realistic keyboard/screen-reader path
 for critical flows.
 
-Do not concatenate translatable fragments; layout must survive long translations, RTL, zoom and dynamic
+Keep translatable strings whole; layout must survive long translations, RTL, zoom and dynamic
 font sizes.
 
 ## Performance

@@ -14,11 +14,10 @@ review evidence.
    risk requires them.
 5. Confirm no unrelated public contract, schema, environment/config key or user workflow changed silently.
 
-Report static, local, browser/device, integration, CI, staging and production evidence separately. A lower
-verification level can be sufficient for a low-risk bug, but it must never be described as a higher level.
-Without a browser/device/service or CI/provider access, use static and local evidence where sufficient, name
-the exact missing target, claim no pipeline or deployed state, and request the smallest safe log, status or
-artifact.
+Report static, local, browser/device, integration, CI, staging and production evidence separately. Report the level that
+ran; a lower level can suffice for a low-risk bug. Without a browser/device/service or CI/provider access,
+use static and local evidence where sufficient, name the exact missing target, report pipeline and deployed
+state as unverified, and request the smallest safe log, status or artifact.
 
 Remove every tagged diagnostic probe before handing over, and verify removal by grepping its marker.
 

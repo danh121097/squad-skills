@@ -5,7 +5,7 @@ admin, multi-tenant, upload, URL fetch, secrets and data export paths.
 
 ## Input and output
 
-- Parameterize SQL/NoSQL; avoid unsafe dynamic query, shell, template and deserialization paths.
+- Queries, shell, templates and deserialization: parameterized or allowlisted, never built from raw input.
 - Uploads: size/type/content validation, randomized storage names, quarantine/scanning, non-executable
   serving and access control.
 - Outbound URLs: allowlisted schemes/hosts, DNS/IP revalidation, private-network blocking, redirect and
@@ -17,7 +17,7 @@ Use established libraries/providers and current OAuth/OIDC/WebAuthn guidance. Va
 signature algorithm, expiry/not-before and key rotation. Keep access tokens short-lived according to risk;
 rotate refresh/session credentials and revoke on compromise. Cookies require Secure, HttpOnly, appropriate
 SameSite, CSRF defense and session fixation prevention. Passwords use a current memory-hard hash with
-calibrated cost. Never invent crypto or store recovery secrets reversibly without a documented requirement.
+calibrated cost. Use vetted crypto primitives, and store recovery secrets non-reversibly unless a documented requirement says otherwise.
 
 ## Authorization
 
@@ -27,8 +27,8 @@ assignment. Audit privileged actions. Test negative cross-role/cross-tenant case
 
 ## Secrets and supply chain
 
-Use managed secret storage and workload identity where available. Never log values or expose them to client
-bundles. What is prohibited is unintended disclosure: a token minted for the caller that authenticated is
+Use managed secret storage and workload identity where available. Keep secret values out of logs and client
+bundles. Disclosure is the unintended case: a token minted for the caller that authenticated is
 the protocol; the same token in a log, an error body, a response to another caller or a committed fixture is
 a leak. Fixtures carry synthetic values. Review dependency install scripts and scan lockfiles.
 
@@ -41,5 +41,4 @@ and expensive GraphQL operations from enumeration and resource exhaustion.
 
 ## Security evidence
 
-Provide threat assumptions, controls, negative tests, scanner/dependency results and residual risks. Do not
-claim OWASP compliance from a checklist alone.
+Provide threat assumptions, controls, negative tests, scanner/dependency results and residual risks. Tie any OWASP claim to those negative tests and scanner results, not to a checklist.

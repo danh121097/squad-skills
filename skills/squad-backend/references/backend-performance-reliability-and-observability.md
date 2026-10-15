@@ -14,21 +14,19 @@ microbenchmarks that omit database/network/serialization behavior.
 - Derive indexes from query predicates/order/join and write cost; avoid duplicate/unused indexes.
 - Size connection pools across all instances against DB capacity; monitor wait/saturation and leaks.
 - Eliminate N+1 and unbounded reads; paginate/stream large data; batch within safe limits.
-- Understand replica lag, read consistency, vacuum/compaction and backup impact.
 
 ## Caching
 
 Define source of truth, key, TTL/freshness, invalidation owner, negative caching, stampede prevention,
-tenant isolation and failure behavior. Measure hit rate and avoided work. Never use broad key scans on hot
+tenant isolation and failure behavior. Measure hit rate and avoided work. Use targeted key lookups, not broad scans, on hot
 production paths. Cache absence/failure must not violate correctness or authorization.
 
 ## Service observability
 
 Instrument RED (rate/errors/duration) for the service and USE (utilization/saturation/errors) for its
-resources. Use structured logs with correlation/trace and safe business identifiers; never secrets/PII.
+resources. Use structured logs with correlation/trace and safe business identifiers and no secrets/PII.
 Trace critical cross-service paths with OpenTelemetry or the repository standard. Metrics need stable
-low-cardinality labels. Health endpoints separate liveness, readiness and detailed diagnostics; do not
-expose internals publicly.
+low-cardinality labels. Health endpoints separate liveness, readiness and detailed diagnostics; keep detailed diagnostics off public routes.
 
 ## Evidence
 

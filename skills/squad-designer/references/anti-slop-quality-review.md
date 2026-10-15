@@ -14,8 +14,8 @@ Resolve conflicts in this order:
 5. Critique layers: [Taste Skill](https://www.tasteskill.dev/), `ui-ux-pro-max`, and this checklist. Read
    `ui-ux-pro-max` as reference data; never hand it the design task.
 
-A critique layer may name generic output or missing craft. It never silently redesigns the user's material,
-replaces a working design system, introduces a fashionable stack or expands scope. Skip critique layers for
+A critique layer names generic output or missing craft; the user's material, the working design system, the
+stack and the scope stay as given. Skip critique layers for
 logic-only changes, narrow fixes and exact local-pattern extensions unless an audit was asked for.
 
 ## Know the current vocabulary

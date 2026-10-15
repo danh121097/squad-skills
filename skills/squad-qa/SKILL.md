@@ -60,11 +60,11 @@ and date. Never auto-install skills, plugins, MCP servers, packages or CLIs.
   [test-selection-and-oracles.md](references/test-selection-and-oracles.md)
 - Suite architecture, fixtures/data, determinism, flakiness, coverage, CI and maintenance:
   [test-architecture-data-flakiness-and-ci.md](references/test-architecture-data-flakiness-and-ci.md)
-- Security, accessibility, performance/load, visual/cross-browser and release quality:
+- When the change crosses trust boundaries, affects interaction or performance, or nears release (security, accessibility, load, visual/cross-browser, release):
   [security-accessibility-performance-and-release.md](references/security-accessibility-performance-and-release.md)
 - When calibrating a verdict, an evidence threshold or the trustworthiness of the instrument:
   [qa-worked-decisions.md](references/qa-worked-decisions.md)
-- Scenario selection, evidence contract and verdict templates:
+- Before designing scenarios or choosing runners, and when writing the evidence record or verdict:
   [test-strategy-runtime-and-verdict.md](references/test-strategy-runtime-and-verdict.md)
 
 ## Quality bar
@@ -78,9 +78,8 @@ A suite that cannot fail is not coverage. Before issuing a verdict, run the self
    existing test stack and known risk.
 2. **Design scenarios** — map criteria and risk dimensions to the narrowest reliable tests; identify data,
    fixtures, devices/browsers, services and observability required.
-3. **Execute** — run focused behavioral tests first, author/update only assigned QA-owned test files, and
-   return cases needed in build-owned regression files to their owner. Then broaden to relevant
-   integration/ e2e/contract/a11y/performance/security checks. Record commands and environments.
+3. **Execute** — run focused behavioral tests first, then broaden to relevant
+   integration/e2e/contract/a11y/performance/security checks.
 4. **On failure** — confirm repeatability, minimize the repro, classify it (product, test, environment,
    dependency, spec) and preserve redacted artifacts.
 5. **Verdict** — per gate 4; `NEEDS_ENVIRONMENT` gets one resolution by the lead, then QA resumes.

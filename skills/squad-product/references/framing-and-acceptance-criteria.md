@@ -15,7 +15,7 @@ checked, because nothing observable moves when it is met.
 ## Constraints
 
 Constraints are what the plan may not change: an existing stack, a deadline, a budget, a compliance
-obligation, a published contract, a decision already made. Never re-litigate a settled one — a plan that
+obligation, a published contract, a decision already made. A settled one stays settled — a plan that
 quietly reopens the framework choice is one the user has to defend instead of read.
 
 Separate a real constraint from an inherited default. "We use Postgres" is a constraint. "We have always

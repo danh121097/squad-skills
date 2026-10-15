@@ -25,7 +25,7 @@ mode. Either way, label every gate a logical, non-independent pass.
 **Situation:** A failing test is reported and the owning layer is not established.
 
 **Decision:** Run diagnosis first — an installed bugfix skill, or its evidence-first contract inline — and
-assign the slice once the cause is proven. Never nest a second orchestrator inside this one.
+assign the slice once the cause is proven. Keep this lead the only orchestrator.
 
 **Why:** Assigning on the symptom routes work to whoever owns the file the error surfaced in.
 

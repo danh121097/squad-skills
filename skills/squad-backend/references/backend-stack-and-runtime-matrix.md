@@ -2,7 +2,7 @@
 
 Use this reference when the repository stack is unfamiliar or the user explicitly asks for technology
 selection. Existing repositories win over generic defaults, including Elixir, Scala, Deno/Bun and
-serverless runtimes; never migrate stacks without accepted scope. Prototype the risky unknown instead of
+serverless runtimes; migrate stacks only within accepted scope. Prototype the risky unknown instead of
 choosing from popularity.
 
 ## Behind a reverse proxy or self-hosted host
@@ -25,13 +25,11 @@ Deployment topology belongs to DevOps, but proxy awareness is application code a
 
 ## Framework integration
 
-Match dependency injection, modules/packages, middleware/interceptors, validation, error boundaries,
-transactions, background jobs, health checks, logging and test harness conventions. Avoid framework-agnostic
-layers that merely duplicate the framework without protecting a real domain boundary.
+Add a framework-agnostic layer only when it protects a real domain boundary; otherwise use the
+framework's own injection, middleware, validation, transaction and job mechanisms.
 
 ## Decision output
 
 Record chosen/preserved stack, rejected alternatives, decisive constraints, operational impact, unknowns,
-prototype evidence, compatibility and rollback/migration cost. Avoid unsourced benchmark percentages and
-time-sensitive adoption claims. A decision another role implements records what would reopen it, not only
+prototype evidence, compatibility and rollback/migration cost. Source benchmark figures and adoption claims, or leave them out. A decision another role implements records what would reopen it, not only
 what was chosen.

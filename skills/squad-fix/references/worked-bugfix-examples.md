@@ -8,7 +8,7 @@ Read when ownership, Designer routing, evidence sufficiency or scope is ambiguou
 shape correctly.
 
 **Route:** Backend owns contract compatibility and the regression test; Frontend verifies the corrected
-path. Do not patch the client to accept the accidental shape unless compatibility is required.
+path. Patch the client to accept the accidental shape only if compatibility is required.
 
 ## 2. Failed upload needs a new recovery flow
 
@@ -29,11 +29,11 @@ differently.
 **Evidence:** Production behavior is correct; the test waits a fixed duration for a readiness event and
 fails under load.
 
-**Route:** QA repairs the synchronization: no sleeps, no retries hiding the failure. If the app
+**Route:** QA repairs the synchronization by waiting on the readiness event. If the app
 never emits a reliable readiness state users or tests need, route that missing behavior to the build role.
 
 ## 5. Unknown cross-stack timeout
 
 **Evidence:** The browser aborts at 30 seconds; the query plan shows a missing index for a new query shape.
 
-**Route:** Backend fixes the index; Frontend never masks the server defect with a longer timeout.
+**Route:** Backend fixes the index; Frontend keeps its timeout.

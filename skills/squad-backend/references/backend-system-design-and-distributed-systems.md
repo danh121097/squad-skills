@@ -14,7 +14,6 @@ chains and premature CQRS/event sourcing.
 
 ## Distributed-system invariants
 
-- Networks fail, duplicate, delay, reorder and partition messages.
 - Delivery is normally at-least-once; consumers must be idempotent.
 - Use transactional outbox/inbox or equivalent when DB state and events must agree.
 - Define ordering scope, deduplication key, retry budget, backoff/jitter and dead-letter policy.

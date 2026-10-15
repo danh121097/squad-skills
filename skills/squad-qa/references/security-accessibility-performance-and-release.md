@@ -12,8 +12,7 @@ systems, and redact reports.
 ## Accessibility testing
 
 Combine accessibility-tree inspection, keyboard/focus, zoom/reflow, contrast, reduced motion and realistic
-screen-reader paths (VoiceOver/TalkBack on mobile). Automated axe-like checks catch only part of WCAG;
-custom widgets follow WAI-ARIA APG interaction patterns.
+screen-reader paths (VoiceOver/TalkBack on mobile). Custom widgets follow WAI-ARIA APG interaction patterns.
 
 ## Performance and load
 
@@ -23,8 +22,8 @@ recovery after load. Never load-test production without explicit authorization.
 
 ## Visual and cross-platform
 
-Visual regression uses stable fonts/data/viewport/animation and masks only truly nondeterministic regions;
-pixel equality is not usability. The cross-browser/device/OS matrix follows product support and risk.
+Visual regression uses stable fonts/data/viewport/animation and masks only truly nondeterministic regions.
+The cross-browser/device/OS matrix follows product support and risk.
 
 ## Release and operational verification
 

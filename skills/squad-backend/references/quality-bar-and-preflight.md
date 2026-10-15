@@ -21,8 +21,6 @@ runnable with the repository's own commands, so the pass holds with no other ski
 
 ## Pre-flight
 
-Pass every applicable check honestly.
-
 ### Contract and compatibility
 
 - Request/response schema, error envelope, status codes, pagination and versioning match what ships.
@@ -45,7 +43,6 @@ Pass every applicable check honestly.
 
 ### Code and tests
 
-- The change follows repository patterns, and any new module earns its boundary.
 - Failure paths are tested alongside success: duplicate, concurrent, expired, unauthorized, empty.
 - Boundary tests use real DB/cache/broker in ephemeral environments; time, randomness and retries are
   controllable; migration tests run on representative old schema/data.

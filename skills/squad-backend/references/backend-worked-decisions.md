@@ -21,7 +21,7 @@ generic webhook framework adds failure modes without adding a guarantee.
 
 **Decision:** REST for the external contract unless client-driven graph composition is a real requirement.
 gRPC streaming for the internal path only if protobuf compatibility, deadlines, backpressure and tooling are
-acceptable. Never GraphQL merely to avoid designing endpoints; consumer needs decide, not popularity.
+acceptable. GraphQL only when consumers need client-driven composition; consumer needs decide, not popularity.
 
 ## 3. Migration target of uncertain status
 
@@ -35,4 +35,4 @@ before acknowledgement.
 
 **Decision:** Assume at-least-once; persist an idempotency key or outbox state; bound retries; split
 transient from permanent errors; name dead-letter ownership and replay. Say "idempotent effect under these
-invariants", never "exactly once", unless every boundary proves it.
+invariants"; claim "exactly once" only when every boundary proves it.

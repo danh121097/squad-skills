@@ -1,8 +1,7 @@
 # Quality bar and pre-flight
 
 Read before issuing a verdict. Every check is performed against the diff and the repository's own commands,
-so the pass holds with no other skill installed. The review is the last gate, so its own failure modes cost
-more than the ones it looks for.
+so the pass holds with no other skill installed.
 
 ## What weak review output looks like
 
@@ -11,15 +10,10 @@ more than the ones it looks for.
 - A finding asserted without tracing the callee, so a race, a leak or a bypass is reported that the unread
   implementation may already prevent.
 - Style stated as a defect, or a personal architecture demanded over a working repository idiom.
-- One root cause reported as many findings, one per location, inflating the count and burying the cause.
 - Approval through uncertainty; or `NEEDS_EVIDENCE` used for evidence the gate never required.
 - Polished comments, generated tests, invented APIs and broad try/catch taken at face value.
-- Only the edited hunks read, with renamed, deleted, generated and configuration paths skipped.
-- The reviewer quietly fixing what it is judging.
 
 ## Pre-flight
-
-Pass every applicable check honestly.
 
 ### Scope
 

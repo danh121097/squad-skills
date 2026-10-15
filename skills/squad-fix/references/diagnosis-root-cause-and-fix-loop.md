@@ -12,7 +12,7 @@ data redacted.
 
 Prefer deterministic reproduction. When runtime reproduction is impossible but source/contract evidence
 proves the defect—for example an invalid import or unscoped authorization query—record the static proof and
-why execution is unnecessary. Do not claim a runtime reproduction from static reasoning. Without Git history,
+why execution is unnecessary. Label static proof as static. Without Git history,
 state that "why now" history is unavailable rather than inventing an introducer.
 
 ## 2. Build a red-capable loop before hypothesizing
@@ -47,25 +47,24 @@ untested theory.
 ## 3. Trace and test hypotheses
 
 Start at the earliest observable divergence and trace backward through callers, contracts, state/data and
-environment, separating the primary failure from cascading errors. Do not assume the newest commit is guilty.
+environment, separating the primary failure from cascading errors. Treat the newest commit as one hypothesis among others.
 
 Generate three to five ranked falsifiable hypotheses before testing any of them; a single hypothesis anchors
-the run on the first plausible idea. `--quick` reduces this to the one hypothesis the evidence already names,
-and never permits guessing. Each states the observation that would kill it — "if X is the cause,
+the run on the first plausible idea. `--quick` reduces this to the one hypothesis the evidence already names.
+Each states the observation that would kill it — "if X is the cause,
 changing Y removes the symptom" — and one that cannot state its prediction is sharpened or dropped. Where the
 session can reach the user, show the ranked list before testing: domain knowledge re-ranks it in seconds and
 an already-ruled-out cause is cheap to learn. Proceed on your own ranking when no answer arrives.
 
-Run the narrowest safe check that can falsify the top hypothesis, changing one variable at a time. Do not edit
-code to “see if it helps.” Tag every temporary probe with a unique marker such as `[DEBUG-a4f2]` so removal is
+Run the narrowest safe check that can falsify the top hypothesis, changing one variable at a time; edit code
+only to test a stated prediction. Tag every temporary probe with a unique marker such as `[DEBUG-a4f2]` so removal is
 one grep. For a performance regression measure first: establish a baseline number with a timing harness,
-profiler or query plan, then bisect against it. If evidence is unavailable, request the smallest
-artifact/access needed or return `NEEDS_ENVIRONMENT` through QA when the missing target blocks verification.
+profiler or query plan, then bisect against it. Return `NEEDS_ENVIRONMENT` through QA when a missing
+target blocks verification.
 
 ## 4. Select the repair
 
-Preserve public contracts unless changing one is explicitly accepted. Reuse existing validation, error,
-state, transaction, component and test patterns. Add defense at more than one layer only when each layer
+Add defense at more than one layer only when each layer
 prevents a distinct real failure.
 
 For schema/data mutation, identify the target first. Shared/persistent/staging/production targets require
@@ -81,8 +80,9 @@ that needs several, a unit test that cannot build the chain that triggered it �
 finding: the architecture is what prevents this defect from being locked down. Report it with the repair and
 route it as separately scoped work, rather than shipping a test that passes without covering the bug.
 
-Do not weaken assertions, increase sleeps/retries, swallow errors, reset user data, bypass authorization or
-change expected behavior merely to turn a check green.
+Turn a check green only by repairing the cause — never by weakening an assertion, adding sleeps or
+retries, swallowing an error, resetting user data, bypassing authorization or changing expected behavior
+to fit.
 
 ## 6. Retry discipline
 

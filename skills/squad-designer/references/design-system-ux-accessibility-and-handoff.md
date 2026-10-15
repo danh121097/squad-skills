@@ -7,12 +7,13 @@ or implementation handoff.
 
 Name semantic tokens for the role, not the appearance, with light/dark/high-contrast parity when in scope.
 Reuse existing components before adding variants; add a primitive only when semantics or behavior cannot fit
-without distortion, and avoid wrappers that only rename styling. Design around content and task thresholds,
-then map them to project breakpoints; cross-form-factor layout belongs to the adaptive platform reference.
+without distortion, and skip wrappers that only rename styling.
+Design around content and task thresholds, then map them to project breakpoints; cross-form-factor layout
+belongs to the adaptive platform reference.
 
 ## Evaluation
 
-Match the review method to risk and never claim user validation from expert critique alone.
+Match the review method to risk, and report expert critique as critique, not user validation.
 
 ## Measure loop
 
@@ -25,13 +26,13 @@ Measure the rendered output rather than judging the code:
 4. Fix and measure again until the pass is clean, or record exactly what remains and why.
 
 Without a browser, device or scanner, state the tier that ran — compile, partial render or human review —
-and what a build role must still measure. Never install tooling to close the gap.
+and what a build role must still measure; report the gap rather than installing tooling to close it.
 
 ## Accessibility
 
 Semantic platform controls first; WCAG 2.2 and WAI-ARIA APG for custom web widgets, platform HIG/Material
 guidance for native. Define focus restoration and announcements for dialogs, route changes and errors.
-Automated contrast/axe checks never replace interaction review.
+Pair automated contrast/axe checks with interaction review.
 
 ### Failures that survive review
 
@@ -57,6 +58,6 @@ The handoff follows the entrypoint contract, plus source frame/research links, o
 acceptance checklist, and which of existing component reuse, extension or an approved new dependency each
 piece is.
 
-Emitted components must be inert: no fetch, no client/store wiring, no router, no persistence, no
-analytics, no secrets. Leave those seams as props, slots, or callbacks the build role binds, and say which
-verification you ran versus which the build role must run in the real app.
+Emitted components are inert: leave data, store, routing, persistence and analytics seams as props, slots, or
+callbacks the build role binds, and say which verification you ran versus which the build role must run in
+the real app.

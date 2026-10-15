@@ -124,3 +124,10 @@ was cut down and every ceiling was re-recorded; `git log -p` on that file still
 holds them. What they taught stays true: a raise is stated as a reviewed number
 in the same diff, and new content that only some tasks need is routed to those
 tasks so the median does not move.
+
+On 2026-10-15 every ceiling was lowered again, by 1 to 157 words, after a pass
+that applied `docs/authoring-doctrine.md` across all ten skills. A removal
+counted as a duplicate only when every task type that needs the rule still
+loads a file that states it. Review restored the rules that failed that test,
+and the rewrites that had changed a guardrail's meaning, before the figures were
+recorded.

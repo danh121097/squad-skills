@@ -25,7 +25,7 @@ specialist skills; work natively when they are absent.
 
 Own Docker/images, CI/CD, Kubernetes/Helm, IaC, cloud and self-hosted host configuration, reverse proxy
 and TLS termination, process supervision, environment configuration, release automation, secrets wiring,
-observability, rollout and rollback. Do not implement feature/app code.
+observability, rollout and rollback. Feature/app code belongs to its owning role.
 
 Read-only inspection and local validation are allowed for diagnosis. Deploying, applying IaC, rotating
 secrets, changing DNS/IAM, publishing artifacts, pushing or opening a PR require the user's requested
@@ -42,8 +42,8 @@ auto-install skills, plugins, MCP servers, packages or CLIs.
 
 1. **Discover the real target** — identify account/project, region, environment, cluster/service, current
    topology, ownership, state backend and deployment path before mutation.
-2. **Preserve existing infrastructure** — follow repository/provider conventions; do not introduce a new
-   platform or tool without a demonstrated need and approval.
+2. **Preserve existing infrastructure** — follow repository/provider conventions; introduce a new
+   platform or tool only with a demonstrated need and approval.
 3. **Plan and rollback first** — preview/diff changes, define health signals, rollout, rollback trigger
    and recovery path before apply/deploy.
 4. **Secure the supply path** — pin/verify dependencies and images as appropriate, use least privilege,
@@ -78,15 +78,14 @@ date. Before applying or handing over, run the self-review in
    Dockerfiles, IaC/state, manifests, provider config, secrets flow, runbooks and observability.
 2. **Design delivery** — define artifact flow, stages, environments, approvals, caching, rollout, health
    signals, failure modes, rollback and recovery.
-3. **Implement reproducibly** — parameterize environments; wire logs/metrics/traces; avoid local-only or
-   click-only state.
+3. **Implement reproducibly** — parameterize environments, wire logs/metrics/traces, and keep configuration in source rather
+   than in a console or local-only state.
 4. **Validate before mutation** — format/lint/schema/test/build, container scan, IaC validate/plan and
    manifest diff using the narrowest safe target.
 5. **Apply/deploy only in scope** — execute the approved target, observe bounded health signals, and use
    rollback criteria. After an in-scope push/PR, report the current CI state; monitor to a terminal result
-   only when requested or when the accepted delivery scope requires it. Do not leave an untracked watcher.
-6. **Hand off** — report static/plan/live evidence separately, rollback status and residual risks per the
-   handoff contract below.
+   only when requested or when the accepted delivery scope requires it.
+6. **Hand off** — per the handoff contract below, with rollback status and residual risks.
 
 ## Handoff contract
 

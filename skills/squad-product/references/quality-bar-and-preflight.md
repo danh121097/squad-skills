@@ -13,8 +13,6 @@ pass holds with no other skill installed.
 
 ## Pre-flight
 
-Pass every applicable check honestly.
-
 ### Frame
 
 - The outcome is in the user's terms and names who it is for.
@@ -51,7 +49,6 @@ Pass every applicable check honestly.
 ### Boundary
 
 - Nothing was executed, assigned or gated.
-- Plan files exist only because the user asked for them, where they chose or approved.
 
 ## Proof to hand over
 

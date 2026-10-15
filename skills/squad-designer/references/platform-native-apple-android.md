@@ -4,8 +4,8 @@ Read this reference for a SwiftUI (iOS/iPadOS/macOS) or Jetpack Compose (Android
 Native and Flutter load the cross-platform reference; web targets load the web reference.
 
 **Verification tier:** Apple and Android native output is compile-checked and reviewed by a human
-only. There is no automated render gate for this tier. State this tier in every report; never
-imply these deliverables passed automated render, contrast, or axe checks.
+only. There is no automated render gate for this tier. State this tier in every report as compile
+plus human review, with no automated render, contrast, or axe result claimed.
 
 ## Shared rules
 
@@ -19,7 +19,6 @@ imply these deliverables passed automated render, contrast, or axe checks.
 - Honor the OS reduce-motion setting and dynamic text sizing in the component that animates or
   sets type; whoever writes the animation code owns its lifecycle scoping, teardown, and
   reduced-motion fallback. Test layouts at the largest supported accessibility text size.
-- Cite official docs when exact modifier or API behavior matters.
 
 ## SwiftUI
 

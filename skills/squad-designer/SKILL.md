@@ -31,8 +31,8 @@ written spec, with props and slots left open for the consumer to bind, plus the 
 produced it.
 
 Emitted components are inert: state, data fetching, API integration, routing, forms submission, and
-platform lifecycle stay with the build role — `squad-frontend` on web, `squad-mobile` on native. Never put
-network calls, credentials, secrets, or analytics in emitted components. Do not install dependencies,
+platform lifecycle stay with the build role — `squad-frontend` on web, `squad-mobile` on native. Emitted
+components carry no network calls, credentials, secrets, or analytics. Do not install dependencies,
 skills, plugins or MCP servers, replace a design system, or expand product scope; request approval for
 material dependency changes.
 
@@ -50,7 +50,6 @@ expose secrets or private project data in searches.
    greenfield defaults only when no established UI foundation exists.
 3. **Choose the lightest motion tool** — preserve the repository's library; otherwise select by
    interaction complexity per the loaded platform reference, with reduced motion in the same code.
-4. **Write it in the project's stack** — matching local file layout, naming, and styling conventions.
 
 ## Conditional references
 
@@ -83,7 +82,8 @@ is never implied render-gated.
 - For flows, IA, design systems/tokens, component states, accessibility, evaluation passes, and the code
   handoff, read
   [references/design-system-ux-accessibility-and-handoff.md](references/design-system-ux-accessibility-and-handoff.md).
-- For a concrete application of these rules, read
+- For a worked case by stack or situation (user-supplied design, existing app, greenfield, small change,
+  native, split-view), read
   [references/codebase-first-examples.md](references/codebase-first-examples.md).
 
 ## Quality bar

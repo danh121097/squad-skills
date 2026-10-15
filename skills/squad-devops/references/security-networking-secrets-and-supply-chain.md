@@ -22,7 +22,7 @@ authorization. Zero Trust/access proxies need identity, device/session and recov
 - Pin/review actions, images, charts, modules/providers and package locks.
 - Minimize build context; protect credentials from Docker layers and build cache.
 - Generate/retain SBOM and provenance/sign artifacts when required; verify before promotion.
-- Scan dependencies/images/IaC/config, but triage exploitability and do not hide failures.
+- Scan dependencies/images/IaC/config, but triage exploitability and report every failure.
 - Treat third-party CI steps and install scripts as code with privileges.
 
 ## Evidence

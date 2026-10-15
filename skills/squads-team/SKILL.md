@@ -13,8 +13,7 @@ metadata:
 
 Coordinate role-specialized delivery against one accepted goal. Select the lowest-overhead safe execution
 shape that preserves required ownership and risk-appropriate gate independence. Pair installed specialist
-skills with the roles that need them; named squad skills and multi-agent tooling stay optional. Quality
-gates and role boundaries are not optional.
+skills with the roles that need them; named squad skills and multi-agent tooling stay optional.
 
 ## Usage
 
@@ -54,10 +53,9 @@ changes each need their own authorization.
    named options with consequences to the lead, or to the user when run on its own; the lead settles only a
    fork it can show a source answers, naming that source, and puts the rest to the user through the runtime's
    structured question tool, else a numbered list.
-2. **Scout and split** — inspect project instructions, stack, relevant modules, contracts, tests and dirty
-   state. Split by capability, map dependencies, assign non-overlapping file ownership, and serialize
-   unavoidable overlap. Slices that must match each other build against one shared contract the lead
-   settles first, with its open questions asked together; a finding in one is checked in the others.
+2. **Scout and split** — read the repository, dirty state included. Split by capability, map
+   dependencies, assign non-overlapping file ownership, and serialize unavoidable overlap. Slices that
+   must match each other build against one shared contract the lead settles first, with its open questions asked together; a finding in one is checked in the others.
 3. **Design before UI build** — UI work builds on the user's material and the existing system; Designer
    runs only for decisions both leave open.
 4. **No done without gates** — name the gate tier and its reason in one line before building: `light` (one
@@ -81,13 +79,12 @@ changes each need their own authorization.
 
 ## Conditional references
 
-- At a phase boundary, when reaching a peer role, and before selecting an execution mode, spawning work,
-  assigning ownership or using worktrees, read [references/coordination-contract.md](references/coordination-contract.md).
+- At a phase boundary, when reaching a peer role, and before selecting an execution mode, spawning or
+  assigning work or using worktrees, read [references/coordination-contract.md](references/coordination-contract.md).
 - Before role routing or advancing any gate, read
   [references/delivery-pipeline-and-roster.md](references/delivery-pipeline-and-roster.md).
-- For a concrete bug/regression/failing test whose root cause or owner is not yet proven, use an installed
-  `squad-fix` as the diagnosis/routing stage, or apply its evidence-first contract inline. Do not create a
-  nested orchestrator when this lead already owns execution.
+- For a concrete failure whose root cause or owner is not yet proven, use an installed `squad-fix` as the
+  diagnosis/routing stage, or apply its evidence-first contract inline; this lead stays the only orchestrator.
 - When a named squad role skill is unavailable, when the request carries no acceptance criteria, when the
   repository is empty, or when auditing whether a role covered its full domain, read
   [references/domain-coverage-contracts.md](references/domain-coverage-contracts.md).
@@ -113,15 +110,15 @@ result, and a missing environment or evidence never becomes completion.
 6. **Verify by tier** — per gate 4; externally assigned gates follow the handoff contract.
 7. **Integrate** — combine approved work, check each seam on the artifacts — what one slice supplies
    against what the other consumes: env vars, routes, schemas — rather than on the reports, run combined
-   checks, and update durable docs only when behavior/setup/contracts/architecture changed.
-8. **Finish** — report result, mode, roles, files/branches, tests, gate verdicts, residual risk and
-   anything not verified; clean up only resources and processes this run created.
+   checks.
+8. **Finish** — report per gate 5 and the final-report section of the pipeline reference, anything not
+   verified included; clean up only resources and processes this run created.
 
 ## Handoff contract
 
 - Each role receives its slice with the acceptance criteria it must meet, the files it owns, the contracts
   it may not move, and the environment and authority available to it.
-- Thread history and shared files are not a handoff; state it explicitly, per
+- Conversation history and shared files are not a handoff; state it explicitly, per
   [references/coordination-contract.md](references/coordination-contract.md).
 - Each role returns its artifact, the evidence at the level it actually ran, and the gaps it could not
   close; the lead composes these and never upgrades a gap into a result.

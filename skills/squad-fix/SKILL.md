@@ -49,10 +49,10 @@ Verify version-specific claims against that version's own primary docs; cite ver
    evidence.
 2. **Capture pre-fix evidence** — preserve the exact symptom, failing command/path, environment and safe
    artifacts before changing files.
-3. **Scout before diagnosis** — inspect project guidance, stack, relevant code paths/callers/contracts/tests,
-   recent change evidence when available, and the real operational path.
+3. **Scout before diagnosis** — inspect the relevant callers, contracts, tests, recent change evidence when
+   available, and the real operational path.
 4. **Prove the root cause** — identify symptom, minimal repro or static proof, expected versus actual,
-   exact defect, why it surfaced now and blast radius. Do not implement a probable fix.
+   exact defect, why it surfaced now and blast radius. Implement a fix only for a proven cause.
 5. **Route by cause, not surface** — assign non-overlapping ownership to the role whose contract is
    broken.
 6. **Fix and prevent** — make the smallest cause-aligned change; add regression evidence and verify the
@@ -65,15 +65,14 @@ Verify version-specific claims against that version's own primary docs; cite ver
 
 Read only what the current bug requires:
 
-- For deciding Frontend/Backend/Mobile/DevOps/QA/Designer ownership, cross-layer symptoms or test-file
-  ownership, read
+- Before assigning an owner (cross-layer symptoms, Designer trigger, test-file ownership), read
   [bug-routing-and-ownership.md](references/bug-routing-and-ownership.md).
-- For evidence capture, reproduction/static proof, hypothesis testing, root-cause criteria, fix selection,
-  retry limits and prevention, read
+- For evidence capture, reproduction or static proof, hypothesis testing, root-cause criteria, fix selection
+  and retry limits, read
   [diagnosis-root-cause-and-fix-loop.md](references/diagnosis-root-cause-and-fix-loop.md).
 - Before declaring the repair complete, read
   [verification-qa-review-and-reporting.md](references/verification-qa-review-and-reporting.md).
-- When a concrete routing, severity or scope example will improve judgment, read
+- When ownership, Designer routing, evidence sufficiency or scope is ambiguous, read
   [worked-bugfix-examples.md](references/worked-bugfix-examples.md).
 
 ## Quality bar
@@ -94,12 +93,11 @@ was. Before declaring the repair complete, run the self-review in
    only when multiple independent role slices need coordination; never nest it inside that lead.
 5. **Implement** — owner applies the smallest repository-native fix and regression guard, preserving
    unrelated user changes and public contracts unless the accepted repair intentionally changes one.
-6. **Verify** — rerun the baseline; run focused then blast-radius checks appropriate to the failure; inspect
-   side effects and clean up task-owned processes/resources.
-7. **Gate by tier** — apply external assignments in the handoff contract first; otherwise `light`, and
-   `standard` when run on its own, close on step 6 as the combined verify
-   pass. Otherwise QA runs a distinct behavioral pass, then Review consumes its evidence and inspects
-   implementation quality and cause alignment. `FAIL` and `CHANGES_REQUESTED` return to owner; `NEEDS_*`
+6. **Verify** — rerun the baseline, then focused and blast-radius checks appropriate to the failure.
+7. **Gate by tier** — apply external assignments in the handoff contract first; `light`, and `standard`
+   when run on its own, close on step 6 as the combined verify pass; otherwise QA runs a distinct
+   behavioral pass, then Review consumes its evidence and inspects implementation quality and cause
+   alignment. `FAIL` and `CHANGES_REQUESTED` return to owner; `NEEDS_*`
    returns to lead.
 8. **Finish** — hand over the proof listed in the quality bar, plus docs impact and any authorized external
    mutation.
@@ -110,8 +108,8 @@ was. Before declaring the repair complete, run the self-review in
 - Target/recovery authority is missing for a data, production, deployment or external-system mutation.
 - A third failed cause-aligned attempt, or a third gate return: stop changing code, reassess the cause model
   and present the evidence with two to four options.
-- Verification reveals a regression or contract change outside accepted scope; do not silently broaden
-  work.
+- Verification reveals a regression or contract change outside accepted scope; put it to the user with
+  options.
 
 ## Handoff contract
 

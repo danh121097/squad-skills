@@ -19,8 +19,7 @@ rewrite it.
   work, narrow bugs, screens the material covers, exact local patterns and a single build owner with no
   design-system change skip it.
 - Without Designer, build the presentational components inline — hierarchy, navigation surface, states,
-  platform adaptation and accessibility — before wiring behavior into them. Report a visual or interaction gap
-  back to the Designer stage instead of redesigning inside the feature.
+  platform adaptation and accessibility — before wiring behavior into them.
 
 ## Platform and lifecycle model
 

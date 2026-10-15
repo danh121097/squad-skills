@@ -16,10 +16,9 @@ browser, test and build tooling, so the pass holds with no other skill installed
   label both read fine in review and fail a measurement.
 - A server defect absorbed by the client: a longer timeout, a shape-tolerant parser, a retry that hides the
   contract break instead of routing it to Backend.
+- A failing check made green by loosening, skipping or retrying it instead of fixing its cause.
 
 ## Pre-flight
-
-Pass every applicable check honestly.
 
 ### Behavior and data
 

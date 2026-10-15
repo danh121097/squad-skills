@@ -29,8 +29,8 @@ owns its layer.
 A phase exists because something must be true before the next thing can start — not because the work is
 large, and not because a calendar has weeks in it. Each phase states what it delivers, the Squad roles it
 requires with each role's distinct responsibility and the handoff between them, what must be true first,
-and the unknown whose resolution would reorder the plan. It never names agents, branches, files or
-execution mode — the lead splits ownership against the live repository when it runs.
+and the unknown whose resolution would reorder the plan. It stays at roles; the lead assigns agents, branches,
+files and execution mode against the live repository when it runs.
 
 ## Ordering rules
 
@@ -40,6 +40,6 @@ execution mode — the lead splits ownership against the live repository when it
   contract. A real dependency, not a courtesy.
 - Infrastructure comes before the first thing that must run on it, and not one phase earlier.
 - Two phases touching the same files are one phase, or they are serialized.
-- Do not phase a thing that is one slice. A single-phase plan is a valid and common answer.
+- One slice is one phase; a single-phase plan is a valid and common answer.
 - Phases sharing no files and no unfinished dependency are independent: the user may run each in its own
   session or worktree, on its own gates.

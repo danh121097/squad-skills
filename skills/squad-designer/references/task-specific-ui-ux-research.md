@@ -2,14 +2,9 @@
 
 Research fills the gap the user's material and the existing system leave. It is not a default step.
 
-## Skip it when
-
-- the user supplied a screenshot, link, brief or Figma that covers the screen — that material is the
-  design source;
-- the change extends an established local pattern;
-- the work is logic-only or a narrow visual fix.
-
-Research only the part still open: a state the references never show, responsive behavior, a flow the
+Skip it when the user supplied a screenshot, link, brief or Figma that covers the screen, the change
+extends an established local pattern, or the work is logic-only or a narrow visual fix. Otherwise research
+only the part still open: a state the references never show, responsive behavior, a flow the
 product does not have yet.
 
 ## Frame the question
@@ -42,5 +37,5 @@ behavior and overflow.
 ## Synthesize, do not copy
 
 State a one-sentence design thesis connecting product purpose to the direction, then the adopted and
-rejected patterns with their links. Never reproduce a composition, brand identity, illustration,
-proprietary asset or distinctive interaction wholesale.
+rejected patterns with their links. Carry over principles only; composition, brand identity, illustration,
+proprietary assets and distinctive interactions stay the source's.

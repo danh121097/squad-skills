@@ -6,8 +6,8 @@ Figma, material UI/UX work, a new component pattern, or unclear design input.
 ## 0. What the Designer stage delivers
 
 The designer hands over presentational component code, not a written spec: files that render, with props
-and slots left open for you to bind, plus the rationale behind them. Wire behavior into that code — do not
-re-implement the component from the rationale. Behavior is yours: state, data fetching, API integration,
+and slots left open for you to bind, plus the rationale behind them. Wire behavior into that code rather than
+re-implementing the component from the rationale. Behavior is yours: state, data fetching, API integration,
 routing, forms submission, and platform lifecycle stay with the build role, so those seams arrive as
 props, slots, or callbacks for you to fill. One thing arrives already wired: a component that animates
 ships the bookkeeping and mount/unmount cleanup its own motion needs, because motion ownership follows
@@ -20,7 +20,7 @@ visual or interaction gap goes back to the Designer stage instead of being redes
 
 A screenshot, link, brief or accepted Figma the user supplied is the design intent. With Figma MCP
 available, inspect components, variants, variables, Auto Layout, constraints, interactions, and assets. Map
-the material to repository primitives; do not trigger a redesign merely because implementation is new.
+the material to repository primitives and keep its design intent.
 
 ## 2. Trigger Designer
 
@@ -34,11 +34,11 @@ existing system are considered:
 
 Designer activation resolves only those decisions and preserves the material's art direction.
 
-## 3. Do not trigger Designer
+## 3. Skip Designer
 
 With one build owner, no design-system change and no design decision left open by the triggers above, do
-the presentational work inline. Continue directly also for logic-only work, a narrow bug fix, material that covers the screen, or a small UI change that
-follows an established local pattern.
+the presentational work inline; logic-only work, a narrow bug fix, material that covers the screen, or a
+small UI change that follows an established local pattern continues directly.
 
 ## 4. Routing
 
@@ -60,5 +60,3 @@ before the behavior wiring, so the boundary survives even without the skill.
 6. Build the presentational components against those primitives, with every state reachable from props and
    motion shipping its own teardown and reduced-motion fallback.
 7. Record the rationale, tokens, and props surface, then wire behavior into what you built.
-
-If Figma cannot be accessed, request an inspectable export/screenshots rather than inventing details.

@@ -20,8 +20,6 @@ evidence into permission to ship.
 
 ## Pre-flight
 
-Pass every applicable check honestly.
-
 ### Traceability
 
 - Every acceptance criterion maps to a test, an observation, or a stated risk-based reason it has neither.

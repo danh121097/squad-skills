@@ -7,17 +7,16 @@ offline/sync. Preserve an existing app stack unless migration is explicit.
 
 Choose from product/platform reach, team expertise, required native SDKs, UI fidelity, performance, app size,
 release independence, accessibility, debugging, build/release tooling and long-term ownership. Validate
-critical SDK/plugin compatibility with a prototype; avoid popularity/adoption percentages. A cross-platform
-stack still needs platform-specific code, testing and store policy work.
+critical SDK/plugin compatibility with a prototype rather than popularity or adoption percentages.
 
 ## Architecture
 
 Preserve the repository architecture and its boundaries between presentation, navigation, domain rules,
-data/repositories, platform services and external SDKs. Do not add layers that only forward calls.
+data/repositories, platform services and external SDKs. Add a layer only where it carries a boundary.
 
 State ownership distinguishes ephemeral UI, navigation/deep-link, form draft, server cache, authenticated
-session/permissions, persisted preference, offline authoritative draft and sync metadata. Keep derived state
-derived. Never assume an in-memory navigation/state store survives OS reclamation.
+session/permissions, persisted preference, offline authoritative draft and sync metadata. An in-memory
+navigation/state store does not survive OS reclamation.
 
 ## Networking
 
@@ -37,8 +36,8 @@ network, process death during sync, duplicate delivery and old-client/new-server
 ## Native integrations
 
 Wrap push, deep links, camera/files, location, biometrics, background tasks, Bluetooth and analytics behind
-narrow platform contracts. Model permission/restriction and unavailable hardware; do not keep services alive
-past platform background limits without a product requirement.
+narrow platform contracts. Model permission/restriction and unavailable hardware; keep services within
+platform background limits unless a product requirement says otherwise.
 
 ## Selection output
 

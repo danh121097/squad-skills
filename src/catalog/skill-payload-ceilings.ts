@@ -52,16 +52,21 @@
  * Fix rose by 50 words when it gained the `thread` mode: it cannot reach the
  * team's coordination reference, so the read-back, pending-launch, patch and
  * report-back rules that make the mode safe must sit in its own entrypoint.
+ *
+ * Every figure was lowered on 2026-10-15 after a catalog-wide pass removed
+ * frontier-model no-ops, in-file duplicates and generic knowledge, and rewrote
+ * non-guardrail prohibitions as the behavior they want. Rules a task type could
+ * no longer reach were restored before the figures were recorded.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2116, // was 2033
-  'squad-code-review': 2308, // was 2212
-  'squad-designer': 2064, // was 2064
-  'squad-devops': 2092, // was 2009
-  'squad-fix': 2567, // was 2517
-  'squad-frontend': 2045, // was 1971
-  'squad-mobile': 2012, // was 1929
-  'squad-product': 2392, // was 2489
-  'squad-qa': 2377, // was 2295
-  'squads-team': 2987, // was 2908
+  'squad-backend': 2115, // was 2116
+  'squad-code-review': 2205, // was 2308
+  'squad-designer': 2027, // was 2064
+  'squad-devops': 2067, // was 2092
+  'squad-fix': 2539, // was 2567
+  'squad-frontend': 2011, // was 2045
+  'squad-mobile': 1928, // was 2012
+  'squad-product': 2359, // was 2392
+  'squad-qa': 2341, // was 2377
+  'squads-team': 2830, // was 2987
 };

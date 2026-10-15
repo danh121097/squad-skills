@@ -20,7 +20,7 @@ for multi-step/concurrent flows.
 
 ## Server state and APIs
 
-Use the repository's query/client layer. Define cache key identity, freshness, invalidation, cancellation,
+Define cache key identity, freshness, invalidation, cancellation,
 deduplication, retry, pagination, optimistic update/rollback and auth expiry. Prevent stale responses from
 overwriting newer intent.
 
@@ -39,7 +39,7 @@ Error boundaries must match recovery scope; a widget failure should not necessar
 - Share schemas only when server and client semantics truly match; server validation remains authoritative.
 - Define touched/dirty/submitting/success/conflict states, async validation cancellation and duplicate
   submission/idempotency behavior.
-- Preserve user input on recoverable failure; focus/announce actionable errors.
+- Preserve user input on recoverable failure.
 - Model server conflicts and stale version/ETag rather than last-write-wins accidentally.
 - File upload needs type/size/progress/cancel/retry and safe server validation.
 
@@ -52,4 +52,4 @@ routes. Client guards improve UX but never replace server authorization.
 
 For WebSocket/SSE/polling, define connection lifecycle, auth refresh, reconnect/backoff, ordering,
 deduplication and stale snapshot reconciliation. For offline/PWA, define cache scope, mutation queue,
-conflicts, storage versioning, quota and logout cleanup; never cache sensitive responses by accident.
+conflicts, storage versioning, quota and logout cleanup; cache sensitive responses only with explicit scope and logout cleanup.

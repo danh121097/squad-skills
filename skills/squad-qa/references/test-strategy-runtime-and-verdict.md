@@ -5,8 +5,8 @@ services or observability are in question.
 
 ## Risk matrix
 
-Select the gate-2 dimensions that apply; implementation structure belongs to Code Review. Do not run
-every category mechanically. Add operations (deploy smoke, health, observability, rollback) when
+Select the gate-2 dimensions that apply; implementation structure belongs to Code Review. Run only
+the categories the change puts at risk. Add operations (deploy smoke, health, observability, rollback) when
 infrastructure changed.
 
 ## Evidence contract
@@ -46,4 +46,4 @@ Never mutate production data without authority.
   resume afterward.
 
 Use `FAIL` only when evidence demonstrates a product/test defect or unmet criterion. `NEEDS_ENVIRONMENT`
-blocks `done`, returns to the lead (or the user, run on its own) for resolution and resumes at QA.
+blocks `done`.

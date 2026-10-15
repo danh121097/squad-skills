@@ -15,8 +15,7 @@ Read before routing roles or advancing any slice through Design, QA, Review, int
 | QA          | Observable-behavior scenarios, assigned tests/fixtures, execution, repro, evidence and PASS/FAIL/NEEDS_ENVIRONMENT                               | Production implementation, broad implementation-quality review, closing work              |
 | Code Review | Implementation-quality review, focused finding verification and APPROVE/CHANGES_REQUESTED/NEEDS_EVIDENCE                                         | Replaying QA coverage, feature fixes, self-approval                                       |
 
-Named `squad-*` skills are preferred when installed; the role loads its `SKILL.md` plus task-relevant
-references. When absent, the lead gives the role this matrix, the acceptance/ownership/evidence contract and
+When a named `squad-*` skill is absent, the lead gives the role this matrix, the acceptance/ownership/evidence contract and
 the relevant section of `domain-coverage-contracts.md`.
 
 ### Designer-to-build handoff
@@ -28,20 +27,18 @@ Designer instead of being redesigned inside the slice.
 
 ## 2. Automatic routing
 
-- Concrete bug/regression/failing test with unproven cause or owner → `squad-fix` diagnosis/routing stage
+- Concrete failure with unproven cause or owner → `squad-fix` diagnosis/routing stage
   when installed; otherwise perform the same baseline → scout → root-cause proof inline. `squad-fix` is a
   workflow controller, not an implementation role.
-- A request that meets the Product trigger in gate 1 of `SKILL.md` → Product before any other role. It
-  declares the role capabilities each phase needs, returns the plan and stops; it
-  never selects agent instances, assigns a live slice or advances a gate.
+- A request that meets the Product trigger in gate 1 of `SKILL.md` → Product before any other role, which
+  returns the plan and stops.
 - A design decision the user's material and the existing system leave open → Designer before
   Frontend/Mobile. With no such decision, one build owner with no design-system change does the
   presentational work inline.
 - Web UI/client logic → Frontend; server API/contract/auth/data → Backend; app UI/offline/device → Mobile;
   CI/container/IaC/cloud/deploy/observability → DevOps.
 
-Do not spawn roles with no real slice. Split cross-role work by contract boundary. Backend publishes the
-shared contract; clients consume it. Contract mismatch returns to Backend instead of being reimplemented
+Spawn a role only for a real slice. Split cross-role work by contract boundary. Contract mismatch returns to Backend instead of being reimplemented
 inside clients.
 
 ## 3. Pipeline
@@ -53,23 +50,17 @@ inside clients.
 
 Tiers, verdicts and return limits are gate 4 of `SKILL.md`. A `light` verify pass is the relevant build,
 type, lint and test commands, the behavior observed, and a self-review of the diff, labelled non-independent.
-`standard` runs as logical passes when one session runs both gates.
 
 Additional rules:
 
-- A build role never self-approves a `standard` or `high` slice; a warning or suggestion is listed but never
-  requests changes on its own.
-- The lead sends an approved unit's warnings to the owner only when the user asks.
-- `NEEDS_*` is never an inferred pass or a product defect; still missing after one resolution, stop as
-  blocked with the next action.
+- A warning or suggestion is listed but never requests changes on its own.
 - A change to structure or contract after a gate voids its verdict; both gates run again.
-- QA never edits production implementation; Reviewer never implements fixes.
 
 In single-session mode these are separate logical passes and the reduced independence must be disclosed.
 
 ## 4. Integration
 
-The lead resolves contract and merge conflicts under explicit ownership, runs combined relevant checks,
+The lead resolves contract and merge conflicts under explicit ownership
 and distinguishes per-slice success from integrated success. Check every seam on the artifacts rather than
 the reports: what one slice supplies against what the other consumes — an env var one bakes and the other
 reads, a route, a schema, a port. Green gates on both sides do not prove the seam. On an empty repository

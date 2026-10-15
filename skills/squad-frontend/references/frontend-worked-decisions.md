@@ -9,7 +9,7 @@ recorded design runs; **constructed** ones were not measured.
 sections desync from the eased curve under load.
 
 **Decision:** Give both one clock: forward the smooth-scroll position into the timeline's update and drive
-the library from the timeline's ticker, never a private `requestAnimationFrame` loop. Check this first when
+the library from the timeline's ticker as the only frame clock. Check this first when
 reviewing a scroll-driven page.
 
 **Observed:** the most consequential defect in recorded builds of one brief.

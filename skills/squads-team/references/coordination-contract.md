@@ -1,14 +1,14 @@
 # Coordination contract
 
 Read at a phase boundary, before compacting or clearing, when reaching a peer role, and before selecting a
-mode, spawning agents, assigning files, using worktrees or falling back to a single-session role loop.
+mode, spawning or assigning work, or using worktrees.
 
 ## 1. Runtime discovery
 
 Count a capability — agent teams, subagents, threads, worktrees, task boards, named squad skills — only after
 a read-only probe confirms it in this run; otherwise choose the next lower safe mode and say what was missing.
 Detect specialist skills once per run from the live skill catalog. Role boundaries, gates and evidence rules
-stay authoritative over a paired skill; `domain-coverage-contracts.md` stands in for an absent role skill.
+stay authoritative over a paired skill.
 
 Select the lowest-overhead safe mode that preserves ownership and risk-appropriate independence:
 
@@ -21,13 +21,12 @@ lead can read and message. `auto` picks it only when the user, directly or in st
 watch or open workers; a fallback never lands on it.
 
 A forced mode that is unavailable returns to the user, except `thread`, which falls back to subagent mode; in
-`auto`, fall back. Report every fallback. `--devs N` caps concurrent build slices — never a quota of tasks
-and never a count of gates.
+`auto`, fall back. Report every fallback. `--devs N` caps concurrent build slices, not tasks or gates.
 
 ## 2. Task contract
 
-Hand each role its outcome, acceptance criteria, owned files, the contracts it may not move, and the
-evidence expected; never secrets, credential files or unneeded history. On an upstream change, tell the
+Hand each role the fields of the entrypoint's handoff contract plus the evidence expected; pass no
+secrets, credential files or unneeded history. On an upstream change, tell the
 affected roles what changed and rerun only their gates; a peer message may clarify a contract but never
 moves acceptance, ownership or a dependency without the lead.
 
@@ -35,7 +34,7 @@ moves acceptance, ownership or a dependency without the lead.
 
 - Build a dependency graph before spawning. Start every zero-dependency slice and dispatch a dependent one
   as soon as its inputs are stable; a downstream role may start against an accepted contract.
-- One owner edits each file at a time. Build roles own unit/contract/regression tests co-located with their
+- Build roles own unit/contract/regression tests co-located with their
   slice; QA owns dedicated scenario, E2E, performance and harness files only when explicitly assigned.
 - QA never edits a build-owned test concurrently or production code: it returns the missing case to the
   owner, or the lead reassigns the file in a serialized handoff.
@@ -46,9 +45,8 @@ moves acceptance, ownership or a dependency without the lead.
 
 ## 4. Peer-team, thread and subagent modes
 
-Use the runtime's native team, task and message APIs by their live schema; respect concurrency limits. The
-lead owns tasks, merge decisions, user approvals and the final report, and dispatches each task as its
-dependencies clear. In subagent mode children report to the lead and do not hand work to each other.
+Use the runtime's native team, task and message APIs by their live schema. The
+lead owns tasks, merge decisions, user approvals and the final report. In subagent mode children report to the lead and do not hand work to each other.
 
 A thread starts from its task contract alone, which names its base: the revision, pending changes as a patch
 when it starts in a fresh checkout, and for a gate the exact slice diff. Start it from the lead's own
@@ -75,8 +73,7 @@ verdict.
 One controller, sequentially: implement the build role's scope and verify locally. On `light`, the combined
 verify pass suffices, subject to any assigned external gate. On `standard` or `high`, run only locally
 owned gates: distinct QA from acceptance and risk without editing implementation, then fresh Code Review
-consuming QA evidence. External assignments follow the entrypoint's handoff contract; collect both gates'
-findings before any return. Returns follow gate 4 of `SKILL.md`. Logical passes in the implementer's
+consuming QA evidence. External assignments follow the entrypoint's handoff contract. Returns follow gate 4 of `SKILL.md`. Logical passes in the implementer's
 session are not independent judgment; disclose that in the final report.
 
 ## 6. Context lifecycle
@@ -88,7 +85,7 @@ its independence.
 ## 7. Invoking a peer
 
 Reach a peer role or specialist skill through the runtime's own skill or agent invocation, one per call. A
-role named only in narration did not run, and a report must not credit it.
+role named only in narration did not run; credit only roles actually invoked.
 
 External ownership requires the user's explicit assignment, not an app name or another open session.
 Assign QA and Code Review separately. Hand off in prose through an authorized channel, or return the
@@ -107,4 +104,4 @@ Gate verdicts are exact: QA `PASS | FAIL | NEEDS_ENVIRONMENT`; Code Review `APPR
 NEEDS_EVIDENCE`. `BLOCKED` is a lead status, not a verdict: a third return for one unit, counted across
 both gates, or a `NEEDS_*` still missing after its one resolution. `NEEDS_ENVIRONMENT` (a required target,
 service, device, fixture or access is unavailable) and `NEEDS_EVIDENCE` (evidence too thin for a defensible
-verdict) are neither success nor product failure, and neither permits `done`. Do not translate these silently into a runtime's task statuses.
+verdict) are neither success nor product failure, and neither permits `done`. Keep these exact names even where a runtime's task statuses differ.

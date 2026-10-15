@@ -18,20 +18,20 @@ of the chosen runtime.
 
 Reproducible multi-stage builds, non-root users, minimal runtime contents, explicit health, resource
 requests/limits, signal handling, and image provenance/scanning; pin base images by policy with an update
-path. Helm/Kustomize/operator choice follows existing conventions.
+path.
 
 ## IaC and state
 
-Use the declarative tooling already in place. Define state backend, encryption/locking, environment/account
+Define state backend, encryption/locking, environment/account
 separation, module versioning, import/drift and destroy protection. Avoid one state file with excessive
 blast radius and circular cross-stack outputs.
 
-Plan/diff before apply. Review replacement/destruction, data resources and provider upgrades. Back up or
+Review replacement/destruction, data resources and provider upgrades. Back up or
 snapshot stateful resources according to risk and test restoration.
 
 ## CI/CD and GitOps
 
-Preserve the existing CI system. Pipelines should be immutable/reproducible, least-privileged,
+Pipelines should be immutable/reproducible, least-privileged,
 cache-safe, concurrency-controlled and environment-gated. Separate build artifact from promotion; avoid
 rebuilding different bits per environment.
 

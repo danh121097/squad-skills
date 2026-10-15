@@ -5,22 +5,20 @@ reference; SwiftUI and Jetpack Compose load the Apple/Android reference.
 
 **Verification tier:** cross-platform native output is compile-checked, plus a partial render of
 render-compatible components through the web renderer. It is never render-gated end to end.
-State this tier in every native report; never imply a native deliverable passed the web render
-gates.
+State this tier in every native report as compile plus partial render.
 
 ## Shared rules
 
 - The deliverable is the same as on web: inert presentational components with props left open.
   Navigation wiring, state, data, and platform lifecycle stay with `squad-mobile`.
-- Inspect the existing app first: navigation shell, theme or token module, component conventions,
-  and installed animation libraries are the foundation. Do not introduce a parallel system.
+- The app's navigation shell, theme or token module, component conventions, and installed animation
+  libraries are the foundation.
 - Design for touch reality: minimum target sizes, thumb reach, safe areas, notches, on-screen
   keyboard displacement, and interruption by the platform.
 - Honor the OS reduce-motion setting in the same component that animates, and keep animation off
   the JavaScript thread or on the platform's animation system where the toolkit supports it.
   Whoever writes the animation code owns its lifecycle scoping, teardown, and reduced-motion
   fallback.
-- Cite the official framework docs when exact API behavior matters.
 
 ## React Native / Expo
 
@@ -40,7 +38,7 @@ gates.
 ## Flutter
 
 - Compose from the design language the app already uses — Material or Cupertino widget sets, or
-  the project's own widget layer. Do not mix both languages in one screen without a stated reason.
+  the project's own widget layer. Keep one design language per screen unless a stated reason mixes them.
 - Centralize tokens in `ThemeData`/`ColorScheme`/`TextTheme` extensions instead of ad-hoc
   constants; extend the existing theme rather than forking it.
 - Build layout with constraint-based composition (`Row`, `Column`, `Expanded`, `LayoutBuilder`)

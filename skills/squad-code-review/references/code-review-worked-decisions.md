@@ -25,9 +25,9 @@ owner. Suggestion when the duplication is tiny and stable and an abstraction wou
 **Situation:** A new factory/interface pair has one caller and only forwards arguments; the repository
 constructs equivalent cases directly.
 
-**Decision:** Warning or suggestion by real maintenance cost; recommend the local pattern. Never label code
-"AI-generated", rename for taste, or remove an abstraction that protects a boundary, enables testing or
-already has several consumers.
+**Decision:** Warning or suggestion by real maintenance cost; recommend the local pattern. Judge the code,
+not its supposed origin; keep an abstraction that protects a boundary, enables testing or already has
+several consumers, and leave taste renames out of the findings.
 
 ## 4. Clean review with limited environment
 

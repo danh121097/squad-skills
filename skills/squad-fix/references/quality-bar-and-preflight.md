@@ -19,8 +19,6 @@ repository's own commands.
 
 ## Pre-flight
 
-Pass every applicable check honestly.
-
 ### Cause
 
 - Gate 4's root-cause contract holds, with the blast radius mapped across callers, consumers, contracts,
@@ -44,5 +42,4 @@ Pass every applicable check honestly.
 Give the pre-fix baseline and the post-fix result, the root cause, the files and contracts changed, the
 checks at the level they actually ran, the gate tier with QA and Code Review verdicts and their independence
 level where the tier ran them (or the gate suggestion when run on its own), and the residual risk. A side
-effect outside accepted scope stops the work and goes to the user with options; it is never absorbed
-silently.
+effect outside accepted scope stops the work and goes to the user with options.

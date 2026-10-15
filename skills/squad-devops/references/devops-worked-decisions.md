@@ -22,11 +22,11 @@ its variable, triggers on a fork-writable event, or reads a stored secret.
 **Decision:** Assert all three in a validator the gate runs, so breaking isolation fails the build.
 **Observed.**
 
-## 3. Never path-filter the product's own payload
+## 3. Path-filter only what cannot affect the artifact
 
 **Situation:** Ignoring documentation changes in CI looks like a cheap saving.
 
-**Decision:** Not when the shipped product is those files. Filter only what provably cannot affect the
+**Decision:** Not when the shipped product is those files; filter only what provably cannot affect the
 artifact. **Observed:** a repository whose shipped product is Markdown.
 
 ## 4. A third-party check does not belong in the blocking gate

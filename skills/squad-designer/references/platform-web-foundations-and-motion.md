@@ -2,7 +2,7 @@
 
 Read this reference for a web target — classifying an existing versus greenfield web project, choosing a
 UI foundation, or choosing web animation technology. Native targets load their own platform reference
-instead. Do not use these defaults to replace a working local system.
+instead.
 
 ## 1. Existing codebase
 
@@ -10,11 +10,8 @@ Treat the repository as the implementation authority. Inspect components, varian
 layout shells, content density, motion utilities, accessibility behavior, dependencies, routes, and tests.
 Reuse and extend them before proposing anything new.
 
-When accepted Figma also exists, preserve its design intent but map it onto repository primitives. Report
-material conflicts; do not silently fork the visual system.
-
-Do not introduce shadcn, Reka UI, Motion, GSAP, or another foundation merely because it is listed below. A
-new dependency requires a demonstrated gap and explicit approval.
+A foundation listed below (shadcn, Reka UI, Motion, GSAP) enters an existing project only for a
+demonstrated gap, with explicit approval for the new dependency.
 
 ## 2. Greenfield
 
@@ -31,7 +28,7 @@ Choose the lightest tool that satisfies the behavior:
 - **GSAP:** precise multi-step timelines, tightly synchronized choreography across many targets,
   ScrollTrigger pin/scrub/snap sequences, or advanced SVG/canvas work.
 
-Do not let Motion and GSAP control the same elements or interaction. Scope GSAP selectors to the component
+Give each element or interaction to one of Motion or GSAP. Scope GSAP selectors to the component
 and revert timelines, contexts and ScrollTriggers on teardown.
 
 ### Scroll-driven integration

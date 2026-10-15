@@ -1,7 +1,7 @@
 # Domain coverage contracts
 
-Use only when a named `squad-*` role skill is missing or when auditing role completeness. Each role still
-inspects the repository and current primary documentation; these are the non-obvious minimums.
+Use only when a named `squad-*` role skill is missing or when auditing role completeness. These are the
+non-obvious minimums per role.
 
 ## Framing
 
@@ -9,7 +9,7 @@ inspects the repository and current primary documentation; these are the non-obv
 gate 1 of `SKILL.md`. Before spawning any role, produce the outcome in the user's own terms, the constraints
 that bind it, explicit non-goals, and acceptance criteria a run can actually check; a criterion nothing can
 check is replaced or recorded as unverified. Resolve what the user already decided — stack, hosting,
-deadline, compliance, budget — before proposing anything, and ask only about a fork that changes the work.
+deadline, compliance, budget — before proposing anything.
 Without `squad-product`, a written plan follows the same shape: a written plan is one plan.md; a plan too
 long to read as one file keeps plan.md as the only index and moves each phase to
 phases/phase-XX-kebab-case-title.md, with every link relative.

@@ -20,7 +20,7 @@ about the work, and mark the recommended one as the default, so the user can acc
 "Multi-tenant from day one, or single-tenant now and migrate later? Default: single-tenant, because it
 removes a phase and keeps the migration contained."
 
-Do not ask for what can be discovered. The stack, routes, test setup and conventions are in the repository.
+Ask only for what the repository cannot answer; the stack, routes, test setup and conventions are in it.
 
 When the session cannot ask, return the fork upward as an open decision in that shape, with the
 recommended option marked as the labeled default, and name the phase that cannot start until the user has
@@ -28,8 +28,8 @@ picked.
 
 ## An empty repository inverts that
 
-With nothing to read, the stack stops being a fact to discover and becomes a decision nobody has made. Do
-not make it here — this role does not own it — and do not let a phase quietly assume one. Name the target
+With nothing to read, the stack stops being a fact to discover and becomes a decision nobody has made. The
+owning role makes it, and no phase assumes one in the meantime. Name the target
 platforms, the runtime and framework per platform, and the deployment target as open decisions, each with
 the role that owns it and a default. The failure to avoid is the inherited default: a plan whose phases read
 as if the stack were settled, so a later role finds a choice it never made and cannot tell it from a
