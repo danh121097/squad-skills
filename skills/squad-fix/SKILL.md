@@ -26,8 +26,9 @@ skills and multi-agent runtimes; run natively when they are absent.
 - `--mode auto|team|thread|subagent|single`: `auto` chooses the lowest-overhead safe live mode for the
   repair's ownership and risk. Report a forced unavailable mode; `thread` then falls back to
   subagents. `thread` runs each worker as your child session the user can open, given the exact diff as a
-  patch; hold a launch the user must start, have each thread send its result to your session when it can,
-  copy each result on return, and treat an unreadable thread as unavailable.
+  patch: start it at once when the runtime allows, else hold a launch the user must start, and run as a
+  subagent a gate whose turn is refused a start. Each thread sends its result to your session when it can;
+  copy it on return and treat an unreadable thread as unavailable.
 
 ## Scope and safety
 

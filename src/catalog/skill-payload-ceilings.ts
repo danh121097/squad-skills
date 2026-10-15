@@ -56,14 +56,16 @@
  * Every figure was lowered on 2026-10-15 after a catalog-wide pass removed
  * frontier-model no-ops, in-file duplicates and generic knowledge, and rewrote
  * non-guardrail prohibitions as the behavior they want. Rules a task type could
- * no longer reach were restored before the figures were recorded.
+ * no longer reach were restored before the figures were recorded. Fix then
+ * rose by 20 words: its `thread` mode starts a worker at once when the runtime
+ * allows and runs a gate as a subagent when a woken turn is refused a start.
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-backend': 2115, // was 2116
   'squad-code-review': 2205, // was 2308
   'squad-designer': 2027, // was 2064
   'squad-devops': 2067, // was 2092
-  'squad-fix': 2539, // was 2567
+  'squad-fix': 2559, // was 2539
   'squad-frontend': 2011, // was 2045
   'squad-mobile': 1928, // was 2012
   'squad-product': 2359, // was 2392

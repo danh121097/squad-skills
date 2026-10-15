@@ -50,10 +50,14 @@ lead owns tasks, merge decisions, user approvals and the final report. In subage
 
 A thread starts from its task contract alone, which names its base: the revision, pending changes as a patch
 when it starts in a fresh checkout, and for a gate the exact slice diff. Start it from the lead's own
-repository so the user finds it beside the lead. Where the runtime only offers a launch the user starts, say
-so, name each pending launch, reuse it rather than create another, and hold that slice until it runs; offer
-subagent mode for a slice still unlaunched. Where a thread can message the lead, its contract names the lead's
-session and has it send its full result there on finishing; otherwise ask the user to say when it is done. The
+repository so the user finds it beside the lead. When the user asked for threads and the runtime can start
+one directly, start every ready slice in the turn that received the request. Where the runtime only offers a
+launch the user starts, say so, name each pending launch, reuse it rather than create another, and hold that
+slice until it runs; offer subagent mode for a slice still unlaunched. A turn woken by a child's return may be
+refused a start: run a gate that becomes ready there as a subagent and report the fallback, and offer a
+build slice that becomes ready there as a launch the user starts, so long work stays visible. Where a thread can
+message the lead, its contract names the lead's session and has it send its full result there on finishing;
+otherwise rely on the runtime's completion notice, or ask the user to say when it is done. The
 lead reads each thread's diff and result, copies the result into its own record as soon as it returns,
 messages it for returns, and brings changes back by merge or reviewed copy; a thread is the lead's child, not
 an external owner under §7. A thread the lead cannot read back is unavailable; one closed before its result
