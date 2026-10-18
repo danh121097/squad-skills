@@ -5,6 +5,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { installAgentDefinitions } from '../../src/agents/agent-installation.ts';
+import { workerModelReferences } from '../../src/agents/worker-models.ts';
 
 const packageRoot = path.resolve(import.meta.dirname, '../..');
 let home: string;
@@ -159,22 +160,20 @@ describe('installAgentDefinitions', () => {
     expect((await request({ agents: ['codex'] })).written).toHaveLength(1);
   });
 
-  it("writes the caller's model into the Claude file and says why Codex has none", async () => {
+  it("writes the caller's model and effort into the selected tool's agent file", async () => {
     await installSkillInto('.claude', 'squad-qa');
     await installSkillInto('.agents', 'squad-qa');
 
-    const result = await request({ effort: 'medium', model: 'opus' });
+    await request({ agents: ['claude-code'], effort: 'medium', model: 'opus' });
+    const result = await request({ agents: ['codex'], effort: 'medium', model: 'gpt-6.1-sol' });
     const claude = await readFile(path.join(home, '.claude/agents/squad-qa.md'), 'utf8');
     const codex = await readFile(path.join(home, '.codex/agents/squad-qa.toml'), 'utf8');
 
     expect(claude).toContain('model: opus');
     expect(claude).toContain('effort: medium');
-    expect(codex).not.toContain('model: opus');
-    expect(result.messages.join('\n')).toContain('Ignored --model and --effort for codex');
-
-    const roleOnly = await request({ roleEfforts: { 'squad-qa': 'inherit' } });
-
-    expect(roleOnly.messages.join('\n')).toContain('Ignored --model and --effort for codex');
+    expect(codex).toContain('\nmodel = "gpt-6.1-sol"\n');
+    expect(codex).toContain('\nmodel_reasoning_effort = "medium"\n');
+    expect(result.messages.join('\n')).not.toContain('Ignored --model');
   });
 
   it("writes each role's default model and effort, and a named role's override over a bare one", async () => {
@@ -210,13 +209,72 @@ describe('installAgentDefinitions', () => {
     expect(await fieldOf('squads-team', 'model')).toBe('haiku');
   });
 
-  // The message is worth nothing if it fires when nobody asked.
-  it('says nothing about Codex preferences when none were given', async () => {
-    await installSkillInto('.agents', 'squad-qa');
+  it('keeps native agents and worker tables aligned for both tools without changing global defaults', async () => {
+    const expected: Record<string, [string, string]> = {
+      'squad-backend': ['gpt-6-luna', 'max'],
+      'squad-code-review': ['gpt-6.1-sol', 'medium'],
+      'squad-designer': ['gpt-6-luna', 'max'],
+      'squad-devops': ['gpt-6-luna', 'max'],
+      'squad-fix': ['gpt-6.1-sol', 'medium'],
+      'squad-frontend': ['gpt-6-luna', 'max'],
+      'squad-mobile': ['gpt-6-luna', 'max'],
+      'squad-product': ['gpt-6.1-sol', 'medium'],
+      'squad-qa': ['gpt-6-luna', 'max'],
+      'squads-team': ['gpt-6.1-sol', 'medium'],
+    };
+    for (const name of Object.keys(expected)) await installSkillInto('.agents', name);
+    const configFile = path.join(home, '.codex/config.toml');
+    await mkdir(path.dirname(configFile), { recursive: true });
+    const defaults =
+      '[agents]\ndefault_subagent_model = "gpt-6-luna"\ndefault_subagent_reasoning_effort = "max"\n';
+    await writeFile(configFile, defaults);
 
-    const result = await request({ agents: ['codex'] });
+    const result = await request({ skills: [] });
 
-    expect(result.messages.join('\n')).not.toContain('Ignored --model');
+    expect(result.written).toHaveLength(20);
+    const opusRoles = new Set(['squad-code-review', 'squad-fix', 'squad-product', 'squads-team']);
+    for (const [name, [model, effort]] of Object.entries(expected)) {
+      const file = await readFile(path.join(home, `.codex/agents/${name}.toml`), 'utf8');
+      expect(file, name).toContain(`\nmodel = "${model}"\n`);
+      expect(file, name).toContain(`\nmodel_reasoning_effort = "${effort}"\n`);
+      const claudeModel = opusRoles.has(name) ? 'opus' : 'sonnet';
+      const claude = await readFile(path.join(home, `.claude/agents/${name}.md`), 'utf8');
+      expect(claude, name).toContain(`\nmodel: ${claudeModel}\n`);
+      expect(claude, name).toContain('\neffort: medium\n');
+      for (const reference of workerModelReferences) {
+        const table = await readFile(path.join(packageRoot, reference), 'utf8');
+        expect(table, `${reference}: ${name}`).toContain(
+          `| \`${name}\` | \`${model}\` | \`${effort}\` | \`${claudeModel}\` | \`medium\` |`
+        );
+      }
+    }
+    expect(await readFile(configFile, 'utf8')).toContain(defaults);
+    expect(await readFile(`${configFile}.squad-skills-backup`, 'utf8')).toBe(defaults);
+  });
+
+  it('resolves Codex named overrides before bare values and omits inherited fields on reinstall', async () => {
+    const skills = ['squad-qa', 'squad-fix', 'squads-team'];
+    for (const name of skills) await installSkillInto('.agents', name);
+    await request({ agents: ['codex'], skills });
+
+    await request({
+      agents: ['codex'],
+      skills,
+      model: 'gpt-6.1-sol',
+      effort: 'max',
+      roleModels: { 'squad-qa': 'inherit', 'squad-fix': 'gpt-6-luna' },
+      roleEfforts: { 'squad-qa': 'low', 'squad-fix': 'inherit' },
+    });
+
+    const qa = await readFile(path.join(home, '.codex/agents/squad-qa.toml'), 'utf8');
+    expect(qa).not.toMatch(/^model = /m);
+    expect(qa).toContain('\nmodel_reasoning_effort = "low"\n');
+    const fix = await readFile(path.join(home, '.codex/agents/squad-fix.toml'), 'utf8');
+    expect(fix).toContain('\nmodel = "gpt-6-luna"\n');
+    expect(fix).not.toMatch(/^model_reasoning_effort = /m);
+    const team = await readFile(path.join(home, '.codex/agents/squads-team.toml'), 'utf8');
+    expect(team).toContain('\nmodel = "gpt-6.1-sol"\n');
+    expect(team).toContain('\nmodel_reasoning_effort = "max"\n');
   });
 
   it('declines Codex at project scope rather than guessing its config location', async () => {

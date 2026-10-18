@@ -176,15 +176,21 @@ const devops: SkillTaskType[] = [
 
 const fix: SkillTaskType[] = [
   {
+    id: 'select-execution-mode',
+    references: ['codex-worker-models.md', 'worker-sessions.md'],
+  },
+  {
     id: 'diagnose-and-route',
     references: ['bug-routing-and-ownership.md', 'diagnosis-root-cause-and-fix-loop.md'],
   },
   {
     id: 'root-cause-to-fix',
     references: [
+      'codex-worker-models.md',
       'diagnosis-root-cause-and-fix-loop.md',
       'quality-bar-and-preflight.md',
       'verification-qa-review-and-reporting.md',
+      'worker-sessions.md',
     ],
   },
   {
@@ -328,11 +334,19 @@ const team: SkillTaskType[] = [
   },
   {
     id: 'select-execution-mode',
-    references: ['coordination-contract.md', 'delivery-pipeline-and-roster.md'],
+    references: [
+      'codex-worker-models.md',
+      'coordination-contract.md',
+      'delivery-pipeline-and-roster.md',
+    ],
   },
   {
     id: 'advance-a-gate',
-    references: ['coordination-contract.md', 'delivery-pipeline-and-roster.md'],
+    references: [
+      'codex-worker-models.md',
+      'coordination-contract.md',
+      'delivery-pipeline-and-roster.md',
+    ],
   },
   {
     id: 'carry-an-absent-role',

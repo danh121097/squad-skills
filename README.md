@@ -102,17 +102,62 @@ Each Claude Code subagent file carries a model and a reasoning effort for its
 role. `squads-team`, `squad-product`, `squad-fix` and `squad-code-review` run on
 `opus`; the other roles run on `sonnet`. Every role runs at `medium` effort. `--model` and `--effort`
 override them, with a bare value for every role or `<skill>=<value>` for one,
-and `inherit` drops the field so the role follows the session:
+and `inherit` drops the field for the runtime to resolve:
 
 ```sh
-npx squad-skills agents --global --model squad-qa=opus,squad-designer=inherit --effort squad-qa=high
+npx squad-skills agents --global --agent claude-code --model squad-qa=opus,squad-designer=inherit --effort squad-qa=high
+```
+
+Codex named agents carry their own `model` and `model_reasoning_effort` in
+`~/.codex/agents/<name>.toml`:
+
+| Roles                                                                                           | Model         | Effort   |
+| ----------------------------------------------------------------------------------------------- | ------------- | -------- |
+| `squads-team`, `squad-product`, `squad-fix`, `squad-code-review`                                | `gpt-6.1-sol` | `medium` |
+| `squad-backend`, `squad-designer`, `squad-devops`, `squad-frontend`, `squad-mobile`, `squad-qa` | `gpt-6-luna`  | `max`    |
+
+These per-agent fields take precedence over `[agents]` defaults in `config.toml`.
+`--model`, `--effort` and named overrides work for Codex too; `inherit` omits a
+field, leaving Codex to resolve it from the spawn request, `[agents]` defaults
+or parent session. The CLI preserves those global defaults. See the
+[OpenAI subagent configuration](https://learn.chatgpt.com/docs/agent-configuration/subagents)
+for runtime precedence and model access requirements.
+
+```sh
+npx squad-skills agents --global --agent codex
+npx squad-skills agents --global --agent codex --model squad-qa=gpt-6.1-sol --effort squad-qa=medium
 ```
 
 Every install regenerates these files, so pass the same flags again to keep an
-override. Codex takes no per-agent model or effort; set `[agents]`
-`default_subagent_model` and `default_subagent_reasoning_effort` in
-`~/.codex/config.toml` instead, and the CLI says so rather than dropping the
-flag silently.
+override. A bare model applies to every selected tool; use `--agent` to target
+model IDs to the intended runtime. Loading a skill in the current chat keeps
+that chat's model. Codex leads use the same role preferences for subagents and
+separate worker chats: each field takes your role-specific choice, then your
+overall choice, then the installed role file, or the bundled mapping when that
+file is absent. An omitted installed field or explicit `inherit` leaves that
+field to the chosen runtime. For a separate chat, the lead passes the resolved
+model and effort as `model` and `thinking` to `create_thread`; the chat does not
+load a named subagent's TOML automatically. A subagent whose fixed role settings
+conflict with your override uses a generic agent loaded with the same role skill.
+
+The authored model/effort defaults for both tools live in `src/agents/role-defaults.ts`.
+`pnpm agents:generate` derives matching worker tables inside `squads-team` and
+`squad-fix`, so each skill works alone through GitHub or npm. Their historical
+`codex-worker-models.md` paths are preserved, now with separate Codex and Claude
+columns. Tests reject stale references and compare the rows with both native formats.
+
+Claude workers use the same precedence: your role-specific choice, then your
+overall choice, then the active installed role definition, else the bundled
+Claude defaults. Claude Code uses supported per-invocation `model`/`effort`
+fields for subagents and `--model`/`--effort` for independent CLI sessions.
+Claude Desktop session tools can expose different controls; the lead checks the
+live schema and reports a missing control. Forced environment settings or managed
+limits can supersede the requested pair. See [Claude subagents](https://code.claude.com/docs/en/sub-agents)
+and the [CLI reference](https://code.claude.com/docs/en/cli-reference).
+
+Runtime authorization and model availability still apply; the lead distinguishes
+selected settings from values confirmed in runtime metadata and preserves the lead's
+model and unrelated global settings.
 
 See [the installation guide](docs/installation.md) for local-checkout commands,
 installation scope, copy versus symlink behavior, and publishing notes.
@@ -233,16 +278,31 @@ second opinion after approval does not restart the whole pipeline.
 
 ### Orchestrator flags
 
+In Codex, `squads-team` and `squad-fix` prefer a separate worker chat for each delegated slice or gate
+when the runtime supports authorized creation, reading results and follow-up messages. The current chat
+stays lead: it assigns work, reviews results, advances gates and integrates changes. Worker chats use
+`[squad] <role>: <slice>` titles in the same project. The app controls whether they appear nested in the
+sidebar; separate chats and native subagent threads are different runtime surfaces.
+
+Small coherent work stays in one session, and explicit mode choices win. When worker chats cannot be
+created or read, the lead reports the reason and falls back to subagents, then a single-session loop.
+Runtime rules may require a direct user request to create chats or exchange messages; the skill's
+preference grants no such permission. For example:
+
+> Use `squads-team` for this change. Create a separate chat for each worker in this project and keep this
+> chat as lead. Apply the Codex role model/effort mapping, with any model or effort I specify taking
+> precedence. Have workers send their reports here, and let the lead send follow-up work to them.
+
 `squads-team` flags, each overriding one default:
 
-| Flag                                          | Default without it                                                                         |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `--devs N`                                    | every safe ready slice runs; `N` caps parallel build slices                                |
-| `--with-mobile`, `--with-designer`            | roles come from scope routing                                                              |
-| `--coordinate-only`                           | the lead may implement; with it, the lead only delegates                                   |
-| `--plan-approval`                             | no pause for build plans; material decisions still go to the user                          |
-| `--mode auto\|team\|thread\|subagent\|single` | `auto`, the lowest-overhead safe mode; `thread` runs each worker as a session you can open |
-| `--no-worktree`                               | worktrees used when isolation pays; otherwise overlap is serialized                        |
+| Flag                                          | Default without it                                                                                                   |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `--devs N`                                    | every safe ready slice runs; `N` caps parallel build slices                                                          |
+| `--with-mobile`, `--with-designer`            | roles come from scope routing                                                                                        |
+| `--coordinate-only`                           | the lead may implement outside thread mode, make small integration edits inside it; with it, delegate only           |
+| `--plan-approval`                             | no pause for build plans; material decisions still go to the user                                                    |
+| `--mode auto\|team\|thread\|subagent\|single` | `auto`, preferring authorized worker chats in Codex for delegated work; `thread` explicitly requests worker sessions |
+| `--no-worktree`                               | worktrees used when isolation pays; otherwise overlap is serialized                                                  |
 
 ## Skill format
 

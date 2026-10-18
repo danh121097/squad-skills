@@ -13,6 +13,8 @@
  */
 import type { AgentScope } from '../agents/agent-installation.ts';
 import {
+  defaultCodexEffortByRole,
+  defaultCodexModelByRole,
   defaultEffortByRole,
   defaultModelByRole,
   parseEffortOverrides,
@@ -24,10 +26,10 @@ type AgentPreferences = Pick<AgentPlan, 'effort' | 'model' | 'roleEfforts' | 'ro
 
 export interface AgentPlan {
   agents: string[];
-  /** Reasoning effort for every Claude Code agent file, over the catalog default. */
+  /** Reasoning effort for every selected agent file, over the tool's catalog default. */
   effort: string | null;
   force: boolean;
-  /** Model for every Claude Code agent file, over the catalog default. */
+  /** Model for every selected agent file, over the tool's catalog default. */
   model: string | null;
   /** Reasoning effort for named roles, over both `effort` and the catalog default. */
   roleEfforts: Record<string, string>;
@@ -511,13 +513,13 @@ Agent options:
   --all             Every skill into every agent (add). A --skill or --agent
                     given alongside it wins, so --all --agent codex stays
                     codex-only
-  --model           Override the model in Claude Code agent files: a model
+  --model           Override the model in selected agent files: a model
                     for every role, or <skill>=<model> for one. Repeatable or
-                    comma-separated; inherit follows the session's model
-  --effort          Override the reasoning effort in Claude Code agent files:
+                    comma-separated; inherit leaves model resolution to runtime
+  --effort          Override the reasoning effort in selected agent files:
                     a level for every role, or <skill>=<level> for one.
                     Repeatable or comma-separated. Levels: low, medium, high,
-                    xhigh, max, or inherit to follow the session's effort
+                    xhigh, max, or inherit for runtime effort resolution
 
 Examples:
   squad-skills list
@@ -525,23 +527,29 @@ Examples:
   squad-skills add --skill squad-frontend --global --agent codex
   squad-skills agents --global
   squad-skills agents --global --agent claude-code --model opus --effort medium
+  squad-skills agents --global --agent codex --model gpt-6-luna --effort max
   squad-skills agents --global --effort squad-qa=high,squad-frontend=low
-  squad-skills agents --global --model squad-qa=opus,squad-designer=inherit
+  squad-skills agents --global --agent claude-code --model squad-qa=opus
 
 Claude Code reads an agent from .claude/agents/<name>.md. Codex reads one from
 .codex/agents/<name>.toml and loads it only once config.toml names it, so this
 CLI registers it there and backs the file up first. Codex agents are written at
-global scope only, and carry no model or effort field: Codex takes subagent
-defaults from [agents] default_subagent_model and
-default_subagent_reasoning_effort in config.toml instead.
+global scope only, with model and model_reasoning_effort in each agent file.
+Those fields override [agents] defaults; inherit omits the field so Codex
+resolves it from the spawn request, [agents] defaults or parent session.
 
 Each role's Claude Code agent carries a default model:
 ${formatDefaults(defaultModelByRole)}
 and a default effort:
 ${formatDefaults(defaultEffortByRole)}
+Each role's Codex agent carries a default model:
+${formatDefaults(defaultCodexModelByRole)}
+and a default effort:
+${formatDefaults(defaultCodexEffortByRole)}
 --model and --effort override them; a role named with <skill>=<value> wins
 over a bare value. Every install regenerates these files, so pass the same
-flags again to keep an override.
+flags again to keep an override. A bare model applies to every selected tool;
+use --agent to target model IDs to the intended runtime.
 
 All other options after add or list are forwarded to the Skills CLI.`;
 }

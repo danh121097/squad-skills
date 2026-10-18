@@ -11,9 +11,7 @@ metadata:
 
 # Squads Team
 
-Coordinate role-specialized delivery against one accepted goal. Select the lowest-overhead safe execution
-shape that preserves required ownership and risk-appropriate gate independence. Pair installed specialist
-skills with the roles that need them; named squad skills and multi-agent tooling stay optional.
+Coordinate role-specialized delivery against one accepted goal.
 
 ## Usage
 
@@ -27,10 +25,13 @@ Flags are semantic controls read by the lead, not npm CLI options. Each override
 | --- | --- |
 | `--devs N` | every safe ready slice runs; `N` caps parallel build slices |
 | `--with-mobile`, `--with-designer` | roles come from scope routing |
-| `--coordinate-only` | the lead may implement; with it, the lead only delegates |
+| `--coordinate-only` | the lead may implement outside thread mode, integrate inside it; with it, delegate only |
 | `--plan-approval` | no pause for build plans; material decisions still go to the user |
-| `--mode auto\|team\|thread\|subagent\|single` | `auto`, the lowest-overhead safe mode |
+| `--mode auto\|team\|thread\|subagent\|single` | `auto`, per Codex preference |
 | `--no-worktree` | worktrees used when isolation pays; without them, overlap is serialized |
+
+In Codex, prefer separate worker chats for delegated work when the runtime supports authorized creation,
+read-back and follow-ups; the main chat stays lead. Explicit mode overrides win; report fallbacks.
 
 ## Scope and safety
 

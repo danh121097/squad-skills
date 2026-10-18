@@ -244,6 +244,16 @@ describe('handoff contract family', () => {
     expect(result.errors).toEqual([]);
   });
 
+  it('binds the authorized Codex worker-chat preference on both orchestrators', async () => {
+    const sessions = boundaryClauses.find((clause) => clause.id === 'HANDOFF-SESSION-001');
+    if (!sessions) throw new Error('HANDOFF-SESSION-001 is missing from shipped clauses.');
+
+    expect([...sessions.files].sort()).toEqual([fixSkill, teamSkill].sort());
+    const result = await validateCrossSkillContract(process.cwd(), { clauses: [sessions] });
+
+    expect(result.errors).toEqual([]);
+  });
+
   it('fails when one side of a handoff drops the bound shape', async () => {
     const api = boundaryClauses.find((clause) => clause.id === 'HANDOFF-API-001');
     if (!api) throw new Error('HANDOFF-API-001 is missing from the shipped clauses.');

@@ -17,8 +17,8 @@ import path from 'node:path';
 
 import type { CodexAgentEntry } from './codex-config-registration.ts';
 import { registerCodexAgents } from './codex-config-registration.ts';
-import type { RoleOverrides } from './role-defaults.ts';
-import { hasRoleOverrides, resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
+import type { AgentTool, RoleOverrides } from './role-defaults.ts';
+import { resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 import type { AgentPreferences } from './skill-agent-definition.ts';
 import {
   generatedMarker,
@@ -31,10 +31,10 @@ export type AgentScope = 'global' | 'project';
 
 export interface AgentInstallationRequest {
   agents: string[];
-  /** Overrides every role's default effort in its Claude Code agent file. */
+  /** Overrides every role's default effort in each selected tool's agent file. */
   effort?: string | null;
   force: boolean;
-  /** Overrides every role's default model in its Claude Code agent file. */
+  /** Overrides every role's default model in each selected tool's agent file. */
   model?: string | null;
   homeDirectory: string;
   packageRoot: string;
@@ -54,8 +54,6 @@ export interface AgentInstallationResult {
 
 interface AgentTarget {
   agentsDirectory: string;
-  /** Whether this format has somewhere to put a model and an effort. */
-  carriesPreferences: boolean;
   codexConfigFile?: string;
   extension: '.md' | '.toml';
   render: (
@@ -70,7 +68,7 @@ interface AgentTarget {
    * the location is probed instead of assumed.
    */
   skillsRoots: string[];
-  tool: string;
+  tool: AgentTool;
 }
 
 type Definition = NonNullable<ReturnType<typeof readSkillAgentDefinition>>;
@@ -106,14 +104,6 @@ export async function installAgentDefinitions(
       roleModels: request.roleModels,
     };
 
-    if (hasRoleOverrides(overrides) && !target.carriesPreferences) {
-      messages.push(
-        `Ignored --model and --effort for ${tool}: this CLI writes them into Claude Code agent files only. ` +
-          'Codex reads a subagent default from [agents] default_subagent_model and ' +
-          'default_subagent_reasoning_effort in config.toml.'
-      );
-    }
-
     const registered: CodexAgentEntry[] = [];
 
     for (const definition of definitions) {
@@ -132,13 +122,13 @@ export async function installAgentDefinitions(
       }
 
       const preferences: AgentPreferences = {
-        effort: resolveRoleEffort(definition.name, overrides),
-        model: resolveRoleModel(definition.name, overrides),
+        effort: resolveRoleEffort(definition.name, overrides, target.tool),
+        model: resolveRoleModel(definition.name, overrides, target.tool),
       };
 
       await writeFile(
         agentFile,
-        target.render(definition, installedSkillFile, target.carriesPreferences ? preferences : {}),
+        target.render(definition, installedSkillFile, preferences),
         'utf8'
       );
       written.push(agentFile);
@@ -207,11 +197,10 @@ function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTa
   if (tool === 'claude-code') {
     return {
       agentsDirectory: path.join(root, '.claude', 'agents'),
-      carriesPreferences: true,
       extension: '.md',
       render: renderClaudeAgentFile,
       skillsRoots: [path.join(root, '.claude', 'skills'), path.join(root, '.agents', 'skills')],
-      tool,
+      tool: 'claude-code',
     };
   }
 
@@ -221,14 +210,11 @@ function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTa
 
   return {
     agentsDirectory: path.join(root, '.codex', 'agents'),
-    // Codex's agent table takes a description, a config file and nicknames; a
-    // model is a session-wide default in config.toml, not a per-agent field.
-    carriesPreferences: false,
     codexConfigFile: path.join(root, '.codex', 'config.toml'),
     extension: '.toml',
     render: renderCodexAgentFile,
     skillsRoots: [path.join(root, '.agents', 'skills'), path.join(root, '.codex', 'skills')],
-    tool,
+    tool: 'codex',
   };
 }
 

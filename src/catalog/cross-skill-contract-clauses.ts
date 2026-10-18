@@ -431,6 +431,14 @@ export const boundaryClauses: BoundaryClause[] = [
     files: rolesWithAnImplementationSlice,
   },
   {
+    id: 'HANDOFF-SESSION-001',
+    // Both orchestrators choose the worker surface; neither may silently turn
+    // the Codex preference into authority to create or message user chats.
+    statement:
+      'In Codex, prefer separate worker chats for delegated work when the runtime supports authorized creation, read-back and follow-ups; the main chat stays lead. Explicit mode overrides win; report fallbacks',
+    files: [fixSkill, teamSkill],
+  },
+  {
     id: 'HANDOFF-EXTERNAL-001',
     // A user-assigned session owns the gate even when this runtime cannot reach
     // it. Both ends need the exception so an absent-peer fallback does not

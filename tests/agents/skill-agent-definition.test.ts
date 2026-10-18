@@ -92,6 +92,8 @@ describe('rendering', () => {
     const rendered = renderCodexAgentFile(definition, skillPath);
 
     expect(rendered).not.toMatch(/^\[/m);
+    expect(rendered).toContain('\nname = "squad-qa"\n');
+    expect(rendered).toContain('\ndescription = "Runs the QA gate. Use after a build."\n');
     expect(rendered).toMatch(/^developer_instructions = '''$/m);
     expect(rendered).toContain(renderClaudeAgentFile(definition, skillPath));
   });

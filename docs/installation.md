@@ -136,6 +136,11 @@ A definition carries the skill's own name and description and points at the
 installed `SKILL.md`; it never copies the role's content, so editing a skill
 changes what its agent does on the next install.
 
+`pnpm agents:generate` also refreshes the bundled worker model references for
+Codex and Claude from the shared role defaults. Keep these generated files with their owning
+skills so a GitHub-only installation can select the same defaults for worker
+chats without the npm CLI. They are checked for drift by `pnpm test`.
+
 ```sh
 npx squad-skills add --skill squad-qa --global --agent claude-code --agent codex
 npx squad-skills agents --global      # for a catalog installed by `npx skills add`
@@ -154,6 +159,10 @@ Notes:
   copy on later runs, appends only entries that are missing, and never rewrites
   one that already exists. A config that defines `agents` with dotted keys or an
   inline table is left unedited, and the entries to add are printed instead.
+- Each Codex agent file carries its role's model and reasoning effort. Regenerate
+  installed definitions with `squad-skills agents --global --agent codex` to apply
+  the catalog defaults; `[agents]` defaults stay intact. Use `--model`, `--effort`,
+  named overrides or `inherit` as described in the [README](../README.md#each-role-as-a-subagent-too).
 - `add --list` and `add --help` only list or print help, so they write no agent
   definitions.
 - A file the CLI did not generate is never replaced. It is reported and kept

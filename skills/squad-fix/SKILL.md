@@ -23,12 +23,12 @@ skills and multi-agent runtimes; run natively when they are absent.
 
 - `--quick`: reduce planning ceremony only for an obvious syntax/type/lint or narrow single-owner defect;
   baseline, root-cause proof, regression verification and the tier's gates still apply.
-- `--mode auto|team|thread|subagent|single`: `auto` chooses the lowest-overhead safe live mode for the
-  repair's ownership and risk. Report a forced unavailable mode; `thread` then falls back to
-  subagents. `thread` runs each worker as your child session the user can open, given the exact diff as a
-  patch: start it at once when the runtime allows, else hold a launch the user must start, and run as a
-  subagent a gate whose turn is refused a start. Each thread sends its result to your session when it can;
-  copy it on return and treat an unreadable thread as unavailable.
+- `--mode auto|team|thread|subagent|single`: `auto` selects for the repair's ownership and risk;
+  small coherent work stays single. Report a forced unavailable mode; `thread` falls back to subagents,
+  then single-session execution if needed.
+
+In Codex, prefer separate worker chats for delegated work when the runtime supports authorized creation,
+read-back and follow-ups; the main chat stays lead. Explicit mode overrides win; report fallbacks.
 
 ## Scope and safety
 
@@ -68,6 +68,8 @@ Read only what the current bug requires:
 
 - Before assigning an owner (cross-layer symptoms, Designer trigger, test-file ownership), read
   [bug-routing-and-ownership.md](references/bug-routing-and-ownership.md).
+- Before selecting an execution mode or dispatching workers, read
+  [worker-sessions.md](references/worker-sessions.md).
 - For evidence capture, reproduction or static proof, hypothesis testing, root-cause criteria, fix selection
   and retry limits, read
   [diagnosis-root-cause-and-fix-loop.md](references/diagnosis-root-cause-and-fix-loop.md).

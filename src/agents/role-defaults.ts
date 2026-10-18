@@ -1,25 +1,27 @@
 /**
- * The model and reasoning effort each role's Claude Code agent runs at, and
- * how a caller overrides them.
+ * Per-tool model and reasoning defaults, and how a caller overrides them.
  *
- * Both are catalog defaults that follow from what the role does. Roles that
+ * Claude Code defaults follow what the role does. Roles that
  * frame scope, prove causes or give the final verdict run on `opus`; roles that
  * build, verify or design against settled criteria run on `sonnet`. Every role
  * runs at `medium` effort: the model already chosen for a role carries its
  * depth, and a higher effort spends tokens on every turn of every run.
  *
  * A caller overrides every role with a bare value, or one role with
- * `<skill>=<value>`, and `inherit` drops the field so the agent follows the
- * session's model or effort.
+ * `<skill>=<value>`, and `inherit` drops the field for runtime resolution.
  *
- * Every shipped skill has an entry in both tables, and
+ * Codex uses Luna at max for settled work and Sol at medium for the four
+ * planning, diagnosis and review roles. Claude Code keeps its existing defaults.
+ * Every shipped skill has an entry in each table, and
  * `tests/agents/plugin-agents.test.ts` holds them to the `skills/` directory.
  */
 
 export const effortLevels = ['low', 'medium', 'high', 'xhigh', 'max'] as const;
 
-/** Writes no field, so the agent inherits the session's model or effort. */
+/** Writes no field, leaving the setting to the runtime's inheritance rules. */
 export const inheritPreference = 'inherit';
+
+export type AgentTool = 'claude-code' | 'codex';
 
 export const defaultModelByRole: Readonly<Record<string, string>> = {
   'squad-backend': 'sonnet',
@@ -46,6 +48,36 @@ export const defaultEffortByRole: Readonly<Record<string, string>> = {
   'squad-qa': 'medium',
   'squads-team': 'medium',
 };
+
+/** Authored once; native agent defaults and bundled worker-chat tables derive from these pairs. */
+export const defaultCodexPreferencesByRole: Readonly<
+  Record<string, { readonly model: string; readonly effort: string }>
+> = {
+  'squad-backend': { model: 'gpt-6-luna', effort: 'max' },
+  'squad-code-review': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-designer': { model: 'gpt-6-luna', effort: 'max' },
+  'squad-devops': { model: 'gpt-6-luna', effort: 'max' },
+  'squad-fix': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-frontend': { model: 'gpt-6-luna', effort: 'max' },
+  'squad-mobile': { model: 'gpt-6-luna', effort: 'max' },
+  'squad-product': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-qa': { model: 'gpt-6-luna', effort: 'max' },
+  'squads-team': { model: 'gpt-6.1-sol', effort: 'medium' },
+};
+
+export const defaultCodexModelByRole: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries(defaultCodexPreferencesByRole).map(([role, preference]) => [
+    role,
+    preference.model,
+  ])
+);
+
+export const defaultCodexEffortByRole: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries(defaultCodexPreferencesByRole).map(([role, preference]) => [
+    role,
+    preference.effort,
+  ])
+);
 
 /** What a caller asked for: one value for every role, and values for named roles. */
 export interface RoleOverrides {
@@ -130,25 +162,25 @@ function parseRoleOverrides(
  * The effort written into one role's agent file, or null for none. A named
  * role wins over the value for every role, which wins over the catalog default.
  */
-export function resolveRoleEffort(name: string, overrides: RoleOverrides = {}): string | null {
-  return resolve(overrides.roleEfforts?.[name] ?? overrides.effort ?? defaultEffortByRole[name]);
+export function resolveRoleEffort(
+  name: string,
+  overrides: RoleOverrides = {},
+  tool: AgentTool = 'claude-code'
+): string | null {
+  const defaults = tool === 'codex' ? defaultCodexEffortByRole : defaultEffortByRole;
+  return resolve(overrides.roleEfforts?.[name] ?? overrides.effort ?? defaults[name]);
 }
 
 /** The model written into one role's agent file, resolved the same way. */
-export function resolveRoleModel(name: string, overrides: RoleOverrides = {}): string | null {
-  return resolve(overrides.roleModels?.[name] ?? overrides.model ?? defaultModelByRole[name]);
+export function resolveRoleModel(
+  name: string,
+  overrides: RoleOverrides = {},
+  tool: AgentTool = 'claude-code'
+): string | null {
+  const defaults = tool === 'codex' ? defaultCodexModelByRole : defaultModelByRole;
+  return resolve(overrides.roleModels?.[name] ?? overrides.model ?? defaults[name]);
 }
 
 function resolve(value: string | undefined): string | null {
   return value === undefined || value === inheritPreference ? null : value;
-}
-
-/** True when the caller overrode any role, which is what Codex has to be told it ignored. */
-export function hasRoleOverrides(overrides: RoleOverrides): boolean {
-  return (
-    (overrides.effort ?? null) !== null ||
-    (overrides.model ?? null) !== null ||
-    Object.keys(overrides.roleEfforts ?? {}).length > 0 ||
-    Object.keys(overrides.roleModels ?? {}).length > 0
-  );
 }

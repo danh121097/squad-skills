@@ -40,9 +40,8 @@ export function readSkillAgentDefinition(source: string): SkillAgentDefinition |
 /** How a generated agent reaches its skill, and what rewrites the file. */
 export interface AgentBodyContext {
   /**
-   * Extra frontmatter lines, already `key: value`. Only Claude Code's formats
-   * take them: Codex's agent table has no model or effort of its own. The plugin
-   * takes no flags, so it carries the catalog's default model and effort.
+   * Extra Claude Code frontmatter lines, already `key: value`. Codex model
+   * preferences live outside this body as top-level TOML keys.
    */
   frontmatter?: string[];
   /** The sentence telling the agent where its skill is. */
@@ -52,7 +51,7 @@ export interface AgentBodyContext {
 }
 
 /**
- * What one Claude Code agent file carries, already resolved for its role from
+ * What one agent file carries, already resolved for its role and tool from
  * the catalog defaults in `role-defaults.ts` and the caller's overrides.
  */
 export interface AgentPreferences {
@@ -149,7 +148,8 @@ function installedSkillContext(installedSkillPath: string): AgentBodyContext {
  */
 export function renderCodexAgentFile(
   definition: SkillAgentDefinition,
-  installedSkillPath: string
+  installedSkillPath: string,
+  preferences: AgentPreferences = {}
 ): string {
   const body = renderAgentBody(definition, installedSkillContext(installedSkillPath));
 
@@ -159,10 +159,16 @@ export function renderCodexAgentFile(
     );
   }
 
-  return `# ${generatedMarker}. Reinstalling regenerates this file.
-developer_instructions = '''
-${body}'''
-`;
+  const lines = [
+    `# ${generatedMarker}. Reinstalling regenerates this file.`,
+    `name = ${JSON.stringify(definition.name)}`,
+    `description = ${JSON.stringify(definition.description)}`,
+  ];
+  if (preferences.model != null) lines.push(`model = ${JSON.stringify(preferences.model)}`);
+  if (preferences.effort != null) {
+    lines.push(`model_reasoning_effort = ${JSON.stringify(preferences.effort)}`);
+  }
+  return `${lines.join('\n')}\ndeveloper_instructions = '''\n${body}'''\n`;
 }
 
 function readScalar(frontmatter: string, key: string): string | null {

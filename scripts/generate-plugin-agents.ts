@@ -2,6 +2,7 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
+import { workerModelReferences, renderWorkerModels } from '../src/agents/worker-models.ts';
 import {
   readSkillAgentDefinition,
   renderPluginAgentFile,
@@ -22,4 +23,8 @@ for (const entry of await readdir(skillsRoot, { withFileTypes: true })) {
   }
 
   await writeFile(path.join(agentsRoot, `${entry.name}.md`), renderPluginAgentFile(definition));
+}
+
+for (const reference of workerModelReferences) {
+  await writeFile(path.join(process.cwd(), reference), renderWorkerModels());
 }

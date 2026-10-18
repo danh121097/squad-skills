@@ -34,6 +34,17 @@ product surface bound by no ceiling and no clause, and the two would drift. The
 upstream Skills CLI exposes no install hook and has no agent concept, which is
 why `squad-skills agents` exists for the GitHub path.
 
+Model/effort defaults for both runtimes are authored in `src/agents/role-defaults.ts`.
+The installer derives native-agent fields from them; `pnpm agents:generate` also
+renders each orchestrator's `codex-worker-models.md`, retaining the historical path
+while showing Codex and Claude columns. Two generated copies keep
+each skill installable alone, without a cross-skill link or an npm runtime.
+Tests compare both copies to the renderer and the native-agent expectations.
+They carry the same per-field selection rules, with runtime-specific override
+controls: a generic-agent path for fixed Codex roles, and supported model/effort
+controls plus forced-setting caveats for Claude. Edit the source and
+regenerate rather than maintaining a second mapping by hand.
+
 ## Handoffs are prose, not files
 
 A file records a claim rather than the pass behind it, and a hook binds to one
@@ -112,8 +123,13 @@ The thread registry, `--allow-new-threads`, the `--delegate` alias, the
 five-rung context ladder and the `ACK` / `BLOCKED` packets were removed in
 2026-09. They were rarely used and cost every squad run payload; `BLOCKED` is now
 a status of `RESULT`, and an acknowledgement is implicit.
-The `thread` mode added later is a different feature: it runs workers of one
-squad run as child sessions the user can open, not separate top-level threads.
+The `thread` mode added later runs workers of one squad run as sessions the user
+can open. Codex now prefers separate worker chats for delegated work where the
+runtime supports authorized creation, read-back and follow-ups, with the main
+chat as lead. These chats can be top-level peers in the app; orchestration does
+not promise sidebar nesting. The preference cannot supply the explicit user
+authorization a runtime requires, so subagents remain the fallback. Both
+orchestrator entrypoints bind that choice through `HANDOFF-SESSION-001`.
 
 ## Payload ceiling history
 

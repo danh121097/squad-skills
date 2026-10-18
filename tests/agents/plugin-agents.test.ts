@@ -3,7 +3,13 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { defaultEffortByRole, defaultModelByRole } from '../../src/agents/role-defaults.ts';
+import { workerModelReferences, renderWorkerModels } from '../../src/agents/worker-models.ts';
+import {
+  defaultCodexEffortByRole,
+  defaultCodexModelByRole,
+  defaultEffortByRole,
+  defaultModelByRole,
+} from '../../src/agents/role-defaults.ts';
 import {
   readSkillAgentDefinition,
   renderPluginAgentFile,
@@ -30,6 +36,12 @@ async function definitionOf(name: string) {
 }
 
 describe('plugin agent definitions', () => {
+  it.each(workerModelReferences)("%s matches both runtimes' role mappings", async (file) => {
+    const source = await readFile(path.join(projectRoot, file), 'utf8');
+
+    expect(source, `${file} is stale — run pnpm agents:generate`).toBe(renderWorkerModels());
+  });
+
   it('ships one agent per skill and no orphans', () => {
     expect(agentFiles).toEqual(skillNames.map((name) => `${name}.md`));
   });
@@ -50,6 +62,8 @@ describe('plugin agent definitions', () => {
   it('gives every skill a default model and effort, and no skill that is not shipped', () => {
     expect(Object.keys(defaultModelByRole).sort()).toEqual(skillNames);
     expect(Object.keys(defaultEffortByRole).sort()).toEqual(skillNames);
+    expect(Object.keys(defaultCodexModelByRole).sort()).toEqual(skillNames);
+    expect(Object.keys(defaultCodexEffortByRole).sort()).toEqual(skillNames);
   });
 
   it('reaches the skill by name, not by a path that only exists on one machine', async () => {
