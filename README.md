@@ -52,8 +52,14 @@ The Codex plugin manifest lives at `.codex-plugin/plugin.json` and exposes
 them after plugin installation when named subagents are wanted:
 
 ```sh
-npx squad-skills agents --global --agent codex
+npx squad-skills add --all --global --agent codex
 ```
+
+This command installs durable copied skills and generates their agents together.
+The `agents` command alone finds standalone skill installations, not plugin-cache
+payloads. Use `--skill <name>` instead of `--all` to install selected roles. Keep
+the plugin and copied catalog on the same release, or use the npm path alone to
+avoid two catalog versions.
 
 ### From the npm package (recommended)
 
@@ -86,10 +92,11 @@ which the CLI registers after backing that config up. Each definition points at
 the `SKILL.md` just installed rather than copying it, so the skill stays the one
 source of truth.
 
-`squads-team` and `squad-fix` dispatch other roles, and a Claude Code subagent cannot spawn
-subagents. Invoke those two as skills in your main session; spawned by name they fall back to a
-single-session loop and report their gates as not independent. The other eight roles do not spawn
-anyone, so they run the same either way.
+`squads-team` and `squad-fix` dispatch other roles. Their ability to delegate from a
+Claude subagent depends on the installed version, depth limit and available tools;
+inspect those capabilities rather than assuming nesting is always available or absent.
+When delegation is unavailable or the user requests one session, use distinct logical
+gate passes and report them as non-independent.
 
 Use `--no-agents` to install skills alone. A catalog installed through
 `npx skills add` never runs this CLI, so generate the definitions afterwards:
@@ -142,9 +149,8 @@ conflict with your override uses a generic agent loaded with the same role skill
 
 The authored model/effort defaults for both tools live in `src/agents/role-defaults.ts`.
 `pnpm agents:generate` derives matching worker tables inside `squads-team` and
-`squad-fix`, so each skill works alone through GitHub or npm. Their historical
-`codex-worker-models.md` paths are preserved, now with separate Codex and Claude
-columns. Tests reject stale references and compare the rows with both native formats.
+`squad-fix`, so each skill works alone through GitHub or npm. Their
+`worker-models.md` references contain separate Codex and Claude columns. Tests reject stale references and compare the rows with both native formats.
 
 Claude workers use the same precedence: your role-specific choice, then your
 overall choice, then the active installed role definition, else the bundled
@@ -244,7 +250,9 @@ gates, so one fix pass answers both; a third return comes back to you as blocked
 closes a unit: its warnings and suggestions reach you as options in the final report instead of going
 back to the owner, and a follow-up you ask for is tiered on its own diff, so a docs or test tweak does
 not rerun both gates, and a fix that changes no observable behavior reruns only the existing suite. A build role or `squad-fix` called on its own verifies with real commands and ends
-by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both. Designer runs only for
+by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both. When delegation is unavailable or forbidden, unassigned gates run as distinct
+logical passes and are reported as non-independent. An explicitly required independent or externally
+assigned gate remains pending until its matching verdict arrives. Designer runs only for
 decisions your own references and the existing design system leave open.
 
 ### Gates in another session
@@ -278,16 +286,21 @@ second opinion after approval does not restart the whole pipeline.
 
 ### Orchestrator flags
 
-In Codex, `squads-team` and `squad-fix` prefer a separate worker chat for each delegated slice or gate
-when the runtime supports authorized creation, reading results and follow-up messages. The current chat
-stays lead: it assigns work, reviews results, advances gates and integrates changes. Worker chats use
-`[squad] <role>: <slice>` titles in the same project. The app controls whether they appear nested in the
-sidebar; separate chats and native subagent threads are different runtime surfaces.
+When you designate the current session as **main/coordinator**, `squads-team` and `squad-fix`
+prefer workers in separate threads/sub-sessions that report back to main, on both Claude and Codex.
+Main coordinates, reviews results, advances gates and integrates; workers own implementation.
+Small integration edits may stay in main unless `--coordinate-only` applies. A small task alone does
+not cancel the thread preference.
 
-Small coherent work stays in one session, and explicit mode choices win. When worker chats cannot be
-created or read, the lead reports the reason and falls back to subagents, then a single-session loop.
-Runtime rules may require a direct user request to create chats or exchange messages; the skill's
-preference grants no such permission. For example:
+Worker sessions require creation, result read-back and follow-ups. If the runtime lacks these capabilities,
+main states the limitation and falls back to subagents, then single-session execution if necessary.
+A supported user-started session remains pending until launched. Missing runtime-required permission
+also leaves dispatch pending; main asks for only the missing authorization. Naming a session main does
+not bypass runtime permission rules. Explicit single-session or no-delegation instructions take precedence.
+
+Without a main/coordinator designation or explicit mode, choose the lowest-overhead suitable mode.
+Worker chats use `[squad] <role>: <slice>` titles in the same project; sidebar nesting is runtime-dependent.
+For runtimes requiring explicit creation and messaging authorization, a complete request is:
 
 > Use `squads-team` for this change. Create a separate chat for each worker in this project and keep this
 > chat as lead. Apply the Codex role model/effort mapping, with any model or effort I specify taking
@@ -295,14 +308,14 @@ preference grants no such permission. For example:
 
 `squads-team` flags, each overriding one default:
 
-| Flag                                          | Default without it                                                                                                   |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `--devs N`                                    | every safe ready slice runs; `N` caps parallel build slices                                                          |
-| `--with-mobile`, `--with-designer`            | roles come from scope routing                                                                                        |
-| `--coordinate-only`                           | the lead may implement outside thread mode, make small integration edits inside it; with it, delegate only           |
-| `--plan-approval`                             | no pause for build plans; material decisions still go to the user                                                    |
-| `--mode auto\|team\|thread\|subagent\|single` | `auto`, preferring authorized worker chats in Codex for delegated work; `thread` explicitly requests worker sessions |
-| `--no-worktree`                               | worktrees used when isolation pays; otherwise overlap is serialized                                                  |
+| Flag                                          | Default without it                                                                                         |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `--devs N`                                    | every safe ready slice runs; `N` caps parallel build slices                                                |
+| `--with-mobile`, `--with-designer`            | roles come from scope routing                                                                              |
+| `--coordinate-only`                           | the lead may implement outside thread mode, make small integration edits inside it; with it, delegate only |
+| `--plan-approval`                             | no pause for build plans; material decisions still go to the user                                          |
+| `--mode auto\|team\|thread\|subagent\|single` | `auto`, threads for a designated main/coordinator; otherwise lowest overhead                               |
+| `--no-worktree`                               | worktrees used when isolation pays; otherwise overlap is serialized                                        |
 
 ## Skill format
 
@@ -313,6 +326,12 @@ self-contained.
 
 The executable contract is owned by the TypeScript validator and tests. Run
 `pnpm validate` for a focused catalog check or `pnpm test` for the full gate.
+
+`pnpm payload:report` reports declared reading-path and workflow word counts;
+these are not measured token usage. `pnpm eval:skills` prepares repeatable
+Claude/Codex evaluation packets and summarizes recorded observations without
+launching models. See [skill evaluation](docs/skill-evaluation.md) for the
+comparison protocol and evidence required before changing model defaults.
 
 ## Written plans
 

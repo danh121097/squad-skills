@@ -110,7 +110,12 @@ export async function installAgentDefinitions(
       const installedSkillFile = await findInstalledSkill(target.skillsRoots, definition.name);
 
       if (installedSkillFile === null) {
-        messages.push(`Skipped ${tool}/${definition.name}: the skill is not installed there.`);
+        const scope = request.scope === 'global' ? ' --global' : '';
+        messages.push(
+          `Skipped ${tool}/${definition.name}: no standalone skill installation found. ` +
+            `Plugin caches are not stable agent targets. Install a copied skill and its agent with: ` +
+            `squad-skills add${scope} --agent ${tool} --skill ${definition.name}`
+        );
         continue;
       }
 

@@ -10,8 +10,8 @@ Every skill has a ceiling, because a skill without one grows with nothing
 objecting — skills once grew by 12% to 42% of their reference words in a single
 upgrade that believed something else was bounding them.
 
-The median loaded set is bounded rather than the total because that is what a
-run costs, and bounding the total would tax the routing that keeps a run cheap.
+The declared median loaded set is bounded rather than the total to preserve
+progressive disclosure. It is a static word estimate, not an observed token bill.
 The total regime exists for a skill added without a routing table.
 
 Task types that name a missing reference, a reference no task type loads, or
@@ -36,8 +36,7 @@ why `squad-skills agents` exists for the GitHub path.
 
 Model/effort defaults for both runtimes are authored in `src/agents/role-defaults.ts`.
 The installer derives native-agent fields from them; `pnpm agents:generate` also
-renders each orchestrator's `codex-worker-models.md`, retaining the historical path
-while showing Codex and Claude columns. Two generated copies keep
+renders each orchestrator's `worker-models.md` with Codex and Claude columns. Two generated copies keep
 each skill installable alone, without a cross-skill link or an npm runtime.
 Tests compare both copies to the renderer and the native-agent expectations.
 They carry the same per-field selection rules, with runtime-specific override
@@ -123,13 +122,12 @@ The thread registry, `--allow-new-threads`, the `--delegate` alias, the
 five-rung context ladder and the `ACK` / `BLOCKED` packets were removed in
 2026-09. They were rarely used and cost every squad run payload; `BLOCKED` is now
 a status of `RESULT`, and an acknowledgement is implicit.
-The `thread` mode added later runs workers of one squad run as sessions the user
-can open. Codex now prefers separate worker chats for delegated work where the
-runtime supports authorized creation, read-back and follow-ups, with the main
-chat as lead. These chats can be top-level peers in the app; orchestration does
-not promise sidebar nesting. The preference cannot supply the explicit user
-authorization a runtime requires, so subagents remain the fallback. Both
-orchestrator entrypoints bind that choice through `HANDOFF-SESSION-001`.
+The `thread` mode runs workers as sessions the user can open. A user-designated main/coordinator
+prefers it on both runtimes, delegates implementation and receives worker reports; task size alone does
+not trigger fallback. Missing creation, read-back or follow-up capability falls back to subagents, then
+single-session execution. Missing required authorization leaves dispatch pending rather than overriding
+the requested mode. Explicit single-session/no-delegation instructions win. Other runs select the
+lowest-overhead suitable mode. Both orchestrator entrypoints bind this through `HANDOFF-SESSION-001`.
 
 ## Payload ceiling history
 

@@ -1,25 +1,8 @@
 /**
- * What each skill's router actually loads, per task.
- *
- * `skill-payload-ceilings.ts` bounds a skill's total payload because a skill
- * that declares no task types has no loaded set to measure. That bound is the
- * blunt one: it taxes depth a run never pays for, and taxing depth is the
- * opposite of what a role-specialist catalog wants. `squad-designer` shows the
- * gap — 7,497 words shipped, 1,959 loaded by the median task, because its
- * router means an accessibility audit never opens the native references.
- *
- * A skill listed here declares the same thing, so its ceiling binds the median
- * loaded set instead of the total. The incentive is deliberate: depth costs
- * only the tasks that actually read it, and writing more is affordable exactly
- * when the router says who loads it.
- *
- * Transcribed by hand from each skill's own router section, so it can drift
- * from the prose it describes. Two checks bound the damage rather than remove
- * it: a task type routing to a file that does not exist fails the measurement,
- * and a reference no task type loads fails as unrouted, so nothing here can
- * hide payload from the median by leaving it out. What neither check sees is a
- * task type that lists fewer references than the router would really open, so
- * treat a reference list as part of the router when editing either one.
+ * Declared reading paths, transcribed from each skill's router. These word counts
+ * are static estimates, not observed token usage or task-frequency statistics.
+ * Lead and fix paths cover completion rather than mixing stages into their median.
+ * Update the prose and table together; filesystem coverage cannot prove semantic routing.
  */
 // Structurally the `TaskTypeDefinition` the measurement primitive takes, stated
 // here rather than imported so this file stays plain data.
@@ -174,47 +157,53 @@ const devops: SkillTaskType[] = [
   },
 ];
 
+// Completion paths include diagnosis, ownership, verification and the quality bar.
+const fixCore = [
+  'bug-routing-and-ownership.md',
+  'diagnosis-root-cause-and-fix-loop.md',
+  'quality-bar-and-preflight.md',
+  'verification-qa-review-and-reporting.md',
+];
 const fix: SkillTaskType[] = [
+  { id: 'single-session-repair', references: [...fixCore, 'worker-sessions.md'] },
   {
-    id: 'select-execution-mode',
-    references: ['codex-worker-models.md', 'worker-sessions.md'],
+    id: 'codex-delegated-repair',
+    references: [...fixCore, 'worker-sessions.md', 'worker-models.md', 'codex-worker-dispatch.md'],
   },
   {
-    id: 'diagnose-and-route',
-    references: ['bug-routing-and-ownership.md', 'diagnosis-root-cause-and-fix-loop.md'],
+    id: 'claude-delegated-repair',
+    references: [...fixCore, 'worker-sessions.md', 'worker-models.md', 'claude-worker-dispatch.md'],
   },
   {
-    id: 'root-cause-to-fix',
-    references: [
-      'codex-worker-models.md',
-      'diagnosis-root-cause-and-fix-loop.md',
-      'quality-bar-and-preflight.md',
-      'verification-qa-review-and-reporting.md',
-      'worker-sessions.md',
-    ],
-  },
-  {
-    id: 'regression-evidence',
-    references: ['quality-bar-and-preflight.md', 'verification-qa-review-and-reporting.md'],
-  },
-  {
-    id: 'bugfix-calibration',
-    references: ['quality-bar-and-preflight.md', 'worked-bugfix-examples.md'],
+    id: 'ambiguous-repair',
+    references: [...fixCore, 'worker-sessions.md', 'worked-bugfix-examples.md'],
   },
 ];
 
 const frontend: SkillTaskType[] = [
   {
+    id: 'local-pattern-change',
+    references: [
+      'frontend-security-accessibility-and-performance.md',
+      'quality-bar-and-preflight.md',
+    ],
+  },
+  {
     id: 'screen-from-accepted-design',
     references: [
       'designer-gate-and-design-intake.md',
       'frontend-architecture-state-data-and-forms.md',
+      'frontend-security-accessibility-and-performance.md',
       'quality-bar-and-preflight.md',
     ],
   },
   {
     id: 'state-data-and-forms',
-    references: ['frontend-architecture-state-data-and-forms.md', 'quality-bar-and-preflight.md'],
+    references: [
+      'frontend-architecture-state-data-and-forms.md',
+      'frontend-security-accessibility-and-performance.md',
+      'quality-bar-and-preflight.md',
+    ],
   },
   {
     id: 'accessibility-security-performance',
@@ -327,35 +316,19 @@ const qa: SkillTaskType[] = [
   },
 ];
 
+const teamCore = ['coordination-contract.md', 'delivery-pipeline-and-roster.md'];
 const team: SkillTaskType[] = [
+  { id: 'single-session-delivery', references: teamCore },
   {
-    id: 'frame-and-route',
-    references: ['delivery-pipeline-and-roster.md', 'domain-coverage-contracts.md'],
+    id: 'codex-delegated-delivery',
+    references: [...teamCore, 'worker-models.md', 'codex-worker-dispatch.md'],
   },
   {
-    id: 'select-execution-mode',
-    references: [
-      'codex-worker-models.md',
-      'coordination-contract.md',
-      'delivery-pipeline-and-roster.md',
-    ],
+    id: 'claude-delegated-delivery',
+    references: [...teamCore, 'worker-models.md', 'claude-worker-dispatch.md'],
   },
-  {
-    id: 'advance-a-gate',
-    references: [
-      'codex-worker-models.md',
-      'coordination-contract.md',
-      'delivery-pipeline-and-roster.md',
-    ],
-  },
-  {
-    id: 'carry-an-absent-role',
-    references: ['delivery-pipeline-and-roster.md', 'domain-coverage-contracts.md'],
-  },
-  {
-    id: 'ambiguous-routing-calibration',
-    references: ['coordination-worked-decisions.md', 'delivery-pipeline-and-roster.md'],
-  },
+  { id: 'missing-role-delivery', references: [...teamCore, 'domain-coverage-contracts.md'] },
+  { id: 'ambiguous-delivery', references: [...teamCore, 'coordination-worked-decisions.md'] },
 ];
 
 // squad-designer is measured on its median loaded set like every other skill
@@ -383,8 +356,11 @@ const designer: SkillTaskType[] = [
     ],
   },
   {
-    id: 'figma-accepted-handoff',
-    references: ['design-system-ux-accessibility-and-handoff.md'],
+    id: 'figma-accepted-web-handoff',
+    references: [
+      'design-system-ux-accessibility-and-handoff.md',
+      'platform-web-foundations-and-motion.md',
+    ],
   },
   {
     id: 'design-system-tokens',
@@ -416,7 +392,14 @@ const designer: SkillTaskType[] = [
       'platform-native-apple-android.md',
     ],
   },
-  { id: 'adaptive-split-view', references: ['platform-adaptive-layout-and-input.md'] },
+  {
+    id: 'adaptive-web-split-view',
+    references: [
+      'platform-adaptive-layout-and-input.md',
+      'platform-web-foundations-and-motion.md',
+      'design-system-ux-accessibility-and-handoff.md',
+    ],
+  },
 ];
 
 // squad-product routes by what the request still lacks, not by domain: a request

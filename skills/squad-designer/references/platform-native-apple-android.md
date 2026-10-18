@@ -3,9 +3,9 @@
 Read this reference for a SwiftUI (iOS/iPadOS/macOS) or Jetpack Compose (Android) target. React
 Native and Flutter load the cross-platform reference; web targets load the web reference.
 
-**Verification tier:** Apple and Android native output is compile-checked and reviewed by a human
-only. There is no automated render gate for this tier. State this tier in every report as compile
-plus human review, with no automated render, contrast, or axe result claimed.
+**Verification:** compile with the repository toolchain; use available previews, simulator/device rendering
+and interaction or accessibility checks for the changed surface. Report each executed level separately.
+Human review counts only when a human actually reviewed the output; missing required checks remain gaps.
 
 ## Shared rules
 
@@ -47,7 +47,6 @@ plus human review, with no automated render, contrast, or axe result claimed.
 
 ## Handoff additions for this tier
 
-Alongside the standard handoff contract, state: that verification was compile plus human review
-only, which HIG or Material 3 sections informed non-obvious decisions, the accessibility features
+Alongside the standard handoff contract, state: the checks actually run and their target, which HIG or Material 3 sections informed non-obvious decisions, the accessibility features
 assumed (Dynamic Type, VoiceOver, TalkBack, reduce motion), and what `squad-mobile` must verify on
 device — real rendering, input, performance, and platform-version behavior.

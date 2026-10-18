@@ -23,12 +23,15 @@ skills and multi-agent runtimes; run natively when they are absent.
 
 - `--quick`: reduce planning ceremony only for an obvious syntax/type/lint or narrow single-owner defect;
   baseline, root-cause proof, regression verification and the tier's gates still apply.
-- `--mode auto|team|thread|subagent|single`: `auto` selects for the repair's ownership and risk;
-  small coherent work stays single. Report a forced unavailable mode; `thread` falls back to subagents,
-  then single-session execution if needed.
+- `--mode auto|team|thread|subagent|single`: `auto` follows the main/coordinator preference below,
+  otherwise the repair's ownership and risk. Report unavailable forced modes; thread fallback follows
+  the capability rule below.
 
-In Codex, prefer separate worker chats for delegated work when the runtime supports authorized creation,
-read-back and follow-ups; the main chat stays lead. Explicit mode overrides win; report fallbacks.
+When the user designates this session as main/coordinator, prefer worker threads/sub-sessions that report
+back to main. Main coordinates, reviews and integrates; workers own implementation. Fall back to
+subagents, then single-session execution only when the runtime lacks the required capabilities, stating
+the limitation. Explicit execution-mode or no-delegation instructions override this preference; runtime
+authorization still applies.
 
 ## Scope and safety
 
@@ -137,15 +140,15 @@ was. Before declaring the repair complete, run the self-review in
   and through the public surface, with no test-only export and no mock of the logic under test; a
   regression test fails on the pre-fix code for the bug's reason, and a test that breaks this is a
   finding.
-- A fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the
-  work, stops the work that depends on it rather than guessing and goes as named options with consequences to
-  the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
-  naming that source, and puts the rest to the user through the runtime's structured question tool, else a
-  numbered list.
+- An unresolved decision that changes the work pauses only dependent work. Return options and
+  consequences to the lead, or to the user when solo. The lead settles only choices supported by the
+  request, repository or evidence, citing the source; otherwise ask the user through a structured
+  question tool, else a numbered list.
 - Invoked on its own, this role names the tier itself, the higher one when in doubt; without an external
   gate assignment it closes `light` and `standard` work on its own verify with real commands and ends with
   one line suggesting `/squad-qa` then `/squad-code-review`; `high` work keeps both gates: run unassigned
-  gates as separate agents where the runtime allows, else report them unowned, never as a self-review.
+gates as separate agents when available and authorized, otherwise as distinct logical passes with
+non-independent verdicts; an explicitly required independent gate stays pending.
 - For a stage without an external owner, an absent squad peer's stage runs inline where this role's
   boundary allows, or is reported as a gap; a stage no pass ran is never reported as run.
 - When the user assigns QA or Code Review to another named session, hand off the exact diff (including

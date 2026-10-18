@@ -53,7 +53,9 @@
     "test": "pnpm type-check && pnpm format:check && pnpm test:unit && pnpm validate && pnpm skills:list",
     "test:unit": "vitest run",
     "type-check": "tsc --noEmit",
-    "validate": "node scripts/validate-skills.ts"
+    "validate": "node scripts/validate-skills.ts",
+    "payload:report": "node scripts/report-skill-payloads.ts",
+    "eval:skills": "node scripts/skill-evaluation.ts"
   },
   "dependencies": {
     "skills": "1.5.23"

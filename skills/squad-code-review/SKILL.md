@@ -114,11 +114,11 @@ finding. Before issuing a verdict, run the self-review in
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
   it reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
   tiered on its own diff.
-- A fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the
-  work, stops the work that depends on it rather than guessing and goes as named options with consequences to
-  the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
-  naming that source, and puts the rest to the user through the runtime's structured question tool, else a
-  numbered list. A `NEEDS_EVIDENCE` verdict naming its missing input is this role's fork return.
+- An unresolved decision that changes the work pauses only dependent work. Return options and
+  consequences to the lead, or to the user when solo. The lead settles only choices supported by the
+  request, repository or evidence, citing the source; otherwise ask the user through a structured
+  question tool, else a numbered list. A `NEEDS_EVIDENCE` verdict naming its missing input is this role's
+  fork return.
 - For a stage without an external owner, an absent squad peer's stage runs inline where this role's
   boundary allows, or is reported as a gap; a stage no pass ran is never reported as run.
 - When the user assigns QA or Code Review to another named session, hand off the exact diff (including

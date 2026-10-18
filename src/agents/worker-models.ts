@@ -1,3 +1,4 @@
+import type { AgentTool } from './role-defaults.ts';
 import {
   defaultCodexPreferencesByRole,
   resolveRoleEffort,
@@ -5,10 +6,9 @@ import {
 } from './role-defaults.ts';
 
 /** Each orchestrator must remain installable without the other skill or the npm CLI. */
-// Preserve the already-shipped reference paths for existing skill links.
 export const workerModelReferences = [
-  'skills/squad-fix/references/codex-worker-models.md',
-  'skills/squads-team/references/codex-worker-models.md',
+  'skills/squad-fix/references/worker-models.md',
+  'skills/squads-team/references/worker-models.md',
 ] as const;
 
 export function renderWorkerModels(): string {
@@ -21,8 +21,7 @@ export function renderWorkerModels(): string {
 
 <!-- Generated from src/agents/role-defaults.ts by pnpm agents:generate. Edit the source, not this table. -->
 
-Read before dispatching a Codex or Claude worker. The agent installer and this table use the same
-role defaults; a skill-only installation needs no CLI. Select the worker's runtime columns.
+Read before dispatching; select the worker's runtime columns. Skill-only installations need no CLI.
 
 | Role | Codex model | Codex effort | Claude model | Claude effort |
 | --- | --- | --- | --- | --- |
@@ -42,11 +41,42 @@ Report an unavailable choice or forced policy override rather than silently clai
 
 ## Dispatch
 
+Read only the worker runtime's dispatch reference:
+- Codex: [codex-worker-dispatch.md](codex-worker-dispatch.md).
+- Claude: [claude-worker-dispatch.md](claude-worker-dispatch.md).
+
+Keep this chat as lead. Authorized follow-ups retain the pair unless the user changes it. Explicit
+inherit uses the runtime's inheritance control or an unpinned role-skill worker; omitting an override must
+not reactivate a fixed role field. Preserve runtime inheritance semantics. Leave unrelated chats alone.
+
+Report the selected pair. Confirm actual model and effort from runtime turn metadata when exposed;
+otherwise mark them unverified. A requested setting, prompt text or config default is not runtime proof.
+`;
+}
+
+/** Generated alongside each model table so either orchestrator installs alone. */
+export function renderWorkerDispatch(tool: AgentTool): string {
+  if (tool === 'codex')
+    return `# Codex worker dispatch
+
+<!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
+
+Read only when dispatching a Codex worker, after resolving preferences in
+[worker models](worker-models.md). Check the live tool schema and authorization.
+
 - **Codex subagent:** use the named role when its fixed settings match. When they conflict with a user
-  override, use a generic subagent with the role's SKILL.md, model and reasoning_effort. Use fork_turns
-  none when fresh context is required. Omit inherited fields; report an unsupported choice.
+  override, use a generic subagent with the role's SKILL.md, model and reasoning_effort. Default bounded independent work to fork_turns none with an explicit task handoff;
+  inherit history only when its decisions are needed. Omit inherited fields; report an unsupported choice.
 - **Codex chat:** pass model and thinking to create_thread. Omit inherited fields. A role name in the
   prompt alone selects no model.
+`;
+  return `# Claude worker dispatch
+
+<!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
+
+Read only when dispatching a Claude worker, after resolving preferences in
+[worker models](worker-models.md). Check the live tool schema and authorization.
+
 - **Claude subagent:** use the active named definition; pass per-invocation model and effort overrides
   only through fields the live Agent schema supports. If those fields are absent, use a supported
   equivalent path or report the limitation, keeping installed definitions intact. Forced model/effort
@@ -55,12 +85,5 @@ Report an unavailable choice or forced policy override rather than silently clai
   CLI support, independent sessions accept --model and --effort; --bg starts a persistent background
   session. Include its role skill, task and name. Claude Desktop controls can differ: inspect their live
   schema, and report missing controls instead of treating Codex's thinking field as portable.
-
-Keep this chat as lead. Authorized follow-ups retain the pair unless the user changes it. Explicit
-inherit uses the runtime's inheritance control or an unpinned role-skill worker; omitting an override must
-not reactivate a fixed role field. Preserve runtime inheritance semantics. Leave unrelated chats alone.
-
-Report the selected pair. Confirm actual model and effort from runtime turn metadata when exposed;
-otherwise mark them unverified. A requested setting, prompt text or config default is not runtime proof.
 `;
 }

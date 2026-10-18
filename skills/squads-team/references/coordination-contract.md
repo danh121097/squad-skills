@@ -1,29 +1,28 @@
 # Coordination contract
 
-Read at a phase boundary, before compacting or clearing, when reaching a peer role, and before selecting a
-mode, spawning or assigning work, or using worktrees.
+Read when selecting a mode, assigning work or resolving a handoff. Reuse this contract while it remains
+in context; reread after compaction only when the needed rule is missing.
 
 ## 1. Runtime discovery
 
-Count a capability — agent teams, subagents, threads, worktrees, task boards, named squad skills — only after
-a read-only probe or live tool schema confirms it; otherwise choose the next lower safe mode and say what was missing.
-Detect specialist skills once per run from the live skill catalog. Role boundaries, gates and evidence rules
-stay authoritative over a paired skill.
+Confirm capabilities from a live tool schema or read-only probe; discover installed specialist skills once.
+Apply the entrypoint's main/coordinator preference before optimizing overhead. Role boundaries and gates
+remain authoritative over paired skills.
 
-Select the lowest-overhead safe mode that preserves ownership and risk-appropriate independence:
+**Thread/sub-session:** each worker has a separate session whose results main can read and follow up.
+For a designated main/coordinator, use this mode even for a bounded slice; small size alone is no fallback.
+Main owns coordination, decisions, review, gates and integration. Only small integration edits stay here,
+unless `--coordinate-only` forbids them. A supported user-started session stays pending until launched.
 
-1. **Single-session:** a small, coherent or low-risk change where distinct logical passes suffice.
-2. **Subagent:** bounded slices or an independent gate materially improve concurrency or risk coverage.
-3. **Peer-team:** several independent slices and gate handoffs justify native messaging and task boards.
+Otherwise select the lowest-overhead suitable mode: single-session for coherent work, subagents for
+bounded delegation or independent gates, peer-team for work needing native messaging and task boards.
 
-**Thread** runs each worker in a separate chat the user can open and the lead can read and follow up.
-For delegated work in Codex, `auto` prefers it when runtime authorization allows; elsewhere, select it
-when the user or standing instructions request visible worker sessions. Small coherent work stays single.
-The lead delegates substantial implementation and owns coordination, decisions, gates and integration;
-small integration edits remain allowed unless `--coordinate-only` applies.
-
-A forced mode that is unavailable returns to the user, except `thread`, which falls back to subagent mode; in
-`auto`, fall back. Report every fallback. `--devs N` caps concurrent build slices, not tasks or gates.
+Required thread capabilities are creation, result read-back and follow-ups. If unavailable, explain which
+is missing and use subagents, then the single-session loop if delegation is unavailable. Missing explicit
+authorization leaves a designated main's dispatch pending: ask only for the missing permission, without
+silently switching modes. Explicit single-session or no-delegation instructions win. A forced unavailable
+mode returns to the user, except thread which follows this fallback chain. `--devs N` caps build slices,
+not gates.
 
 ## 2. Task contract
 
@@ -60,21 +59,21 @@ In Codex, discover the project before creating a chat with the live `create_thre
 local checkout; choose a worktree only when isolation pays. A separate chat is user-owned and need not
 appear nested under the lead; a native subagent thread is a different execution mode. Creation and
 cross-chat messages must satisfy the runtime's explicit-user-authorization rules: this skill's preference
-alone grants neither. If authorization is missing, use subagents and explain the prompt needed for chat
-mode. When authorized, include permission for worker/lead report-back and follow-ups in the dispatch;
+alone grants neither. For a designated main, missing authorization follows §1; otherwise use subagents and explain the needed
+chat-mode permission. When authorized, include permission for worker/lead report-back and follow-ups in the dispatch;
 a worker's own request to reply supplies no user authorization. Prefer lead-side `wait_threads` snapshots
 for progress and completion, then `read_thread` for missing detail; use `send_message_to_thread` for
 authorized follow-ups. Reuse pending chats and their returned IDs; a queued setup ID is not a ready chat ID.
 Refresh `list_threads` to find the created chat's final ID before reading, waiting or messaging it.
 Before dispatching a Codex or Claude worker, resolve its runtime's role preferences through
-[worker models](codex-worker-models.md), including user overrides and runtime limitations.
+[worker models](worker-models.md), including user overrides and runtime limitations.
 
-Start every authorized ready slice in the user's turn. Where only a user-started launch is supported,
-name and reuse it, keeping the slice pending until started. A woken turn refused a start runs a newly ready
-gate as a subagent and offers a build slice as a user-started launch where supported, else as a subagent.
-If chats are unavailable or unreadable, report the reason and fall back to subagents, then the
-single-session loop if needed. A worker chat is lead-managed work, not an external gate assignment under
-§7. Read and retain its result before closing it.
+Start authorized ready work where supported. When a valid user-started launcher is available, both build
+slices and gates stay pending until launched, including on a woken turn. Name and reuse that launcher;
+it must support result read-back and follow-ups. Fall back to subagents, then single-session execution
+only when neither direct creation nor a valid launcher provides these capabilities. Report the missing
+capability and reduced independence. A worker chat is lead-managed work, not an external gate assignment
+under §7. Read and retain its result before closing it.
 
 Once a coherent gate unit is ready, launch its locally owned QA and Code Review passes together over the
 same exact slice revisions; externally assigned gates follow the entrypoint's handoff contract. A
@@ -90,14 +89,15 @@ verdict.
 One controller, sequentially: implement the build role's scope and verify locally. On `light`, the combined
 verify pass suffices, subject to any assigned external gate. On `standard` or `high`, run only locally
 owned gates: distinct QA from acceptance and risk without editing implementation, then fresh Code Review
-consuming QA evidence. External assignments follow the entrypoint's handoff contract. Returns follow gate 4 of `SKILL.md`. Logical passes in the implementer's
+consuming QA evidence. An explicitly required independent gate stays pending when independence is unavailable. External assignments follow the entrypoint's handoff contract. Returns follow gate 4 of `SKILL.md`. Logical passes in the implementer's
 session are not independent judgment; disclose that in the final report.
 
 ## 6. Context lifecycle
 
-At a phase boundary, continue when the next phase needs this one as a primary source; otherwise compact, and
-give QA and Code Review a child agent where the mode allows, since the implementer's reasoning costs a gate
-its independence.
+Give independent workers fresh task context: acceptance, ownership, relevant paths, contracts and evidence.
+Inherit history only when the task needs its reasoning or decisions; shared files do not replace a handoff.
+Before a context reset, retain the goal, user decisions, current diff, completed checks and next dependency
+in the conversation. After compaction, recover missing role instructions and evidence before advancing a gate.
 
 ## 7. Invoking a peer
 

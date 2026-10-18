@@ -27,11 +27,14 @@ Flags are semantic controls read by the lead, not npm CLI options. Each override
 | `--with-mobile`, `--with-designer` | roles come from scope routing |
 | `--coordinate-only` | the lead may implement outside thread mode, integrate inside it; with it, delegate only |
 | `--plan-approval` | no pause for build plans; material decisions still go to the user |
-| `--mode auto\|team\|thread\|subagent\|single` | `auto`, per Codex preference |
+| `--mode auto\|team\|thread\|subagent\|single` | `auto`, threads for a designated main/coordinator; otherwise lowest overhead |
 | `--no-worktree` | worktrees used when isolation pays; without them, overlap is serialized |
 
-In Codex, prefer separate worker chats for delegated work when the runtime supports authorized creation,
-read-back and follow-ups; the main chat stays lead. Explicit mode overrides win; report fallbacks.
+When the user designates this session as main/coordinator, prefer worker threads/sub-sessions that report
+back to main. Main coordinates, reviews and integrates; workers own implementation. Fall back to
+subagents, then single-session execution only when the runtime lacks the required capabilities, stating
+the limitation. Explicit execution-mode or no-delegation instructions override this preference; runtime
+authorization still applies.
 
 ## Scope and safety
 
@@ -49,11 +52,10 @@ changes each need their own authorization.
    state that frame yourself, brief and checkable. Call `squad-product` when installed, or frame inline
    otherwise, only when the request is vague with no criteria that can fail, the repository is empty with no
    stack chosen, the user asks for a plan, or more than one fork could change the phases. A plan that reaches
-   this gate follows the fork rule. A fork the request, repository or evidence cannot settle, or the role is
-   unsure of, and that changes the work, stops the work that depends on it rather than guessing and goes as
-   named options with consequences to the lead, or to the user when run on its own; the lead settles only a
-   fork it can show a source answers, naming that source, and puts the rest to the user through the runtime's
-   structured question tool, else a numbered list.
+   this gate follows the fork rule. An unresolved decision that changes the work pauses only dependent
+   work. Return options and consequences to the lead, or to the user when solo. The lead settles only
+   choices supported by the request, repository or evidence, citing the source; otherwise ask the user
+   through a structured question tool, else a numbered list.
 2. **Scout and split** — read the repository, dirty state included. Split by capability, map
    dependencies, assign non-overlapping file ownership, and serialize unavoidable overlap. Slices that
    must match each other build against one shared contract the lead settles first, with its open questions asked together; a finding in one is checked in the others.

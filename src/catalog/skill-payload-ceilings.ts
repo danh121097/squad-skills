@@ -8,8 +8,8 @@
  * Which figure a ceiling bounds depends on what the skill declares.
  *
  * A skill listed in `skill-task-types.ts` is bounded on the **median loaded
- * set**: entrypoint words plus the references the median task actually opens.
- * That is what a run costs. Bounding the total instead would tax the routing
+ * set**: entrypoint words plus the references the median declared task is expected to open.
+ * This is a static reading-path estimate, not observed token cost. Bounding the total instead would tax the routing
  * that keeps a run cheap, which is backwards for a catalog of deep specialists —
  * and the measurements say so plainly. When the median first bound, totals ran
  * from 3,933 to 7,529 words while medians sat between 1,991 and 2,619: the
@@ -63,12 +63,12 @@
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-backend': 2115, // was 2116
   'squad-code-review': 2205, // was 2308
-  'squad-designer': 2027, // was 2064
+  'squad-designer': 2322, // was 2027: adaptive and accepted web handoffs now include their platform
   'squad-devops': 2067, // was 2092
-  'squad-fix': 2559, // was 2539
+  'squad-fix': 4195, // was 2559: complete repairs replace stage-only sampling
   'squad-frontend': 2011, // was 2045
   'squad-mobile': 1928, // was 2012
   'squad-product': 2359, // was 2392
   'squad-qa': 2341, // was 2377
-  'squads-team': 2830, // was 2987
+  'squads-team': 4149, // was 2830: complete deliveries replace stage-only sampling
 };

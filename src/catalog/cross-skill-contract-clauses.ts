@@ -195,16 +195,10 @@ export const boundaryClauses: BoundaryClause[] = [
     // named here anyway, because this clause binds who may answer a question
     // rather than who owns an artifact.
     //
-    // "is unsure of" and "stops what depends on it" close the other way a
-    // child drifts: treating its own doubt as not a fork, then building past
-    // it. "when it changes the work" keeps a doubt that changes nothing a
-    // labeled assumption. The lead settles only what it can show the request,
-    // repository or evidence answers, and names that source, so a question
-    // the controlling session can prove never reaches the user while a choice
-    // nothing in the work decides still goes to the user alone — the default
-    // whenever the lead cannot show the answer.
+    // Only dependent work pauses. Evidence-backed choices stay with the lead;
+    // unresolved material decisions reach the user with their consequences.
     statement:
-      "a fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the work, stops the work that depends on it rather than guessing and goes as named options with consequences to the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers, naming that source, and puts the rest to the user through the runtime's structured question tool, else a numbered list",
+      'An unresolved decision that changes the work pauses only dependent work. Return options and consequences to the lead, or to the user when solo. The lead settles only choices supported by the request, repository or evidence, citing the source; otherwise ask the user through a structured question tool, else a numbered list',
     files: everyRoleEntrypoint,
   },
   {
@@ -427,15 +421,15 @@ export const boundaryClauses: BoundaryClause[] = [
     // commands and hands the gate choice back to the user in one line. `high`
     // work keeps both gates, because the risk does not shrink with the team.
     statement:
-      'invoked on its own, this role names the tier itself, the higher one when in doubt; without an external gate assignment it closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work keeps both gates: run unassigned gates as separate agents where the runtime allows, else report them unowned, never as a self-review',
+      'invoked on its own, this role names the tier itself, the higher one when in doubt; without an external gate assignment it closes `light` and `standard` work on its own verify with real commands and ends with one line suggesting `/squad-qa` then `/squad-code-review`; `high` work keeps both gates: run unassigned gates as separate agents when available and authorized, otherwise as distinct logical passes with non-independent verdicts; an explicitly required independent gate stays pending',
     files: rolesWithAnImplementationSlice,
   },
   {
     id: 'HANDOFF-SESSION-001',
     // Both orchestrators choose the worker surface; neither may silently turn
-    // the Codex preference into authority to create or message user chats.
+    // a mode preference into authority to create or message user chats.
     statement:
-      'In Codex, prefer separate worker chats for delegated work when the runtime supports authorized creation, read-back and follow-ups; the main chat stays lead. Explicit mode overrides win; report fallbacks',
+      'When the user designates this session as main/coordinator, prefer worker threads/sub-sessions that report back to main. Main coordinates, reviews and integrates; workers own implementation. Fall back to subagents, then single-session execution only when the runtime lacks the required capabilities, stating the limitation. Explicit execution-mode or no-delegation instructions override this preference; runtime authorization still applies',
     files: [fixSkill, teamSkill],
   },
   {

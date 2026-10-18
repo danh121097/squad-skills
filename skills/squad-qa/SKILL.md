@@ -117,11 +117,11 @@ A suite that cannot fail is not coverage. Before issuing a verdict, run the self
   and through the public surface, with no test-only export and no mock of the logic under test; a
   regression test fails on the pre-fix code for the bug's reason, and a test that breaks this is a
   finding.
-- A fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the
-  work, stops the work that depends on it rather than guessing and goes as named options with consequences to
-  the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
-  naming that source, and puts the rest to the user through the runtime's structured question tool, else a
-  numbered list. A `NEEDS_ENVIRONMENT` verdict naming its missing input is this role's fork return.
+- An unresolved decision that changes the work pauses only dependent work. Return options and
+  consequences to the lead, or to the user when solo. The lead settles only choices supported by the
+  request, repository or evidence, citing the source; otherwise ask the user through a structured
+  question tool, else a numbered list. A `NEEDS_ENVIRONMENT` verdict naming its missing input is this
+  role's fork return.
 - For a stage without an external owner, an absent squad peer's stage runs inline where this role's
   boundary allows, or is reported as a gap; a stage no pass ran is never reported as run.
 - When the user assigns QA or Code Review to another named session, hand off the exact diff (including

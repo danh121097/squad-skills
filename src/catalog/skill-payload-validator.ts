@@ -30,9 +30,7 @@ export interface SkillPayloadValidationResult {
  * Compares every shipped skill's payload against its recorded ceiling.
  *
  * Which figure the ceiling bounds depends on the skill. One that declares task
- * types in `skill-task-types.ts` is bounded on the median loaded set, because
- * that is what a run of it actually costs and taxing the total would tax the
- * routing that keeps a run cheap. One that declares none has no loaded set to
+ * types in `skill-task-types.ts` is bounded on the median loaded set, as a static reading-path estimate; it is not measured runtime token usage. One that declares none has no loaded set to
  * measure, so the total is the only bound available and the ceiling holds it.
  *
  * The check runs in `pnpm validate`: it asks whether what the catalog ships is

@@ -2,7 +2,11 @@ import { readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
-import { workerModelReferences, renderWorkerModels } from '../src/agents/worker-models.ts';
+import {
+  workerModelReferences,
+  renderWorkerModels,
+  renderWorkerDispatch,
+} from '../src/agents/worker-models.ts';
 import {
   readSkillAgentDefinition,
   renderPluginAgentFile,
@@ -27,4 +31,11 @@ for (const entry of await readdir(skillsRoot, { withFileTypes: true })) {
 
 for (const reference of workerModelReferences) {
   await writeFile(path.join(process.cwd(), reference), renderWorkerModels());
+  for (const tool of ['codex', 'claude-code'] as const) {
+    const runtime = tool === 'codex' ? 'codex' : 'claude';
+    await writeFile(
+      path.join(process.cwd(), path.dirname(reference), `${runtime}-worker-dispatch.md`),
+      renderWorkerDispatch(tool)
+    );
+  }
 }

@@ -8,10 +8,11 @@ it before adding content to a skill, and again when a ceiling refuses a change.
 
 Every line you add spends one of two budgets, and they are not interchangeable.
 
-**Context load** is what always-loaded material costs the agent: a skill `description`, a router line, an
-entrypoint section. It is paid on every turn of every task, whether or not it fires. The median-loaded-set
-ceiling is the bound on it, though what it sums is the entrypoint plus the median task's routed references —
-the always-loaded part measured together with the one task's worth of routing that is typical.
+**Context load** has two parts: discovery metadata is available before invocation; the entrypoint and
+routed references enter context when loaded. They are not all injected afresh on every turn. The
+median-loaded-set ceiling bounds whitespace-delimited words over declared reading paths, not tokens,
+observed frequency, reasoning or tool output. Measure complete workflows separately and use runtime usage
+for cost claims; moving content behind a pointer saves nothing when that task still must open it.
 
 **Cognitive load** is what the catalog costs the human: which skills exist, and when to reach for each. It is
 not a cost to drive to zero. It is the price of the user keeping agency over which role runs, so spend it

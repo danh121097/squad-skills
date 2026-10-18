@@ -67,9 +67,9 @@ reverse.
 - When a deliverable spans mobile, tablet, and desktop, or input modality changes it, also read
   [references/platform-adaptive-layout-and-input.md](references/platform-adaptive-layout-and-input.md).
 
-Tiers: web and adaptive output is render-gated; React Native and Flutter compile plus partial
-render; SwiftUI and Compose compile plus human review. State the tier in every report — native
-is never implied render-gated.
+Verification follows available tools and the target: compile, rendered inspection, automated interaction,
+accessibility or human review. Report each level actually run; a web render proves no native behavior.
+Missing required evidence stays a named gap.
 
 ### Source router
 
@@ -120,11 +120,10 @@ continuity purpose.
 - Accessibility as built: contrast, focus order, keyboard, labels, announcements, touch targets.
 - Verification run at the platform's tier, what a build role must still verify, any dependency awaiting
   approval.
-- A fork the request, repository or evidence cannot settle, or the role is unsure of, and that changes the
-  work, stops the work that depends on it rather than guessing and goes as named options with consequences to
-  the lead, or to the user when run on its own; the lead settles only a fork it can show a source answers,
-  naming that source, and puts the rest to the user through the runtime's structured question tool, else a
-  numbered list.
+- An unresolved decision that changes the work pauses only dependent work. Return options and
+  consequences to the lead, or to the user when solo. The lead settles only choices supported by the
+  request, repository or evidence, citing the source; otherwise ask the user through a structured
+  question tool, else a numbered list.
 
 ## Completion checklist
 

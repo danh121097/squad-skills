@@ -71,8 +71,8 @@ React runtime.
   animation library for one expansion.
 - Ship the row inert: amounts, status, and expansion state arrive as props; `squad-mobile` wires data
   and navigation.
-- Honor reduce-motion, 44pt/48dp targets, and a grouped `accessibilityLabel`; state that verification was
-  compile plus partial render, never a full render gate.
+- Honor reduce-motion, 44pt/48dp targets, and a grouped `accessibilityLabel`; report the checks
+  actually run, distinguishing native device evidence from a partial web render.
 
 ## Example 6: Tablet split-view adaptation
 

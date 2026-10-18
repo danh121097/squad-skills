@@ -49,12 +49,10 @@ untested theory.
 Start at the earliest observable divergence and trace backward through callers, contracts, state/data and
 environment, separating the primary failure from cascading errors. Treat the newest commit as one hypothesis among others.
 
-Generate three to five ranked falsifiable hypotheses before testing any of them; a single hypothesis anchors
-the run on the first plausible idea. `--quick` reduces this to the one hypothesis the evidence already names.
-Each states the observation that would kill it — "if X is the cause,
-changing Y removes the symptom" — and one that cannot state its prediction is sharpened or dropped. Where the
-session can reach the user, show the ranked list before testing: domain knowledge re-ranks it in seconds and
-an already-ruled-out cause is cheap to learn. Proceed on your own ranking when no answer arrives.
+When evidence identifies one cause, test its falsifiable prediction directly. When causality remains
+ambiguous or a prediction fails, rank competing hypotheses and name what would disprove each. Show the
+uncertain alternatives when user domain knowledge could change their ranking; continue with available
+evidence while awaiting input. `--quick` uses the failing check without expanding planning ceremony.
 
 Run the narrowest safe check that can falsify the top hypothesis, changing one variable at a time; edit code
 only to test a stated prediction. Tag every temporary probe with a unique marker such as `[DEBUG-a4f2]` so removal is

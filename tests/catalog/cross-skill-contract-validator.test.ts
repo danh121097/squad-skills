@@ -244,7 +244,7 @@ describe('handoff contract family', () => {
     expect(result.errors).toEqual([]);
   });
 
-  it('binds the authorized Codex worker-chat preference on both orchestrators', async () => {
+  it('binds execution-mode choice and authorization on both orchestrators', async () => {
     const sessions = boundaryClauses.find((clause) => clause.id === 'HANDOFF-SESSION-001');
     if (!sessions) throw new Error('HANDOFF-SESSION-001 is missing from shipped clauses.');
 
@@ -252,6 +252,50 @@ describe('handoff contract family', () => {
     const result = await validateCrossSkillContract(process.cwd(), { clauses: [sessions] });
 
     expect(result.errors).toEqual([]);
+  });
+
+  it.each([
+    {
+      drift: 'drops the main designation and report-back preference',
+      from: 'prefer worker threads/sub-sessions that report back to main',
+      to: 'implement bounded tasks directly in main',
+    },
+    {
+      drift: 'falls back for convenience despite available runtime capabilities',
+      from: 'only when the runtime lacks the required capabilities',
+      to: 'whenever the task is small',
+    },
+    {
+      drift: 'ignores an explicit no-delegation instruction',
+      from: 'Explicit execution-mode or no-delegation instructions override this preference',
+      to: 'The thread preference overrides explicit execution-mode or no-delegation instructions',
+    },
+  ])('rejects an orchestrator that $drift', async ({ from, to }) => {
+    const sessions = boundaryClauses.find((clause) => clause.id === 'HANDOFF-SESSION-001');
+    if (!sessions) throw new Error('HANDOFF-SESSION-001 is missing from shipped clauses.');
+    const divergent = sessions.statement.replace(from, to);
+    expect(divergent).not.toEqual(sessions.statement);
+    const projectRoot = await createProject({
+      [teamSkill]: `# Team\n\n${sessions.statement}.\n`,
+      [fixSkill]: `# Fix\n\n${divergent}.\n`,
+    });
+
+    const result = await validateCrossSkillContract(projectRoot, { clauses: [sessions] });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(fixSkill);
+  });
+
+  it.each([
+    'skills/squads-team/references/coordination-contract.md',
+    'skills/squad-fix/references/worker-sessions.md',
+  ])('%s keeps builds and gates pending when a valid launcher exists', async (file) => {
+    const source = normalizeProse(await readFile(path.join(process.cwd(), file), 'utf8'));
+
+    expect(source).toContain(
+      'when a valid user-started launcher is available, both build slices and gates stay pending until launched, including on a woken turn'
+    );
+    expect(source).not.toMatch(/(?:runs a newly ready|run a newly ready) gate as a subagent/);
   });
 
   it('fails when one side of a handoff drops the bound shape', async () => {

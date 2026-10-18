@@ -3,7 +3,11 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { workerModelReferences, renderWorkerModels } from '../../src/agents/worker-models.ts';
+import {
+  workerModelReferences,
+  renderWorkerModels,
+  renderWorkerDispatch,
+} from '../../src/agents/worker-models.ts';
 import {
   defaultCodexEffortByRole,
   defaultCodexModelByRole,
@@ -40,6 +44,14 @@ describe('plugin agent definitions', () => {
     const source = await readFile(path.join(projectRoot, file), 'utf8');
 
     expect(source, `${file} is stale — run pnpm agents:generate`).toBe(renderWorkerModels());
+    for (const tool of ['codex', 'claude-code'] as const) {
+      const runtime = tool === 'codex' ? 'codex' : 'claude';
+      const dispatch = await readFile(
+        path.join(projectRoot, path.dirname(file), `${runtime}-worker-dispatch.md`),
+        'utf8'
+      );
+      expect(dispatch).toBe(renderWorkerDispatch(tool));
+    }
   });
 
   it('ships one agent per skill and no orphans', () => {

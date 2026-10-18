@@ -117,10 +117,16 @@ The plugin supplies skills, not the generated Codex agent definitions. Generate
 those separately when each role should also be spawnable by name:
 
 ```sh
-npx squad-skills agents --global --agent codex
+npx squad-skills add --all --global --agent codex
 ```
 
 Start a new Codex task after plugin installation so it discovers the catalog.
+
+This command installs durable copied skills and generates their agents together.
+The `agents` command alone finds standalone skill installations, not plugin-cache
+payloads. Use `--skill <name>` instead of `--all` to install selected roles. Keep
+the plugin and copied catalog on the same release, or use the npm path alone to
+avoid two catalog versions.
 
 ## Subagent definitions
 

@@ -44,6 +44,25 @@ afterEach(async () => {
 });
 
 describe('installAgentDefinitions', () => {
+  it('gives plugin-only users a stable copied installation path', async () => {
+    const pluginSkill = path.join(home, '.codex/plugins/cache/squad-skills/0.4.5/skills/squad-qa');
+    await mkdir(pluginSkill, { recursive: true });
+    await writeFile(path.join(pluginSkill, 'SKILL.md'), 'plugin skill');
+
+    const result = await request({ agents: ['codex'] });
+
+    expect(result.written).toEqual([]);
+    expect(result.messages.join('\n')).toContain(
+      'squad-skills add --global --agent codex --skill squad-qa'
+    );
+    // The documented recovery installs a durable copy through the Skills CLI.
+    await installSkillInto('.agents', 'squad-qa');
+    await request({ agents: ['codex'] });
+    const agent = await readFile(path.join(home, '.codex/agents/squad-qa.toml'), 'utf8');
+    expect(agent).toContain(path.join(home, '.agents/skills/squad-qa/SKILL.md'));
+    expect(agent).not.toContain('plugins/cache');
+  });
+
   it('writes each tool its own format and points both at the installed skill', async () => {
     await installSkillInto('.claude', 'squad-qa');
     await installSkillInto('.agents', 'squad-qa');

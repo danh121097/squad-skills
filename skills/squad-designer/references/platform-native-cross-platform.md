@@ -3,9 +3,9 @@
 Read this reference for a React Native, Expo, or Flutter target. Web targets load the web platform
 reference; SwiftUI and Jetpack Compose load the Apple/Android reference.
 
-**Verification tier:** cross-platform native output is compile-checked, plus a partial render of
-render-compatible components through the web renderer. It is never render-gated end to end.
-State this tier in every native report as compile plus partial render.
+**Verification:** compile and use available native render, interaction and accessibility tooling for the
+changed surface. A partial web render covers only the components exercised there, never native behavior.
+Report the actual target and checks; missing required device evidence remains a gap.
 
 ## Shared rules
 
@@ -50,7 +50,7 @@ State this tier in every native report as compile plus partial render.
 
 ## Handoff additions for this tier
 
-Alongside the standard handoff contract, state: which components were exercised by the partial
-web render and which were only compiled, the OS accessibility features assumed (Dynamic Type,
+Alongside the standard handoff contract, state: which components were rendered on which target
+and which were only compiled, the OS accessibility features assumed (Dynamic Type,
 TalkBack/VoiceOver), and what `squad-mobile` must verify on device — gesture feel, thread
 performance, real keyboard and safe-area behavior.
