@@ -435,6 +435,14 @@ export const boundaryClauses: BoundaryClause[] = [
     files: [fixSkill, teamSkill],
   },
   {
+    id: 'HANDOFF-WORKTREE-001',
+    // Parallel Codex builds need isolated checkouts, and a worker's passing
+    // gates do not make its work visible on the lead's current branch.
+    statement:
+      'Codex parallel build chats in one Git repo use authorized worktrees; after reporting done to each worker, main integrates its exact diff into the current branch, resolves conflicts, verifies, then cleans its worktree and any task branch, leaving a reviewable diff',
+    files: [fixSkill, teamSkill],
+  },
+  {
     id: 'HANDOFF-PEER-GATES-001',
     // Starting Review after QA finishes loses parallel work. The two agents
     // exchange evidence while working, but each owns its own verdict.

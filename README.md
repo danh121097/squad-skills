@@ -313,24 +313,30 @@ paired gate pending. Main sends findings back to the build chat. A Codex
 worker chat must receive its role's selected model and effort through `create_thread` `model` and `thinking`,
 then receive that pair again on each `send_message_to_thread` follow-up. Loading a skill inside the chat
 does not select the pair. Check the worker turn metadata for the effort that actually ran; the effort shown
-in an idle composer can differ from a completed turn.
+in an idle composer can differ from a completed turn. For concurrent Codex build chats in one Git repo,
+request a separate worktree for each worker. After passing gates, main reports done to the worker,
+integrates its exact changes into the current branch, resolves conflicts, verifies the combined diff, and
+then cleans task-owned worktrees and branches. The current branch keeps a reviewable diff; integration
+does not imply an automatic commit.
 For runtimes requiring explicit creation and messaging authorization, a complete request is:
 
 > Use `squads-team` for this change. Create a separate chat for each implementation worker in this
-> project and keep this chat as lead. Apply the Codex role model/effort mapping, with any model or effort I
-> specify taking precedence. Read worker reports here, run QA and Code Review as subagents, and send
-> findings back to the same implementation chat until the gates pass.
+> project and keep this chat as lead. Give concurrent coding workers separate worktrees. Apply the Codex
+> role model/effort mapping, with any model or effort I specify taking precedence. Read worker reports
+> here, run QA and Code Review as subagents, and send findings back to the same implementation chat
+> until the gates pass. Integrate passing work into this branch, resolve conflicts, then clean its task
+> worktree and branch after verifying the integrated diff.
 
 `squads-team` flags, each overriding one default:
 
-| Flag                                          | Default without it                                                                                         |
-| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `--devs N`                                    | every safe ready slice runs; `N` caps parallel build slices                                                |
-| `--with-mobile`, `--with-designer`            | roles come from scope routing                                                                              |
-| `--coordinate-only`                           | the lead may implement outside thread mode, make small integration edits inside it; with it, delegate only |
-| `--plan-approval`                             | no pause for build plans; material decisions still go to the user                                          |
-| `--mode auto\|team\|thread\|subagent\|single` | `auto`, threads for a designated main/coordinator; otherwise lowest overhead                               |
-| `--no-worktree`                               | worktrees used when isolation pays; otherwise overlap is serialized                                        |
+| Flag                                          | Default without it                                                                                                  |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `--devs N`                                    | every safe ready slice runs; `N` caps parallel build slices                                                         |
+| `--with-mobile`, `--with-designer`            | roles come from scope routing                                                                                       |
+| `--coordinate-only`                           | the lead may implement outside thread mode, make small integration edits inside it; with it, delegate only          |
+| `--plan-approval`                             | no pause for build plans; material decisions still go to the user                                                   |
+| `--mode auto\|team\|thread\|subagent\|single` | `auto`, threads for a designated main/coordinator; otherwise lowest overhead                                        |
+| `--no-worktree`                               | authorized parallel Codex build chats use separate worktrees; without them, chats sharing a checkout are serialized |
 
 ## Skill format
 

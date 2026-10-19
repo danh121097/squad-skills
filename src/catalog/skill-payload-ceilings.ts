@@ -49,6 +49,11 @@
  * The controller paths also carry the worker's repair report back to main and
  * the lead's final done report to that same chat, so a repair cannot skip the
  * new gate pass or leave an approved worker thread awaiting another dispatch.
+ * The fix and team figures rose again for authorized parallel Codex worktrees,
+ * transfer of the exact worker diff into the current branch, conflict repair,
+ * integrated verification and cleanup. Codex-specific mechanics live in the
+ * generated dispatch reference; the shared completion boundary remains in both
+ * orchestrator entrypoints and their routed coordination references.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
  *
@@ -75,10 +80,10 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-code-review': 2235, // was 2205: concurrent peer-gate handoff
   'squad-designer': 2322, // was 2027: adaptive and accepted web handoffs now include their platform
   'squad-devops': 2067, // was 2092
-  'squad-fix': 4597, // was 4519: repair report-back and worker completion handoff
+  'squad-fix': 4696, // was 4597: Codex worktree isolation and verified integration
   'squad-frontend': 2011, // was 2045
   'squad-mobile': 1928, // was 2012
   'squad-product': 2359, // was 2392
   'squad-qa': 2371, // was 2341: concurrent peer-gate handoff
-  'squads-team': 4543, // was 4454: repair report-back and worker completion handoff
+  'squads-team': 4623, // was 4543: Codex worktree isolation and verified integration
 };

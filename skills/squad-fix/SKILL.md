@@ -113,7 +113,9 @@ was. Before declaring the repair complete, run the self-review in
    `FAIL` and `CHANGES_REQUESTED` return to owner; `NEEDS_*`
    returns to lead.
 8. **Finish** — hand over the proof listed in the quality bar, plus docs impact and any authorized external
-   mutation.
+   mutation. Codex parallel build chats in one Git repo use authorized worktrees; after reporting done to
+   each worker, main integrates its exact diff into the current branch, resolves conflicts, verifies,
+   then cleans its worktree and any task branch, leaving a reviewable diff.
 
 ## Stop conditions
 

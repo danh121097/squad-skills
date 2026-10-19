@@ -12,11 +12,11 @@ Select the owning implementation role before dispatch. Send its exact `squad-*` 
 proven cause, acceptance, ownership, dependencies, tier, checks and base revision; include pending changes
 as a patch for fresh checkouts and the exact diff for gates. Start build workers in the lead's
 project/repository, titled `[squad-frontend]: <slice>`, `[squad-backend]: <slice>`, or the matching assigned
-skill name; use a
-worktree only when isolation pays. After every implementation or repair pass, the worker sends main its
+skill name. For concurrent Codex implementation chats in one Git repository, use a separate worktree per
+worker when authorized; otherwise serialize worker chats sharing a checkout. After every implementation or repair pass, the worker sends main its
 changes, commands/results and gaps through an authorized message. If messaging is unavailable, its final
-turn is the report and main reads it with `wait_threads`/`read_thread`. Main checks the diff and report,
-integrates by merge or reviewed copy, and reuses the owner for returns.
+turn is the report and main reads it with `wait_threads`/`read_thread`. Main checks the diff and report
+and reuses the owner for returns.
 If scouting changes the owner, the worker reports it before continuing; main updates the assigned skill,
 chat title and model/effort pair before resuming implementation.
 
@@ -48,6 +48,10 @@ main sends every actionable finding in one authorized follow-up to the same buil
 fixes and reports back to main; main assesses that revision with both gates, focusing on the finding and
 affected scope, before another pass. Compare the failure condition and evidence across assessments;
 report `BLOCKED` at the budget or continue until QA `PASS` and Code Review `APPROVE`. Main sends a `done`
-report with both verdicts to the worker chat, stops dispatching it, and reports completion to the user.
+report with both verdicts to the worker chat and stops its edits. Main then integrates the exact worker
+diff into the current branch, resolves conflicts, verifies the combined result and cleans only
+transferred task worktrees/branches. Retain a reviewable diff and report any cleanup gap. For Codex
+mechanics, read the dispatch reference routed by [worker models](worker-models.md). Only then report
+parent-task completion to the user.
 In main/coordinator thread mode, if either paired subagent cannot start, keep the gate pending and report
 the missing capability; resume the pair when available.

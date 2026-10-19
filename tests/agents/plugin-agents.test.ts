@@ -67,6 +67,25 @@ describe('plugin agent definitions', () => {
     );
   });
 
+  it('isolates authorized parallel Codex chats and preserves their diff on integration', () => {
+    const dispatch = renderWorkerDispatch('codex');
+
+    expect(dispatch).toContain("use create_thread's worktree environment for");
+    expect(dispatch).toContain('when the user authorizes worktrees');
+    expect(dispatch).toContain('include them through a supported working-tree start or a patch');
+    expect(dispatch).toContain('serialize worker chats sharing a checkout');
+    expect(dispatch).toContain('including uncommitted files');
+    expect(dispatch).toContain('Record the target branch');
+    expect(dispatch).toContain(
+      'Confirm main is on the target branch. Integrate by reviewed patch or copy'
+    );
+    expect(dispatch).toContain('use Git merge only for committed work when');
+    expect(dispatch).toContain(
+      'rerun affected gates if conflict resolution changes behavior or a contract'
+    );
+    expect(dispatch).toContain("After verified transfer, use the runtime's cleanup path");
+  });
+
   it('ships one agent per skill and no orphans', () => {
     expect(agentFiles).toEqual(skillNames.map((name) => `${name}.md`));
   });

@@ -302,11 +302,28 @@ describe('handoff contract family', () => {
     expect(source).toContain('worker fixes and reports back to main');
     expect(source).toContain('main assesses that revision with both gates');
     expect(source).toContain('done report with both verdicts to the worker chat');
-    expect(source).toContain('stops dispatching it');
+    expect(source).toContain('stops its edits');
+    expect(source).toContain('reviewable diff');
+    expect(source).toMatch(
+      /done report.*current branch.*conflicts.*verif.*(clean|remove).*worktree/s
+    );
     expect(source).toMatch(/start.*squad-qa.*squad-code-review.*together/s);
     expect(source).toContain('before waiting for either result');
     expect(source).toContain("peer's handle");
     expect(source).toContain('a paired gate still waits for both subagents');
+  });
+
+  it('binds Codex worker isolation and post-gate integration on both orchestrators', async () => {
+    const worktrees = boundaryClauses.find((clause) => clause.id === 'HANDOFF-WORKTREE-001');
+    if (!worktrees) throw new Error('HANDOFF-WORKTREE-001 is missing.');
+
+    expect([...worktrees.files].sort()).toEqual([fixSkill, teamSkill].sort());
+    expect(worktrees.statement).toContain('authorized worktrees');
+    expect(worktrees.statement).toContain('integrates its exact diff into the current branch');
+    expect(worktrees.statement).toContain('resolves conflicts, verifies, then cleans');
+    expect(
+      (await validateCrossSkillContract(process.cwd(), { clauses: [worktrees] })).errors
+    ).toEqual([]);
   });
 
   it('binds main-owned subagent gates and bounded returns to the build owner', async () => {

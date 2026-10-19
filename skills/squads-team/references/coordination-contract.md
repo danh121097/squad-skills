@@ -41,8 +41,8 @@ moves acceptance, ownership or a dependency without the lead.
 - QA never edits a build-owned test concurrently or production code: it returns the missing case to the
   owner, or the lead reassigns the file in a serialized handoff.
 - Shared/generated/config/migration files get one owner or serialized turns.
-- Without worktrees, serialize agents that could touch the same files. Use worktrees only in a Git
-  repository, when supported, and when isolation benefit exceeds merge cost.
+- Without worktrees, serialize agents that could touch the same files. Use worktrees in Git repositories
+  when authorized and isolation pays; `--no-worktree` serializes Codex build chats sharing a checkout.
 - Preserve dirty user changes. Never force-push or destructively reset.
 
 ## 4. Peer-team, thread and subagent modes
@@ -57,13 +57,12 @@ and title it `[squad-frontend]: <slice>`, `[squad-backend]: <slice>`, or the mat
 After every implementation or repair pass, the worker sends main a report of changes, commands/results
 and unresolved gaps through an authorized message. If worker-to-main messaging is unavailable, its final
 turn is the report and main reads it with `wait_threads`/`read_thread`. Main receives that report and
-checks the actual diff before launching gates; it integrates by merge or reviewed copy and reuses the
-same worker for returns. Keep results in the conversation.
+checks the actual diff before launching gates; it reuses the same worker for returns. Keep results in the conversation.
 If scouting changes the owning skill, the worker returns that finding before implementation continues;
 main updates the assignment, chat title and model/effort pair before resuming it.
 
-In Codex, discover the project before creating a chat with the live `create_thread` schema. Prefer its
-local checkout; choose a worktree only when isolation pays. A separate chat is user-owned and need not
+In Codex, discover the project before creating a chat with the live `create_thread` schema. Concurrent
+build chats use authorized separate worktrees; a single worker may use the local checkout. A separate chat is user-owned and need not
 appear nested under the lead; a native subagent thread is a different execution mode. Creation and
 cross-chat messages must satisfy the runtime's explicit-user-authorization rules: this skill's preference
 alone grants neither. For a designated main, missing authorization follows §1; otherwise use subagents and explain the needed
@@ -91,8 +90,11 @@ both verdicts. For a failing unit within gate 4's repair budget, main sends ever
 the same build thread in one authorized follow-up. The worker fixes and reports back to main; main
 assesses that revision with both gates, focusing on the finding and affected scope, before another pass.
 Compare the failure condition and evidence across assessments; report `BLOCKED` at the budget or repeat
-until QA `PASS` and Code Review `APPROVE`. Main integrates passing work, sends a `done` report with both
-verdicts to the worker chat, stops dispatching it, and reports task completion to the user. Externally assigned gates follow the entrypoint's
+until QA `PASS` and Code Review `APPROVE`. Main sends a `done` report with both verdicts to the worker
+chat and stops its edits. Then main integrates the exact worker diff into the current branch, resolves
+conflicts, verifies the combined result and cleans only transferred task worktrees/branches. Retain a
+reviewable diff and report any cleanup gap. For Codex mechanics, read the dispatch reference routed by
+[worker models](worker-models.md). Externally assigned gates follow the entrypoint's
 handoff contract. In main/coordinator thread mode, if either paired subagent cannot start, keep the gate
 pending and report the missing capability; resume the pair when available.
 

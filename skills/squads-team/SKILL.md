@@ -28,7 +28,7 @@ Flags are semantic controls read by the lead, not npm CLI options. Each override
 | `--coordinate-only` | the lead may implement outside thread mode, integrate inside it; with it, delegate only |
 | `--plan-approval` | no pause for build plans; material decisions still go to the user |
 | `--mode auto\|team\|thread\|subagent\|single` | `auto`, threads for a designated main/coordinator; otherwise lowest overhead |
-| `--no-worktree` | worktrees used when isolation pays; without them, overlap is serialized |
+| `--no-worktree` | authorized parallel Codex build chats use separate worktrees; without them, chats sharing a checkout are serialized |
 
 When the user designates this session as main/coordinator, prefer worker threads/sub-sessions that report
 back to main. Main coordinates, reviews and integrates; workers own implementation. Fall back to
@@ -122,7 +122,9 @@ result, and a missing environment or evidence never becomes completion.
    before its final verdict.
 7. **Integrate** — combine approved work, check each seam on the artifacts — what one slice supplies
    against what the other consumes: env vars, routes, schemas — rather than on the reports, run combined
-   checks.
+   checks. Codex parallel build chats in one Git repo use authorized worktrees; after reporting done to
+   each worker, main integrates its exact diff into the current branch, resolves conflicts, verifies,
+   then cleans its worktree and any task branch, leaving a reviewable diff.
 8. **Finish** — report per gate 5 and the final-report section of the pipeline reference, anything not
    verified included; clean up only resources and processes this run created.
 

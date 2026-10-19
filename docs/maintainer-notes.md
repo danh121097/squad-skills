@@ -132,6 +132,13 @@ lowest-overhead suitable mode. Main uses QA and Code Review subagents for the ga
 to the same build chat. Both orchestrator entrypoints bind the thread preference through
 `HANDOFF-SESSION-001`.
 
+Parallel Codex build chats in one Git repository now use separate worktrees when the user authorizes
+them. The coordinator reports the worker slice done after its gates pass, integrates its exact diff into
+the current branch, resolves conflicts and verifies the combined result before cleaning the task
+worktree and branch. An uncommitted worker diff crosses by reviewed patch or copy so the current branch
+keeps a reviewable diff without creating an unauthorized commit. `HANDOFF-WORKTREE-001` binds this stage
+on both orchestrator entrypoints.
+
 ## Payload ceiling history
 
 Until 2026-09 each ceiling in `src/catalog/skill-payload-ceilings.ts` carried
