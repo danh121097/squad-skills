@@ -83,7 +83,7 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-code-review': 2377, // was 2235: role-only coordinator boundary
   'squad-designer': 2464, // was 2322: role-only coordinator boundary
   'squad-devops': 2187, // was 2067: role-only coordinator boundary
-  'squad-fix': 4622, // was 4483: role-only coordinator boundary
+  'squad-fix': 4631, // was 4622: runtime worktree branch naming in delegated repair
   'squad-frontend': 2139, // was 2011: role-only coordinator boundary
   'squad-mobile': 2048, // was 1928: role-only coordinator boundary
   'squad-product': 2472, // was 2359: role-only coordinator boundary

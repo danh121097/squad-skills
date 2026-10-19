@@ -13,3 +13,6 @@ Read only when dispatching a Claude worker, after resolving preferences in
   CLI support, independent sessions accept --model and --effort; --bg starts a persistent background
   session. Include its role skill, task and name. Claude Desktop controls can differ: inspect their live
   schema, and report missing controls instead of treating Codex's thinking field as portable.
+
+Prefer claude/<slug> for new worktree branches. Claude Desktop Branch prefix: claude. Verify generated
+names; report deviations. Preserve existing worktrees.

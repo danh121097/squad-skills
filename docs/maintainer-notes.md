@@ -139,6 +139,12 @@ worktree and branch. An uncommitted worker diff crosses by reviewed patch or cop
 keeps a reviewable diff without creating an unauthorized commit. `HANDOFF-WORKTREE-001` binds this stage
 on both orchestrator entrypoints.
 
+New worktree branches use `codex/` or `claude/` when the creating runtime exposes branch naming.
+Claude Desktop has a Branch prefix setting; Codex managed worktree names accept a slug without `/`.
+The dispatch references require checking the actual branch and preserve managed worktrees when the
+runtime assigns another name. A naming preference must not rename an active checkout behind its owner.
+The delegated repair's measured median rose nine words to retain that rule in its standalone dispatch.
+
 ## Effective modes and worktree evidence
 
 Gate execution follows the effective mode after explicit overrides and runtime fallback. A main label

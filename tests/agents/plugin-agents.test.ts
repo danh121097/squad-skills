@@ -75,6 +75,9 @@ describe('plugin agent definitions', () => {
     const dispatch = renderWorkerDispatch('codex').replace(/\s+/g, ' ');
 
     expect(dispatch).toContain("use create_thread's worktree environment for");
+    expect(dispatch).toContain('codex/<slug>');
+    expect(dispatch).toContain('Verify generated names; report deviations');
+    expect(dispatch).toContain('Preserve existing worktrees');
     expect(dispatch).toContain('when the user authorizes worktrees');
     expect(dispatch).toContain('include them through a supported working-tree start or a patch');
     expect(dispatch).toContain('serialize worker chats sharing a checkout');
@@ -95,6 +98,15 @@ describe('plugin agent definitions', () => {
       'Compare baseline, worker result and current target before applying'
     );
     expect(dispatch).toContain('including added, deleted, renamed and binary files');
+  });
+
+  it('names Claude worktree branches without assuming control of managed paths', () => {
+    const dispatch = renderWorkerDispatch('claude-code').replace(/\s+/g, ' ');
+
+    expect(dispatch).toContain('claude/<slug>');
+    expect(dispatch).toContain('Branch prefix: claude');
+    expect(dispatch).toContain('Verify generated names; report deviations');
+    expect(dispatch).toContain('Preserve existing worktrees');
   });
 
   it('ships one agent per skill and no orphans', () => {

@@ -331,6 +331,12 @@ integrates its exact changes into the current branch, resolves conflicts, verifi
 then cleans task-owned worktrees and branches. The current branch keeps a reviewable diff; integration
 does not imply an automatic commit.
 
+Name new worktree branches `codex/<slug>` for Codex work and `claude/<slug>` for Claude work when the
+runtime supports branch naming. Claude Desktop's **Branch prefix** setting should be `claude`; it adds
+the slash for new branches. Codex's managed worktree name accepts a slug rather than a slash, so check the
+branch returned by the app. If a runtime assigns a different name without exposing branch control, keep
+its managed checkout and report the observed branch and path. Existing worktrees keep their names.
+
 The initial prompt requires the worker to capture its snapshot after seeding and before its first edit;
 capture failure stops editing. This applies to Claude and Codex, including sessions that start immediately.
 Each gate receives the absolute worker checkout path, base, initial snapshot and current diff identity,

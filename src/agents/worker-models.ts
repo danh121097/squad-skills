@@ -90,6 +90,9 @@ live schema's starting-state authorization. A commit-based checkout omits pendin
 through a supported working-tree start or a patch. Without authorization or worktree support, or with
 --no-worktree, serialize worker chats sharing a checkout.
 
+Prefer codex/<slug> for new worktree branches. Verify generated names; report deviations. Preserve
+existing worktrees.
+
 Use the initial-prompt bootstrap in [thread handoff](thread-handoff.md); the worker owns snapshot capture
 before editing, even when create_thread starts immediately. Gate identity includes file content hashes,
 including uncommitted files. Verify dependencies/environment in the worker checkout;
@@ -120,5 +123,8 @@ Read only when dispatching a Claude worker, after resolving preferences in
   CLI support, independent sessions accept --model and --effort; --bg starts a persistent background
   session. Include its role skill, task and name. Claude Desktop controls can differ: inspect their live
   schema, and report missing controls instead of treating Codex's thinking field as portable.
+
+Prefer claude/<slug> for new worktree branches. Claude Desktop Branch prefix: claude. Verify generated
+names; report deviations. Preserve existing worktrees.
 `;
 }
