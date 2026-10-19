@@ -1,6 +1,6 @@
 ---
 name: squad-backend
-description: "Operate as the squad's Backend Engineer — APIs, shared contracts, auth, data models, migrations, caching, queues and server logic in the repository's existing stack, with security and data safety verified. Invoke to design or implement APIs, data models, auth or server logic. A concrete failure with an unproven cause goes to squad-fix first."
+description: "Invoke for server APIs, auth, data models, migrations, caching and queues. Own shared contracts and backend logic in the existing stack. Route failures with unproven cause to squad-fix."
 model: sonnet
 effort: medium
 ---

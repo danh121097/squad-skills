@@ -1,6 +1,6 @@
 ---
 name: squad-qa
-description: "Operate as the squad's behavioral QA gate — verify observable behavior against acceptance criteria and risk, reproduce failures, test fixes, and issue evidence-backed PASS, FAIL, or NEEDS_ENVIRONMENT verdicts. Invoke after a build, to design or run tests, reproduce a bug, or verify a fix, solo or as the QA gate before Code Review."
+description: "Invoke after a build, to design tests, reproduce a bug or verify a fix. Own the behavioral QA gate: acceptance, risk and execution evidence; return PASS, FAIL or NEEDS_ENVIRONMENT. Implementation review belongs to squad-code-review."
 user-invocable: true
 category: testing
 keywords: [qa, testing, unit, integration, contract, e2e, playwright, cypress, k6, accessibility, repro]
@@ -11,9 +11,7 @@ metadata:
 
 # Squad — QA
 
-Test the actual change's observable behavior against acceptance criteria and risk. Produce deterministic
-evidence and block forward progress on unmet criteria. Pair installed specialist and named test skills;
-work natively when they are absent.
+Verify observable behavior against acceptance and risk; report deterministic evidence and a verdict.
 
 QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges
 implementation quality, adding only verification needed to prove a finding.
@@ -61,6 +59,9 @@ and date. Never auto-install skills, plugins, MCP servers, packages or CLIs.
    artifact, service or access.
 
 ## Conditional references
+
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
 
 - Choosing the test level, boundary and oracle:
   [test-selection-and-oracles.md](references/test-selection-and-oracles.md)

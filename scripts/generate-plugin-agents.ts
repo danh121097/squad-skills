@@ -8,6 +8,8 @@ import {
   workerModelReferences,
   renderWorkerModels,
   renderWorkerDispatch,
+  renderWorkerChatDispatch,
+  renderCodexWorktreeHandoff,
 } from '../src/agents/worker-models.ts';
 import {
   readSkillAgentDefinition,
@@ -37,11 +39,19 @@ for (const reference of workerModelReferences) {
     renderThreadHandoff()
   );
   await writeFile(path.join(process.cwd(), reference), renderWorkerModels());
+  await writeFile(
+    path.join(process.cwd(), path.dirname(reference), 'codex-worktree-handoff.md'),
+    renderCodexWorktreeHandoff()
+  );
   for (const tool of ['codex', 'claude-code'] as const) {
     const runtime = tool === 'codex' ? 'codex' : 'claude';
     await writeFile(
       path.join(process.cwd(), path.dirname(reference), `${runtime}-worker-dispatch.md`),
       renderWorkerDispatch(tool)
+    );
+    await writeFile(
+      path.join(process.cwd(), path.dirname(reference), `${runtime}-chat-dispatch.md`),
+      renderWorkerChatDispatch(tool)
     );
   }
 }

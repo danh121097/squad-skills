@@ -91,6 +91,7 @@ checklist`. The catalog validator enforces the sequence.
 - The cross-skill contract in `src/catalog/cross-skill-contract-clauses.ts`
   binds wording that has to read the same in every file that states it, checked
   by `pnpm validate`. Families:
+  - `READING-*` — conditional reference loading and reuse of instructions still in context.
   - `COORDINATOR-*` — persistent main identity and dispatch before implementation, reachable from every role entrypoint.
   - `BOUNDARY-*` — who owns an artifact between the designer and the build roles.
   - `DECISION-RECORD-*` — what a decision another role builds on must record,

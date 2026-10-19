@@ -1,6 +1,6 @@
 ---
 name: squads-team
-description: "Orchestrate a role-specialized squad (Designer, Frontend, Backend, Mobile, DevOps, QA, Code Review) with frame-first scoping, non-overlapping ownership, and risk-tiered QA and Code Review gates. Invoke for work spanning several engineering roles. A single-role task goes to that role, a concrete bug to squad-fix, an unframed idea to squad-product."
+description: "Invoke for work spanning roles or independent workstreams. Coordinate ownership, dependencies, workers, QA, review and integration. Single-role work selects its owner; bugs go to squad-fix; unframed ideas go to squad-product."
 model: opus
 effort: medium
 ---

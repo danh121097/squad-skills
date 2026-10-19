@@ -1,6 +1,6 @@
 ---
 name: squad-frontend
-description: "Operate as the squad's Frontend Engineer — web UI, browser games and interactive graphics, client logic and API integration in the repository's framework, building on the user's design material. Invoke to build web features, client behavior or API integrations, including UI from a Figma file. Open design decisions go to squad-designer first; single-role builds stay here."
+description: "Invoke for web UI, browser games, client logic and API integration, including Figma builds. Preserve the repository’s framework and design material. Open design decisions go to squad-designer; server logic goes to squad-backend."
 model: sonnet
 effort: medium
 ---

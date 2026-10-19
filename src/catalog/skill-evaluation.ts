@@ -4,6 +4,7 @@ import path from 'node:path';
 
 import { skillEvaluationCases } from './skill-evaluation-cases.ts';
 import { measureSkillPayload } from './skill-payload-measurement.ts';
+import { summarizeReadingEvidence, type SkillRead } from './skill-reading-evidence.ts';
 import { skillTaskTypes } from './skill-task-types.ts';
 
 /** Creates a fresh, reviewable packet; never launches a model or overwrites a workspace. */
@@ -30,6 +31,7 @@ export async function prepareSkillEvaluation(projectRoot: string, id: string, de
       prompt: scenario.prompt,
       files: scenario.files,
       criteria: scenario.criteria,
+      ...(scenario.reading === undefined ? {} : { reading: scenario.reading }),
       ...(scenario.setup === undefined ? {} : { setup: scenario.setup }),
     }),
     catalogHash: digest({ skills: catalog, readme }),
@@ -49,6 +51,11 @@ export async function prepareSkillEvaluation(projectRoot: string, id: string, de
       recursive: true,
     });
   }
+  if (scenario.reading)
+    await writeFile(
+      path.join(root, 'reading-rubric.json'),
+      JSON.stringify(scenario.reading, null, 2) + '\n'
+    );
   if (scenario.setup) await writeFile(path.join(root, 'setup.txt'), scenario.setup + '\n');
   await writeFile(path.join(root, 'prompt.txt'), scenario.prompt + '\n');
   await writeFile(path.join(root, 'README.md'), readme);
@@ -72,6 +79,7 @@ export interface EvaluationRecord {
   elapsedMs: number;
   /** Runtime-reported total; null means unavailable, never zero. */
   totalTokens: number | null;
+  reads?: SkillRead[];
   checks: Record<string, { passed: boolean; evidence: string }>;
 }
 
@@ -121,6 +129,7 @@ export function summarizeSkillEvaluations(input: unknown) {
         throw new Error('Every criterion needs an observed result and evidence.');
       }
     }
+    summarizeReadingEvidence(row.reads, scenario.reading);
     const fixture = fixtures.get(row.scenario);
     if (fixture !== undefined && fixture !== row.fixtureHash)
       throw new Error('Cannot compare different fixtures.');
@@ -133,8 +142,12 @@ export function summarizeSkillEvaluations(input: unknown) {
   }
   return [...groups.values()].map((rows) => {
     const first = rows[0]!;
-    const passed = rows.filter((row) =>
-      Object.values(row.checks).every((check) => check.passed)
+    const expectation = skillEvaluationCases.find((item) => item.id === first.scenario)!.reading;
+    const readings = rows.map((row) => summarizeReadingEvidence(row.reads, expectation));
+    const passed = rows.filter(
+      (row, index) =>
+        Object.values(row.checks).every((check) => check.passed) &&
+        readings[index]?.passed !== false
     ).length;
     const known = rows.every((row) => row.totalTokens !== null);
     const tokens = known ? rows.reduce((sum, row) => sum + row.totalTokens!, 0) : null;
@@ -146,6 +159,21 @@ export function summarizeSkillEvaluations(input: unknown) {
       catalogHash: first.catalogHash,
       fixtureHash: first.fixtureHash,
       samples: rows.length,
+      reading: readings.every((item) => item !== null)
+        ? {
+            reads: readings.reduce((total, item) => total + item!.reads, 0),
+            repeatedReads: readings.reduce((total, item) => total + item!.repeatedReads, 0),
+            unjustifiedRereads: readings.reduce(
+              (total, item) => total + item!.unjustifiedRereads,
+              0
+            ),
+            forbiddenReads: readings.reduce((total, item) => total + item!.forbiddenReads, 0),
+            missingRequired: readings.reduce(
+              (total, item) => total + item!.missingRequired.length,
+              0
+            ),
+          }
+        : null,
       passed,
       passRate: passed / rows.length,
       meanElapsedMs: rows.reduce((sum, row) => sum + row.elapsedMs, 0) / rows.length,

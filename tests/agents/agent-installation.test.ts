@@ -91,7 +91,7 @@ describe('installAgentDefinitions', () => {
 
     expect(config).toContain('config_file = "agents/squad-qa.toml"');
     // Codex picks a subagent by this text, so it carries the role's trigger, not its name.
-    expect(config).toMatch(/description = ".*behavioral QA gate.*Invoke after a build/);
+    expect(config).toMatch(/description = ".*Invoke after a build.*behavioral QA gate/);
     expect(await readFile(`${configFile}.squad-skills-backup`, 'utf8')).toBe('model = "gpt-5.6"\n');
   });
 

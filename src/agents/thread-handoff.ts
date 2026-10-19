@@ -11,6 +11,8 @@ runtime.
 
 Include this bootstrap in the initial worker prompt on both runtimes: include the resolved model and effort
 (or inherit) and tell the worker to check selected fields before work; stop before editing and report a mismatch.
+Claude workers also stop when selected fields cannot be verified; keep the build pending until corrected
+and confirmed through supported controls. Prompt text is not verification. Explicit inherit is not a mismatch.
 The worker captures its initial snapshot after seeding and before its first edit, retaining base revision
 and inherited tracked/untracked contents outside the product tree without committing. If seeding or capture
 fails, stop before editing.

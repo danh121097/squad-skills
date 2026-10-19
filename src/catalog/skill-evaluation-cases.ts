@@ -1,8 +1,11 @@
+import type { ReadingExpectation } from './skill-reading-evidence.ts';
+import { readingEvaluationCases } from './skill-reading-evaluation-cases.ts';
 import { coordinationEvaluationCases } from './skill-coordination-evaluation-cases.ts';
 
 /** Human-reviewed scenarios shared by Claude and Codex; no model calls in the offline gate. */
 export interface SkillEvaluationCase {
   id: string;
+  reading?: ReadingExpectation;
   prompt: string;
   /** Evaluator setup outside the worker prompt; included in fixture identity. */
   setup?: string;
@@ -25,6 +28,7 @@ const repair = [{ skill: 'squad-fix', task: 'single-session-repair' }];
 
 export const skillEvaluationCases: SkillEvaluationCase[] = [
   ...coordinationEvaluationCases,
+  ...readingEvaluationCases,
   {
     id: 'small-local-pattern',
     prompt:
@@ -172,6 +176,14 @@ export const skillEvaluationCases: SkillEvaluationCase[] = [
   },
   {
     id: 'resume-after-compaction',
+    reading: {
+      required: ['skills/squad-fix/SKILL.md'],
+      forbidden: [
+        'skills/squad-fix/references/thread-handoff.md',
+        'skills/squad-fix/references/codex-chat-dispatch.md',
+        'skills/squad-fix/references/claude-chat-dispatch.md',
+      ],
+    },
     prompt:
       'Resume from this handoff: goal is a counter incrementing once; the prior session claimed it was fixed but left no test evidence. You have the current files, no earlier reasoning. Work directly, verify the actual state, and finish the repair if needed.',
     files: counter,

@@ -197,3 +197,17 @@ and context summary. The role entrypoint now routes main back to the existing le
 contract (or loads squads-team when no lead is active), so model selection, snapshots and gates remain
 reachable. Implementation threads and paired gate subagents are separate mechanisms. Static gates do
 not establish model adherence.
+
+## Conditional reading and execution modes
+
+Descriptions lead with the invocation condition so shortened discovery metadata retains the trigger.
+Each entrypoint binds one reading rule: use matching references and reuse current context. Runtime
+worker dispatch is separate from chat lifecycle; only independent sessions read chat dispatch and
+snapshot/integration handoff. Codex isolated checkouts additionally load worktree transfer instructions;
+shared-checkout chats skip that reference. The Claude initial prompt carries the stop on unverifiable selected
+fields as well as mismatch, with explicit inherit preserved. Selection capabilities are checked before
+launch instead of discovered after implementation.
+
+Designer paths include the platform and handoff evidence their workflow uses. Reading trials record
+actual file reads separately from declared payload, with context-aware reread reasons. Static tests
+protect these contracts but establish neither runtime compliance nor measured token savings.

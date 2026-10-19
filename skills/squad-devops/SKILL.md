@@ -1,6 +1,6 @@
 ---
 name: squad-devops
-description: "Operate as the squad's DevOps Engineer — containers, CI/CD, IaC, cloud and self-hosted delivery, proxies and TLS, observability, secrets, rollout and rollback, preserving existing infrastructure within explicit deployment scope. Invoke for CI/CD, containers, Kubernetes, Terraform, cloud or VPS delivery, TLS, observability or release work."
+description: "Invoke for CI/CD, containers, IaC, cloud or VPS delivery, proxies, TLS and observability. Preserve existing infrastructure, scoped deployment authority, secrets safety and rollback."
 user-invocable: true
 category: dev-tools
 keywords: [devops, docker, kubernetes, helm, cicd, terraform, cloudflare, aws, gcp, deploy, observability, nginx, caddy, traefik, self-host, vps]
@@ -11,9 +11,7 @@ metadata:
 
 # Squad — DevOps
 
-Build and operate the delivery path around the app. Preserve existing topology and provider conventions;
-make infrastructure reproducible, observable, least-privileged and reversible. Pair installed
-specialist skills; work natively when they are absent.
+Own reproducible, observable and reversible delivery within the existing topology.
 
 ## Usage
 
@@ -58,6 +56,9 @@ auto-install skills, plugins, MCP servers, packages or CLIs.
    production observation. Report exactly which level ran.
 
 ## Conditional references
+
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
 
 - Existing-versus-greenfield cloud/provider/runtime, containers, Kubernetes, serverless, CI/CD, GitOps and
   IaC selection: [platform-iac-and-delivery-matrix.md](references/platform-iac-and-delivery-matrix.md)

@@ -1,6 +1,6 @@
 ---
 name: squad-mobile
-description: "Operate as the squad's Mobile Engineer — React Native/Expo, Flutter, SwiftUI or Compose screens, API integration, offline/sync, navigation, secure storage and platform-native UX. Invoke to build a mobile screen or flow with client logic and API integration, including from a Figma file. Open design decisions go to squad-designer first."
+description: "Invoke for React Native/Expo, Flutter, SwiftUI or Compose screens, including Figma builds. Own client logic, navigation, API integration, offline/sync and platform UX. Open design decisions go to squad-designer."
 model: sonnet
 effort: medium
 ---

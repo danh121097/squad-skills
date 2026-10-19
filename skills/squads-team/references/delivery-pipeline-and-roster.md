@@ -54,7 +54,8 @@ type, lint and test commands, the behavior observed, and a self-review of the di
 Additional rules:
 
 - A warning or suggestion is listed but never requests changes on its own.
-- A change to structure or contract after a gate voids its verdict; both gates run again.
+- Invalidate evidence only where the diff, contract or environment changed. Light work keeps its combined verify pass;
+  standard/high repairs retain both gates over affected scope. Reclassify a new risk before continuing.
 
 In single-session mode these are separate logical passes and the reduced independence must be disclosed.
 

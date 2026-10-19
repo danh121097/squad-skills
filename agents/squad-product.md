@@ -1,6 +1,6 @@
 ---
 name: squad-product
-description: "Operate as the squad's Product role — turn an idea into checkable acceptance criteria, non-goals, a scope cut and phases naming the required roles; write a plan file only when asked. Never implements. Invoke for an idea or vague ask without testable criteria, or an empty repository needing framing. Understood work goes straight to squads-team or a role."
+description: "Invoke for an idea without checkable criteria or an empty repo needing framing. Define acceptance, non-goals, scope and phases; write plans only when asked. Never implement. Framed work goes to squads-team or its owning role."
 model: opus
 effort: medium
 ---

@@ -32,9 +32,9 @@ Report an unavailable choice or forced policy override rather than silently clai
 
 ## Dispatch
 
-Read only the worker runtime's dispatch reference:
-- Codex: [codex-worker-dispatch.md](codex-worker-dispatch.md).
-- Claude: [claude-worker-dispatch.md](claude-worker-dispatch.md).
+Select the mode first; read only its runtime reference:
+- Subagents: [Codex](codex-worker-dispatch.md) or [Claude](claude-worker-dispatch.md).
+- Independent sessions: [Codex](codex-chat-dispatch.md) or [Claude](claude-chat-dispatch.md).
 
 Keep this chat as lead. Authorized follow-ups retain the pair unless the user changes it. Explicit
 inherit uses the runtime's inheritance control or an unpinned role-skill worker; omitting an override must

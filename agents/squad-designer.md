@@ -1,6 +1,6 @@
 ---
 name: squad-designer
-description: "Operate as the squad's Product Designer — turn open UI/UX decisions into presentational component code, tokens, motion and WCAG 2.2 accessibility, building on the user's references and the existing design system. Invoke for design decisions the user's references and existing system leave open: new flows, redesigns, design-system changes. Routine web builds go to squad-frontend."
+description: "Invoke for open UI/UX or design-system decisions left by the user’s references and existing system. Deliver presentational components, tokens, motion and accessibility. Routine web builds go to squad-frontend."
 model: sonnet
 effort: medium
 ---

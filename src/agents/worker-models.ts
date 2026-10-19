@@ -42,9 +42,9 @@ Report an unavailable choice or forced policy override rather than silently clai
 
 ## Dispatch
 
-Read only the worker runtime's dispatch reference:
-- Codex: [codex-worker-dispatch.md](codex-worker-dispatch.md).
-- Claude: [claude-worker-dispatch.md](claude-worker-dispatch.md).
+Select the mode first; read only its runtime reference:
+- Subagents: [Codex](codex-worker-dispatch.md) or [Claude](claude-worker-dispatch.md).
+- Independent sessions: [Codex](codex-chat-dispatch.md) or [Claude](claude-chat-dispatch.md).
 
 Keep this chat as lead. Authorized follow-ups retain the pair unless the user changes it. Explicit
 inherit uses the runtime's inheritance control or an unpinned role-skill worker; omitting an override must
@@ -55,19 +55,44 @@ otherwise mark them unverified. A requested setting, prompt text or config defau
 `;
 }
 
-/** Generated alongside each model table so either orchestrator installs alone. */
+/** Resolve the mechanism first; subagents do not need chat lifecycle instructions. */
 export function renderWorkerDispatch(tool: AgentTool): string {
   if (tool === 'codex')
     return `# Codex worker dispatch
 
 <!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
 
-Read only when dispatching a Codex worker, after resolving preferences in
-[worker models](worker-models.md). Check the live tool schema and authorization.
+Use only after selecting the execution mode and resolving [worker models](worker-models.md).
+For worker chats, read [codex-chat-dispatch.md](codex-chat-dispatch.md) instead of the subagent branch below.
 
 - **Codex subagent:** use the named role when its fixed settings match. When they conflict with a user
   override, use a generic subagent with the role's SKILL.md, model and reasoning_effort. Default bounded independent work to fork_turns none with an explicit task handoff;
   inherit history only when its decisions are needed. Omit inherited fields; report an unsupported choice.
+`;
+  return `# Claude worker dispatch
+
+<!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
+
+Use only after selecting the execution mode and resolving [worker models](worker-models.md).
+For independent sessions, read [claude-chat-dispatch.md](claude-chat-dispatch.md) instead of the subagent branch below.
+
+- **Claude subagent:** use the active named definition; pass per-invocation model and effort overrides
+  only through fields the live Agent schema supports. If those fields are absent, use a supported
+  equivalent path or report the limitation, keeping installed definitions intact. Forced model/effort
+  environment settings and managed limits may supersede the selection; report that conflict.
+`;
+}
+
+/** Chat-only controls and lifecycle, bundled with each independently installed lead. */
+export function renderWorkerChatDispatch(tool: AgentTool): string {
+  if (tool === 'codex')
+    return `# Codex chat dispatch
+
+<!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
+
+Read only for Codex worker chats. Check the live schema and authorization; preferences come from
+[worker models](worker-models.md). Subagents use [codex-worker-dispatch.md](codex-worker-dispatch.md).
+
 - **Codex chat:** resolve the assigned implementation skill before creation, then pass its selected model
   and thinking explicitly to create_thread and every authorized send_message_to_thread follow-up. Omit a
   field only when its preference is inherit. A role name in the title or prompt, or loading its SKILL.md
@@ -83,7 +108,41 @@ worker's request to reply grant none. Prefer wait_threads for progress, read_thr
 and send_message_to_thread for authorized follow-ups. Reuse pending IDs; resolve a queued setup ID via
 list_threads to its ready chat ID before reading, waiting or messaging. Keep the lead's model unchanged.
 
-## Worktree handoff
+Use the snapshot bootstrap in [thread handoff](thread-handoff.md) even for a shared checkout.
+Serialize implementation chats sharing a checkout. For an isolated worker checkout, also read
+[codex-worktree-handoff.md](codex-worktree-handoff.md) before creation, transfer or cleanup.
+`;
+  return `# Claude chat dispatch
+
+<!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
+
+Read only for independent Claude sessions. If neither direct creation nor a valid launcher supports
+read-back and follow-ups, use the lead contract’s fallback chain. Otherwise, missing controls to select
+or verify required model/effort fields keep implementation pending. Missing authorization also stays pending.
+Use the initial-prompt bootstrap in [thread handoff](thread-handoff.md), including the stop on unverifiable settings.
+Subagents use [claude-worker-dispatch.md](claude-worker-dispatch.md).
+
+- **Claude session:** named subagent frontmatter does not configure an independent session. Pass selected
+  non-inherit fields through creation controls or CLI --model/--effort (--bg for persistent sessions);
+  include each value or inherit in the initial prompt. In Desktop, select the resolved model and effort
+  before sending the first task or starting a launcher, except inherited fields; titles/skills select
+  neither. If a launcher starts without pair controls, its worker stops before editing on
+  mismatch or unverifiable settings. The lead must verify selected fields in the session controls before
+  its first edit, correcting mismatches before resuming. Otherwise keep implementation pending; report
+  inherited values and forced overrides.
+
+Prefer claude/<slug> for new worktree branches. Claude Desktop Branch prefix: claude. Verify generated
+names; report deviations. Preserve existing worktrees.
+`;
+}
+
+/** Worktree-only transfer instructions, omitted for shared-checkout chats and subagents. */
+export function renderCodexWorktreeHandoff(): string {
+  return `# Codex worktree handoff
+
+<!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
+
+Read only when using an isolated Codex worker checkout. Main still follows its selected mode and authorization.
 
 For concurrent implementation chats in one Git repository, use create_thread's worktree environment for
 each worker when the user authorizes worktrees. Record the target branch and agreed base; respect the
@@ -108,28 +167,5 @@ for committed work when commit authority exists. Resolve conflicts against accep
 combined result, and rerun affected gates if conflict resolution changes behavior or a contract. Keep the
 current branch diff reviewable. After verified transfer, use the runtime's cleanup path for the task
 worktree and delete only its disposable task branch. Preserve unintegrated work and report cleanup gaps.
-`;
-  return `# Claude worker dispatch
-
-<!-- Generated from src/agents/worker-models.ts by pnpm agents:generate. -->
-
-Read only when dispatching a Claude worker, after resolving preferences in
-[worker models](worker-models.md). Check the live tool schema and authorization.
-
-- **Claude subagent:** use the active named definition; pass per-invocation model and effort overrides
-  only through fields the live Agent schema supports. If those fields are absent, use a supported
-  equivalent path or report the limitation, keeping installed definitions intact. Forced model/effort
-  environment settings and managed limits may supersede the selection; report that conflict.
-- **Claude session:** named subagent frontmatter does not configure an independent session. Pass selected
-  non-inherit fields through creation controls or CLI --model/--effort (--bg for persistent sessions);
-  include each value or inherit in the initial prompt. In Desktop, select the resolved model and effort
-  before sending the first task or starting a launcher, except inherited fields; titles/skills select
-  neither. If a launcher starts without pair controls, its worker stops before editing on
-  mismatch or unverifiable settings. The lead must verify selected fields in the session controls before
-  its first edit, correcting mismatches before resuming. Otherwise keep implementation pending; report
-  inherited values and forced overrides.
-
-Prefer claude/<slug> for new worktree branches. Claude Desktop Branch prefix: claude. Verify generated
-names; report deviations. Preserve existing worktrees.
 `;
 }

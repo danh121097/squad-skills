@@ -6,13 +6,7 @@ import { parse } from 'yaml';
 
 const skillsRoot = path.join(process.cwd(), 'skills');
 
-/**
- * The description is read on every turn for every installed skill, so its
- * length is paid whether or not the skill runs. Every agent reads it — Codex,
- * Cursor and OpenCode read nothing else — so it carries both halves of a
- * trigger: what the skill does, then when to invoke it and where the nearest
- * neighbour takes over instead.
- */
+/** Discovery may truncate descriptions; keep the invocation condition first and compact. */
 const maxDescriptionWords = 60;
 
 async function readFrontmatter(skill: string): Promise<Record<string, unknown>> {
@@ -35,7 +29,8 @@ describe('skill trigger length', async () => {
   it.each(skills)('%s states when to invoke it within the word budget', async (skill) => {
     const { description } = await readFrontmatter(skill);
 
-    expect(description).toMatch(/\bInvoke\b/);
+    expect(description).toMatch(/^Invoke /);
+    expect((description as string).length).toBeLessThanOrEqual(260);
     expect(words(description)).toBeLessThanOrEqual(maxDescriptionWords);
   });
 });

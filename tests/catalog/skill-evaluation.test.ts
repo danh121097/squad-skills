@@ -120,7 +120,10 @@ describe('skill evaluation evidence', () => {
       skillEvaluationCases.find((item) => item.id === `coordinator-follow-up-${runtime}`)?.loads
     ).toEqual([
       { skill: 'squad-frontend', task: 'local-pattern-change' },
-      { skill: 'squads-team', task: `${runtime}-delegated-delivery` },
+      {
+        skill: 'squads-team',
+        task: runtime === 'codex' ? 'codex-shared-checkout-delivery' : 'claude-delegated-delivery',
+      },
     ]);
     expect(await readFile(path.join(root, 'packet/prompt.txt'), 'utf8')).toBe(
       'Make the heading in guide.md say Quick start.\n'
@@ -134,14 +137,16 @@ describe('skill evaluation evidence', () => {
     expect(role).toContain('without one, load squads-team before dispatch');
     expect(role).toContain('Workers execute their assigned role, not another lead');
     const references = skillTaskTypes['squads-team']!.find(
-      (task) => task.id === `${runtime}-delegated-delivery`
+      (task) =>
+        task.id ===
+        (runtime === 'codex' ? 'codex-shared-checkout-delivery' : 'claude-delegated-delivery')
     )!.references;
     expect(references).toEqual(
       expect.arrayContaining([
         'coordination-contract.md',
         'thread-handoff.md',
         'worker-models.md',
-        `${runtime}-worker-dispatch.md`,
+        `${runtime}-chat-dispatch.md`,
       ])
     );
     for (const file of references) {

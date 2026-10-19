@@ -1,6 +1,6 @@
 ---
 name: squad-fix
-description: "Operate as the squad's Bugfix Controller — reproduce a concrete failure, prove its root cause and blast radius, route the fix to the owning role, and close it with regression evidence. Invoke for a concrete bug, regression, failing test or CI/deploy failure. Not for new features; multi-role features go to squads-team."
+description: "Invoke for a bug, regression, failing test or CI/deploy failure. Prove the cause, route the fix to its owner and verify the repair. Lead diagnosis and the fix loop; new features go to squads-team or a build role."
 model: opus
 effort: medium
 ---

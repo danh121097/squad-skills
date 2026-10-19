@@ -63,10 +63,11 @@ session are not independent judgment; disclose that in the final report.
 
 ## 6. Context lifecycle
 
-Give independent workers fresh task context: acceptance, ownership, relevant paths, contracts and evidence.
-Inherit history only when the task needs its reasoning or decisions; shared files do not replace a handoff.
-Before a context reset, retain the goal, user decisions, current diff, completed checks and next dependency
-in the conversation. After compaction, recover missing role instructions and evidence before advancing a gate.
+Route by metadata and roster. Workers load their own skill and triggered references; main reads worker
+instructions only for a contract or review need. Give independent workers fresh acceptance, ownership,
+paths, contracts and evidence; inherit history only for needed decisions. Before compaction retain the
+goal, user decisions, current diff, completed checks and next dependency. Recover only missing instructions
+and evidence afterward. Shared files are not a handoff.
 
 ## 7. Invoking a peer
 

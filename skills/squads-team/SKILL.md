@@ -1,6 +1,6 @@
 ---
 name: squads-team
-description: "Orchestrate a role-specialized squad (Designer, Frontend, Backend, Mobile, DevOps, QA, Code Review) with frame-first scoping, non-overlapping ownership, and risk-tiered QA and Code Review gates. Invoke for work spanning several engineering roles. A single-role task goes to that role, a concrete bug to squad-fix, an unframed idea to squad-product."
+description: "Invoke for work spanning roles or independent workstreams. Coordinate ownership, dependencies, workers, QA, review and integration. Single-role work selects its owner; bugs go to squad-fix; unframed ideas go to squad-product."
 user-invocable: true
 category: dev-tools
 keywords: [squad, team, orchestration, agents, parallel, pipeline, qa-gate, code-review, worktree]
@@ -11,7 +11,7 @@ metadata:
 
 # Squads Team
 
-Coordinate role-specialized delivery against one accepted goal.
+Coordinate delivery against accepted criteria.
 
 ## Usage
 
@@ -19,7 +19,7 @@ Coordinate role-specialized delivery against one accepted goal.
 /squads-team <goal or plan path> [flags]
 ```
 
-Flags are semantic controls read by the lead, not npm CLI options. Each overrides one default:
+Flags guide the lead; they are not npm CLI options:
 
 | Flag | Default without it |
 | --- | --- |
@@ -90,6 +90,9 @@ changes each need their own authorization.
 
 ## Conditional references
 
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
+
 - At a phase boundary, when reaching a peer role, and before selecting an execution mode, spawning or
   assigning work or using worktrees, read [references/coordination-contract.md](references/coordination-contract.md).
 - Before role routing or advancing any gate, read
@@ -104,7 +107,7 @@ changes each need their own authorization.
 
 ## Quality bar
 
-A passing slice is not an integrated result, and a missing environment or evidence never becomes completion.
+Passing slices still need integration; missing evidence or environments prevent completion.
 
 ## Workflow
 

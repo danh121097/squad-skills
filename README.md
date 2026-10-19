@@ -200,6 +200,13 @@ This route installs skills only; generate the subagents afterwards with
 
 ## Choosing a skill
 
+Skills load progressively: choose a role from its trigger, then read only references matching the
+current step. Reuse instructions still in context; recover missing ones after compaction and reread when
+files or scope change. Choose the execution mode before loading dispatch: subagents use the runtime's
+worker-dispatch reference; independent sessions use its chat-dispatch and thread handoff. Codex isolated
+checkouts additionally load the worktree handoff; shared-checkout chats skip it. Main uses the
+roster to assign roles; workers load their own instructions rather than making main read every role.
+
 Every skill here is model-invocable, so an agent routes most work on its own. This table is for the moment
 you want to pick the role yourself.
 

@@ -1,6 +1,6 @@
 ---
 name: squad-code-review
-description: "Operate as the squad's implementation-quality gate beside behavioral QA — review correctness, security, compatibility, performance, operability, and maintainability, then issue APPROVE, CHANGES_REQUESTED, or NEEDS_EVIDENCE. Invoke alongside QA as the second gate, or to review a diff, PR or commit on its own. Does not implement fixes."
+description: "Invoke to review a diff, PR or commit, or as the implementation-quality gate alongside QA. Verify correctness, security and maintainability; return APPROVE, CHANGES_REQUESTED or NEEDS_EVIDENCE. Never implement fixes."
 user-invocable: true
 category: utilities
 keywords: [code-review, security, owasp, correctness, performance, contracts, maintainability, final-gate]
@@ -11,9 +11,7 @@ metadata:
 
 # Squad — Code Review
 
-Review the actual implementation for production readiness, alongside QA's behavioral pass in a squad run.
-Verify suspected findings before reporting them, rank actionable findings and gate `done`. Pair installed
-specialist review skills; work natively when they are absent.
+Review implementation quality beside QA; verify findings and return them to the owning engineer.
 
 QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges
 implementation quality, adding only verification needed to prove a finding.
@@ -61,6 +59,9 @@ own primary docs; cite version and date. Never auto-install skills, plugins, MCP
    blocks `done` without inventing a defect.
 
 ## Conditional references
+
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
 
 - Threat, auth/privacy, architecture, contracts/data/migrations, concurrency and operations:
   [security-architecture-data-and-operations-review.md](references/security-architecture-data-and-operations-review.md)

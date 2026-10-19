@@ -93,6 +93,12 @@ const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.m
  */
 export const boundaryClauses: BoundaryClause[] = [
   {
+    id: 'READING-CONTEXT-001',
+    statement:
+      'Read only references whose trigger matches the current step; reuse loaded instructions; reread only after a file change, missing context or a scope change.',
+    files: everyRoleEntrypoint,
+  },
+  {
     id: 'COORDINATOR-PERSISTENCE-001',
     statement:
       'An established main/coordinator stays coordinator across follow-ups, completed tasks and context compaction until the user changes execution mode. Selecting one role assigns a worker; it does not turn main into that role. Assigned workers stay within their scope.',

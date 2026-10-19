@@ -139,3 +139,29 @@ Runtime claims are capability-dependent. As checked on 2026-10-19:
 
 Native design verification similarly reports the actual compiler, renderer,
 device checks or human review used, rather than assuming a fixed tier by framework.
+
+## Observe reading behavior
+
+Reading trials add `reading-rubric.json` beside the evaluator rubric, outside the worker workspace and
+prompt. Its required/forbidden paths participate in the fixture hash. The new cases cover subagents
+without chat/worktree reading, Claude sessions with unverifiable preferences, reuse across a follow-up,
+and routing from shortened discovery descriptions. The compaction case also requires reading evidence.
+Provision the setup exactly; unavailable runtime controls mean an unavailable trial.
+
+For these cases, supply `reads` in each result. Every actual skill-file read has a canonical package path
+such as `skills/squad-frontend/SKILL.md`, stable session/worker `context`, transcript `evidence`, and a
+`reason`: `initial`, `file-change`, `context-recovery` or `scope-change`. Record the whole trace, including
+unrelated reads, and justify each reread from the artifact history. Reuse of existing context is not a
+new read. Separate workers legitimately read the same file, so repetition is counted within a context.
+These observations stay in evaluator-owned artifacts, never handoff records in a user's repository.
+
+The report counts observed reads, repeated reads, unjustified rereads, forbidden reads and missing
+required files. Missing required or forbidden reads, and unjustified rereads, prevent a passing trial
+even if all output checks pass. Legacy scenarios may omit reads; their reading statistics stay `null`,
+not zero. The reporter checks record structure and declared expectations, not transcript authenticity;
+reviewer evidence is still required. Total tokens and cache behavior remain runtime measurements.
+
+Payload comparisons must use the same named task paths before and after a change. Adding explicit
+subagent and shared-checkout paths changes the median's population; that change alone is not a saving. Designer motion,
+accessibility and local-pattern paths now include their web platform and handoff references; native
+paths keep their own platform. Use optional examples only when a concrete ambiguity calls for them.

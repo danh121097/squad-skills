@@ -35,7 +35,10 @@ export const coordinationEvaluationCases: SkillEvaluationCase[] = [
     },
     loads: [
       { skill: 'squad-frontend', task: 'local-pattern-change' },
-      { skill: 'squads-team', task: `${runtime}-delegated-delivery` },
+      {
+        skill: 'squads-team',
+        task: runtime === 'codex' ? 'codex-shared-checkout-delivery' : 'claude-delegated-delivery',
+      },
     ],
   })),
 
@@ -51,7 +54,7 @@ export const coordinationEvaluationCases: SkillEvaluationCase[] = [
       tier: 'Light closes with executed verification and no mandatory QA/Review pair.',
       closure: 'Main verifies the integrated artifact before reporting completion.',
     },
-    loads: [{ skill: 'squads-team', task: 'codex-delegated-delivery' }],
+    loads: [{ skill: 'squads-team', task: 'codex-shared-checkout-delivery' }],
   },
   {
     id: 'launcher-pending',
@@ -65,7 +68,7 @@ export const coordinationEvaluationCases: SkillEvaluationCase[] = [
       mode: 'Does not replace pending builds with subagents or direct edits.',
       reuse: 'Reuses pending launchers rather than duplicating dispatch.',
     },
-    loads: [{ skill: 'squads-team', task: 'codex-delegated-delivery' }],
+    loads: [{ skill: 'squads-team', task: 'codex-shared-checkout-delivery' }],
   },
   {
     id: 'missing-paired-gate',
@@ -84,7 +87,7 @@ export const coordinationEvaluationCases: SkillEvaluationCase[] = [
       preservation: 'Does not clean the worker checkout or report parent completion.',
     },
     loads: [
-      { skill: 'squads-team', task: 'codex-delegated-delivery' },
+      { skill: 'squads-team', task: 'codex-shared-checkout-delivery' },
       { skill: 'squad-qa', task: 'scenario-design-and-run' },
     ],
   },

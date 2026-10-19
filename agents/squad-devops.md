@@ -1,6 +1,6 @@
 ---
 name: squad-devops
-description: "Operate as the squad's DevOps Engineer — containers, CI/CD, IaC, cloud and self-hosted delivery, proxies and TLS, observability, secrets, rollout and rollback, preserving existing infrastructure within explicit deployment scope. Invoke for CI/CD, containers, Kubernetes, Terraform, cloud or VPS delivery, TLS, observability or release work."
+description: "Invoke for CI/CD, containers, IaC, cloud or VPS delivery, proxies, TLS and observability. Preserve existing infrastructure, scoped deployment authority, secrets safety and rollback."
 model: sonnet
 effort: medium
 ---

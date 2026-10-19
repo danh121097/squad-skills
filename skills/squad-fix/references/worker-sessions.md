@@ -7,7 +7,8 @@ no preference applies. Confirm creation, result read-back and follow-ups from li
 If squads-team leads, return diagnosis and ownership there; it dispatches, preserving one lead.
 For build chats read [thread-handoff.md](thread-handoff.md). For subagent or peer-team dispatch read
 [worker models](worker-models.md) for the selected runtime; pass proven cause, acceptance, ownership,
-base, artifact path, tier and required evidence. Main owns diagnosis, routing, decisions and integration.
+base, artifact path, tier and required evidence. Main owns diagnosis, routing, decisions and integration. Workers load their own skill and matched
+references; main reads worker instructions only for a contract or review need.
 
 A valid user-started launcher keeps build work pending. Missing authorization also stays pending; ask
 only for the missing permission. When neither direct creation nor a valid launcher supports read-back

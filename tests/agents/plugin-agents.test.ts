@@ -8,6 +8,8 @@ import {
   workerModelReferences,
   renderWorkerModels,
   renderWorkerDispatch,
+  renderWorkerChatDispatch,
+  renderCodexWorktreeHandoff,
 } from '../../src/agents/worker-models.ts';
 import {
   defaultClaudePreferencesByRole,
@@ -41,6 +43,12 @@ async function definitionOf(name: string) {
 describe('plugin agent definitions', () => {
   it.each(workerModelReferences)("%s matches both runtimes' role mappings", async (file) => {
     const source = await readFile(path.join(projectRoot, file), 'utf8');
+    expect(
+      await readFile(
+        path.join(projectRoot, path.dirname(file), 'codex-worktree-handoff.md'),
+        'utf8'
+      )
+    ).toBe(renderCodexWorktreeHandoff());
 
     expect(
       await readFile(path.join(projectRoot, path.dirname(file), 'thread-handoff.md'), 'utf8')
@@ -53,11 +61,28 @@ describe('plugin agent definitions', () => {
         'utf8'
       );
       expect(dispatch).toBe(renderWorkerDispatch(tool));
+      expect(
+        await readFile(
+          path.join(projectRoot, path.dirname(file), `${runtime}-chat-dispatch.md`),
+          'utf8'
+        )
+      ).toBe(renderWorkerChatDispatch(tool));
     }
   });
 
+  it.each(['codex', 'claude-code'] as const)(
+    'keeps %s subagent instructions separate from chat lifecycle',
+    (tool) => {
+      const source = renderWorkerDispatch(tool);
+      expect(source).toContain('chat-dispatch.md');
+      expect(source).not.toContain('## Worktree handoff');
+      expect(source).not.toContain('create_thread');
+      expect(source).not.toContain('session controls');
+    }
+  );
+
   it('passes a Codex build chat its selected role pair explicitly', () => {
-    const dispatch = renderWorkerDispatch('codex');
+    const dispatch = renderWorkerChatDispatch('codex');
 
     expect(dispatch).toContain('resolve the assigned implementation skill before creation');
     expect(dispatch).toContain('pass its selected model');
@@ -70,7 +95,7 @@ describe('plugin agent definitions', () => {
   });
 
   it('isolates authorized parallel Codex chats and preserves their diff on integration', () => {
-    const dispatch = renderWorkerDispatch('codex').replace(/\s+/g, ' ');
+    const dispatch = renderCodexWorktreeHandoff().replace(/\s+/g, ' ');
 
     expect(dispatch).toContain("use create_thread's worktree environment for");
     expect(dispatch).toContain('codex/<slug>');
@@ -99,7 +124,7 @@ describe('plugin agent definitions', () => {
   });
 
   it('names Claude worktree branches without assuming control of managed paths', () => {
-    const dispatch = renderWorkerDispatch('claude-code').replace(/\s+/g, ' ');
+    const dispatch = renderWorkerChatDispatch('claude-code').replace(/\s+/g, ' ');
 
     expect(dispatch).toContain('claude/<slug>');
     expect(dispatch).toContain('Branch prefix: claude');
@@ -108,9 +133,16 @@ describe('plugin agent definitions', () => {
   });
 
   it('requires Claude worker sessions to select and verify the role pair before editing', () => {
-    const dispatch = renderWorkerDispatch('claude-code').replace(/\s+/g, ' ');
+    const dispatch = renderWorkerChatDispatch('claude-code').replace(/\s+/g, ' ');
     const handoff = renderThreadHandoff().replace(/\s+/g, ' ');
 
+    expect(dispatch).toContain(
+      'If neither direct creation nor a valid launcher supports read-back and follow-ups, use the lead contract’s fallback chain'
+    );
+    expect(dispatch).toContain(
+      'Otherwise, missing controls to select or verify required model/effort fields keep implementation pending'
+    );
+    expect(dispatch).not.toContain('a missing required control keeps implementation pending');
     expect(dispatch).toContain(
       'named subagent frontmatter does not configure an independent session'
     );
@@ -124,6 +156,7 @@ describe('plugin agent definitions', () => {
     expect(dispatch).toContain('report inherited values and forced overrides');
     expect(handoff).toContain('include the resolved model and effort');
     expect(handoff).toContain('stop before editing and report a mismatch');
+    expect(handoff).toContain('Claude workers also stop when selected fields cannot be verified');
   });
 
   it('ships one agent per skill and no orphans', () => {

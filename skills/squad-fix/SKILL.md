@@ -1,6 +1,6 @@
 ---
 name: squad-fix
-description: "Operate as the squad's Bugfix Controller — reproduce a concrete failure, prove its root cause and blast radius, route the fix to the owning role, and close it with regression evidence. Invoke for a concrete bug, regression, failing test or CI/deploy failure. Not for new features; multi-role features go to squads-team."
+description: "Invoke for a bug, regression, failing test or CI/deploy failure. Prove the cause, route the fix to its owner and verify the repair. Lead diagnosis and the fix loop; new features go to squads-team or a build role."
 user-invocable: true
 category: utilities
 keywords: [bugfix, debug, root-cause, regression, error, failing-test, ci-failure, routing, qa-gate]
@@ -72,7 +72,8 @@ Verify version-specific claims against that version's own primary docs; cite ver
 
 ## Conditional references
 
-Read only what the current bug requires:
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
 
 - Before assigning an owner (cross-layer symptoms, Designer trigger, test-file ownership), read
   [bug-routing-and-ownership.md](references/bug-routing-and-ownership.md).

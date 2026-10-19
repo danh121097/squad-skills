@@ -165,6 +165,25 @@ const fixCore = [
   'verification-qa-review-and-reporting.md',
 ];
 const fix: SkillTaskType[] = [
+  ...(['codex', 'claude'] as const).map((runtime) => ({
+    id: `${runtime}-subagent-repair`,
+    references: [
+      ...fixCore,
+      'worker-sessions.md',
+      'worker-models.md',
+      `${runtime}-worker-dispatch.md`,
+    ],
+  })),
+  {
+    id: 'codex-shared-checkout-repair',
+    references: [
+      ...fixCore,
+      'worker-sessions.md',
+      'thread-handoff.md',
+      'worker-models.md',
+      'codex-chat-dispatch.md',
+    ],
+  },
   { id: 'single-session-repair', references: [...fixCore, 'worker-sessions.md'] },
   {
     id: 'codex-delegated-repair',
@@ -173,7 +192,8 @@ const fix: SkillTaskType[] = [
       'worker-sessions.md',
       'thread-handoff.md',
       'worker-models.md',
-      'codex-worker-dispatch.md',
+      'codex-chat-dispatch.md',
+      'codex-worktree-handoff.md',
     ],
   },
   {
@@ -183,7 +203,7 @@ const fix: SkillTaskType[] = [
       'worker-sessions.md',
       'thread-handoff.md',
       'worker-models.md',
-      'claude-worker-dispatch.md',
+      'claude-chat-dispatch.md',
     ],
   },
   {
@@ -330,14 +350,28 @@ const qa: SkillTaskType[] = [
 
 const teamCore = ['coordination-contract.md', 'delivery-pipeline-and-roster.md'];
 const team: SkillTaskType[] = [
+  ...(['codex', 'claude'] as const).map((runtime) => ({
+    id: `${runtime}-subagent-delivery`,
+    references: [...teamCore, 'worker-models.md', `${runtime}-worker-dispatch.md`],
+  })),
+  {
+    id: 'codex-shared-checkout-delivery',
+    references: [...teamCore, 'thread-handoff.md', 'worker-models.md', 'codex-chat-dispatch.md'],
+  },
   { id: 'single-session-delivery', references: teamCore },
   {
     id: 'codex-delegated-delivery',
-    references: [...teamCore, 'thread-handoff.md', 'worker-models.md', 'codex-worker-dispatch.md'],
+    references: [
+      ...teamCore,
+      'thread-handoff.md',
+      'worker-models.md',
+      'codex-chat-dispatch.md',
+      'codex-worktree-handoff.md',
+    ],
   },
   {
     id: 'claude-delegated-delivery',
-    references: [...teamCore, 'thread-handoff.md', 'worker-models.md', 'claude-worker-dispatch.md'],
+    references: [...teamCore, 'thread-handoff.md', 'worker-models.md', 'claude-chat-dispatch.md'],
   },
   { id: 'missing-role-delivery', references: [...teamCore, 'domain-coverage-contracts.md'] },
   { id: 'ambiguous-delivery', references: [...teamCore, 'coordination-worked-decisions.md'] },
@@ -345,6 +379,7 @@ const team: SkillTaskType[] = [
 
 // squad-designer is measured on its median loaded set like every other skill
 // instead of falling back to the blunt total-payload bound.
+// Unqualified motion/audit/extension paths below target web; native paths load their own platform.
 const designer: SkillTaskType[] = [
   {
     id: 'web-new-screen-greenfield',
@@ -382,12 +417,27 @@ const designer: SkillTaskType[] = [
       'platform-web-foundations-and-motion.md',
     ],
   },
-  { id: 'motion-direction', references: ['platform-web-foundations-and-motion.md'] },
+  {
+    id: 'motion-direction',
+    references: [
+      'platform-web-foundations-and-motion.md',
+      'design-system-ux-accessibility-and-handoff.md',
+    ],
+  },
   {
     id: 'accessibility-audit',
-    references: ['design-system-ux-accessibility-and-handoff.md'],
+    references: [
+      'platform-web-foundations-and-motion.md',
+      'design-system-ux-accessibility-and-handoff.md',
+    ],
   },
-  { id: 'local-pattern-extension', references: ['codebase-first-examples.md'] },
+  {
+    id: 'local-pattern-extension',
+    references: [
+      'platform-web-foundations-and-motion.md',
+      'design-system-ux-accessibility-and-handoff.md',
+    ],
+  },
   {
     id: 'native-cross-platform-build',
     references: [

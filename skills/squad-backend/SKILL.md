@@ -1,6 +1,6 @@
 ---
 name: squad-backend
-description: "Operate as the squad's Backend Engineer — APIs, shared contracts, auth, data models, migrations, caching, queues and server logic in the repository's existing stack, with security and data safety verified. Invoke to design or implement APIs, data models, auth or server logic. A concrete failure with an unproven cause goes to squad-fix first."
+description: "Invoke for server APIs, auth, data models, migrations, caching and queues. Own shared contracts and backend logic in the existing stack. Route failures with unproven cause to squad-fix."
 user-invocable: true
 category: backend
 keywords: [backend, api, rest, graphql, grpc, trpc, auth, postgres, mongodb, migration, contracts]
@@ -11,8 +11,7 @@ metadata:
 
 # Squad — Backend
 
-Own shared server contracts, data, auth/session platforms, and server-side business logic. Pair installed
-specialist skills; work natively when they are absent.
+Own shared server contracts, data, auth and backend logic; pair relevant installed specialists.
 
 ## Usage
 
@@ -56,6 +55,9 @@ MCP servers, packages or CLIs.
    risk, and anything not verified.
 
 ## Conditional references
+
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
 
 - Existing-versus-greenfield language/framework/runtime selection, or an unfamiliar backend stack:
   [backend-stack-and-runtime-matrix.md](references/backend-stack-and-runtime-matrix.md)

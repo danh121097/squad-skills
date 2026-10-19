@@ -1,6 +1,6 @@
 ---
 name: squad-mobile
-description: "Operate as the squad's Mobile Engineer — React Native/Expo, Flutter, SwiftUI or Compose screens, API integration, offline/sync, navigation, secure storage and platform-native UX. Invoke to build a mobile screen or flow with client logic and API integration, including from a Figma file. Open design decisions go to squad-designer first."
+description: "Invoke for React Native/Expo, Flutter, SwiftUI or Compose screens, including Figma builds. Own client logic, navigation, API integration, offline/sync and platform UX. Open design decisions go to squad-designer."
 user-invocable: true
 category: mobile
 keywords: [mobile, react-native, expo, flutter, swiftui, compose, api-integration, offline, sync, ux-flow]
@@ -11,9 +11,7 @@ metadata:
 
 # Squad — Mobile
 
-Build app UI and client logic, consume Backend contracts, and make navigation and platform UX match real
-data, permissions, lifecycle, connectivity, and device constraints. Pair installed specialist skills;
-work natively when they are absent.
+Build app UI and client logic against platform lifecycle and Backend contracts.
 
 ## Usage
 
@@ -56,6 +54,9 @@ auto-install skills, plugins, MCP servers, packages or CLIs.
    run.
 
 ## Conditional references
+
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
 
 - For Figma/Designer routing and the platform lifecycle states (offline/sync, permissions, push/deep links,
   biometrics, IAP), read

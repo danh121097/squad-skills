@@ -1,6 +1,6 @@
 ---
 name: squad-designer
-description: "Operate as the squad's Product Designer — turn open UI/UX decisions into presentational component code, tokens, motion and WCAG 2.2 accessibility, building on the user's references and the existing design system. Invoke for design decisions the user's references and existing system leave open: new flows, redesigns, design-system changes. Routine web builds go to squad-frontend."
+description: "Invoke for open UI/UX or design-system decisions left by the user’s references and existing system. Deliver presentational components, tokens, motion and accessibility. Routine web builds go to squad-frontend."
 user-invocable: true
 category: design
 keywords: [ui, ux, design, design-system, tokens, accessibility, motion, react-native, flutter, swiftui, compose, presentational-code]
@@ -11,8 +11,7 @@ metadata:
 
 # Squad — Designer
 
-Build the presentational layer and the rationale that produced it. Runs standalone or as the Designer
-stage inside `squads-team`.
+Deliver presentational components and rationale.
 
 ## Usage
 
@@ -59,6 +58,12 @@ expose secrets or private project data in searches.
 
 ## Conditional references
 
+Read only references whose trigger matches the current step; reuse loaded instructions;
+reread only after a file change, missing context or a scope change.
+
+Motion, accessibility and presentational work load platform plus handoff references. Advice skips
+implementation; exact local patterns without open design decisions route to build roles.
+
 ### Platform router
 
 Load only the target's platform reference; a web task never loads a native reference, nor the
@@ -94,9 +99,8 @@ Missing required evidence stays a named gap.
 
 ## Quality bar
 
-Derive the direction from product purpose, content, audience, brand, and existing UI—never a
-generic template; hierarchy before decoration; motion only with a spatial, feedback, state, or
-continuity purpose.
+Derive direction from purpose, content, audience, brand and existing UI. Prioritize hierarchy;
+animate for spatial, feedback or continuity needs.
 
 ## Workflow
 
