@@ -6,16 +6,16 @@ Read before dispatching; select the worker's runtime columns. Skill-only install
 
 | Role | Codex model | Codex effort | Claude model | Claude effort |
 | --- | --- | --- | --- | --- |
-| `squad-backend` | `gpt-6-luna` | `max` | `sonnet` | `medium` |
-| `squad-code-review` | `gpt-6.1-sol` | `medium` | `opus` | `medium` |
-| `squad-designer` | `gpt-6-luna` | `max` | `sonnet` | `medium` |
-| `squad-devops` | `gpt-6-luna` | `max` | `sonnet` | `medium` |
-| `squad-fix` | `gpt-6.1-sol` | `medium` | `opus` | `medium` |
-| `squad-frontend` | `gpt-6-luna` | `max` | `sonnet` | `medium` |
-| `squad-mobile` | `gpt-6-luna` | `max` | `sonnet` | `medium` |
-| `squad-product` | `gpt-6.1-sol` | `medium` | `opus` | `medium` |
-| `squad-qa` | `gpt-6-luna` | `max` | `sonnet` | `medium` |
-| `squads-team` | `gpt-6.1-sol` | `medium` | `opus` | `medium` |
+| `squad-backend` | `gpt-6.1-sol` | `medium` | `sonnet` | `medium` |
+| `squad-code-review` | `gpt-6.1-sol` | `high` | `opus` | `medium` |
+| `squad-designer` | `gpt-6.1-sol` | `medium` | `sonnet` | `medium` |
+| `squad-devops` | `gpt-6.1-sol` | `medium` | `sonnet` | `medium` |
+| `squad-fix` | `gpt-6.1-sol` | `high` | `opus` | `medium` |
+| `squad-frontend` | `gpt-6.1-sol` | `medium` | `sonnet` | `medium` |
+| `squad-mobile` | `gpt-6.1-sol` | `medium` | `sonnet` | `medium` |
+| `squad-product` | `gpt-6.1-sol` | `high` | `opus` | `medium` |
+| `squad-qa` | `gpt-6.1-sol` | `medium` | `sonnet` | `medium` |
+| `squads-team` | `gpt-6.1-sol` | `high` | `opus` | `medium` |
 
 ## Resolve preferences
 

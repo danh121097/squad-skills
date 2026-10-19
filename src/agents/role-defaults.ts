@@ -10,7 +10,7 @@
  * A caller overrides every role with a bare value, or one role with
  * `<skill>=<value>`, and `inherit` drops the field for runtime resolution.
  *
- * Codex uses Luna at max for settled work and Sol at medium for the four
+ * Codex uses Sol at medium for settled work and Sol at high for the four
  * planning, diagnosis and review roles. Claude Code keeps its existing defaults.
  * Every shipped skill has an entry in each table, and
  * `tests/agents/plugin-agents.test.ts` holds them to the `skills/` directory.
@@ -53,16 +53,16 @@ export const defaultEffortByRole: Readonly<Record<string, string>> = {
 export const defaultCodexPreferencesByRole: Readonly<
   Record<string, { readonly model: string; readonly effort: string }>
 > = {
-  'squad-backend': { model: 'gpt-6-luna', effort: 'max' },
-  'squad-code-review': { model: 'gpt-6.1-sol', effort: 'medium' },
-  'squad-designer': { model: 'gpt-6-luna', effort: 'max' },
-  'squad-devops': { model: 'gpt-6-luna', effort: 'max' },
-  'squad-fix': { model: 'gpt-6.1-sol', effort: 'medium' },
-  'squad-frontend': { model: 'gpt-6-luna', effort: 'max' },
-  'squad-mobile': { model: 'gpt-6-luna', effort: 'max' },
-  'squad-product': { model: 'gpt-6.1-sol', effort: 'medium' },
-  'squad-qa': { model: 'gpt-6-luna', effort: 'max' },
-  'squads-team': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-backend': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-code-review': { model: 'gpt-6.1-sol', effort: 'high' },
+  'squad-designer': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-devops': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-fix': { model: 'gpt-6.1-sol', effort: 'high' },
+  'squad-frontend': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-mobile': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squad-product': { model: 'gpt-6.1-sol', effort: 'high' },
+  'squad-qa': { model: 'gpt-6.1-sol', effort: 'medium' },
+  'squads-team': { model: 'gpt-6.1-sol', effort: 'high' },
 };
 
 export const defaultCodexModelByRole: Readonly<Record<string, string>> = Object.fromEntries(

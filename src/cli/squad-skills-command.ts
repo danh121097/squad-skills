@@ -527,7 +527,7 @@ Examples:
   squad-skills add --skill squad-frontend --global --agent codex
   squad-skills agents --global
   squad-skills agents --global --agent claude-code --model opus --effort medium
-  squad-skills agents --global --agent codex --model gpt-6-luna --effort max
+  squad-skills agents --global --agent codex --model gpt-6.1-sol --effort high
   squad-skills agents --global --effort squad-qa=high,squad-frontend=low
   squad-skills agents --global --agent claude-code --model squad-qa=opus
 

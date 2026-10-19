@@ -230,16 +230,16 @@ describe('installAgentDefinitions', () => {
 
   it('keeps native agents and worker tables aligned for both tools without changing global defaults', async () => {
     const expected: Record<string, [string, string]> = {
-      'squad-backend': ['gpt-6-luna', 'max'],
-      'squad-code-review': ['gpt-6.1-sol', 'medium'],
-      'squad-designer': ['gpt-6-luna', 'max'],
-      'squad-devops': ['gpt-6-luna', 'max'],
-      'squad-fix': ['gpt-6.1-sol', 'medium'],
-      'squad-frontend': ['gpt-6-luna', 'max'],
-      'squad-mobile': ['gpt-6-luna', 'max'],
-      'squad-product': ['gpt-6.1-sol', 'medium'],
-      'squad-qa': ['gpt-6-luna', 'max'],
-      'squads-team': ['gpt-6.1-sol', 'medium'],
+      'squad-backend': ['gpt-6.1-sol', 'medium'],
+      'squad-code-review': ['gpt-6.1-sol', 'high'],
+      'squad-designer': ['gpt-6.1-sol', 'medium'],
+      'squad-devops': ['gpt-6.1-sol', 'medium'],
+      'squad-fix': ['gpt-6.1-sol', 'high'],
+      'squad-frontend': ['gpt-6.1-sol', 'medium'],
+      'squad-mobile': ['gpt-6.1-sol', 'medium'],
+      'squad-product': ['gpt-6.1-sol', 'high'],
+      'squad-qa': ['gpt-6.1-sol', 'medium'],
+      'squads-team': ['gpt-6.1-sol', 'high'],
     };
     for (const name of Object.keys(expected)) await installSkillInto('.agents', name);
     const configFile = path.join(home, '.codex/config.toml');

@@ -120,8 +120,8 @@ Codex named agents carry their own `model` and `model_reasoning_effort` in
 
 | Roles                                                                                           | Model         | Effort   |
 | ----------------------------------------------------------------------------------------------- | ------------- | -------- |
-| `squads-team`, `squad-product`, `squad-fix`, `squad-code-review`                                | `gpt-6.1-sol` | `medium` |
-| `squad-backend`, `squad-designer`, `squad-devops`, `squad-frontend`, `squad-mobile`, `squad-qa` | `gpt-6-luna`  | `max`    |
+| `squads-team`, `squad-product`, `squad-fix`, `squad-code-review`                                | `gpt-6.1-sol` | `high`   |
+| `squad-backend`, `squad-designer`, `squad-devops`, `squad-frontend`, `squad-mobile`, `squad-qa` | `gpt-6.1-sol` | `medium` |
 
 These per-agent fields take precedence over `[agents]` defaults in `config.toml`.
 `--model`, `--effort` and named overrides work for Codex too; `inherit` omits a
@@ -132,7 +132,7 @@ for runtime precedence and model access requirements.
 
 ```sh
 npx squad-skills agents --global --agent codex
-npx squad-skills agents --global --agent codex --model squad-qa=gpt-6.1-sol --effort squad-qa=medium
+npx squad-skills agents --global --agent codex --effort squad-qa=high
 ```
 
 Every install regenerates these files, so pass the same flags again to keep an
