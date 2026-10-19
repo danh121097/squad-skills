@@ -108,6 +108,49 @@ describe('skill evaluation evidence', () => {
     }
   );
 
+  it.each(['codex', 'claude'])('prepares a %s role-only coordinator follow-up', async (runtime) => {
+    const root = await mkdtemp(path.join(tmpdir(), 'skill-eval-follow-up-'));
+    roots.push(root);
+    await prepareSkillEvaluation(
+      process.cwd(),
+      `coordinator-follow-up-${runtime}`,
+      path.join(root, 'packet')
+    );
+    expect(
+      skillEvaluationCases.find((item) => item.id === `coordinator-follow-up-${runtime}`)?.loads
+    ).toEqual([
+      { skill: 'squad-frontend', task: 'local-pattern-change' },
+      { skill: 'squads-team', task: `${runtime}-delegated-delivery` },
+    ]);
+    expect(await readFile(path.join(root, 'packet/prompt.txt'), 'utf8')).toBe(
+      'Make the heading in guide.md say Quick start.\n'
+    );
+    const setup = await readFile(path.join(root, 'packet/setup.txt'), 'utf8');
+    expect(setup).toContain(`use ${runtime}`);
+    expect(setup).toContain('explicit permission');
+    expect(setup).toContain('context summary');
+    const role = await readFile(path.join(root, 'packet/skills/squad-frontend/SKILL.md'), 'utf8');
+    expect(role).toContain('Selecting one role assigns a worker');
+    expect(role).toContain('without one, load squads-team before dispatch');
+    expect(role).toContain('Workers execute their assigned role, not another lead');
+    const references = skillTaskTypes['squads-team']!.find(
+      (task) => task.id === `${runtime}-delegated-delivery`
+    )!.references;
+    expect(references).toEqual(
+      expect.arrayContaining([
+        'coordination-contract.md',
+        'thread-handoff.md',
+        'worker-models.md',
+        `${runtime}-worker-dispatch.md`,
+      ])
+    );
+    for (const file of references) {
+      expect(
+        await readFile(path.join(root, 'packet/skills/squads-team/references', file), 'utf8')
+      ).not.toBe('');
+    }
+  });
+
   it('includes failed-run cost and keeps unknown usage distinct from zero', () => {
     const failed = record(2, 200);
     failed.checks.repair = { passed: false, evidence: 'counter remains wrong' };

@@ -173,3 +173,16 @@ counted as a duplicate only when every task type that needs the rule still
 loads a file that states it. Review restored the rules that failed that test,
 and the rewrites that had changed a guardrail's meaning, before the figures were
 recorded.
+
+## Coordinator persistence in role-only loads
+
+A live coordinator follow-up selected squad-mobile and implemented directly before starting QA and
+Review. All ten entrypoints now carry the persistent coordinator and pre-implementation dispatch
+boundary, bound by COORDINATOR clauses. A role-only load cannot rely on the lead reference being read.
+The 142-word boundary raises measured median ceilings by 113–142 words after existing headroom; this is
+an explicit reachability cost. Models and their mappings are unchanged. Regression tests cover the
+shipped contract and missing role boundary; two runtime trial packets cover follow-ups after completion
+and context summary. The role entrypoint now routes main back to the existing lead's dispatch
+contract (or loads squads-team when no lead is active), so model selection, snapshots and gates remain
+reachable. Implementation threads and paired gate subagents are separate mechanisms. Static gates do
+not establish model adherence.

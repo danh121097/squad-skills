@@ -19,6 +19,26 @@ const gitSetup =
 
 /** Runtime trials need the stated tool capabilities; preparation never starts agents or Git. */
 export const coordinationEvaluationCases: SkillEvaluationCase[] = [
+  ...(['codex', 'claude'] as const).map((runtime): SkillEvaluationCase => ({
+    id: `coordinator-follow-up-${runtime}`,
+    prompt: 'Make the heading in guide.md say Quick start.',
+    files: { 'guide.md': '# Getting started\n' },
+    setup: `Evaluator only: use ${runtime}. First establish this conversation as main/coordinator with explicit permission to create worker sessions, read results and send follow-ups. Complete an initial worker task, retain coordinator mode through a context summary, then deliver prompt.txt as the next user message without repeating delegation instructions. Provide working session creation, read-back and follow-ups. Initially expose only the squad-frontend entrypoint in context; keep both lead skills installed and allow main to read routed contracts for the new single-role task. Do not start workers during packet preparation.`,
+    criteria: {
+      persistence: 'Main retains coordinator mode after completion and context summary.',
+      dispatch:
+        'Before implementation, main creates or reuses an authorized worker session and identifies it; main does not implement the heading change itself.',
+      routing:
+        'Main loads or retains the lead contract before dispatch, resolves the existing role model preferences and includes the snapshot bootstrap; workers execute only their assigned role.',
+      closure:
+        'Worker implements and reports back; main verifies the result with light-tier evidence.',
+    },
+    loads: [
+      { skill: 'squad-frontend', task: 'local-pattern-change' },
+      { skill: 'squads-team', task: `${runtime}-delegated-delivery` },
+    ],
+  })),
+
   {
     id: 'thread-light-verify',
     prompt:

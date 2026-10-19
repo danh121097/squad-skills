@@ -87,6 +87,11 @@ calls, checkout paths, frozen diffs, verdicts, integrated contents and cleanup f
 Declared coordination payload paths use the Codex route; Claude comparisons use observed runtime usage,
 not that static estimate. Keep model mappings fixed until repeated results support a change.
 
+The `coordinator-follow-up-codex` and `coordinator-follow-up-claude` packets exercise a
+single-role entrypoint after a completed worker task and context summary, including its route back to the
+lead dispatch contract. Their follow-up prompt does not
+repeat delegation instructions. Packet tests verify preparation, not actual model compliance.
+
 ## Grade observed behavior
 
 A reviewer grades every criterion from the artifacts and transcript. A model's

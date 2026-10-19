@@ -22,6 +22,12 @@ logic. This skill works standalone or as the Frontend stage inside `squads-team`
 
 ## Scope and safety
 
+An established main/coordinator stays coordinator across follow-ups, completed tasks and context compaction until the user changes execution mode. Selecting one role assigns a worker; it does not turn main into that role. Assigned workers stay within their scope.
+
+In coordinator mode, main retains its existing squads-team or squad-fix contract; without one, load squads-team before dispatch. Follow that lead's runtime dispatch, model selection, snapshot and gate references even for one role. Workers execute their assigned role, not another lead. If no lead contract is installed, keep dispatch pending and report the missing skill.
+
+Before implementation, main names the worker session or a verified capability gap. Implementation uses threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work instructions win; small integration edits remain allowed unless coordinate-only.
+
 Build the **client side**: pages/components, routing, client state, forms/validation, permissions,
 navigation, and Backend API integration.
 

@@ -47,9 +47,7 @@ const rolesWithAnImplementationSlice = [
   frontendSkill,
   mobileSkill,
 ];
-// Ten of ten. HANDOFF-DECISION-001 is the only clause that reaches every
-// entrypoint, because it binds a runtime property every role runs under rather
-// than a stage only some of them touch.
+// Runtime boundaries reach every entrypoint, including a role loaded directly by main.
 const everyRoleEntrypoint = [
   backendSkill,
   codeReviewSkill,
@@ -94,6 +92,24 @@ const teamContracts = 'skills/squads-team/references/domain-coverage-contracts.m
  * any one of them learns the same contract.
  */
 export const boundaryClauses: BoundaryClause[] = [
+  {
+    id: 'COORDINATOR-PERSISTENCE-001',
+    statement:
+      'An established main/coordinator stays coordinator across follow-ups, completed tasks and context compaction until the user changes execution mode. Selecting one role assigns a worker; it does not turn main into that role. Assigned workers stay within their scope.',
+    files: everyRoleEntrypoint,
+  },
+  {
+    id: 'COORDINATOR-ROUTING-001',
+    statement:
+      "In coordinator mode, main retains its existing squads-team or squad-fix contract; without one, load squads-team before dispatch. Follow that lead's runtime dispatch, model selection, snapshot and gate references even for one role. Workers execute their assigned role, not another lead. If no lead contract is installed, keep dispatch pending and report the missing skill.",
+    files: everyRoleEntrypoint,
+  },
+  {
+    id: 'COORDINATOR-DISPATCH-001',
+    statement:
+      'Before implementation, main names the worker session or a verified capability gap. Implementation uses threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work instructions win; small integration edits remain allowed unless coordinate-only.',
+    files: everyRoleEntrypoint,
+  },
   {
     id: 'BOUNDARY-ARTIFACT-001',
     statement: 'the designer hands over presentational component code, not a written spec',

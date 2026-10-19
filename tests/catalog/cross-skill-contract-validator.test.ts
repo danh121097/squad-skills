@@ -154,6 +154,43 @@ describe('validateCrossSkillContract', () => {
     expect(result.checkedFiles.length).toBeGreaterThan(0);
   });
 
+  it('keeps coordinator dispatch reachable when a follow-up selects any single role', async () => {
+    const files = [
+      backendSkill,
+      codeReviewSkill,
+      designerEntrypoint,
+      devopsSkill,
+      fixSkill,
+      frontendSkill,
+      mobileSkill,
+      productSkill,
+      qaSkill,
+      teamSkill,
+    ].sort();
+    const clauses = boundaryClauses.filter((clause) => clause.id.startsWith('COORDINATOR-'));
+    expect(clauses.map((clause) => clause.id).sort()).toEqual([
+      'COORDINATOR-DISPATCH-001',
+      'COORDINATOR-PERSISTENCE-001',
+      'COORDINATOR-ROUTING-001',
+    ]);
+    for (const clause of clauses) {
+      expect([...clause.files].sort()).toEqual(files);
+      const contents = Object.fromEntries(
+        await Promise.all(files.map(async (file) => [file, await readFile(file, 'utf8')] as const))
+      );
+      const root = await createProject(contents);
+      expect((await validateCrossSkillContract(root, { clauses: [clause] })).errors).toEqual([]);
+      // A role-only load must reject losing the coordinator boundary even if the lead retains it.
+      await writeFile(
+        path.join(root, mobileSkill),
+        contents[mobileSkill]!.replace(clause.statement, '')
+      );
+      const result = await validateCrossSkillContract(root, { clauses: [clause] });
+      expect(result.errors.join(' ')).toContain(mobileSkill);
+      expect(result.errors.join(' ')).toContain(clause.id);
+    }
+  });
+
   it('binds each shipped clause to at least two files and keeps ids unique', () => {
     const ids = boundaryClauses.map((entry) => entry.id);
 

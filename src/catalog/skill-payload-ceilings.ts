@@ -75,15 +75,18 @@
  * rose by 20 words: its `thread` mode starts a worker at once when the runtime
  * allows and runs a gate as a subagent when a woken turn is refused a start.
  */
+// Coordinator persistence and dispatch must also be reachable from a role-only load.
+// The 142-word shared boundary cannot be routed solely through orchestrator references;
+// these measured medians spend that reachability budget without changing model mappings.
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
-  'squad-backend': 2115, // was 2116
-  'squad-code-review': 2235, // was 2205: concurrent peer-gate handoff
-  'squad-designer': 2322, // was 2027: adaptive and accepted web handoffs now include their platform
-  'squad-devops': 2067, // was 2092
-  'squad-fix': 4483, // was 4696: thread-only routing and snapshot handoffs
-  'squad-frontend': 2011, // was 2045
-  'squad-mobile': 1928, // was 2012
-  'squad-product': 2359, // was 2392
-  'squad-qa': 2371, // was 2341: concurrent peer-gate handoff
-  'squads-team': 3948, // was 4623: thread-only routing and snapshot handoffs
+  'squad-backend': 2235, // was 2115: role-only coordinator boundary
+  'squad-code-review': 2377, // was 2235: role-only coordinator boundary
+  'squad-designer': 2464, // was 2322: role-only coordinator boundary
+  'squad-devops': 2187, // was 2067: role-only coordinator boundary
+  'squad-fix': 4622, // was 4483: role-only coordinator boundary
+  'squad-frontend': 2139, // was 2011: role-only coordinator boundary
+  'squad-mobile': 2048, // was 1928: role-only coordinator boundary
+  'squad-product': 2472, // was 2359: role-only coordinator boundary
+  'squad-qa': 2513, // was 2371: role-only coordinator boundary
+  'squads-team': 4086, // was 3948: role-only coordinator boundary
 };

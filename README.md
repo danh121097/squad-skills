@@ -292,9 +292,17 @@ second opinion after approval does not restart the whole pipeline.
 
 ### Orchestrator flags
 
-When you designate the current session as **main/coordinator**, `squads-team` and `squad-fix`
-prefer workers in separate threads/sub-sessions that report back to main, on both Claude and Codex.
+When you designate the current session as **main/coordinator**, implementation runs
+in worker threads/sub-sessions that report back to main, on both Claude and Codex.
 Main coordinates, reviews results, advances gates and integrates; workers own implementation.
+This designation persists through follow-ups, task completion and context compaction until you change
+execution mode. Routing a single-role task selects its worker; it does not make main the implementer.
+Main keeps the existing `squads-team` or `squad-fix` coordination contract, or loads `squads-team`
+before dispatch if none is active. Its runtime dispatch, model selection, snapshot and gate references
+also apply to a single-role task. If neither lead skill is installed, dispatch stays pending with the
+missing skill reported. Workers execute only their assigned role.
+Before implementation, main identifies the worker session or explains a verified capability gap.
+QA and Code Review use paired subagents for standard/high thread-mode work; light work uses its combined verify pass.
 Small integration edits may stay in main unless `--coordinate-only` applies. A small task alone does
 not cancel the thread preference.
 
