@@ -95,8 +95,8 @@ checklist`. The catalog validator enforces the sequence.
   - `DECISION-RECORD-*` — what a decision another role builds on must record,
     bound on the selection references where such a choice is made.
   - `HANDOFF-*` — a stage boundary: what crosses it, who owns a gate when the
-    peer skill is absent, which verdict closes a stage, how many times a gate
-    may return work (`HANDOFF-LOOP-*`), which tier a change runs
+    peer skill is absent, which verdict closes a stage, how findings return to
+    the same owner and when retries stop (`HANDOFF-LOOP-*`), which tier a change runs
     (`HANDOFF-TIER-*`), and what a role does when a named peer is absent or it
     runs on its own (`HANDOFF-SOLO-*`). Every member binds only entrypoints, and a boundary is stated by
     both the sending and the receiving role.

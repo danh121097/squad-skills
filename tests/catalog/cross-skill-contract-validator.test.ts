@@ -289,13 +289,68 @@ describe('handoff contract family', () => {
   it.each([
     'skills/squads-team/references/coordination-contract.md',
     'skills/squad-fix/references/worker-sessions.md',
-  ])('%s keeps builds and gates pending when a valid launcher exists', async (file) => {
+  ])('%s keeps build chats pending when a valid launcher exists', async (file) => {
     const source = normalizeProse(await readFile(path.join(process.cwd(), file), 'utf8'));
 
     expect(source).toContain(
-      'when a valid user-started launcher is available, both build slices and gates stay pending until launched, including on a woken turn'
+      'when a valid user-started launcher is available, build slices stay pending until launched, including on a woken turn'
     );
-    expect(source).not.toMatch(/(?:runs a newly ready|run a newly ready) gate as a subagent/);
+    expect(source).toContain('squad-qa');
+    expect(source).toContain('squad-code-review');
+    expect(source).toContain('same build thread');
+    expect(source).toContain('worker sends main');
+    expect(source).toContain('worker fixes and reports back to main');
+    expect(source).toContain('main assesses that revision with both gates');
+    expect(source).toContain('done report with both verdicts to the worker chat');
+    expect(source).toContain('stops dispatching it');
+    expect(source).toMatch(/start.*squad-qa.*squad-code-review.*together/s);
+    expect(source).toContain('before waiting for either result');
+    expect(source).toContain("peer's handle");
+    expect(source).toContain('a paired gate still waits for both subagents');
+  });
+
+  it('binds main-owned subagent gates and bounded returns to the build owner', async () => {
+    const gates = boundaryClauses.find((clause) => clause.id === 'HANDOFF-COORDINATOR-GATES-001');
+    const peers = boundaryClauses.find((clause) => clause.id === 'HANDOFF-PEER-GATES-001');
+    const loop = boundaryClauses.find((clause) => clause.id === 'HANDOFF-LOOP-001');
+    if (!gates || !peers || !loop) throw new Error('Coordinator gate contracts are missing.');
+
+    expect([...gates.files].sort()).toEqual([fixSkill, teamSkill]);
+    expect(gates.statement).toContain('the worker reports each completed pass to main');
+    expect(gates.statement).toContain(
+      'the lead reports done to the worker chat and stops dispatch'
+    );
+    expect(gates.statement).toContain(
+      'If either paired subagent cannot start, the gate remains pending'
+    );
+    expect([...peers.files].sort()).toEqual([codeReviewSkill, fixSkill, qaSkill, teamSkill]);
+    expect([...loop.files].sort()).toEqual([codeReviewSkill, fixSkill, qaSkill, teamSkill]);
+    expect(
+      (await validateCrossSkillContract(process.cwd(), { clauses: [gates, peers, loop] })).errors
+    ).toEqual([]);
+    expect(loop.statement).toContain('at most two worker repair passes per unit');
+    expect(loop.statement).toContain('assess each completed pass with both gates');
+    expect(loop.statement).toContain('two consecutive gate assessments with no new evidence');
+    expect(loop.statement).toContain('gates still fail after the second repair pass');
+    expect(loop.statement).toContain('Resume another bounded batch only when the user asks');
+  });
+
+  it('rejects a gate that waits for QA before starting Code Review', async () => {
+    const peers = boundaryClauses.find((clause) => clause.id === 'HANDOFF-PEER-GATES-001');
+    if (!peers) throw new Error('HANDOFF-PEER-GATES-001 is missing.');
+    const divergent = peers.statement.replace('start concurrently', 'start serially');
+    const projectRoot = await createProject(
+      Object.fromEntries(
+        peers.files.map((file) => [
+          file,
+          `# Role\n\n${file === codeReviewSkill ? divergent : peers.statement}.\n`,
+        ])
+      )
+    );
+
+    const result = await validateCrossSkillContract(projectRoot, { clauses: [peers] });
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(codeReviewSkill);
   });
 
   it('fails when one side of a handoff drops the bound shape', async () => {

@@ -48,7 +48,7 @@ inside clients.
 → IMPLEMENT → verify by tier → INTEGRATE → done
 ```
 
-Tiers, verdicts and return limits are gate 4 of `SKILL.md`. A `light` verify pass is the relevant build,
+Tiers, verdicts and retry budget are gate 4 of `SKILL.md`. A `light` verify pass is the relevant build,
 type, lint and test commands, the behavior observed, and a self-review of the diff, labelled non-independent.
 
 Additional rules:

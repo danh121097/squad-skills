@@ -103,7 +103,14 @@ was. Before declaring the repair complete, run the self-review in
 7. **Gate by tier** — apply external assignments in the handoff contract first; `light`, and `standard`
    when run on its own, close on step 6 as the combined verify pass; otherwise QA runs a distinct
    behavioral pass, then Review consumes its evidence and inspects implementation quality and cause
-   alignment. `FAIL` and `CHANGES_REQUESTED` return to owner; `NEEDS_*`
+   alignment. In main/coordinator thread mode, implementation uses role-named worker chats and QA and Code Review use
+   subagents in main; the worker reports each completed pass to main, the lead returns findings to that
+   build chat, and after both gates pass the lead reports done to the worker chat and stops dispatch. If
+   either paired subagent cannot start, the gate remains pending.
+   In a paired gate, QA and Code Review start concurrently on the same revision, exchange evidence through
+   direct agent messages when supported or through the lead otherwise, and Code Review waits for QA evidence
+   before its final verdict.
+   `FAIL` and `CHANGES_REQUESTED` return to owner; `NEEDS_*`
    returns to lead.
 8. **Finish** — hand over the proof listed in the quality bar, plus docs impact and any authorized external
    mutation.
@@ -112,8 +119,10 @@ was. Before declaring the repair complete, run the self-review in
 
 - Root cause remains unproven and the next evidence requires user input or unavailable access.
 - Target/recovery authority is missing for a data, production, deployment or external-system mutation.
-- A third failed cause-aligned attempt, or a third gate return: stop changing code, reassess the cause model
-  and present the evidence with two to four options.
+- Repeated evidence disproves the current cause model: reassess it before another edit; report missing
+  environment, authority or a user decision as a blocker.
+- The same gate failure persists across two assessments without new evidence, or a unit fails after its
+  second repair pass: stop automatic retries and present attempts and options to the user.
 - Verification reveals a regression or contract change outside accepted scope; put it to the user with
   options.
 
@@ -130,9 +139,7 @@ was. Before declaring the repair complete, run the self-review in
   `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data or
   migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- QA and Code Review together return a unit to its owner at most twice, each time with every finding from both gates; a third
-  return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four
-  options for the user.
+- QA and Code Review return every finding on the same revision to the same owner. Allow at most two worker repair passes per unit; assess each completed pass with both gates. If the same failure persists across two consecutive gate assessments with no new evidence, or the gates still fail after the second repair pass, report `BLOCKED` with attempts, evidence and options. Resume another bounded batch only when the user asks.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
   it reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
   tiered on its own diff.

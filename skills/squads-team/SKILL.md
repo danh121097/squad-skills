@@ -69,9 +69,11 @@ changes each need their own authorization.
    `high` slice must receive QA `PASS` and Code Review `APPROVE`; one verdict may cover a coherent set of
    slices when it names their exact revisions. QA proves observable behavior against acceptance and risk; Code
    Review consumes that evidence and judges implementation quality, adding only verification needed to prove a
-   finding. `FAIL` or `CHANGES_REQUESTED` returns to the owning role, and QA and Code Review together return a
-   unit to its owner at most twice, each time with every finding from both gates; a third return goes as `BLOCKED` to the
-   lead, or to the user when run on its own, with the evidence and two to four options for the user. `APPROVE`
+   finding. `FAIL` or `CHANGES_REQUESTED` returns to the owning role. QA and Code Review return every
+   finding on the same revision to the same owner. Allow at most two worker repair passes per unit;
+   assess each completed pass with both gates. If the same failure persists across two consecutive
+   gate assessments with no new evidence, or the gates still fail after the second repair pass, report
+   `BLOCKED` with attempts, evidence and options. Resume another bounded batch only when the user asks. `APPROVE`
    closes the unit: its warnings and suggestions go to the final report as options for the user, and it
    reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
    tiered on its own diff. `NEEDS_ENVIRONMENT` or `NEEDS_EVIDENCE` returns to the lead for one resolution of
@@ -110,7 +112,14 @@ result, and a missing environment or evidence never becomes completion.
 4. **Design/plan gates** — run Designer per gate 3; collect build plans when approval is enabled.
 5. **Implement** — dispatch every ready slice; advance newly unblocked work without waiting for unrelated
    siblings.
-6. **Verify by tier** — per gate 4; externally assigned gates follow the handoff contract.
+6. **Verify by tier** — per gate 4; externally assigned gates follow the handoff contract. In
+   main/coordinator thread mode, implementation uses role-named worker chats and QA and Code Review use
+   subagents in main; the worker reports each completed pass to main, the lead returns findings to that
+   build chat, and after both gates pass the lead reports done to the worker chat and stops dispatch. If
+   either paired subagent cannot start, the gate remains pending.
+   In a paired gate, QA and Code Review start concurrently on the same revision, exchange evidence through
+   direct agent messages when supported or through the lead otherwise, and Code Review waits for QA evidence
+   before its final verdict.
 7. **Integrate** — combine approved work, check each seam on the artifacts — what one slice supplies
    against what the other consumes: env vars, routes, schemas — rather than on the reports, run combined
    checks.
@@ -141,7 +150,7 @@ result, and a missing environment or evidence never becomes completion.
 - [ ] Project was scouted before the split; every edited file has one owner and overlap was serialized
 - [ ] UI work rests on the user's material, the existing system, or Designer output
 - [ ] The gate tier was named; every `standard` or `high` slice has QA PASS and Code Review APPROVE
-- [ ] Reruns match the changed surface; a third return or an unresolved NEEDS_* is reported as blocked
+- [ ] Findings return to the same owner within the retry budget; unresolved NEEDS_* is reported as blocked
 - [ ] No approved unit was reopened without a later defect or the user asking
 - [ ] Integration and combined verification ran, or exact gaps are stated
 - [ ] No unauthorized commit, push, PR, deploy or external mutation; independent and single-session gates

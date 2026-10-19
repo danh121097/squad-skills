@@ -245,13 +245,19 @@ and SwiftUI builds from 7 of 18 to 14 of 18. The rest still go to `figma:figma-d
 | `standard` | The default                                                                                          | QA `PASS` and Code Review `APPROVE`, run together      |
 | `high`     | Auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion | Both gates, run independently where the runtime allows |
 
-QA and Code Review together return work to its owner at most twice, each time with every finding from both
-gates, so one fix pass answers both; a third return comes back to you as blocked, with the evidence and two to four options. `APPROVE`
+QA and Code Review return all actionable findings to the same build worker. Main sends them to that
+worker's existing chat; the worker fixes and reports the completed pass back to main. Main then reruns
+both gates on the repaired revision, focusing on the finding and affected scope, until QA `PASS` and Code
+Review `APPROVE`. Main reports `done` to the worker chat and stops dispatching it. Main assesses each completed repair, including the second. If the same failure
+persists across two assessments without new evidence, or the second repair still fails, it reports
+`BLOCKED` with attempts and options; you can ask it to run another bounded batch. A missing environment,
+authority or decision is also reported as blocked. `APPROVE`
 closes a unit: its warnings and suggestions reach you as options in the final report instead of going
 back to the owner, and a follow-up you ask for is tiered on its own diff, so a docs or test tweak does
 not rerun both gates, and a fix that changes no observable behavior reruns only the existing suite. A build role or `squad-fix` called on its own verifies with real commands and ends
-by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both. When delegation is unavailable or forbidden, unassigned gates run as distinct
-logical passes and are reported as non-independent. An explicitly required independent or externally
+by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both. Outside main/coordinator
+thread mode, unavailable delegation lets unassigned gates run as distinct logical passes, reported as
+non-independent. An explicitly required independent or externally
 assigned gate remains pending until its matching verdict arrives. Designer runs only for
 decisions your own references and the existing design system leave open.
 
@@ -299,12 +305,21 @@ also leaves dispatch pending; main asks for only the missing authorization. Nami
 not bypass runtime permission rules. Explicit single-session or no-delegation instructions take precedence.
 
 Without a main/coordinator designation or explicit mode, choose the lowest-overhead suitable mode.
-Worker chats use `[squad] <role>: <slice>` titles in the same project; sidebar nesting is runtime-dependent.
+Build worker chats use `[squad-frontend]: <slice>`, `[squad-backend]: <slice>`, or the matching assigned
+skill name in the same project; sidebar nesting is runtime-dependent. Main starts QA and Code Review as
+subagents together on each paired gate round. They exchange evidence directly when supported, or through
+main; Review waits for QA evidence before its verdict. If either subagent cannot start, main leaves the
+paired gate pending. Main sends findings back to the build chat. A Codex
+worker chat must receive its role's selected model and effort through `create_thread` `model` and `thinking`,
+then receive that pair again on each `send_message_to_thread` follow-up. Loading a skill inside the chat
+does not select the pair. Check the worker turn metadata for the effort that actually ran; the effort shown
+in an idle composer can differ from a completed turn.
 For runtimes requiring explicit creation and messaging authorization, a complete request is:
 
-> Use `squads-team` for this change. Create a separate chat for each worker in this project and keep this
-> chat as lead. Apply the Codex role model/effort mapping, with any model or effort I specify taking
-> precedence. Have workers send their reports here, and let the lead send follow-up work to them.
+> Use `squads-team` for this change. Create a separate chat for each implementation worker in this
+> project and keep this chat as lead. Apply the Codex role model/effort mapping, with any model or effort I
+> specify taking precedence. Read worker reports here, run QA and Code Review as subagents, and send
+> findings back to the same implementation chat until the gates pass.
 
 `squads-team` flags, each overriding one default:
 

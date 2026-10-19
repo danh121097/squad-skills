@@ -54,6 +54,19 @@ describe('plugin agent definitions', () => {
     }
   });
 
+  it('passes a Codex build chat its selected role pair explicitly', () => {
+    const dispatch = renderWorkerDispatch('codex');
+
+    expect(dispatch).toContain('resolve the assigned implementation skill before creation');
+    expect(dispatch).toContain('pass its selected model');
+    expect(dispatch).toContain('thinking explicitly to create_thread');
+    expect(dispatch).toContain('every authorized send_message_to_thread follow-up');
+    expect(dispatch).toContain("each worker turn's actual pair from runtime metadata");
+    expect(dispatch.replace(/\s+/g, ' ')).toContain(
+      'loading its SKILL.md inside the chat, selects no model'
+    );
+  });
+
   it('ships one agent per skill and no orphans', () => {
     expect(agentFiles).toEqual(skillNames.map((name) => `${name}.md`));
   });

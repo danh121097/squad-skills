@@ -314,20 +314,13 @@ export const boundaryClauses: BoundaryClause[] = [
   },
   {
     id: 'HANDOFF-LOOP-001',
-    // Nothing capped how often a gate could send work back; only squad-fix
-    // stopped, after three failed attempts, and only for its own loop. Two
-    // returns and then a user decision is that same rule applied to every gate
-    // unit: a third attempt on an unchanged model of the problem is churn, and
-    // choosing between narrowing, reassigning and accepting risk is the user's.
-    // Counted per gate, QA and Review could each return twice, so one unit ran
-    // up to ten agent passes; the count is per unit. A gate that returns
-    // findings one at a time would spend that budget on its own drip, so each
-    // return carries all of them. Run in sequence, a Review blocker found after
-    // QA PASS voided QA's evidence and cost a second QA pass; the gates run on
-    // one revision and a return carries both gates' findings, so one fix pass
-    // answers both.
+    // The implementation owner keeps the same thread across gate returns. Both
+    // gates report all findings on one revision so one repair pass can answer
+    // them together. The lead gates each completed pass, including the second,
+    // then stops when the same failure still has no new evidence or the budget
+    // is exhausted. The user may authorize another bounded batch.
     statement:
-      'QA and Code Review together return a unit to its owner at most twice, each time with every finding from both gates; a third return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four options for the user',
+      'QA and Code Review return every finding on the same revision to the same owner. Allow at most two worker repair passes per unit; assess each completed pass with both gates. If the same failure persists across two consecutive gate assessments with no new evidence, or the gates still fail after the second repair pass, report `BLOCKED` with attempts, evidence and options. Resume another bounded batch only when the user asks',
     files: [codeReviewSkill, fixSkill, qaSkill, teamSkill],
   },
   {
@@ -431,6 +424,23 @@ export const boundaryClauses: BoundaryClause[] = [
     statement:
       'When the user designates this session as main/coordinator, prefer worker threads/sub-sessions that report back to main. Main coordinates, reviews and integrates; workers own implementation. Fall back to subagents, then single-session execution only when the runtime lacks the required capabilities, stating the limitation. Explicit execution-mode or no-delegation instructions override this preference; runtime authorization still applies',
     files: [fixSkill, teamSkill],
+  },
+  {
+    id: 'HANDOFF-COORDINATOR-GATES-001',
+    // Build chats hold implementation state across corrections. The worker
+    // hands each completed pass to main; only main runs the paired gates and
+    // closes the worker chat after their matching verdicts pass.
+    statement:
+      'In main/coordinator thread mode, implementation uses role-named worker chats and QA and Code Review use subagents in main; the worker reports each completed pass to main, the lead returns findings to that build chat, and after both gates pass the lead reports done to the worker chat and stops dispatch. If either paired subagent cannot start, the gate remains pending',
+    files: [fixSkill, teamSkill],
+  },
+  {
+    id: 'HANDOFF-PEER-GATES-001',
+    // Starting Review after QA finishes loses parallel work. The two agents
+    // exchange evidence while working, but each owns its own verdict.
+    statement:
+      'In a paired gate, QA and Code Review start concurrently on the same revision, exchange evidence through direct agent messages when supported or through the lead otherwise, and Code Review waits for QA evidence before its final verdict',
+    files: [fixSkill, teamSkill, qaSkill, codeReviewSkill],
   },
   {
     id: 'HANDOFF-EXTERNAL-001',

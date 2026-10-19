@@ -67,8 +67,12 @@ Read only when dispatching a Codex worker, after resolving preferences in
 - **Codex subagent:** use the named role when its fixed settings match. When they conflict with a user
   override, use a generic subagent with the role's SKILL.md, model and reasoning_effort. Default bounded independent work to fork_turns none with an explicit task handoff;
   inherit history only when its decisions are needed. Omit inherited fields; report an unsupported choice.
-- **Codex chat:** pass model and thinking to create_thread. Omit inherited fields. A role name in the
-  prompt alone selects no model.
+- **Codex chat:** resolve the assigned implementation skill before creation, then pass its selected model
+  and thinking explicitly to create_thread and every authorized send_message_to_thread follow-up. Omit a
+  field only when its preference is inherit. A role name in the title or prompt, or loading its SKILL.md
+  inside the chat, selects no model. Verify each worker turn's actual pair from runtime metadata when
+  exposed; the composer selection is not evidence of a completed turn's effort. Report an unsupported or
+  unverified pair.
 `;
   return `# Claude worker dispatch
 

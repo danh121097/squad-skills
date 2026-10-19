@@ -85,5 +85,5 @@ to fit.
 ## 6. Retry discipline
 
 If verification fails, compare new evidence with the root-cause model before another edit, and re-diagnose
-when the prediction was wrong. At the loop cap in the entrypoint's stop conditions, list each attempted
-cause/fix and result and question the architecture or assumption.
+when the prediction was wrong. Keep each attempted cause/fix and result in the handoff so the next pass
+tests a new prediction. Stop at the entrypoint's retry budget or when progress needs unavailable input or authority.

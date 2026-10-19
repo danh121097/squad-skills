@@ -107,9 +107,8 @@ A suite that cannot fail is not coverage. Before issuing a verdict, run the self
 - In a squad run on `standard` and `high` work both gates run: when the peer gate has no external owner
   and its skill is absent, this role runs that pass itself where its boundary allows and labels it
   non-independent, or reports the gate as unowned.
-- QA and Code Review together return a unit to its owner at most twice, each time with every finding from both gates; a third
-  return goes as `BLOCKED` to the lead, or to the user when run on its own, with the evidence and two to four
-  options for the user.
+- QA and Code Review return every finding on the same revision to the same owner. Allow at most two worker repair passes per unit; assess each completed pass with both gates. If the same failure persists across two consecutive gate assessments with no new evidence, or the gates still fail after the second repair pass, report `BLOCKED` with attempts, evidence and options. Resume another bounded batch only when the user asks.
+- In a paired gate, QA and Code Review start concurrently on the same revision, exchange evidence through direct agent messages when supported or through the lead otherwise, and Code Review waits for QA evidence before its final verdict.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
   it reopens only for a defect found later or when the user asks; a follow-up the user asks for is new scope
   tiered on its own diff.

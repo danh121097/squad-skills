@@ -58,22 +58,21 @@ incomplete handoff, which is how every return edge stood before
 of a boundary have to be readable without loading a reference. `PLAN-DOCUMENT-*`
 is its own family because the written plan's shape is progressively disclosed.
 
-## Gate tiers and loop caps
+## Gate tiers and repair loop
 
 Until 2026-09, every slice — including a one-line change — ran QA and then Code
 Review, a role invoked alone ran both itself, and nothing capped how many times
 a gate could send work back. Only `squad-fix` stopped after three failed
-attempts. Tiers make ceremony proportional to risk; the loop cap turns an
-endless FAIL / CHANGES_REQUESTED cycle into a decision the user makes. Verify
-evidence stays mandatory in every tier: the change removed procedure, not
-proof.
+attempts. Tiers make ceremony proportional to risk. Verify evidence stays
+mandatory in every tier: the change removed procedure, not proof.
 
-The cap was first counted per gate, so QA and Code Review could each return a
-unit twice, and with the reruns after every fix one unit could reach about ten
-agent passes. It now counts both gates together. Output keeps its bar because
-the count bounds attempts, not scrutiny: each return carries every finding the
-gate has, so one fix pass addresses all of them, and a third return reaches the
-user with evidence and options instead of shipping the unit.
+An earlier cap was counted per gate, then per unit. Removing it allowed
+unbounded automatic retries even when a worker and gate repeated the same
+failure. The current loop keeps the same implementation owner and returns all
+findings from both gates on one revision together. It assesses every completed
+repair, including the second. If the same failure persists across two gate
+assessments without new evidence, or the second repair still fails, it gives the
+user the attempt history and options. A user can authorize another bounded batch.
 
 Review used to start only after QA `PASS`. A blocker Review found by reading
 code QA's tests never reached voided QA's evidence, so one fix cost a second QA
@@ -81,7 +80,9 @@ pass and a second Review: the loop users saw. The gates now run on one revision
 and a return carries both gates' findings, so one fix pass answers both; Review
 consumes QA's evidence before its verdict rather than before it starts. The
 price is Review work spent on a revision QA then fails, accepted because those
-findings still reach the same fix pass. A fix that changes no observable
+findings still reach the same fix pass. The paired subagents now start concurrently
+and exchange evidence while working; Review waits for QA's matching evidence
+before its verdict. A fix that changes no observable
 behavior reruns the existing suite instead of a new QA pass.
 
 QA and Review also split the dimensions they had both claimed. QA executes
@@ -122,12 +123,14 @@ The thread registry, `--allow-new-threads`, the `--delegate` alias, the
 five-rung context ladder and the `ACK` / `BLOCKED` packets were removed in
 2026-09. They were rarely used and cost every squad run payload; `BLOCKED` is now
 a status of `RESULT`, and an acknowledgement is implicit.
-The `thread` mode runs workers as sessions the user can open. A user-designated main/coordinator
+The `thread` mode runs build workers as sessions the user can open. A user-designated main/coordinator
 prefers it on both runtimes, delegates implementation and receives worker reports; task size alone does
 not trigger fallback. Missing creation, read-back or follow-up capability falls back to subagents, then
 single-session execution. Missing required authorization leaves dispatch pending rather than overriding
 the requested mode. Explicit single-session/no-delegation instructions win. Other runs select the
-lowest-overhead suitable mode. Both orchestrator entrypoints bind this through `HANDOFF-SESSION-001`.
+lowest-overhead suitable mode. Main uses QA and Code Review subagents for the gates and returns findings
+to the same build chat. Both orchestrator entrypoints bind the thread preference through
+`HANDOFF-SESSION-001`.
 
 ## Payload ceiling history
 

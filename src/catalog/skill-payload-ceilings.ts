@@ -39,6 +39,16 @@
  * running together, a return carried both gates' findings, a behavior-preserving
  * fix reran only the existing suite, and QA and Review split the dimensions they
  * had both claimed.
+ * On 2026-10-19, the fix and team figures were remeasured for role-named build
+ * chats, explicit Codex chat model selection, main-owned subagent gates and
+ * bounded returns to the same implementation owner. These are dispatch and
+ * handoff rules their delegated reading paths must carry.
+ * The paired gates now start concurrently and exchange evidence while Review
+ * waits to finalize on matching QA evidence. Each gate role needs that rule in
+ * its entrypoint; each controller needs the launch order in its reading path.
+ * The controller paths also carry the worker's repair report back to main and
+ * the lead's final done report to that same chat, so a repair cannot skip the
+ * new gate pass or leave an approved worker thread awaiting another dispatch.
  * Each comment gives the ceiling it replaced; the history of earlier raises is
  * in git and summarized in `docs/maintainer-notes.md`.
  *
@@ -62,13 +72,13 @@
  */
 export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-backend': 2115, // was 2116
-  'squad-code-review': 2205, // was 2308
+  'squad-code-review': 2235, // was 2205: concurrent peer-gate handoff
   'squad-designer': 2322, // was 2027: adaptive and accepted web handoffs now include their platform
   'squad-devops': 2067, // was 2092
-  'squad-fix': 4195, // was 2559: complete repairs replace stage-only sampling
+  'squad-fix': 4597, // was 4519: repair report-back and worker completion handoff
   'squad-frontend': 2011, // was 2045
   'squad-mobile': 1928, // was 2012
   'squad-product': 2359, // was 2392
-  'squad-qa': 2341, // was 2377
-  'squads-team': 4149, // was 2830: complete deliveries replace stage-only sampling
+  'squad-qa': 2371, // was 2341: concurrent peer-gate handoff
+  'squads-team': 4543, // was 4454: repair report-back and worker completion handoff
 };
