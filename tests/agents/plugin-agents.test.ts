@@ -1,3 +1,4 @@
+import { renderThreadHandoff } from '../../src/agents/thread-handoff.ts';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -43,6 +44,9 @@ describe('plugin agent definitions', () => {
   it.each(workerModelReferences)("%s matches both runtimes' role mappings", async (file) => {
     const source = await readFile(path.join(projectRoot, file), 'utf8');
 
+    expect(
+      await readFile(path.join(projectRoot, path.dirname(file), 'thread-handoff.md'), 'utf8')
+    ).toBe(renderThreadHandoff());
     expect(source, `${file} is stale — run pnpm agents:generate`).toBe(renderWorkerModels());
     for (const tool of ['codex', 'claude-code'] as const) {
       const runtime = tool === 'codex' ? 'codex' : 'claude';
@@ -68,7 +72,7 @@ describe('plugin agent definitions', () => {
   });
 
   it('isolates authorized parallel Codex chats and preserves their diff on integration', () => {
-    const dispatch = renderWorkerDispatch('codex');
+    const dispatch = renderWorkerDispatch('codex').replace(/\s+/g, ' ');
 
     expect(dispatch).toContain("use create_thread's worktree environment for");
     expect(dispatch).toContain('when the user authorizes worktrees');
@@ -77,13 +81,20 @@ describe('plugin agent definitions', () => {
     expect(dispatch).toContain('including uncommitted files');
     expect(dispatch).toContain('Record the target branch');
     expect(dispatch).toContain(
-      'Confirm main is on the target branch. Integrate by reviewed patch or copy'
+      'Confirm the target checkout is on the target branch. Integrate by reviewed patch or copy'
     );
-    expect(dispatch).toContain('use Git merge only for committed work when');
+    expect(dispatch).toContain('Use Git merge only for committed work when');
     expect(dispatch).toContain(
       'rerun affected gates if conflict resolution changes behavior or a contract'
     );
     expect(dispatch).toContain("After verified transfer, use the runtime's cleanup path");
+    expect(dispatch).toContain(
+      'the worker owns snapshot capture before editing, even when create_thread starts immediately'
+    );
+    expect(dispatch).toContain(
+      'Compare baseline, worker result and current target before applying'
+    );
+    expect(dispatch).toContain('including added, deleted, renamed and binary files');
   });
 
   it('ships one agent per skill and no orphans', () => {

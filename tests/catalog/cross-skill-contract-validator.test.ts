@@ -1,3 +1,4 @@
+import { skillTaskTypes } from '../../src/catalog/skill-task-types.ts';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -287,8 +288,8 @@ describe('handoff contract family', () => {
   });
 
   it.each([
-    'skills/squads-team/references/coordination-contract.md',
-    'skills/squad-fix/references/worker-sessions.md',
+    'skills/squads-team/references/thread-handoff.md',
+    'skills/squad-fix/references/thread-handoff.md',
   ])('%s keeps build chats pending when a valid launcher exists', async (file) => {
     const source = normalizeProse(await readFile(path.join(process.cwd(), file), 'utf8'));
 
@@ -301,17 +302,48 @@ describe('handoff contract family', () => {
     expect(source).toContain('worker sends main');
     expect(source).toContain('worker fixes and reports back to main');
     expect(source).toContain('main assesses that revision with both gates');
-    expect(source).toContain('done report with both verdicts to the worker chat');
+    expect(source).toContain('done report with its evidence to the worker chat');
     expect(source).toContain('stops its edits');
     expect(source).toContain('reviewable diff');
-    expect(source).toMatch(
-      /done report.*current branch.*conflicts.*verif.*(clean|remove).*worktree/s
+    expect(source).toContain('include this bootstrap in the initial worker prompt');
+    expect(source).toContain(
+      'the worker captures its initial snapshot after seeding and before its first edit'
     );
+    expect(source).toContain('with --coordinate-only, assign one integration owner');
+    expect(source).toContain('main reviews evidence without editing the target');
+    expect(source).toMatch(/done report.*worker delta.*conflicts.*verif.*clean.*worktree/s);
     expect(source).toMatch(/start.*squad-qa.*squad-code-review.*together/s);
     expect(source).toContain('before waiting for either result');
-    expect(source).toContain("peer's handle");
-    expect(source).toContain('a paired gate still waits for both subagents');
+    expect(source).toContain('send peer handles after both exist');
+    expect(source).toContain('if either paired subagent cannot start, keep the gate pending');
   });
+
+  it.each(['squad-fix', 'squads-team'])(
+    '%s binds gates to the worker artifact and effective mode',
+    async (skill) => {
+      const root = path.join(process.cwd(), 'skills', skill);
+      const references = skillTaskTypes[skill]!.find((task) =>
+        task.id.startsWith('codex-delegated')
+      )!.references;
+      const source = normalizeProse(
+        (
+          await Promise.all([
+            readFile(path.join(root, 'SKILL.md'), 'utf8'),
+            ...references.map((file) => readFile(path.join(root, 'references', file), 'utf8')),
+          ])
+        ).join('\n')
+      );
+      expect(source).toContain('gate handoff names the absolute worker checkout path');
+      expect(source).toContain('worker pauses edits until main returns findings');
+      expect(source).toContain('initial worker snapshot');
+      expect(source).toContain('including added, deleted, renamed and binary files');
+      expect(source).toContain('effective execution mode');
+      expect(source).toContain('light work closes on its combined verify pass');
+      expect(source).not.toContain(
+        'in main/coordinator mode a paired gate still waits for both subagents'
+      );
+    }
+  );
 
   it('binds Codex worker isolation and post-gate integration on both orchestrators', async () => {
     const worktrees = boundaryClauses.find((clause) => clause.id === 'HANDOFF-WORKTREE-001');
@@ -319,7 +351,9 @@ describe('handoff contract family', () => {
 
     expect([...worktrees.files].sort()).toEqual([fixSkill, teamSkill].sort());
     expect(worktrees.statement).toContain('authorized worktrees');
-    expect(worktrees.statement).toContain('integrates its exact diff into the current branch');
+    expect(worktrees.statement).toContain(
+      'delegated integration owner integrates its exact diff into the current branch'
+    );
     expect(worktrees.statement).toContain('resolves conflicts, verifies, then cleans');
     expect(
       (await validateCrossSkillContract(process.cwd(), { clauses: [worktrees] })).errors
@@ -350,6 +384,19 @@ describe('handoff contract family', () => {
     expect(loop.statement).toContain('two consecutive gate assessments with no new evidence');
     expect(loop.statement).toContain('gates still fail after the second repair pass');
     expect(loop.statement).toContain('Resume another bounded batch only when the user asks');
+  });
+
+  it('rejects a controller that requires paired subagents for light work', async () => {
+    const clause = boundaryClauses.find((item) => item.id === 'HANDOFF-COORDINATOR-GATES-001')!;
+    const divergent = clause.statement.replace(' on standard or high work', '');
+    expect(divergent).not.toBe(clause.statement);
+    const root = await createProject({
+      [fixSkill]: clause.statement,
+      [teamSkill]: divergent,
+    });
+    const result = await validateCrossSkillContract(root, { clauses: [clause] });
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(teamSkill);
   });
 
   it('rejects a gate that waits for QA before starting Code Review', async () => {

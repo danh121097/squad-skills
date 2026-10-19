@@ -1,7 +1,11 @@
+import { coordinationEvaluationCases } from './skill-coordination-evaluation-cases.ts';
+
 /** Human-reviewed scenarios shared by Claude and Codex; no model calls in the offline gate. */
 export interface SkillEvaluationCase {
   id: string;
   prompt: string;
+  /** Evaluator setup outside the worker prompt; included in fixture identity. */
+  setup?: string;
   files: Record<string, string>;
   criteria: Record<string, string>;
   /** Reading paths expected for payload accounting, not an answer supplied to the worker. */
@@ -20,6 +24,7 @@ const counter = {
 const repair = [{ skill: 'squad-fix', task: 'single-session-repair' }];
 
 export const skillEvaluationCases: SkillEvaluationCase[] = [
+  ...coordinationEvaluationCases,
   {
     id: 'small-local-pattern',
     prompt:
@@ -48,7 +53,7 @@ export const skillEvaluationCases: SkillEvaluationCase[] = [
   {
     id: 'high-risk-no-delegation',
     prompt:
-      'Repair tenant access in access.mjs: access requires the same tenant AND an admin role. Work directly in this session; no subagents or separate chats. Verify both denied and allowed cases.',
+      'This is main/coordinator, but do not delegate. Repair tenant access in access.mjs: access requires the same tenant AND an admin role. Work directly in this session; no subagents or separate chats. Verify both denied and allowed cases.',
     files: {
       'access.mjs':
         "export const canAccess = (user, tenant) => user.tenant === tenant || user.role === 'admin';\n",

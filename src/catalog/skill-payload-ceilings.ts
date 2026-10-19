@@ -80,10 +80,10 @@ export const skillPayloadCeilings: Readonly<Record<string, number>> = {
   'squad-code-review': 2235, // was 2205: concurrent peer-gate handoff
   'squad-designer': 2322, // was 2027: adaptive and accepted web handoffs now include their platform
   'squad-devops': 2067, // was 2092
-  'squad-fix': 4696, // was 4597: Codex worktree isolation and verified integration
+  'squad-fix': 4483, // was 4696: thread-only routing and snapshot handoffs
   'squad-frontend': 2011, // was 2045
   'squad-mobile': 1928, // was 2012
   'squad-product': 2359, // was 2392
   'squad-qa': 2371, // was 2341: concurrent peer-gate handoff
-  'squads-team': 4623, // was 4543: Codex worktree isolation and verified integration
+  'squads-team': 3948, // was 4623: thread-only routing and snapshot handoffs
 };

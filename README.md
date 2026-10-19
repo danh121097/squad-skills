@@ -302,7 +302,11 @@ Worker sessions require creation, result read-back and follow-ups. If the runtim
 main states the limitation and falls back to subagents, then single-session execution if necessary.
 A supported user-started session remains pending until launched. Missing runtime-required permission
 also leaves dispatch pending; main asks for only the missing authorization. Naming a session main does
-not bypass runtime permission rules. Explicit single-session or no-delegation instructions take precedence.
+not bypass runtime permission rules. Explicit single-session or no-delegation instructions take precedence. Gate execution follows the
+mode actually used: single-session fallback runs required unassigned gates as logical passes, reported
+as non-independent; explicitly independent or externally assigned gates remain pending without their
+evidence. In thread mode, missing paired subagents keep the gate pending. Light work needs only its
+combined verify pass.
 
 Without a main/coordinator designation or explicit mode, choose the lowest-overhead suitable mode.
 Build worker chats use `[squad-frontend]: <slice>`, `[squad-backend]: <slice>`, or the matching assigned
@@ -318,6 +322,17 @@ request a separate worktree for each worker. After passing gates, main reports d
 integrates its exact changes into the current branch, resolves conflicts, verifies the combined diff, and
 then cleans task-owned worktrees and branches. The current branch keeps a reviewable diff; integration
 does not imply an automatic commit.
+
+The initial prompt requires the worker to capture its snapshot after seeding and before its first edit;
+capture failure stops editing. This applies to Claude and Codex, including sessions that start immediately.
+Each gate receives the absolute worker checkout path, base, initial snapshot and current diff identity,
+including untracked content. Workers pause edits during the gates; changed inputs invalidate affected
+verdicts. Integration transfers the worker delta from that initial snapshot, including added, deleted,
+renamed and binary files. Compare it against the current target to preserve inherited dirty state and
+concurrent user edits. A passing worker is not a completed parent task until integration is verified.
+With `--coordinate-only`, one assigned integration owner applies changes, resolves conflicts and runs
+combined checks; main reviews evidence without editing the target. Otherwise main can integrate.
+Thread instructions are loaded only for build chats; single-session paths skip their dispatch details.
 For runtimes requiring explicit creation and messaging authorization, a complete request is:
 
 > Use `squads-team` for this change. Create a separate chat for each implementation worker in this

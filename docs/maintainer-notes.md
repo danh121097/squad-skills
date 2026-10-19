@@ -139,6 +139,24 @@ worktree and branch. An uncommitted worker diff crosses by reviewed patch or cop
 keeps a reviewable diff without creating an unauthorized commit. `HANDOFF-WORKTREE-001` binds this stage
 on both orchestrator entrypoints.
 
+## Effective modes and worktree evidence
+
+Gate execution follows the effective mode after explicit overrides and runtime fallback. A main label
+alone does not require unavailable subagents after choosing single-session execution. Thread-mode
+standard/high gates keep their paired-subagent requirement; light closes on combined verification.
+External ownership and explicitly required independence still prevent an inline replacement.
+
+Thread handoff text is generated into both orchestrators from `src/agents/thread-handoff.ts`, preserving
+standalone installations without making single-session repairs read chat lifecycle details. Codex-specific
+creation, messaging and worktree mechanics remain in its generated dispatch reference.
+
+Every initial worker prompt assigns snapshot capture to that worker after seeding and before its first
+edit on either runtime; capture failure stops implementation. With `--coordinate-only`, an integration
+owner applies changes, resolves conflicts and runs combined checks while main reviews the evidence.
+Worktree gates receive an absolute checkout path and a frozen content identity. The initial snapshot
+separates inherited dirty state from worker output; integration compares that baseline, the result and the
+current target. Gate verdicts remain prose; temporary baseline material is not a new report-file contract.
+
 ## Payload ceiling history
 
 Until 2026-09 each ceiling in `src/catalog/skill-payload-ceilings.ts` carried

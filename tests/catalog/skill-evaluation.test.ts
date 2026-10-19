@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -56,6 +57,54 @@ describe('skill evaluation evidence', () => {
           .replace(' target.addEventListener("click", () => increment());', '')
       );
       expect((await run()).stdout).toContain('pass 1');
+    }
+  );
+
+  it('prepares coordination setup separately and proves the parallel fixture defects', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'skill-eval-coordination-'));
+    roots.push(root);
+    const item = skillEvaluationCases.find((entry) => entry.id === 'worktree-parallel-dirty-base')!;
+    const metadata = await prepareSkillEvaluation(
+      process.cwd(),
+      item.id,
+      path.join(root, 'packet')
+    );
+    const digest = (value: unknown) =>
+      createHash('sha256').update(JSON.stringify(value)).digest('hex');
+    const fixture = { prompt: item.prompt, files: item.files, criteria: item.criteria };
+    expect(metadata.fixtureHash).toBe(digest({ ...fixture, setup: item.setup }));
+    expect(metadata.fixtureHash).not.toBe(digest(fixture));
+    expect(await readFile(path.join(root, 'packet/setup.txt'), 'utf8')).toBe(item.setup + '\n');
+    expect(await readFile(path.join(root, 'packet/prompt.txt'), 'utf8')).not.toContain(
+      'Evaluator only'
+    );
+    const cwd = path.join(root, 'packet/workspace');
+    expect(await readdir(cwd)).not.toContain('.git');
+    const run = () => promisify(execFile)(process.execPath, ['--test'], { cwd });
+    await expect(run()).rejects.toMatchObject({
+      code: 1,
+      stdout: expect.stringContaining('fail 2'),
+    });
+    await writeFile(path.join(cwd, 'increment.mjs'), 'export const increment = (n) => n + 1;\n');
+    await expect(run()).rejects.toMatchObject({
+      code: 1,
+      stdout: expect.stringContaining('fail 1'),
+    });
+    await writeFile(path.join(cwd, 'double.mjs'), 'export const double = (n) => n * 2;\n');
+    expect((await run()).stdout).toContain('pass 2');
+  });
+
+  it.each(['worktree-parallel-dirty-base', 'worktree-integration-conflict'])(
+    '%s permits runtime-managed worktrees with bounded cleanup',
+    async (id) => {
+      const root = await mkdtemp(path.join(tmpdir(), 'skill-eval-worktree-'));
+      roots.push(root);
+      await prepareSkillEvaluation(process.cwd(), id, path.join(root, 'packet'));
+      const setup = await readFile(path.join(root, 'packet/setup.txt'), 'utf8');
+      expect(setup).toContain('Runtime-managed worktrees may live outside the packet');
+      expect(setup).toContain('record their absolute paths and trial ownership');
+      expect(setup).toContain('clean only verified trial-owned resources');
+      expect(setup).not.toContain('Keep all trial Git objects and worktrees inside the packet');
     }
   );
 
@@ -152,6 +201,16 @@ describe('skill evaluation evidence', () => {
           'verification-qa-review-and-reporting.md',
         ])
       );
+    }
+    for (const skill of ['squad-fix', 'squads-team']) {
+      for (const task of skillTaskTypes[skill]!) {
+        if (task.id.includes('delegated')) expect(task.references).toContain('thread-handoff.md');
+        if (task.id.startsWith('single-session')) {
+          expect(task.references).not.toContain('thread-handoff.md');
+          expect(task.references).not.toContain('codex-worker-dispatch.md');
+          expect(task.references).not.toContain('claude-worker-dispatch.md');
+        }
+      }
     }
     const adaptive = skillTaskTypes['squad-designer']!.find(
       (task) => task.id === 'adaptive-web-split-view'

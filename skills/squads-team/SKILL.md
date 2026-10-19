@@ -98,8 +98,7 @@ changes each need their own authorization.
 
 ## Quality bar
 
-Maximize ready work without weakening ownership, handoffs or gates. A passing slice is not an integrated
-result, and a missing environment or evidence never becomes completion.
+A passing slice is not an integrated result, and a missing environment or evidence never becomes completion.
 
 ## Workflow
 
@@ -113,7 +112,7 @@ result, and a missing environment or evidence never becomes completion.
 5. **Implement** — dispatch every ready slice; advance newly unblocked work without waiting for unrelated
    siblings.
 6. **Verify by tier** — per gate 4; externally assigned gates follow the handoff contract. In
-   main/coordinator thread mode, implementation uses role-named worker chats and QA and Code Review use
+   main/coordinator thread mode on standard or high work, implementation uses role-named worker chats and QA and Code Review use
    subagents in main; the worker reports each completed pass to main, the lead returns findings to that
    build chat, and after both gates pass the lead reports done to the worker chat and stops dispatch. If
    either paired subagent cannot start, the gate remains pending.
@@ -123,7 +122,7 @@ result, and a missing environment or evidence never becomes completion.
 7. **Integrate** — combine approved work, check each seam on the artifacts — what one slice supplies
    against what the other consumes: env vars, routes, schemas — rather than on the reports, run combined
    checks. Codex parallel build chats in one Git repo use authorized worktrees; after reporting done to
-   each worker, main integrates its exact diff into the current branch, resolves conflicts, verifies,
+   each worker, main or its delegated integration owner integrates its exact diff into the current branch, resolves conflicts, verifies,
    then cleans its worktree and any task branch, leaving a reviewable diff.
 8. **Finish** — report per gate 5 and the final-report section of the pipeline reference, anything not
    verified included; clean up only resources and processes this run created.

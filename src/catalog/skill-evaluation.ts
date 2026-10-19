@@ -30,6 +30,7 @@ export async function prepareSkillEvaluation(projectRoot: string, id: string, de
       prompt: scenario.prompt,
       files: scenario.files,
       criteria: scenario.criteria,
+      ...(scenario.setup === undefined ? {} : { setup: scenario.setup }),
     }),
     catalogHash: digest({ skills: catalog, readme }),
   };
@@ -48,6 +49,7 @@ export async function prepareSkillEvaluation(projectRoot: string, id: string, de
       recursive: true,
     });
   }
+  if (scenario.setup) await writeFile(path.join(root, 'setup.txt'), scenario.setup + '\n');
   await writeFile(path.join(root, 'prompt.txt'), scenario.prompt + '\n');
   await writeFile(path.join(root, 'README.md'), readme);
   // Keep grading criteria outside the worker's workspace and prompt.

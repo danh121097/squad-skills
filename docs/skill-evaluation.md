@@ -64,6 +64,29 @@ transcripts, actual diffs and executed command output outside the product repo.
 Do not launch evaluation sessions when the user has forbidden delegation or other
 model sessions. Offline packet/tooling verification is still possible in that case.
 
+## Coordination trials
+
+Packets with `setup.txt` require evaluator preparation before the worker starts. This file stays outside
+the worker prompt, is included in the fixture hash, and is never executed by `prepare`. Its Git setup
+applies only to disposable trial repositories; it grants no commit permission in the product repository.
+The primary fixture repository stays inside the packet. Runtime-managed worktrees may live elsewhere;
+record their absolute paths and trial ownership and clean only those verified resources after transfer
+or explicitly authorized trial teardown. Never force a runtime to use an unsupported worktree location.
+Do not launch these trials when the user forbids worker sessions or subagents.
+
+The coordination cases cover light thread work, an unstarted valid launcher, a missing paired Review
+subagent, parallel worktrees inheriting dirty changes, and integration against a changed target. The
+existing high-risk no-delegation case now explicitly names main to test that direct-work overrides win.
+Provision the stated capabilities or report the trial unavailable; a textual claim that a tool is missing
+while it remains callable is not a controlled trial. Worktree trials need Git and isolated checkouts;
+use each runtime's supported equivalent and record incompatibilities, not synthetic success.
+
+The offline regression suite proves the math fixture fails for both defects and passes after both repairs,
+packet separation and reading-path coverage. It does not execute the orchestration. Grade actual tool
+calls, checkout paths, frozen diffs, verdicts, integrated contents and cleanup from authorized runtime runs.
+Declared coordination payload paths use the Codex route; Claude comparisons use observed runtime usage,
+not that static estimate. Keep model mappings fixed until repeated results support a change.
+
 ## Grade observed behavior
 
 A reviewer grades every criterion from the artifacts and transcript. A model's

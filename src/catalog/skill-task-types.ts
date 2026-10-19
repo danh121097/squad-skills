@@ -168,11 +168,23 @@ const fix: SkillTaskType[] = [
   { id: 'single-session-repair', references: [...fixCore, 'worker-sessions.md'] },
   {
     id: 'codex-delegated-repair',
-    references: [...fixCore, 'worker-sessions.md', 'worker-models.md', 'codex-worker-dispatch.md'],
+    references: [
+      ...fixCore,
+      'worker-sessions.md',
+      'thread-handoff.md',
+      'worker-models.md',
+      'codex-worker-dispatch.md',
+    ],
   },
   {
     id: 'claude-delegated-repair',
-    references: [...fixCore, 'worker-sessions.md', 'worker-models.md', 'claude-worker-dispatch.md'],
+    references: [
+      ...fixCore,
+      'worker-sessions.md',
+      'thread-handoff.md',
+      'worker-models.md',
+      'claude-worker-dispatch.md',
+    ],
   },
   {
     id: 'ambiguous-repair',
@@ -321,11 +333,11 @@ const team: SkillTaskType[] = [
   { id: 'single-session-delivery', references: teamCore },
   {
     id: 'codex-delegated-delivery',
-    references: [...teamCore, 'worker-models.md', 'codex-worker-dispatch.md'],
+    references: [...teamCore, 'thread-handoff.md', 'worker-models.md', 'codex-worker-dispatch.md'],
   },
   {
     id: 'claude-delegated-delivery',
-    references: [...teamCore, 'worker-models.md', 'claude-worker-dispatch.md'],
+    references: [...teamCore, 'thread-handoff.md', 'worker-models.md', 'claude-worker-dispatch.md'],
   },
   { id: 'missing-role-delivery', references: [...teamCore, 'domain-coverage-contracts.md'] },
   { id: 'ambiguous-delivery', references: [...teamCore, 'coordination-worked-decisions.md'] },

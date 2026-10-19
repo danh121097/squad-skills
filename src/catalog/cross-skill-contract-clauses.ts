@@ -431,7 +431,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // hands each completed pass to main; only main runs the paired gates and
     // closes the worker chat after their matching verdicts pass.
     statement:
-      'In main/coordinator thread mode, implementation uses role-named worker chats and QA and Code Review use subagents in main; the worker reports each completed pass to main, the lead returns findings to that build chat, and after both gates pass the lead reports done to the worker chat and stops dispatch. If either paired subagent cannot start, the gate remains pending',
+      'In main/coordinator thread mode on standard or high work, implementation uses role-named worker chats and QA and Code Review use subagents in main; the worker reports each completed pass to main, the lead returns findings to that build chat, and after both gates pass the lead reports done to the worker chat and stops dispatch. If either paired subagent cannot start, the gate remains pending',
     files: [fixSkill, teamSkill],
   },
   {
@@ -439,7 +439,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // Parallel Codex builds need isolated checkouts, and a worker's passing
     // gates do not make its work visible on the lead's current branch.
     statement:
-      'Codex parallel build chats in one Git repo use authorized worktrees; after reporting done to each worker, main integrates its exact diff into the current branch, resolves conflicts, verifies, then cleans its worktree and any task branch, leaving a reviewable diff',
+      'Codex parallel build chats in one Git repo use authorized worktrees; after reporting done to each worker, main or its delegated integration owner integrates its exact diff into the current branch, resolves conflicts, verifies, then cleans its worktree and any task branch, leaving a reviewable diff',
     files: [fixSkill, teamSkill],
   },
   {
