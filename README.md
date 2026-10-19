@@ -156,9 +156,13 @@ Claude workers use the same precedence: your role-specific choice, then your
 overall choice, then the active installed role definition, else the bundled
 Claude defaults. Claude Code uses supported per-invocation `model`/`effort`
 fields for subagents and `--model`/`--effort` for independent CLI sessions.
-Claude Desktop session tools can expose different controls; the lead checks the
-live schema and reports a missing control. Forced environment settings or managed
-limits can supersede the requested pair. See [Claude subagents](https://code.claude.com/docs/en/sub-agents)
+Claude Desktop sessions do not inherit a named subagent's frontmatter: select
+the resolved non-inherit model and effort in the session controls before sending
+the worker task, then verify those selections before its first edit. A task chip without
+model/effort controls keeps implementation pending until the pair can be selected
+and verified; a title or skill name alone does not set either field. Forced
+environment settings or managed limits can supersede the requested pair. See
+[Claude Desktop](https://code.claude.com/docs/en/desktop) and [Claude subagents](https://code.claude.com/docs/en/sub-agents)
 and the [CLI reference](https://code.claude.com/docs/en/cli-reference).
 
 Runtime authorization and model availability still apply; the lead distinguishes

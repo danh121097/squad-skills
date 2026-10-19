@@ -10,10 +10,8 @@ import {
   renderWorkerDispatch,
 } from '../../src/agents/worker-models.ts';
 import {
-  defaultCodexEffortByRole,
-  defaultCodexModelByRole,
-  defaultEffortByRole,
-  defaultModelByRole,
+  defaultClaudePreferencesByRole,
+  defaultCodexPreferencesByRole,
 } from '../../src/agents/role-defaults.ts';
 import {
   readSkillAgentDefinition,
@@ -109,6 +107,25 @@ describe('plugin agent definitions', () => {
     expect(dispatch).toContain('Preserve existing worktrees');
   });
 
+  it('requires Claude worker sessions to select and verify the role pair before editing', () => {
+    const dispatch = renderWorkerDispatch('claude-code').replace(/\s+/g, ' ');
+    const handoff = renderThreadHandoff().replace(/\s+/g, ' ');
+
+    expect(dispatch).toContain(
+      'named subagent frontmatter does not configure an independent session'
+    );
+    expect(dispatch).toContain(
+      'select the resolved model and effort before sending the first task'
+    );
+    expect(dispatch).toContain(
+      'verify selected fields in the session controls before its first edit'
+    );
+    expect(dispatch).toContain('Otherwise keep implementation pending');
+    expect(dispatch).toContain('report inherited values and forced overrides');
+    expect(handoff).toContain('include the resolved model and effort');
+    expect(handoff).toContain('stop before editing and report a mismatch');
+  });
+
   it('ships one agent per skill and no orphans', () => {
     expect(agentFiles).toEqual(skillNames.map((name) => `${name}.md`));
   });
@@ -127,10 +144,18 @@ describe('plugin agent definitions', () => {
   // A skill missing from a table ships an agent with no model or effort,
   // silently following the session instead of what its role was given.
   it('gives every skill a default model and effort, and no skill that is not shipped', () => {
-    expect(Object.keys(defaultModelByRole).sort()).toEqual(skillNames);
-    expect(Object.keys(defaultEffortByRole).sort()).toEqual(skillNames);
-    expect(Object.keys(defaultCodexModelByRole).sort()).toEqual(skillNames);
-    expect(Object.keys(defaultCodexEffortByRole).sort()).toEqual(skillNames);
+    expect(Object.keys(defaultClaudePreferencesByRole).sort()).toEqual(skillNames);
+    expect(Object.keys(defaultCodexPreferencesByRole).sort()).toEqual(skillNames);
+    for (const name of skillNames) {
+      expect(defaultClaudePreferencesByRole[name]).toEqual({
+        model: expect.any(String),
+        effort: expect.any(String),
+      });
+      expect(defaultCodexPreferencesByRole[name]).toEqual({
+        model: expect.any(String),
+        effort: expect.any(String),
+      });
+    }
   });
 
   it('reaches the skill by name, not by a path that only exists on one machine', async () => {

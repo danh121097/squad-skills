@@ -12,11 +12,10 @@
  * source never runs this code, which is what `squad-skills agents` is for.
  */
 import type { AgentScope } from '../agents/agent-installation.ts';
+import type { RolePreferences } from '../agents/role-defaults.ts';
 import {
-  defaultCodexEffortByRole,
-  defaultCodexModelByRole,
-  defaultEffortByRole,
-  defaultModelByRole,
+  defaultClaudePreferencesByRole,
+  defaultCodexPreferencesByRole,
   parseEffortOverrides,
   parseModelOverrides,
 } from '../agents/role-defaults.ts';
@@ -458,10 +457,11 @@ function ensureCopyInstallation(arguments_: string[]): string[] {
   return [...arguments_, '--copy'];
 }
 
-function formatDefaults(defaults: Readonly<Record<string, string>>): string {
+function formatDefaults(defaults: RolePreferences, field: 'model' | 'effort'): string {
   const byValue = new Map<string, string[]>();
 
-  for (const [role, value] of Object.entries(defaults)) {
+  for (const [role, preference] of Object.entries(defaults)) {
+    const value = preference[field];
     byValue.set(value, [...(byValue.get(value) ?? []), role]);
   }
 
@@ -539,13 +539,13 @@ Those fields override [agents] defaults; inherit omits the field so Codex
 resolves it from the spawn request, [agents] defaults or parent session.
 
 Each role's Claude Code agent carries a default model:
-${formatDefaults(defaultModelByRole)}
+${formatDefaults(defaultClaudePreferencesByRole, 'model')}
 and a default effort:
-${formatDefaults(defaultEffortByRole)}
+${formatDefaults(defaultClaudePreferencesByRole, 'effort')}
 Each role's Codex agent carries a default model:
-${formatDefaults(defaultCodexModelByRole)}
+${formatDefaults(defaultCodexPreferencesByRole, 'model')}
 and a default effort:
-${formatDefaults(defaultCodexEffortByRole)}
+${formatDefaults(defaultCodexPreferencesByRole, 'effort')}
 --model and --effort override them; a role named with <skill>=<value> wins
 over a bare value. Every install regenerates these files, so pass the same
 flags again to keep an override. A bare model applies to every selected tool;

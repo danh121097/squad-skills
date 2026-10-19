@@ -23,36 +23,26 @@ export const inheritPreference = 'inherit';
 
 export type AgentTool = 'claude-code' | 'codex';
 
-export const defaultModelByRole: Readonly<Record<string, string>> = {
-  'squad-backend': 'sonnet',
-  'squad-code-review': 'opus',
-  'squad-designer': 'sonnet',
-  'squad-devops': 'sonnet',
-  'squad-fix': 'opus',
-  'squad-frontend': 'sonnet',
-  'squad-mobile': 'sonnet',
-  'squad-product': 'opus',
-  'squad-qa': 'sonnet',
-  'squads-team': 'opus',
-};
+export type RolePreferences = Readonly<
+  Record<string, { readonly model: string; readonly effort: string }>
+>;
 
-export const defaultEffortByRole: Readonly<Record<string, string>> = {
-  'squad-backend': 'medium',
-  'squad-code-review': 'medium',
-  'squad-designer': 'medium',
-  'squad-devops': 'medium',
-  'squad-fix': 'medium',
-  'squad-frontend': 'medium',
-  'squad-mobile': 'medium',
-  'squad-product': 'medium',
-  'squad-qa': 'medium',
-  'squads-team': 'medium',
+/** Authored once; native agents and worker tables derive from these pairs. */
+export const defaultClaudePreferencesByRole: RolePreferences = {
+  'squad-backend': { model: 'sonnet', effort: 'medium' },
+  'squad-code-review': { model: 'opus', effort: 'medium' },
+  'squad-designer': { model: 'sonnet', effort: 'medium' },
+  'squad-devops': { model: 'sonnet', effort: 'medium' },
+  'squad-fix': { model: 'opus', effort: 'medium' },
+  'squad-frontend': { model: 'sonnet', effort: 'medium' },
+  'squad-mobile': { model: 'sonnet', effort: 'medium' },
+  'squad-product': { model: 'opus', effort: 'medium' },
+  'squad-qa': { model: 'sonnet', effort: 'medium' },
+  'squads-team': { model: 'opus', effort: 'medium' },
 };
 
 /** Authored once; native agent defaults and bundled worker-chat tables derive from these pairs. */
-export const defaultCodexPreferencesByRole: Readonly<
-  Record<string, { readonly model: string; readonly effort: string }>
-> = {
+export const defaultCodexPreferencesByRole: RolePreferences = {
   'squad-backend': { model: 'gpt-6.1-sol', effort: 'medium' },
   'squad-code-review': { model: 'gpt-6.1-sol', effort: 'high' },
   'squad-designer': { model: 'gpt-6.1-sol', effort: 'medium' },
@@ -64,20 +54,6 @@ export const defaultCodexPreferencesByRole: Readonly<
   'squad-qa': { model: 'gpt-6.1-sol', effort: 'medium' },
   'squads-team': { model: 'gpt-6.1-sol', effort: 'high' },
 };
-
-export const defaultCodexModelByRole: Readonly<Record<string, string>> = Object.fromEntries(
-  Object.entries(defaultCodexPreferencesByRole).map(([role, preference]) => [
-    role,
-    preference.model,
-  ])
-);
-
-export const defaultCodexEffortByRole: Readonly<Record<string, string>> = Object.fromEntries(
-  Object.entries(defaultCodexPreferencesByRole).map(([role, preference]) => [
-    role,
-    preference.effort,
-  ])
-);
 
 /** What a caller asked for: one value for every role, and values for named roles. */
 export interface RoleOverrides {
@@ -140,7 +116,7 @@ function parseRoleOverrides(
       continue;
     }
 
-    if (!Object.hasOwn(defaultEffortByRole, role)) {
+    if (!Object.hasOwn(defaultClaudePreferencesByRole, role)) {
       const unknown = role === '' ? 'no skill is named' : `${role} is not a skill in this catalog`;
 
       return { kind: 'error', message: `${flag} ${value}: ${unknown}.` };
@@ -167,8 +143,9 @@ export function resolveRoleEffort(
   overrides: RoleOverrides = {},
   tool: AgentTool = 'claude-code'
 ): string | null {
-  const defaults = tool === 'codex' ? defaultCodexEffortByRole : defaultEffortByRole;
-  return resolve(overrides.roleEfforts?.[name] ?? overrides.effort ?? defaults[name]);
+  const defaults =
+    tool === 'codex' ? defaultCodexPreferencesByRole : defaultClaudePreferencesByRole;
+  return resolve(overrides.roleEfforts?.[name] ?? overrides.effort ?? defaults[name]?.effort);
 }
 
 /** The model written into one role's agent file, resolved the same way. */
@@ -177,8 +154,9 @@ export function resolveRoleModel(
   overrides: RoleOverrides = {},
   tool: AgentTool = 'claude-code'
 ): string | null {
-  const defaults = tool === 'codex' ? defaultCodexModelByRole : defaultModelByRole;
-  return resolve(overrides.roleModels?.[name] ?? overrides.model ?? defaults[name]);
+  const defaults =
+    tool === 'codex' ? defaultCodexPreferencesByRole : defaultClaudePreferencesByRole;
+  return resolve(overrides.roleModels?.[name] ?? overrides.model ?? defaults[name]?.model);
 }
 
 function resolve(value: string | undefined): string | null {

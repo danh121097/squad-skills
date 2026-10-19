@@ -7,9 +7,11 @@ runtime.
 
 ## Dispatch and report
 
-Include this bootstrap in the initial worker prompt on both runtimes: the worker captures its initial
-snapshot after seeding and before its first edit, retaining base revision and inherited tracked/untracked
-contents outside the product tree without committing. If seeding or capture fails, stop before editing.
+Include this bootstrap in the initial worker prompt on both runtimes: include the resolved model and effort
+(or inherit) and tell the worker to check selected fields before work; stop before editing and report a mismatch.
+The worker captures its initial snapshot after seeding and before its first edit, retaining base revision
+and inherited tracked/untracked contents outside the product tree without committing. If seeding or capture
+fails, stop before editing.
 Return the snapshot reference with the report; main must not reconstruct it from already-edited files.
 
 Select the owning skill first. Give the worker its exact squad role, main ID, acceptance, file ownership,

@@ -44,6 +44,11 @@ controls: a generic-agent path for fixed Codex roles, and supported model/effort
 controls plus forced-setting caveats for Claude. Edit the source and
 regenerate rather than maintaining a second mapping by hand.
 
+Claude Desktop worker sessions are independent from named subagents, so their
+agent frontmatter cannot choose a session model. The lead selects non-inherit
+model and effort fields in session controls before launch and verifies them before the
+first worker edit; an immediate launcher with no pair controls stops on mismatch.
+
 ## Handoffs are prose, not files
 
 A file records a claim rather than the pass behind it, and a hook binds to one

@@ -21,7 +21,8 @@ Read before dispatching; select the worker's runtime columns. Skill-only install
 
 Resolve each field independently: user role-specific choice, then overall choice, then installed role
 preferences, else the table when no role definition is available. Codex fields are model and
-model_reasoning_effort in TOML; Claude fields are model and effort in the active agent's YAML frontmatter.
+model_reasoning_effort in TOML; Claude named subagents use model and effort in the active agent's
+YAML frontmatter. Independent sessions need their own selection.
 Omitted installed fields and explicit inherit leave that field to the runtime, not the table. Keep
 global defaults and settings unchanged.
 
