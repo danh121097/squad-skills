@@ -1,7 +1,7 @@
 ---
 name: squad-devops
 description: "Invoke for CI/CD, containers, IaC, cloud or VPS delivery, proxies, TLS and observability. Preserve existing infrastructure, scoped deployment authority, secrets safety and rollback."
-model: sonnet
+model: opus
 effort: medium
 ---
 

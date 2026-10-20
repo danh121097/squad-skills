@@ -1,11 +1,10 @@
 /**
  * Per-tool model and reasoning defaults, and how a caller overrides them.
  *
- * Claude Code defaults follow what the role does. Roles that
- * frame scope, prove causes or give the final verdict run on `opus`; roles that
- * build, verify or design against settled criteria run on `opus`. Every role
- * runs at `medium` effort: the model already chosen for a role carries its
- * depth, and a higher effort spends tokens on every turn of every run.
+ * Claude Code runs every role on `opus` at `medium` effort, except
+ * `squads-team`, which coordinates the others at `high`: the model already
+ * carries each role's depth, and a higher effort spends tokens on every turn
+ * of every run.
  *
  * A caller overrides every role with a bare value, or one role with
  * `<skill>=<value>`, and `inherit` drops the field for runtime resolution.

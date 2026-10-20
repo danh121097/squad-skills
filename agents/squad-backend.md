@@ -1,7 +1,7 @@
 ---
 name: squad-backend
 description: "Invoke for server APIs, auth, data models, migrations, caching and queues. Own shared contracts and backend logic in the existing stack. Route failures with unproven cause to squad-fix."
-model: sonnet
+model: opus
 effort: medium
 ---
 

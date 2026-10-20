@@ -1,7 +1,7 @@
 ---
 name: squad-qa
 description: "Invoke after a build, to design tests, reproduce a bug or verify a fix. Own the behavioral QA gate: acceptance, risk and execution evidence; return PASS, FAIL or NEEDS_ENVIRONMENT. Implementation review belongs to squad-code-review."
-model: sonnet
+model: opus
 effort: medium
 ---
 

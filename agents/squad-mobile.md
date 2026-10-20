@@ -1,7 +1,7 @@
 ---
 name: squad-mobile
 description: "Invoke for React Native/Expo, Flutter, SwiftUI or Compose screens, including Figma builds. Own client logic, navigation, API integration, offline/sync and platform UX. Open design decisions go to squad-designer."
-model: sonnet
+model: opus
 effort: medium
 ---
 

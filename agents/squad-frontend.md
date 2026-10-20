@@ -1,7 +1,7 @@
 ---
 name: squad-frontend
 description: "Invoke for web UI, browser games, client logic and API integration, including Figma builds. Preserve the repository’s framework and design material. Open design decisions go to squad-designer; server logic goes to squad-backend."
-model: sonnet
+model: opus
 effort: medium
 ---
 

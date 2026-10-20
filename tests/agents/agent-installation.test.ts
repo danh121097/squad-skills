@@ -208,7 +208,7 @@ describe('installAgentDefinitions', () => {
 
     expect(await fieldOf('squad-qa', 'effort')).toBe('medium');
     expect(await fieldOf('squad-fix', 'effort')).toBe('medium');
-    expect(await fieldOf('squad-qa', 'model')).toBe('sonnet');
+    expect(await fieldOf('squad-qa', 'model')).toBe('opus');
     expect(await fieldOf('squad-fix', 'model')).toBe('opus');
 
     await request({
@@ -251,19 +251,18 @@ describe('installAgentDefinitions', () => {
     const result = await request({ skills: [] });
 
     expect(result.written).toHaveLength(20);
-    const opusRoles = new Set(['squad-code-review', 'squad-fix', 'squad-product', 'squads-team']);
     for (const [name, [model, effort]] of Object.entries(expected)) {
       const file = await readFile(path.join(home, `.codex/agents/${name}.toml`), 'utf8');
       expect(file, name).toContain(`\nmodel = "${model}"\n`);
       expect(file, name).toContain(`\nmodel_reasoning_effort = "${effort}"\n`);
-      const claudeModel = opusRoles.has(name) ? 'opus' : 'sonnet';
+      const claudeEffort = name === 'squads-team' ? 'high' : 'medium';
       const claude = await readFile(path.join(home, `.claude/agents/${name}.md`), 'utf8');
-      expect(claude, name).toContain(`\nmodel: ${claudeModel}\n`);
-      expect(claude, name).toContain('\neffort: medium\n');
+      expect(claude, name).toContain('\nmodel: opus\n');
+      expect(claude, name).toContain(`\neffort: ${claudeEffort}\n`);
       for (const reference of workerModelReferences) {
         const table = await readFile(path.join(packageRoot, reference), 'utf8');
         expect(table, `${reference}: ${name}`).toContain(
-          `| \`${name}\` | \`${model}\` | \`${effort}\` | \`${claudeModel}\` | \`medium\` |`
+          `| \`${name}\` | \`${model}\` | \`${effort}\` | \`opus\` | \`${claudeEffort}\` |`
         );
       }
     }

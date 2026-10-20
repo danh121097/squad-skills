@@ -1,7 +1,7 @@
 ---
 name: squad-designer
 description: "Invoke for open UI/UX or design-system decisions left by the user’s references and existing system. Deliver presentational components, tokens, motion and accessibility. Routine web builds go to squad-frontend."
-model: sonnet
+model: opus
 effort: medium
 ---
 
