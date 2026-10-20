@@ -3,7 +3,7 @@
  *
  * Claude Code defaults follow what the role does. Roles that
  * frame scope, prove causes or give the final verdict run on `opus`; roles that
- * build, verify or design against settled criteria run on `sonnet`. Every role
+ * build, verify or design against settled criteria run on `opus`. Every role
  * runs at `medium` effort: the model already chosen for a role carries its
  * depth, and a higher effort spends tokens on every turn of every run.
  *
@@ -29,16 +29,16 @@ export type RolePreferences = Readonly<
 
 /** Authored once; native agents and worker tables derive from these pairs. */
 export const defaultClaudePreferencesByRole: RolePreferences = {
-  'squad-backend': { model: 'sonnet', effort: 'medium' },
+  'squad-backend': { model: 'opus', effort: 'medium' },
   'squad-code-review': { model: 'opus', effort: 'medium' },
-  'squad-designer': { model: 'sonnet', effort: 'medium' },
-  'squad-devops': { model: 'sonnet', effort: 'medium' },
+  'squad-designer': { model: 'opus', effort: 'medium' },
+  'squad-devops': { model: 'opus', effort: 'medium' },
   'squad-fix': { model: 'opus', effort: 'medium' },
-  'squad-frontend': { model: 'sonnet', effort: 'medium' },
-  'squad-mobile': { model: 'sonnet', effort: 'medium' },
+  'squad-frontend': { model: 'opus', effort: 'medium' },
+  'squad-mobile': { model: 'opus', effort: 'medium' },
   'squad-product': { model: 'opus', effort: 'medium' },
-  'squad-qa': { model: 'sonnet', effort: 'medium' },
-  'squads-team': { model: 'opus', effort: 'medium' },
+  'squad-qa': { model: 'opus', effort: 'medium' },
+  'squads-team': { model: 'opus', effort: 'high' },
 };
 
 /** Authored once; native agent defaults and bundled worker-chat tables derive from these pairs. */
