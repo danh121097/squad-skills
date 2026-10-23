@@ -328,6 +328,14 @@ evidence. In thread mode, missing paired subagents keep the gate pending. Light 
 combined verify pass.
 
 Without a main/coordinator designation or explicit mode, choose the lowest-overhead suitable mode.
+Splitting a task among roles does not itself establish a persistent coordinator designation. Local
+`AGENTS.md` or `CLAUDE.md` policies can set different defaults; keep those choices separate from the
+runtime's permission to create sessions or send messages.
+
+Workers report changes, checks and gaps through authorized messaging or their final turn; main uses
+available read-back/wait tools to collect the result. Direct report-back is not mandatory without
+authorization, and receiving a report does not authorize follow-up messages.
+
 Build worker chats use `[squad-frontend]: <slice>`, `[squad-backend]: <slice>`, or the matching assigned
 skill name in the same project; sidebar nesting is runtime-dependent. Main starts QA and Code Review as
 subagents together on each paired gate round. They exchange evidence directly when supported, or through
@@ -340,7 +348,7 @@ in an idle composer can differ from a completed turn. For concurrent Codex build
 request a separate worktree for each worker. After passing gates, main reports done to the worker,
 integrates its exact changes into the current branch, resolves conflicts, verifies the combined diff, and
 then cleans task-owned worktrees and branches. The current branch keeps a reviewable diff; integration
-does not imply an automatic commit.
+does not imply an automatic commit. Preserve unintegrated work and report cleanup gaps.
 
 Name new worktree branches `codex/<slug>` for Codex work and `claude/<slug>` for Claude work when the
 runtime supports branch naming. Claude Desktop's **Branch prefix** setting should be `claude`; it adds
@@ -363,7 +371,8 @@ For runtimes requiring explicit creation and messaging authorization, a complete
 > Use `squads-team` for this change. Create a separate chat for each implementation worker in this
 > project and keep this chat as lead. Give concurrent coding workers separate worktrees. Apply the Codex
 > role model/effort mapping, with any model or effort I specify taking precedence. Read worker reports
-> here, run QA and Code Review as subagents, and send findings back to the same implementation chat
+> here; workers may send progress and final reports back to this lead. Run QA and Code Review as
+> subagents, and send findings back to the same implementation chat
 > until the gates pass. Integrate passing work into this branch, resolve conflicts, then clean its task
 > worktree and branch after verifying the integrated diff.
 
@@ -377,6 +386,11 @@ For runtimes requiring explicit creation and messaging authorization, a complete
 | `--plan-approval`                             | no pause for build plans; material decisions still go to the user                                                   |
 | `--mode auto\|team\|thread\|subagent\|single` | `auto`, threads for a designated main/coordinator; otherwise lowest overhead                                        |
 | `--no-worktree`                               | authorized parallel Codex build chats use separate worktrees; without them, chats sharing a checkout are serialized |
+
+A request to **plan only** ends with the requested plan; it authorizes no implementation or integration,
+including by a worker. `--coordinate-only` delegates implementation and integration while the lead
+reviews evidence. `--plan-approval` pauses for approval of build plans before implementation; it is not
+a planning-only request. Small integration edits are allowed only when the user's scope permits them.
 
 ## Skill format
 

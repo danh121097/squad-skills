@@ -137,6 +137,11 @@ lowest-overhead suitable mode. Main uses QA and Code Review subagents for the ga
 to the same build chat. Both orchestrator entrypoints bind the thread preference through
 `HANDOFF-SESSION-001`.
 
+The persistent coordinator designation comes from the user's instructions, not merely from splitting a
+task among roles. A machine's global instructions can set different defaults; those local policies do
+not grant runtime authorization. Thread handoff permits authorized messaging or a final-turn report,
+so collecting a worker result does not require unauthorized report-back messages.
+
 Parallel Codex build chats in one Git repository now use separate worktrees when the user authorizes
 them. The coordinator reports the worker slice done after its gates pass, integrates its exact diff into
 the current branch, resolves conflicts and verifies the combined result before cleaning the task
