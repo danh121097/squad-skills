@@ -256,6 +256,15 @@ and SwiftUI builds from 7 of 18 to 14 of 18. The rest still go to `figma:figma-d
 | `standard` | The default                                                                                          | QA `PASS` and Code Review `APPROVE`, run together      |
 | `high`     | Auth or permissions, payment, data or migration, production infrastructure or secrets, data deletion | Both gates, run independently where the runtime allows |
 
+Within the approved scope and runtime permissions, main runs required gates, sends repair requests and
+integrates passing work without asking again. Gate a ready slice promptly on its frozen revision against
+agreed acceptance criteria; discussion may continue in parallel. Hold integration when an unresolved
+decision affects acceptance or implementation, and rerun affected checks when the diff or agreed
+criteria change.
+
+Already approved tasks continue when their dependencies are ready. Ask for new scope, missing
+authorization, decisions the repository cannot answer, or continuation beyond the repair budget below.
+
 QA and Code Review return all actionable findings to the same build worker. Main sends them to that
 worker's existing chat; the worker fixes and reports the completed pass back to main. Main then reruns
 both gates on the repaired revision, focusing on the finding and affected scope, until QA `PASS` and Code

@@ -79,6 +79,13 @@ repair, including the second. If the same failure persists across two gate
 assessments without new evidence, or the second repair still fails, it gives the
 user the attempt history and options. A user can authorize another bounded batch.
 
+Routine gates, repair requests and integration use the existing scope and authorization; they do not
+need confirmation at every step. Promptly gating a frozen revision while discussion continues preserves
+evidence about what was built. A passing gate does not settle an open acceptance or implementation
+decision: integration waits for that decision, and changed criteria or code require affected checks
+again. This distinction lets approved dependent work advance without bypassing the repair budget or
+asking the user to approve the same work twice.
+
 Review used to start only after QA `PASS`. A blocker Review found by reading
 code QA's tests never reached voided QA's evidence, so one fix cost a second QA
 pass and a second Review: the loop users saw. The gates now run on one revision
