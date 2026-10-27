@@ -1,10 +1,14 @@
 import type { ReadingExpectation } from './skill-reading-evidence.ts';
 import { readingEvaluationCases } from './skill-reading-evaluation-cases.ts';
 import { coordinationEvaluationCases } from './skill-coordination-evaluation-cases.ts';
+import { domainEvaluationCases } from './skill-domain-evaluation-cases.ts';
+import { routingEvaluationCases } from './skill-routing-evaluation-cases.ts';
 
 /** Human-reviewed scenarios shared by Claude and Codex; no model calls in the offline gate. */
 export interface SkillEvaluationCase {
   id: string;
+  /** Fixed routing split; evaluator-only and never included in the task prompt. */
+  split?: 'train' | 'validation';
   reading?: ReadingExpectation;
   prompt: string;
   /** Evaluator setup outside the worker prompt; included in fixture identity. */
@@ -29,6 +33,8 @@ const repair = [{ skill: 'squad-fix', task: 'single-session-repair' }];
 export const skillEvaluationCases: SkillEvaluationCase[] = [
   ...coordinationEvaluationCases,
   ...readingEvaluationCases,
+  ...domainEvaluationCases,
+  ...routingEvaluationCases,
   {
     id: 'small-local-pattern',
     prompt:

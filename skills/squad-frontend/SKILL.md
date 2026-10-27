@@ -21,11 +21,11 @@ Build client behavior and web UI from accepted design and Backend contracts.
 
 ## Scope and safety
 
-An established main/coordinator stays coordinator across follow-ups, completed tasks and context compaction until the user changes execution mode. Selecting one role assigns a worker; it does not turn main into that role. Assigned workers stay within their scope.
+A user-designated main/coordinator persists across follow-ups, completion and compaction until the user changes mode. Automatic coordination is task-scoped. Selecting one role assigns a worker; main remains coordinator. Workers retain their scope.
 
 In coordinator mode, main retains its existing squads-team or squad-fix contract; without one, load squads-team before dispatch. Follow that lead's runtime dispatch, model selection, snapshot and gate references even for one role. Workers execute their assigned role, not another lead. If no lead contract is installed, keep dispatch pending and report the missing skill.
 
-Before implementation, main names the worker session or a verified capability gap. Implementation uses threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work instructions win; small integration edits remain allowed unless coordinate-only.
+For a user-designated main, name the worker session or a verified capability gap before implementation. Use threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work or no-delegation instructions win; small integration edits remain allowed unless coordinate-only.
 
 Build the **client side**: pages/components, routing, client state, forms/validation, permissions,
 navigation, and Backend API integration.
@@ -64,9 +64,9 @@ reread only after a file change, missing context or a scope change.
 
 - For user-supplied design material or a possibly open design decision (Designer stage), read
   [references/designer-gate-and-design-intake.md](references/designer-gate-and-design-intake.md).
-- For existing-versus-greenfield selection, a new UI or motion dependency, or non-trivial animation, read
+- For existing-versus-greenfield selection, a new UI/motion dependency, or non-trivial UI motion, read
   [references/frontend-stack-and-motion-selection.md](references/frontend-stack-and-motion-selection.md).
-- For browser games or Three.js, Phaser, PixiJS and Rive runtime work—engine selection, game-loop
+- For browser games or graphics runtimes (Three.js, Phaser, PixiJS, Rive)—engine selection, game-loop
   ownership, canvas lifecycle, assets, accessibility, performance and testing—read
   [references/interactive-graphics-and-runtime-animation.md](references/interactive-graphics-and-runtime-animation.md).
 - For component boundaries, rendering, state, server state, routing, forms, validation, API orchestration

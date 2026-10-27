@@ -337,7 +337,7 @@ evidence. In thread mode, missing paired subagents keep the gate pending. Light 
 combined verify pass.
 
 Without a main/coordinator designation or explicit mode, choose the lowest-overhead suitable mode.
-Splitting a task among roles does not itself establish a persistent coordinator designation. Local
+Automatic coordination applies only to the current task; it does not establish a persistent coordinator designation. Local
 `AGENTS.md` or `CLAUDE.md` policies can set different defaults; keep those choices separate from the
 runtime's permission to create sessions or send messages.
 
@@ -412,7 +412,8 @@ The executable contract is owned by the TypeScript validator and tests. Run
 `pnpm validate` for a focused catalog check or `pnpm test` for the full gate.
 
 `pnpm payload:report` reports declared reading-path and workflow word counts;
-these are not measured token usage. `pnpm eval:skills` prepares repeatable
+`--baseline-root <snapshot>` compares catalogs on the same named paths. These are
+not measured token usage. `pnpm eval:skills` prepares repeatable
 Claude/Codex evaluation packets and summarizes recorded observations without
 launching models. See [skill evaluation](docs/skill-evaluation.md) for the
 comparison protocol and evidence required before changing model defaults.

@@ -33,8 +33,10 @@ export async function prepareSkillEvaluation(projectRoot: string, id: string, de
       criteria: scenario.criteria,
       ...(scenario.reading === undefined ? {} : { reading: scenario.reading }),
       ...(scenario.setup === undefined ? {} : { setup: scenario.setup }),
+      ...(scenario.split === undefined ? {} : { split: scenario.split }),
     }),
     catalogHash: digest({ skills: catalog, readme }),
+    ...(scenario.split === undefined ? {} : { split: scenario.split }),
   };
   // mkdir without recursive refuses an existing target, including one containing user files.
   await mkdir(root);
@@ -142,7 +144,8 @@ export function summarizeSkillEvaluations(input: unknown) {
   }
   return [...groups.values()].map((rows) => {
     const first = rows[0]!;
-    const expectation = skillEvaluationCases.find((item) => item.id === first.scenario)!.reading;
+    const scenario = skillEvaluationCases.find((item) => item.id === first.scenario)!;
+    const expectation = scenario.reading;
     const readings = rows.map((row) => summarizeReadingEvidence(row.reads, expectation));
     const passed = rows.filter(
       (row, index) =>
@@ -153,6 +156,7 @@ export function summarizeSkillEvaluations(input: unknown) {
     const tokens = known ? rows.reduce((sum, row) => sum + row.totalTokens!, 0) : null;
     return {
       scenario: first.scenario,
+      ...(scenario.split === undefined ? {} : { split: scenario.split }),
       runtime: first.runtime,
       model: first.model,
       effort: first.effort,

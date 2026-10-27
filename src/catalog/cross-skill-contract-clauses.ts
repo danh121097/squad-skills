@@ -101,7 +101,7 @@ export const boundaryClauses: BoundaryClause[] = [
   {
     id: 'COORDINATOR-PERSISTENCE-001',
     statement:
-      'An established main/coordinator stays coordinator across follow-ups, completed tasks and context compaction until the user changes execution mode. Selecting one role assigns a worker; it does not turn main into that role. Assigned workers stay within their scope.',
+      'A user-designated main/coordinator persists across follow-ups, completion and compaction until the user changes mode. Automatic coordination is task-scoped. Selecting one role assigns a worker; main remains coordinator. Workers retain their scope.',
     files: everyRoleEntrypoint,
   },
   {
@@ -113,7 +113,7 @@ export const boundaryClauses: BoundaryClause[] = [
   {
     id: 'COORDINATOR-DISPATCH-001',
     statement:
-      'Before implementation, main names the worker session or a verified capability gap. Implementation uses threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work instructions win; small integration edits remain allowed unless coordinate-only.',
+      'For a user-designated main, name the worker session or a verified capability gap before implementation. Use threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work or no-delegation instructions win; small integration edits remain allowed unless coordinate-only.',
     files: everyRoleEntrypoint,
   },
   {
@@ -248,7 +248,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // token. What the advice guards against is an underscore that is markdown
     // emphasis on one side only; a verdict name is neither side's emphasis.
     statement:
-      'a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and residual risk, and whether the pass was independent',
+      'a `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` verdict with evidence, coverage, residual risk and independence status',
     files: [codeReviewSkill, qaSkill],
   },
   {
@@ -306,11 +306,10 @@ export const boundaryClauses: BoundaryClause[] = [
     // The two roles that are themselves the gates, in a squad run. Install
     // squad-qa alone in a squad and Code Review still has to run on tiered
     // work, with nobody named to carry it; the same holds in reverse. Invoked
-    // on its own, a gate runs only its own pass (HANDOFF-SOLO-003). "where its boundary
-    // allows" keeps QA out of marking work done, and "reports the gate as
-    // unowned" is the honest answer when the pass cannot be carried at all.
+    // on its own, a gate runs only its own pass (HANDOFF-SOLO-003). The role boundary
+    // keeps QA out of marking work done; report an unowned gate when its pass cannot run.
     statement:
-      'in a squad run on `standard` and `high` work both gates run: when the peer gate has no external owner and its skill is absent, this role runs that pass itself where its boundary allows and labels it non-independent, or reports the gate as unowned',
+      "in a `standard` or `high` squad run, both gates are required: if the peer skill and external owner are absent, run its pass within this role's boundary and label it non-independent, or report the gate unowned",
     files: [codeReviewSkill, qaSkill],
   },
   {
@@ -488,7 +487,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // addressed to nobody or ran QA itself. It reviews, records the missing
     // gate as risk, and leaves the peer gate to the user.
     statement:
-      'invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own gate: a missing earlier gate is residual risk rather than a stop, a verdict that needs evidence or an environment and a `BLOCKED` go to the user with the missing input named, and one line suggests the peer gate',
+      'invoked alone, choose the tier (higher when uncertain) and run only this gate. A missing earlier gate is residual risk, not a stop. Report evidence/environment needs or `BLOCKED` to the user with the missing input; suggest the peer gate in one line',
     files: [codeReviewSkill, qaSkill],
   },
   {

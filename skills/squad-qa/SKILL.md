@@ -11,8 +11,6 @@ metadata:
 
 # Squad — QA
 
-Verify observable behavior against acceptance and risk; report deterministic evidence and a verdict.
-
 QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges
 implementation quality, adding only verification needed to prove a finding.
 
@@ -24,11 +22,11 @@ implementation quality, adding only verification needed to prove a finding.
 
 ## Scope and safety
 
-An established main/coordinator stays coordinator across follow-ups, completed tasks and context compaction until the user changes execution mode. Selecting one role assigns a worker; it does not turn main into that role. Assigned workers stay within their scope.
+A user-designated main/coordinator persists across follow-ups, completion and compaction until the user changes mode. Automatic coordination is task-scoped. Selecting one role assigns a worker; main remains coordinator. Workers retain their scope.
 
 In coordinator mode, main retains its existing squads-team or squad-fix contract; without one, load squads-team before dispatch. Follow that lead's runtime dispatch, model selection, snapshot and gate references even for one role. Workers execute their assigned role, not another lead. If no lead contract is installed, keep dispatch pending and report the missing skill.
 
-Before implementation, main names the worker session or a verified capability gap. Implementation uses threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work instructions win; small integration edits remain allowed unless coordinate-only.
+For a user-designated main, name the worker session or a verified capability gap before implementation. Use threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work or no-delegation instructions win; small integration edits remain allowed unless coordinate-only.
 
 Own test strategy, assigned QA test files/fixtures, test execution, exploratory checks, bug reproduction,
 coverage analysis and gate verdicts. A build role retains co-located unit/contract/regression test files in
@@ -45,18 +43,16 @@ and date. Never auto-install skills, plugins, MCP servers, packages or CLIs.
 
 ## Core gates
 
-1. **Trace acceptance** — every criterion needs a test/evidence path or explicit risk-based rationale. A
-   criterion whose test was skipped, filtered out or never reached the runner is unevidenced, reported at
-   the same volume as a failure.
-2. **Test the behavioral risk surface** — cover relevant happy path, boundaries, errors, permissions,
-   concurrency, lifecycle/offline, accessibility and compatibility; security, performance and rollback as
-   executed checks only, since Code Review judges them statically.
-3. **Keep evidence deterministic** — no arbitrary sleeps, uncontrolled remote data or order dependence;
-   isolate or explain environmental flakiness. A subject that is stochastic by construction is evidenced
-   by a stated sample and threshold, never by treating its variance as a defect.
-4. **Verdict honestly** — `PASS` only when required evidence executed and passed; `FAIL` identifies a
-   product/test defect with minimal repro; `NEEDS_ENVIRONMENT` identifies the exact missing target,
-   artifact, service or access.
+1. **Trace acceptance** — each criterion needs a test/evidence path or explicit risk-based rationale.
+   Report skipped, filtered or unexecuted criteria as unevidenced, as prominently as failures.
+2. **Cover behavioral risk** — test relevant happy paths, boundaries, errors, permissions, concurrency,
+   lifecycle/offline, accessibility and compatibility. Security, performance and rollback claims require
+   execution; Review judges them statically.
+3. **Keep evidence deterministic** — avoid arbitrary sleeps, uncontrolled remote data and order dependence;
+   isolate or explain environmental flakiness. For stochastic subjects, state sample and threshold instead
+   of calling variance a defect.
+4. **Verdict honestly** — `PASS` requires all required evidence to run and pass; `FAIL` names a product/test
+   defect and minimal repro; `NEEDS_ENVIRONMENT` names the exact missing target, artifact, service or access.
 
 ## Conditional references
 
@@ -76,27 +72,25 @@ reread only after a file change, missing context or a scope change.
 
 ## Quality bar
 
-A suite that cannot fail is not coverage. Before issuing a verdict, run the self-review in
+Before issuing a verdict, run
 [quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
 
 ## Workflow
 
-1. **Frame** — resolve the change/diff, acceptance criteria, owning role, affected contracts, environment,
-   existing test stack and known risk.
-2. **Design scenarios** — map criteria and risk dimensions to the narrowest reliable tests; identify data,
-   fixtures, devices/browsers, services and observability required.
-3. **Execute** — run focused behavioral tests first, then broaden to relevant
-   integration/e2e/contract/a11y/performance/security checks.
-4. **On failure** — confirm repeatability, minimize the repro, classify it (product, test, environment,
-   dependency, spec) and preserve redacted artifacts.
-5. **Verdict** — per gate 4; `NEEDS_ENVIRONMENT` gets one resolution by the lead, then QA resumes.
+1. **Frame** — resolve diff, acceptance, owner, contracts, environment, existing test stack and risk.
+2. **Design** — map criteria/risk to the narrowest reliable tests and required data, fixtures,
+   devices/browsers, services and observability.
+3. **Execute** — start focused, then broaden behavioral checks by risk.
+4. **On failure** — confirm repeatability, minimize repro, classify product/test/environment/dependency/spec
+   cause, and preserve redacted artifacts.
+5. **Verdict** — per gate 4; the lead gets one resolution of `NEEDS_ENVIRONMENT`, then QA resumes.
 
 ## Handoff contract
 
 - From the owning role, the diff under test, the acceptance criteria it claims to meet, the commands and
   environment that exercise it, and the checks already run.
-- To Code Review, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage
-  and residual risk, and whether the pass was independent.
+- To Code Review, a `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` verdict with evidence, coverage, residual risk
+  and independence status.
 - On `FAIL`, to the owning role: the minimal repro, expected versus actual, and the redacted artifacts.
 - On `NEEDS_ENVIRONMENT`, to the lead, or to the user when run on its own: the exact gap and the smallest
   next action.
@@ -107,13 +101,11 @@ A suite that cannot fail is not coverage. Before issuing a verdict, run the self
   commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- Invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own
-  gate: a missing earlier gate is residual risk rather than a stop, a verdict that needs evidence or an
-  environment and a `BLOCKED` go to the user with the missing input named, and one line suggests the peer
-  gate.
-- In a squad run on `standard` and `high` work both gates run: when the peer gate has no external owner
-  and its skill is absent, this role runs that pass itself where its boundary allows and labels it
-  non-independent, or reports the gate as unowned.
+- Invoked alone, choose the tier (higher when uncertain) and run only this gate. A missing earlier gate
+  is residual risk, not a stop. Report evidence/environment needs or `BLOCKED` to the user with the
+  missing input; suggest the peer gate in one line.
+- In a `standard` or `high` squad run, both gates are required: if the peer skill and external owner are
+  absent, run its pass within this role's boundary and label it non-independent, or report the gate unowned.
 - QA and Code Review return every finding on the same revision to the same owner. Allow at most two worker repair passes per unit; assess each completed pass with both gates. If the same failure persists across two consecutive gate assessments with no new evidence, or the gates still fail after the second repair pass, report `BLOCKED` with attempts, evidence and options. Resume another bounded batch only when the user asks.
 - In a paired gate, QA and Code Review start concurrently on the same revision, exchange evidence through direct agent messages when supported or through the lead otherwise, and Code Review waits for QA evidence before its final verdict.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
@@ -138,10 +130,9 @@ A suite that cannot fail is not coverage. Before issuing a verdict, run the self
 
 ## Completion checklist
 
-- [ ] Every acceptance criterion maps to executed evidence or explicit rationale
-- [ ] The relevant risk surface is covered with deterministic synchronization and stable fixtures
-- [ ] Commands, environment and artifacts are recorded well enough to repeat
-- [ ] FAIL carries a minimal repro; NEEDS_ENVIRONMENT names the exact gap and next action
-- [ ] A fix rerun covers the changed surface and keeps still-current evidence
+- [ ] Acceptance and risk coverage have executed evidence or explicit rationale
+- [ ] Commands, environment, fixtures and artifacts make results repeatable
+- [ ] Verdict, repro/gaps, next action and independence follow the handoff contract
+- [ ] Fix reruns cover the changed surface and retain current evidence
 - [ ] No production implementation was edited
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

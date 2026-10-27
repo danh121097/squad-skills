@@ -8,7 +8,22 @@ current model/effort mapping until a repeated comparison supports changing it.
 
 ```sh
 pnpm payload:report
+pnpm payload:report --root /tmp/squad-baseline
+pnpm payload:report --baseline-root /tmp/squad-baseline
 ```
+
+`--root` selects the catalog to measure (the current checkout by default).
+`--baseline-root` adds per-skill and per-path deltas against a saved catalog.
+Both roots use the current harness's named paths; snapshot code is never executed.
+`readingPathsHash` identifies that path population, and the comparison function
+rejects reports whose path hashes differ. Keep the path manifest with a baseline
+so later routing edits cannot be mistaken for content savings.
+
+Before editing skill content, copy `skills/` and `README.md` into a new snapshot
+directory, including pending changes. Record the base revision, pending diff/hash,
+runtime versions and payload report beside it. An ignored directory under `plans/`
+is suitable for local evidence. Keep this snapshot unchanged and use it for both
+payload measurement and baseline packets; a Git revision alone misses dirty edits.
 
 The JSON reports entrypoint, each declared path, median, maximum and total words
 for each skill. Workflow scenarios additionally report unique payload words (each
@@ -23,6 +38,9 @@ Designer adaptive paths include their platform. The revised ceilings for these
 three roles correct the accounting basis; their increases are not payload savings.
 Keep the ceiling gate, review each path and maximum as well as the median, and
 update router prose and `src/catalog/skill-task-types.ts` together.
+Frontend UI motion and interactive graphics/games have separate paths: ordinary
+UI motion excludes the graphics-runtime reference. This split changes the median's
+population; compare both catalogs on the same paths before attributing any delta.
 
 ## Prepare identical tasks
 
@@ -35,6 +53,9 @@ The destination must be new and its parent must exist. Preparation snapshots the
 catalog and creates `workspace/`, `skills/`, `README.md`, `prompt.txt`, `metadata.json` and a
 separate `rubric.json`. It launches nothing. Preparation may leave a partial packet
 on an I/O failure; discard that task-owned packet and prepare a new destination.
+Keep runnable packets outside the product checkout: generic test discovery can
+otherwise execute their deliberately failing fixtures. Only catalog snapshots,
+reports and packet indexes belong under the checkout's ignored `plans/` directory.
 For `missing-peer`, only the lead skill is supplied. The plugin-only scenario is
 installation advice; the installer behavior is independently covered by unit tests.
 
@@ -63,6 +84,24 @@ and report the sample size; a small pilot is not a statistical guarantee. Preser
 transcripts, actual diffs and executed command output outside the product repo.
 Do not launch evaluation sessions when the user has forbidden delegation or other
 model sessions. Offline packet/tooling verification is still possible in that case.
+
+## Domain and routing scenarios
+
+The domain cases add three output checks:
+
+- `product-partial-frame`: preserve settled requirements while exposing unresolved
+  policy, acceptance and sequencing decisions.
+- `mobile-offline-retry`: preserve persisted edits and IDs across timeout/restart,
+  including restart while send is pending; reject unrelated acknowledgements and
+  retain edits queued during send. The Node
+  fixture proves shared logic only; native storage and device lifecycle need separate evidence.
+- `devops-untrusted-pr`: repair an unsafe validation workflow for fork PRs. The
+  workflow is inert fixture text; local tests and parsing cannot prove a GitHub run.
+
+The [routing protocol](skill-routing-evaluation.md) defines 20 activation-only
+queries, fixed train/validation splits, near-miss pairs and no-skill negatives.
+These use metadata discovery rather than an explicitly named skill. Domain cases
+name their role to isolate output quality from activation quality.
 
 ## Coordination trials
 

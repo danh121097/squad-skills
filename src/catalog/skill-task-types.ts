@@ -249,7 +249,16 @@ const frontend: SkillTaskType[] = [
     references: ['frontend-stack-and-motion-selection.md', 'quality-bar-and-preflight.md'],
   },
   {
-    id: 'motion-and-interactive-graphics',
+    id: 'ui-motion',
+    references: [
+      'frontend-security-accessibility-and-performance.md',
+      'frontend-stack-and-motion-selection.md',
+      'frontend-testing-and-debugging.md',
+      'quality-bar-and-preflight.md',
+    ],
+  },
+  {
+    id: 'interactive-graphics-and-games',
     references: [
       'frontend-security-accessibility-and-performance.md',
       'frontend-stack-and-motion-selection.md',

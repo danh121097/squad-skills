@@ -184,9 +184,19 @@ inventory here.
 ## Add or update a skill
 
 Keep each skill in its own `skills/<kebab-case-name>/` directory. Its `SKILL.md` must
-have a matching lowercase kebab-case `name`, a non-empty `description`, and
-valid relative links to any bundled references. Run `pnpm test` before sharing
-the repository.
+have valid relative links to any bundled references. The validator checks these
+[Agent Skills frontmatter constraints](https://agentskills.io/specification):
+
+- `name`: 1–64 characters, lowercase kebab-case, matching the directory.
+- `description`: a non-blank string of at most 1024 characters.
+- `compatibility`, when present: a non-blank string of at most 500 characters.
+- `metadata`, when present: a mapping of string keys to string values. Quote
+  numeric keys and version values when they must remain strings.
+
+Character limits count Unicode code points. Runtime extension fields such as
+`user-invocable`, `argument-hint`, `category` and `keywords` remain accepted;
+their client-specific semantics are not validated here. Run `pnpm test` before
+sharing the repository.
 
 A change to what an agent reads at runtime carries maintainer review as well as
 `pnpm test`. See [AGENTS.md](../AGENTS.md) for that rule and what the gate does

@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
+import { stringify } from 'yaml';
 
 import { validateSkills } from '../../src/catalog/skill-validator.ts';
 
@@ -28,6 +29,54 @@ describe('validateSkills', () => {
       errors: [],
       skillNames: ['valid-skill'],
     });
+  });
+
+  it('accepts standard field limits and preserves runtime extensions', async () => {
+    const projectRoot = await createProject();
+    const name = 'a'.repeat(64);
+    await createSkill(projectRoot, name, {
+      frontmatter: {
+        description: '😀'.repeat(1024),
+        compatibility: '😀'.repeat(500),
+        metadata: { author: 'Example', version: '1.0', '123': 'a string key' },
+        'user-invocable': true,
+        'argument-hint': '[task]',
+        category: 'testing',
+        keywords: ['test', 'validation'],
+      },
+    });
+
+    await expect(validateSkills(projectRoot)).resolves.toEqual({ errors: [], skillNames: [name] });
+  });
+
+  it.each([
+    ['name', 'a'.repeat(65), 'must be at most 64 characters'],
+    ['description', 'a'.repeat(1025), 'must be at most 1024 characters'],
+    ['compatibility', 'a'.repeat(501), 'must be at most 500 characters'],
+    ['compatibility', '', 'must be a non-empty string'],
+    ['compatibility', '   ', 'must be a non-empty string'],
+    ['compatibility', 1, 'must be a non-empty string'],
+    ['compatibility', null, 'must be a non-empty string'],
+    ['metadata', null, 'must be a mapping of string keys to string values'],
+    ['metadata', 'author', 'must be a mapping of string keys to string values'],
+    ['metadata', ['author'], 'must be a mapping of string keys to string values'],
+    ['metadata', { version: 1 }, 'must be a mapping of string keys to string values'],
+    ['metadata', { enabled: true }, 'must be a mapping of string keys to string values'],
+    ['metadata', { author: null }, 'must be a mapping of string keys to string values'],
+    [
+      'metadata',
+      { nested: { author: 'Example' } },
+      'must be a mapping of string keys to string values',
+    ],
+    ['metadata', new Map([[123, 'Example']]), 'must be a mapping of string keys to string values'],
+  ])('rejects invalid %s frontmatter (case %#)', async (field, value, problem) => {
+    const projectRoot = await createProject();
+    const name = field === 'name' ? String(value) : 'valid-skill';
+    await createSkill(projectRoot, name, { frontmatter: { [String(field)]: value } });
+
+    const result = await validateSkills(projectRoot);
+
+    expect(result.errors).toEqual([`skills/${name}/SKILL.md: "${field}" ${problem}.`]);
   });
 
   it('reports malformed or incomplete YAML frontmatter', async () => {
@@ -305,6 +354,7 @@ async function createSkill(
   directory: string,
   options: {
     body?: string;
+    frontmatter?: Record<string, unknown>;
     name?: string;
     references?: Record<string, string>;
   } = {}
@@ -314,7 +364,8 @@ async function createSkill(
 
   const name = options.name ?? directory;
   const body = options.body ?? '# Instructions';
-  const source = `---\nname: ${name}\ndescription: Test skill\n---\n\n${body}\n`;
+  const frontmatter = stringify({ name, description: 'Test skill', ...options.frontmatter });
+  const source = `---\n${frontmatter}---\n\n${body}\n`;
   await writeFile(path.join(skillRoot, 'SKILL.md'), source, 'utf8');
 
   for (const [filename, content] of Object.entries(options.references ?? {})) {

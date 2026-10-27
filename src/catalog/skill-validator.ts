@@ -102,24 +102,46 @@ function parseSkillMetadata(
     return null;
   }
 
-  const value: unknown = document.toJS();
+  // Preserve YAML key types: object conversion would turn numeric metadata keys into strings.
+  const value: unknown = document.toJS({ mapAsMap: true });
 
-  if (!isRecord(value)) {
+  if (!(value instanceof Map)) {
     errors.push(`${relative(projectRoot, skillFile)}: frontmatter must be a YAML mapping.`);
     return null;
   }
 
-  const name = value.name;
-  const description = value.description;
-
-  if (typeof name !== 'string' || name.trim().length === 0) {
-    errors.push(`${relative(projectRoot, skillFile)}: missing non-empty "name".`);
+  const fields: Map<unknown, unknown> = value;
+  const skillPath = relative(projectRoot, skillFile);
+  for (const [field, limit] of [
+    ['name', 64],
+    ['description', 1024],
+    ['compatibility', 500],
+  ] as const) {
+    if (field === 'compatibility' && !fields.has(field)) continue;
+    const content = fields.get(field);
+    if (typeof content !== 'string' || content.trim().length === 0) {
+      const problem =
+        field === 'compatibility'
+          ? '"compatibility" must be a non-empty string'
+          : `missing non-empty "${field}"`;
+      errors.push(`${skillPath}: ${problem}.`);
+    } else if ([...(field === 'name' ? content.trim() : content)].length > limit) {
+      errors.push(`${skillPath}: "${field}" must be at most ${limit} characters.`);
+    }
   }
 
-  if (typeof description !== 'string' || description.trim().length === 0) {
-    errors.push(`${relative(projectRoot, skillFile)}: missing non-empty "description".`);
+  if (fields.has('metadata')) {
+    const metadata = fields.get('metadata');
+    if (
+      !(metadata instanceof Map) ||
+      [...metadata].some(([key, entry]) => typeof key !== 'string' || typeof entry !== 'string')
+    ) {
+      errors.push(`${skillPath}: "metadata" must be a mapping of string keys to string values.`);
+    }
   }
 
+  const name = fields.get('name');
+  const description = fields.get('description');
   if (
     typeof name !== 'string' ||
     name.trim().length === 0 ||
@@ -158,10 +180,6 @@ function validateMetadata(
   }
 
   skillNames.add(metadata.name);
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function relative(projectRoot: string, filePath: string): string {

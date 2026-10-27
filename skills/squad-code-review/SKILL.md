@@ -11,8 +11,6 @@ metadata:
 
 # Squad — Code Review
 
-Review implementation quality beside QA; verify findings and return them to the owning engineer.
-
 QA proves observable behavior against acceptance and risk; Code Review consumes that evidence and judges
 implementation quality, adding only verification needed to prove a finding.
 
@@ -24,11 +22,11 @@ implementation quality, adding only verification needed to prove a finding.
 
 ## Scope and safety
 
-An established main/coordinator stays coordinator across follow-ups, completed tasks and context compaction until the user changes execution mode. Selecting one role assigns a worker; it does not turn main into that role. Assigned workers stay within their scope.
+A user-designated main/coordinator persists across follow-ups, completion and compaction until the user changes mode. Automatic coordination is task-scoped. Selecting one role assigns a worker; main remains coordinator. Workers retain their scope.
 
 In coordinator mode, main retains its existing squads-team or squad-fix contract; without one, load squads-team before dispatch. Follow that lead's runtime dispatch, model selection, snapshot and gate references even for one role. Workers execute their assigned role, not another lead. If no lead contract is installed, keep dispatch pending and report the missing skill.
 
-Before implementation, main names the worker session or a verified capability gap. Implementation uses threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work instructions win; small integration edits remain allowed unless coordinate-only.
+For a user-designated main, name the worker session or a verified capability gap before implementation. Use threads/sub-sessions with read-back and follow-ups; a valid launcher or missing authorization keeps dispatch pending. Only unavailable session capabilities permit fallback to subagents, then direct work. Explicit direct-work or no-delegation instructions win; small integration edits remain allowed unless coordinate-only.
 
 Review diffs, PRs, commits or pending changes; the owning engineer implements fixes.
 
@@ -46,17 +44,16 @@ own primary docs; cite version and date. Never auto-install skills, plugins, MCP
    affected consumers before reviewing.
 2. **Inspect blast radius** — follow changed contracts, callers, state/data paths, permissions,
    migrations, configuration, rollout and tests beyond the edited lines.
-3. **Verify findings empirically** — trace the code path, inspect authoritative docs, or run the narrowest
-   check needed to prove a suspected finding. Match QA evidence to the exact diff, including pending
-   changes, and relevant environment before reusing it rather than replaying its suite. Builder
-   verification is evidence, not an independent QA verdict. Separate confirmed defects from questions.
+3. **Verify findings empirically** — prove findings by tracing code, checking primary docs or running the
+   narrowest useful check. Reuse QA evidence only for the exact diff (including pending changes) and
+   relevant environment; do not replay its suite. Builder checks are not independent QA. Separate defects
+   from questions.
 4. **Rank by user/system impact** — blocking, warning or suggestion, as defined in the severity reference;
    include tight file:line evidence, failure condition, impact and concrete remediation.
-5. **Gate honestly** — `APPROVE` only with no blockers; warnings and suggestions are listed but never
-   request changes on their own. `CHANGES_REQUESTED` returns to owner, then affected QA and a re-review of
-   only the stated findings and the fix's blast radius; `NEEDS_EVIDENCE` names the exact missing target,
-   QA, contract, docs or runtime evidence and returns to the lead, or to the user when run on its own. It
-   blocks `done` without inventing a defect.
+5. **Gate honestly** — `APPROVE` needs no blockers; list warnings/suggestions, which alone never request
+   changes. Send `CHANGES_REQUESTED` to the owner, then affected QA and review of only the findings and
+   fix's blast radius. `NEEDS_EVIDENCE` blocks `done` and returns the exact missing target, QA, contract,
+   docs or runtime evidence to the lead (user when solo), without inventing a defect.
 
 ## Conditional references
 
@@ -77,8 +74,7 @@ reread only after a file change, missing context or a scope change.
 
 ## Quality bar
 
-A finding is a claim with evidence behind it, severity is impact rather than surprise, and one cause is one
-finding. Before issuing a verdict, run the self-review in
+Before issuing a verdict, run
 [quality-bar-and-preflight.md](references/quality-bar-and-preflight.md).
 
 ## Workflow
@@ -92,9 +88,8 @@ finding. Before issuing a verdict, run the self-review in
 
 ## Handoff contract
 
-- From QA, a verdict of `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` with the evidence behind it, coverage and
-  residual risk, and whether the pass was independent. In a squad run Review starts with QA, and `APPROVE`
-  needs QA `PASS` on that revision.
+- From QA, a `PASS`, `FAIL` or `NEEDS_ENVIRONMENT` verdict with evidence, coverage, residual risk and
+  independence status. In a squad run Review starts with QA, and `APPROVE` needs QA `PASS` on that revision.
 - From DevOps on an infrastructure change, the exact target acted on, which verification level ran —
   static, plan or deployed — and the rollback trigger and recovery path.
 - To the owning role and the lead, severity-ranked findings carrying file:line, failure condition, impact
@@ -108,13 +103,11 @@ finding. Before issuing a verdict, run the self-review in
   commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data
   or migration, production infrastructure or secrets, data deletion) runs both independently where the
   runtime allows.
-- Invoked on its own, this role names the tier itself, the higher one when in doubt, and runs only its own
-  gate: a missing earlier gate is residual risk rather than a stop, a verdict that needs evidence or an
-  environment and a `BLOCKED` go to the user with the missing input named, and one line suggests the peer
-  gate.
-- In a squad run on `standard` and `high` work both gates run: when the peer gate has no external owner
-  and its skill is absent, this role runs that pass itself where its boundary allows and labels it
-  non-independent, or reports the gate as unowned.
+- Invoked alone, choose the tier (higher when uncertain) and run only this gate. A missing earlier gate
+  is residual risk, not a stop. Report evidence/environment needs or `BLOCKED` to the user with the
+  missing input; suggest the peer gate in one line.
+- In a `standard` or `high` squad run, both gates are required: if the peer skill and external owner are
+  absent, run its pass within this role's boundary and label it non-independent, or report the gate unowned.
 - QA and Code Review return every finding on the same revision to the same owner. Allow at most two worker repair passes per unit; assess each completed pass with both gates. If the same failure persists across two consecutive gate assessments with no new evidence, or the gates still fail after the second repair pass, report `BLOCKED` with attempts, evidence and options. Resume another bounded batch only when the user asks.
 - In a paired gate, QA and Code Review start concurrently on the same revision, exchange evidence through direct agent messages when supported or through the lead otherwise, and Code Review waits for QA evidence before its final verdict.
 - `APPROVE` closes the unit: its warnings and suggestions go to the final report as options for the user, and
@@ -135,12 +128,8 @@ finding. Before issuing a verdict, run the self-review in
 
 ## Completion checklist
 
-- [ ] Target, base and acceptance were resolved; QA evidence was consumed before the verdict, not replayed,
-      or its absence recorded as residual risk
-- [ ] Contracts, consumers, data/auth paths and operational blast radius were inspected
-- [ ] Each finding is verified, carries file:line, failure condition, impact and remediation, and is
-      ranked by realistic impact
-- [ ] Implementation alignment and production quality are reported as separate ranked lists
-- [ ] No feature edits or unauthorized external mutations were made
-- [ ] Verdict, residual unverified risk and independence are explicit
+- [ ] Target, base, acceptance and current QA evidence are resolved, or missing QA is recorded as residual risk
+- [ ] Review dimensions, finding format and both ranked lists follow the reporting reference
+- [ ] Uninspected scope, residual risk, verdict and independence are explicit
+- [ ] No implementation edits or unauthorized external mutations were made
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

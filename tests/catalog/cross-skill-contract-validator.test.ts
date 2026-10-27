@@ -173,6 +173,12 @@ describe('validateCrossSkillContract', () => {
       'COORDINATOR-PERSISTENCE-001',
       'COORDINATOR-ROUTING-001',
     ]);
+    const persistence = clauses.find((clause) => clause.id === 'COORDINATOR-PERSISTENCE-001')!;
+    expect(persistence.statement).toContain('A user-designated main/coordinator');
+    expect(persistence.statement).toContain('Automatic coordination is task-scoped');
+    const dispatch = clauses.find((clause) => clause.id === 'COORDINATOR-DISPATCH-001')!;
+    expect(dispatch.statement).toContain('For a user-designated main');
+    expect(dispatch.statement).toContain('Explicit direct-work or no-delegation instructions win');
     for (const clause of clauses) {
       expect([...clause.files].sort()).toEqual(files);
       const contents = Object.fromEntries(
@@ -280,6 +286,23 @@ describe('handoff contract family', () => {
     });
 
     expect(result.errors).toEqual([]);
+  });
+
+  it('keeps absent-peer fallback conditional on a standard or high squad run', async () => {
+    const fallback = boundaryClauses.find((clause) => clause.id === 'HANDOFF-GATE-002')!;
+    const scoped = 'in a `standard` or `high` squad run, both gates are required:';
+    expect(normalizeProse(fallback.statement)).toContain(normalizeProse(scoped));
+    expect([...fallback.files].sort()).toEqual([codeReviewSkill, qaSkill]);
+
+    const unscoped = fallback.statement.replace('`standard` or `high` squad run', 'squad run');
+    expect(unscoped).not.toBe(fallback.statement);
+    const projectRoot = await createProject({
+      [qaSkill]: fallback.statement,
+      [codeReviewSkill]: unscoped,
+    });
+    const result = await validateCrossSkillContract(projectRoot, { clauses: [fallback] });
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain(codeReviewSkill);
   });
 
   it('binds execution-mode choice and authorization on both orchestrators', async () => {
