@@ -14,8 +14,10 @@ infrastructure changed.
 Record the exact target, command or manual path, environment/version, result, relevant artifact, and any
 limitation. Redact tokens, credentials, personal data and private payloads.
 
-On a fix rerun, retain evidence whose behavior, contract and environment are unchanged. Rerun the failed or
-affected checks plus neighboring regression coverage; widen only when the delta changes the risk surface.
+On a fix rerun, name the checks run on this revision and the results reused from an earlier run.
+For each reused result, explain why the behavior, contract and environment it covers still match.
+Trace shared contracts to affected consumers. Run the full relevant suite when the impact cannot be
+bounded or the repository requires it.
 Never mutate production data without authority.
 
 ## Verdict

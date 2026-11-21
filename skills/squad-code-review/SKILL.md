@@ -96,8 +96,9 @@ Before issuing a verdict, run
   and remediation, and a verdict of `APPROVE`, `CHANGES_REQUESTED` or `NEEDS_EVIDENCE`.
 - What was inspected, what was not, and the residual unverified risk — reported even when no finding
   exists.
-- After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and
-  neighboring blast radius, broadening only when contract or risk changes.
+- After a fix, QA reruns failed and affected checks, including neighboring regressions.
+  For unchanged behavior, use existing tests covering those paths. Report what ran, which results
+  were reused and why. Review verifies the finding, fix and their blast radius.
 - In a squad run the lead names the gate tier: `light` (one owner, no change to a public contract, auth,
   data or migration, infrastructure or a dependency) closes on one combined verify pass with real
   commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data

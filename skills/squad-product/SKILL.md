@@ -79,8 +79,8 @@ the self-review in
 
 ## Workflow
 
-1. **Resolve the given** — on an existing repository read enough to know what the plan adds to; on an
-   empty one record the stack as undecided with its owner.
+1. **Resolve the given** — inspect what the plan adds to an existing repository. On an empty repository,
+   keep the stack choices in the brief and name an owner for each choice still open.
 2. **Separate decided from open** — ask about the forks that change the work; label every other
    assumption.
 3. **Frame, cut, phase** — gates 1–5; cut what ships first, what is deferred and on what condition, and
@@ -104,16 +104,16 @@ the self-review in
   consequences to the lead, or to the user when solo. The lead settles only choices supported by the
   request, repository or evidence, citing the source; otherwise ask the user through a structured
   question tool, else a numbered list.
-- Technical decisions this role did not make are named as open with their owner; a corrected assumption
-  reopens framing rather than being patched in. Nothing is reported as accepted until the user accepts it.
+- Name each open technical decision and its owner. A corrected assumption reopens framing. Nothing is
+  reported as accepted until the user accepts it.
 
 ## Completion checklist
 
 - [ ] The outcome is in the user's terms, and what was already decided or built is recorded as given
 - [ ] Every acceptance criterion names an observable condition that can fail, or is marked unverified
 - [ ] Non-goals are explicit, with deferred distinguished from refused
-- [ ] Assumptions are labeled and each open fork names its owner; on an empty repository the undecided
-      stack is one, never an inherited default
+- [ ] Assumptions are labeled and each open fork names its owner, including stack choices the brief
+      leaves open on an empty repository
 - [ ] Each phase names its required Squad roles, their distinct responsibilities and its precondition
 - [ ] Plan files exist only because the user asked; nothing was executed or gated
 - [ ] The quality-bar pre-flight ran; failed checks were fixed or reported

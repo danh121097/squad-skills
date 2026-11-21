@@ -112,9 +112,8 @@ Passing slices still need integration; missing evidence or environments prevent 
 ## Workflow
 
 1. **Frame** — per gate 1; lock authority and required environments too.
-2. **Scout/diagnose** — per gate 2. An empty repository returns nothing here, so frame the stack as a
-   decision instead of inferring one. For a concrete failure, prove root cause and blast radius before
-   role assignment.
+2. **Scout/diagnose** — per gate 2. On an empty repository, keep the brief's stack and frame any open
+   choices. For a concrete failure, prove root cause and blast radius before role assignment.
 3. **Route and own** — select roles, assign files and dependencies, identify the ready frontier, then select
    team/thread/subagent/single execution mode from live capabilities.
 4. **Design/plan gates** — run Designer per gate 3; collect build plans when approval is enabled.
@@ -144,8 +143,9 @@ Passing slices still need integration; missing evidence or environments prevent 
   [references/coordination-contract.md](references/coordination-contract.md).
 - Each role returns its artifact, the evidence at the level it actually ran, and the gaps it could not
   close; the lead composes these and never upgrades a gap into a result.
-- After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and
-  neighboring blast radius, broadening only when contract or risk changes.
+- After a fix, QA reruns failed and affected checks, including neighboring regressions.
+  For unchanged behavior, use existing tests covering those paths. Report what ran, which results
+  were reused and why. Review verifies the finding, fix and their blast radius.
 - For a stage without an external owner, an absent squad peer's stage runs inline where this role's
   boundary allows, or is reported as a gap; a stage no pass ran is never reported as run.
 - When the user assigns QA or Code Review to another named session, hand off the exact diff (including

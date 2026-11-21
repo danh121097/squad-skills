@@ -410,7 +410,7 @@ export const boundaryClauses: BoundaryClause[] = [
     // Both gates and their lead carry the same delta-sized return edge so a fix
     // does not silently restart unaffected work or skip affected evidence.
     statement:
-      'After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and neighboring blast radius, broadening only when contract or risk changes',
+      'After a fix, QA reruns failed and affected checks, including neighboring regressions. For unchanged behavior, use existing tests covering those paths. Report what ran, which results were reused and why. Review verifies the finding, fix and their blast radius',
     files: [codeReviewSkill, qaSkill, teamSkill],
   },
   {

@@ -14,9 +14,8 @@ Without `squad-product`, a written plan follows the same shape: a written plan i
 long to read as one file keeps plan.md as the only index and moves each phase to
 phases/phase-XX-kebab-case-title.md, with every link relative.
 
-An empty repository has nothing to scout, so the stack becomes a framing output. Name target platforms, the
-runtime and framework per platform, and the deployment target, then hand each to the role that owns it.
-Record it as a decision with its reason, so a later role reads a choice rather than an inherited default. A
+On an empty repository, carry forward the platforms, runtimes, frameworks and deployment targets the brief
+specifies. Hand each open choice to its owner, who records the decision and its reason. A
 decision another role implements records what would reopen it, not only what was chosen.
 
 ## Designer
@@ -59,9 +58,10 @@ implementation; never edits it.
 
 ## Code Review
 
-Consumes current QA evidence, then reviews implementation through callers, contracts, data, auth, config and
-tests; verifies a suspected finding with the narrowest useful check; ranks severity with file:line, trigger,
-impact, evidence and remediation; issues `APPROVE`/`CHANGES_REQUESTED`/`NEEDS_EVIDENCE`.
+Reviews the frozen diff through callers, contracts, data, auth, config and tests while QA runs. Verifies
+findings with the narrowest useful check and reports severity, file:line, trigger, impact, evidence and
+remediation. Uses matching QA evidence for the paired verdict of `APPROVE`, `CHANGES_REQUESTED` or
+`NEEDS_EVIDENCE`.
 
 ## Universal evidence gate
 

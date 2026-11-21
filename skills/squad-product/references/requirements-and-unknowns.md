@@ -26,14 +26,11 @@ When the session cannot ask, return the fork upward as an open decision in that 
 recommended option marked as the labeled default, and name the phase that cannot start until the user has
 picked.
 
-## An empty repository inverts that
+## Stack choices on an empty repository
 
-With nothing to read, the stack stops being a fact to discover and becomes a decision nobody has made. The
-owning role makes it, and no phase assumes one in the meantime. Name the target
-platforms, the runtime and framework per platform, and the deployment target as open decisions, each with
-the role that owns it and a default. The failure to avoid is the inherited default: a plan whose phases read
-as if the stack were settled, so a later role finds a choice it never made and cannot tell it from a
-requirement.
+Carry forward the platforms, runtimes, frameworks and deployment targets the brief specifies. For each
+choice the brief and repository leave open, name its owner and give a labeled default. A phase that
+depends on the choice lists it as a precondition.
 
 ## When the ask is a feeling
 

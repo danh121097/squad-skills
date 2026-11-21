@@ -5,8 +5,8 @@ Judge against the repository's established framework and style.
 
 ## Two-stage review
 
-1. **Implementation alignment:** compare the diff to the accepted contract, scope and QA evidence. Identify
-   omissions, scope drift, contract changes and user decisions without replaying behavioral QA.
+1. **Implementation alignment:** compare the diff to the accepted contract and scope. Identify omissions,
+   scope drift, contract changes and user decisions. Use QA evidence as it arrives.
 2. **Production quality:** inspect the review dimensions against the diff, using the relevant domain references.
 
 Search semantic siblings

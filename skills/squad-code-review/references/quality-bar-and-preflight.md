@@ -17,10 +17,11 @@ so the pass holds with no other skill installed.
 
 ### Scope
 
-- Exact revision, base, acceptance criteria and QA evidence are resolved before the first finding.
+- Start on the frozen diff once the base and acceptance criteria are known. In a paired review, share
+  verified findings while QA runs.
 - Blast radius traced: callers, contracts, data and permission paths, migrations, config, rollout, tests.
-- Implementation alignment is settled first; production-quality review uses the accepted contract and QA
-  evidence without replaying behavioral coverage.
+- Check implementation alignment first. In a paired review, use matching QA evidence before the final
+  verdict and require QA `PASS` on that revision for `APPROVE`.
 
 ### Evidence
 

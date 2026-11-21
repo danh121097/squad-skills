@@ -23,8 +23,8 @@ pass holds with no other skill installed.
 
 ### Decisions
 
-- No stack, architecture, data-model or UI/UX decision was made here; each one the plan depends on is listed
-  as open with its owner named.
+- Settled stack, architecture, data-model and UI/UX choices are recorded as given. Each remaining choice
+  the plan depends on names the role that will decide it.
 - Every assumption is labeled, in a list the user can correct in one pass, and each open fork carries a
   default.
 

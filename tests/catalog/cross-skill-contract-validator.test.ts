@@ -649,19 +649,27 @@ describe('handoff contract family', () => {
     expect(result.errors[0]).toContain(codeReviewSkill);
   });
 
-  it('fails when one gate restarts the whole pipeline instead of preserving delta-sized reruns', async () => {
+  it.each([
+    {
+      drift: 'restarts every check',
+      guidance: 'After code changes, discard every result and restart all checks.',
+    },
+    {
+      drift: 'leaves the scope of the existing suite ambiguous',
+      guidance:
+        'After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and neighboring blast radius, broadening only when contract or risk changes.',
+    },
+  ])('rejects QA rerun guidance that $drift', async ({ guidance }) => {
     const rerun = boundaryClauses.find((clause) => clause.id === 'HANDOFF-RERUN-001');
     if (!rerun) throw new Error('HANDOFF-RERUN-001 is missing from the shipped clauses.');
 
     const projectRoot = await createProject({
-      [teamSkill]: `# Team\n\n${rerun.statement}.\n`,
-      [qaSkill]: '# QA\n\nAfter code changes, discard every result and restart all checks.\n',
-      [codeReviewSkill]: `# Review\n\n${rerun.statement}.\n`,
+      [teamSkill]: rerun.statement,
+      [qaSkill]: guidance,
+      [codeReviewSkill]: rerun.statement,
     });
 
-    const result = await validateCrossSkillContract(projectRoot, {
-      clauses: [rerun],
-    });
+    const result = await validateCrossSkillContract(projectRoot, { clauses: [rerun] });
 
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0]).toContain(qaSkill);

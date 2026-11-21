@@ -273,8 +273,10 @@ persists across two assessments without new evidence, or the second repair still
 `BLOCKED` with attempts and options; you can ask it to run another bounded batch. A missing environment,
 authority or decision is also reported as blocked. `APPROVE`
 closes a unit: its warnings and suggestions reach you as options in the final report instead of going
-back to the owner, and a follow-up you ask for is tiered on its own diff, so a docs or test tweak does
-not rerun both gates, and a fix that changes no observable behavior reruns only the existing suite. A build role or `squad-fix` called on its own verifies with real commands and ends
+back to the owner, and a follow-up you ask for is tiered on its own diff. A light docs or test tweak
+closes on its combined verify pass. For a behavior-preserving fix,
+QA runs the existing checks covering the affected paths and reports which earlier results still apply and why.
+Repository-required checks still run. A build role or `squad-fix` called on its own verifies with real commands and ends
 by suggesting `/squad-qa` then `/squad-code-review`; `high` work still runs both. Outside main/coordinator
 thread mode, unavailable delegation lets unassigned gates run as distinct logical passes, reported as
 non-independent. An explicitly required independent or externally

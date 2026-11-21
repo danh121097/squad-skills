@@ -94,8 +94,8 @@ consumes QA's evidence before its verdict rather than before it starts. The
 price is Review work spent on a revision QA then fails, accepted because those
 findings still reach the same fix pass. The paired subagents now start concurrently
 and exchange evidence while working; Review waits for QA's matching evidence
-before its verdict. A fix that changes no observable
-behavior reruns the existing suite instead of a new QA pass.
+before its verdict. For a behavior-preserving fix, QA reruns the existing checks covering affected paths
+and explains which earlier results still apply.
 
 QA and Review also split the dimensions they had both claimed. QA executes
 security, performance and rollback checks; Review judges them statically. Test

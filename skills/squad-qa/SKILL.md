@@ -94,8 +94,9 @@ Before issuing a verdict, run
 - On `FAIL`, to the owning role: the minimal repro, expected versus actual, and the redacted artifacts.
 - On `NEEDS_ENVIRONMENT`, to the lead, or to the user when run on its own: the exact gap and the smallest
   next action.
-- After code changes, QA reruns affected and regression checks, only the existing suite when behavior is unchanged; Review verifies the finding, fix and
-  neighboring blast radius, broadening only when contract or risk changes.
+- After a fix, QA reruns failed and affected checks, including neighboring regressions.
+  For unchanged behavior, use existing tests covering those paths. Report what ran, which results
+  were reused and why. Review verifies the finding, fix and their blast radius.
 - In a squad run the lead names the gate tier: `light` (one owner, no change to a public contract, auth,
   data or migration, infrastructure or a dependency) closes on one combined verify pass with real
   commands; `standard`, the default, runs QA and Code Review together; `high` (auth or permissions, payment, data

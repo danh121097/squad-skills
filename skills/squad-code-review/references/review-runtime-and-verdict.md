@@ -4,7 +4,7 @@ Read before review: dimensions, severity definitions and the finding format.
 
 ## Review dimensions
 
-Consume current QA behavioral evidence, then select implementation-quality dimensions by change risk:
+Select review dimensions by change risk. Incorporate matching QA evidence as it arrives.
 
 - correctness: logic, boundary/error paths, lifecycle, race, concurrency and regression;
 - security/privacy: authN/authZ, tenant isolation, injection, SSRF, secrets, validation and logging;
