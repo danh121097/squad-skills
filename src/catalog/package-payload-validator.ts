@@ -12,7 +12,9 @@ export interface PackagePayloadValidationOptions {
 export async function validatePackagedSkillPayload(
   options: PackagePayloadValidationOptions
 ): Promise<string[]> {
-  const sourceFiles = await listRegularFiles(options.sourceProjectRoot);
+  const sourceFiles = (await listRegularFiles(options.sourceProjectRoot)).filter(
+    (file) => path.posix.basename(file) !== '.DS_Store'
+  );
   const packagedFiles = await listRegularFiles(options.packagedProjectRoot);
   const errors: string[] = [];
 

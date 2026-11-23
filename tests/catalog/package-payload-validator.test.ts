@@ -17,15 +17,39 @@ afterEach(async () => {
 });
 
 describe('validatePackagedSkillPayload', () => {
-  it('accepts an extracted package containing every authored skill file', async () => {
+  it('accepts every authored skill file while Finder metadata stays in the source tree', async () => {
     const sourceProjectRoot = await project('source');
     const packagedProjectRoot = await project('package');
     await skill(sourceProjectRoot);
     await skill(packagedProjectRoot);
+    await writeFile(path.join(sourceProjectRoot, 'skills', '.DS_Store'), 'local metadata');
+    await writeFile(
+      path.join(sourceProjectRoot, 'skills', 'example', 'references', '.DS_Store'),
+      'local metadata'
+    );
 
     await expect(
       validatePackagedSkillPayload({ packagedProjectRoot, sourceProjectRoot })
     ).resolves.toEqual([]);
+  });
+
+  it('reports Finder metadata in the package and a missing authored dotfile', async () => {
+    const sourceProjectRoot = await project('source');
+    const packagedProjectRoot = await project('package');
+    await skill(sourceProjectRoot);
+    await skill(packagedProjectRoot);
+    await writeFile(path.join(sourceProjectRoot, 'skills/example/.DS_Store'), 'local metadata');
+    await writeFile(path.join(packagedProjectRoot, 'skills/example/.DS_Store'), 'local metadata');
+    await writeFile(path.join(sourceProjectRoot, 'skills/example/.editorconfig'), 'root = true\n');
+
+    const errors = await validatePackagedSkillPayload({ packagedProjectRoot, sourceProjectRoot });
+
+    expect(errors).toContain(
+      'Extracted package contains unexpected skill payload file: skills/example/.DS_Store.'
+    );
+    expect(errors).toContain(
+      'Extracted package is missing authored skill payload file: skills/example/.editorconfig.'
+    );
   });
 
   it('reports a regular reference omitted from the extracted package', async () => {
