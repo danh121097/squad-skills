@@ -133,10 +133,10 @@ avoid two catalog versions.
 Each skill also has a role a coding agent can spawn by name. `squad-skills add`
 generates one definition per installed skill:
 
-| Tool        | Definition                  | Loaded by                                                      |
-| ----------- | --------------------------- | -------------------------------------------------------------- |
-| Claude Code | `.claude/agents/<name>.md`  | The file's presence                                            |
-| Codex       | `.codex/agents/<name>.toml` | An `[agents.<name>]` table with `config_file` in `config.toml` |
+| Tool        | Definition                  | Loaded by                                                                                                                   |
+| ----------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code | `.claude/agents/<name>.md`  | The file's presence                                                                                                         |
+| Codex       | `.codex/agents/<name>.toml` | Global: an `[agents.<name>]` table with `config_file` in `~/.codex/config.toml`. Project: the file's presence, once trusted |
 
 A definition carries the skill's own name and description and points at the
 installed `SKILL.md`; it never copies the role's content, so editing a skill
@@ -158,8 +158,18 @@ Notes:
 - Only the npm CLI can do this. `npx skills add` runs the official Skills CLI,
   which installs skills and has no concept of an agent definition, so a GitHub
   installation needs the separate `agents` command.
-- Codex definitions are written at global scope only, because this CLI has not
-  verified where a project-scope Codex config lives. Claude Code supports both.
+- Both tools get definitions at either scope. A project install writes files
+  meant to be committed, with no machine path in them:
+  - each agent names its skill by a path from the project root, following a
+    `.claude/skills` symlink to the shared `.agents/skills` folder;
+  - `skills-lock.json` records each skill as
+    `danh121097/squad-skills#v<version>`, replacing the local path to the npm
+    package cache that the Skills CLI records for a package directory;
+  - agent files carry a model or effort only when `--model` or `--effort` names
+    one;
+  - Codex agents go to `.codex/agents/` and nothing is registered, because Codex
+    discovers that folder itself in a trusted project. A project role replaces a
+    global role of the same name.
 - Registering a Codex agent edits `config.toml`. The CLI copies it to
   `config.toml.squad-skills-backup` before its first edit and keeps that first
   copy on later runs, appends only entries that are missing, and never rewrites
@@ -170,7 +180,7 @@ Notes:
   the catalog defaults; `[agents]` defaults stay intact. Use `--model`, `--effort`,
   named overrides or `inherit` as described in the [README](../README.md#each-role-as-a-subagent-too).
 - `add --list` and `add --help` only list or print help, so they write no agent
-  definitions.
+  definitions and leave `skills-lock.json` alone.
 - A file the CLI did not generate is never replaced. It is reported and kept
   unless `--force` is passed.
 - A definition is written only where the matching skill is actually installed.

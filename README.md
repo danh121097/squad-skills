@@ -87,10 +87,11 @@ defaults to copied files, so installed skills do not depend on an ephemeral
 `squad-skills add` also writes a subagent definition for every skill it
 installs, so a role can be spawned by name instead of only loaded as a skill.
 Claude Code reads `.claude/agents/<name>.md`; Codex reads
-`.codex/agents/<name>.toml` and loads it only once `config.toml` names the file,
-which the CLI registers after backing that config up. Each definition points at
-the `SKILL.md` just installed rather than copying it, so the skill stays the one
-source of truth.
+`.codex/agents/<name>.toml`. A global Codex agent loads only once
+`~/.codex/config.toml` names the file, which the CLI registers after backing that
+config up; a project's `.codex/agents/` is found without one. Each definition
+points at the `SKILL.md` just installed rather than copying it, so the skill
+stays the one source of truth.
 
 `squads-team` and `squad-fix` dispatch other roles. Their ability to delegate from a
 Claude subagent depends on the installed version, depth limit and available tools;
@@ -105,9 +106,11 @@ Use `--no-agents` to install skills alone. A catalog installed through
 npx squad-skills agents --global
 ```
 
-Each Claude Code subagent file carries a model and a reasoning effort for its
-role. Every role runs on `opus` at `medium` effort, except `squads-team`, which
-runs at `high`. `--model` and `--effort`
+Each globally installed Claude Code subagent file carries a model and a
+reasoning effort for its role. Every role runs on `opus` at `medium` effort,
+except `squads-team`, which runs at `high`. A project install writes neither
+field unless you name one; see [In a team repository](#in-a-team-repository).
+`--model` and `--effort`
 override them, with a bare value for every role or `<skill>=<value>` for one,
 and `inherit` drops the field for the runtime to resolve:
 
@@ -168,6 +171,33 @@ and the [CLI reference](https://code.claude.com/docs/en/cli-reference).
 Runtime authorization and model availability still apply; the lead distinguishes
 selected settings from values confirmed in runtime metadata and preserves the lead's
 model and unrelated global settings.
+
+### In a team repository
+
+Without `--global`, `squad-skills add` installs into the current project, and
+everything it writes is meant to be committed so every teammate's agents get the
+same roles:
+
+```sh
+npx squad-skills@<version> add --all --agent claude-code --agent codex -y
+```
+
+- Skills land in `.claude/skills/` and `.agents/skills/`, agents in
+  `.claude/agents/` and `.codex/agents/`.
+- Each agent names its skill by a path from the project root, such as
+  `.claude/skills/squad-qa/SKILL.md`. When `.claude/skills` is a symlink to
+  `.agents/skills`, agents name the `.agents/skills/` path.
+- `skills-lock.json` records each skill as the GitHub source at this version's
+  release tag, `danh121097/squad-skills#v<version>`: the entry
+  `npx skills add danh121097/squad-skills#v<version>` writes for the same skill.
+  The Skills CLI can restore from it once that tag exists.
+- Agent files carry a `model` or `effort` only when `--model` or `--effort` names
+  one, so a committed file never pins a model a teammate's plan cannot run.
+- Codex loads `.codex/agents/` only in a folder each teammate has trusted. A
+  project role replaces a global role of the same name.
+
+A project install made by 0.4.14 or earlier holds absolute paths. Reinstall to
+replace them.
 
 See [the installation guide](docs/installation.md) for local-checkout commands,
 installation scope, copy versus symlink behavior, and publishing notes.

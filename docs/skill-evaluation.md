@@ -172,9 +172,11 @@ Runtime claims are capability-dependent. As checked on 2026-10-19:
 - [Claude subagents](https://code.claude.com/docs/en/sub-agents) support nesting
   subject to version, depth limits and tool availability.
 - [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
-  document project-scoped agents. The CLI still retains its tested global
-  registration path; project installation support needs a separate runtime
-  compatibility test before changing that installation contract.
+  document project-scoped agents. Codex CLI 0.162.1, checked on 2026-11-25 in a
+  trusted project, offered a role from a bare `.codex/agents/<name>.toml` with
+  no `config.toml` entry. That project role replaced a registered global role of
+  the same name, with no duplicate error. The CLI writes project Codex agents
+  there and keeps registration for the global path only.
 
 Native design verification similarly reports the actual compiler, renderer,
 device checks or human review used, rather than assuming a fixed tier by framework.

@@ -12,13 +12,13 @@
  * first edit this CLI makes, and that backup is kept.
  */
 
-import { access, copyFile, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { access, copyFile, mkdir, readFile, readdir, realpath, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import type { CodexAgentEntry } from './codex-config-registration.ts';
 import { registerCodexAgents } from './codex-config-registration.ts';
 import type { AgentTool, RoleOverrides } from './role-defaults.ts';
-import { resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
+import { inheritPreference, resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 import type { AgentPreferences } from './skill-agent-definition.ts';
 import {
   generatedMarker,
@@ -89,17 +89,14 @@ export async function installAgentDefinitions(
 
     const target = resolveTarget(tool, request);
 
-    if (target === null) {
-      messages.push(
-        `Skipped ${tool} agents: project scope is not a verified location for them; install with --global.`
-      );
-      continue;
-    }
-
     await mkdir(target.agentsDirectory, { recursive: true });
+    // A project's agent files are committed and shared, so they carry no model
+    // or effort the caller did not name: a catalog model one teammate's plan
+    // cannot run would break the role for that teammate.
+    const projectDefault = request.scope === 'project' ? inheritPreference : undefined;
     const overrides: RoleOverrides = {
-      effort: request.effort,
-      model: request.model,
+      effort: request.effort ?? projectDefault,
+      model: request.model ?? projectDefault,
       roleEfforts: request.roleEfforts,
       roleModels: request.roleModels,
     };
@@ -131,11 +128,12 @@ export async function installAgentDefinitions(
         model: resolveRoleModel(definition.name, overrides, target.tool),
       };
 
-      await writeFile(
-        agentFile,
-        target.render(definition, installedSkillFile, preferences),
-        'utf8'
-      );
+      const skillReference =
+        request.scope === 'global'
+          ? installedSkillFile
+          : await projectRelativePath(request.projectRoot, installedSkillFile);
+
+      await writeFile(agentFile, target.render(definition, skillReference, preferences), 'utf8');
       written.push(agentFile);
       registered.push({
         description: definition.description,
@@ -196,7 +194,7 @@ async function readSkillDirectories(skillsRoot: string, messages: string[]): Pro
   }
 }
 
-function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTarget | null {
+function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTarget {
   const root = request.scope === 'global' ? request.homeDirectory : request.projectRoot;
 
   if (tool === 'claude-code') {
@@ -209,18 +207,35 @@ function resolveTarget(tool: string, request: AgentInstallationRequest): AgentTa
     };
   }
 
-  // Codex registers agents through a config file whose project-scope location
-  // this CLI has not verified, so only the global one is claimed.
-  if (request.scope !== 'global') return null;
-
   return {
     agentsDirectory: path.join(root, '.codex', 'agents'),
-    codexConfigFile: path.join(root, '.codex', 'config.toml'),
+    // Codex discovers a trusted project's `.codex/agents/*.toml` on its own, so
+    // only the user-level config needs an entry naming each file.
+    ...(request.scope === 'global' && {
+      codexConfigFile: path.join(root, '.codex', 'config.toml'),
+    }),
     extension: '.toml',
     render: renderCodexAgentFile,
     skillsRoots: [path.join(root, '.agents', 'skills'), path.join(root, '.codex', 'skills')],
     tool: 'codex',
   };
+}
+
+/**
+ * The skill's path from the project root, with `/` separators so the committed
+ * file reads the same on every platform. It follows symlinks first: when
+ * `.claude/skills` links to a shared `.agents/skills`, the agent names the
+ * shared folder, which still resolves in a checkout that stores the link as a
+ * plain file. A link leading out of the project keeps the unresolved path.
+ */
+async function projectRelativePath(projectRoot: string, file: string): Promise<string> {
+  const resolved = path.relative(await realpath(projectRoot), await realpath(file));
+  const relative =
+    resolved.startsWith('..') || path.isAbsolute(resolved)
+      ? path.relative(projectRoot, file)
+      : resolved;
+
+  return relative.split(path.sep).join('/');
 }
 
 async function registerInCodexConfig(

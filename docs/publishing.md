@@ -100,6 +100,10 @@ tags that commit and opens the GitHub release with generated notes — but only
 when no tag matches the version yet, so a push that did not change the version
 does nothing.
 
+A project install from npm records `danh121097/squad-skills#v<version>` in the
+consumer's `skills-lock.json`, so the Skills CLI can restore from that lock only
+once this tag exists. Push the version commit to `main` soon after publishing.
+
 That job runs on a push to `main` and never on a pull request, because it holds
 `contents: write` and a fork's pull request must not reach it. It uses the
 runner's own `gh` with the automatic `GITHUB_TOKEN` rather than a third-party

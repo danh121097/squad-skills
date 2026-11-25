@@ -39,7 +39,13 @@ export interface AgentPlan {
 }
 
 export type CliAction =
-  | { kind: 'delegate'; arguments: string[]; agentPlan: AgentPlan | null }
+  | {
+      kind: 'delegate';
+      arguments: string[];
+      agentPlan: AgentPlan | null;
+      /** True for a project-scope install, whose lock entries name this package's cache path. */
+      rewritesProjectLock: boolean;
+    }
   | { kind: 'install-agents'; agentPlan: AgentPlan }
   | { kind: 'print'; message: string; exitCode: number };
 
@@ -115,16 +121,17 @@ export function createCliAction(
 
   if (addCommands.has(command)) {
     const canonical = expandEveryFlag(normalizeListOptions(strippedArguments));
+    // A listing or help request installs nothing, so it must write nothing.
+    const installs = !canonical.some((argument) => readOnlyAddFlags.has(argument));
 
     return {
       kind: 'delegate',
-      // A listing or help request installs nothing, so it must write nothing.
       agentPlan:
-        forwardedArguments.includes(noAgentsFlag) ||
-        canonical.some((argument) => readOnlyAddFlags.has(argument))
-          ? null
-          : createAgentPlan(canonical, preferences),
+        installs && !forwardedArguments.includes(noAgentsFlag)
+          ? createAgentPlan(canonical, preferences)
+          : null,
       arguments: ['add', packageRoot, ...ensureCopyInstallation(canonical)],
+      rewritesProjectLock: installs && readScope(canonical) === 'project',
     };
   }
 
@@ -140,6 +147,7 @@ export function createCliAction(
       kind: 'delegate',
       agentPlan: null,
       arguments: ['add', packageRoot, '--list', ...strippedArguments],
+      rewritesProjectLock: false,
     };
   }
 
@@ -190,9 +198,13 @@ function createAgentPlan(arguments_: string[], preferences: AgentPreferences): A
     model: preferences.model,
     roleEfforts: preferences.roleEfforts,
     roleModels: preferences.roleModels,
-    scope: arguments_.includes('--global') || arguments_.includes('-g') ? 'global' : 'project',
+    scope: readScope(arguments_),
     skills: readListOption(arguments_, ['--skill', '-s'], []),
   };
+}
+
+function readScope(arguments_: string[]): AgentScope {
+  return arguments_.includes('--global') || arguments_.includes('-g') ? 'global' : 'project';
 }
 
 /**
@@ -532,13 +544,19 @@ Examples:
   squad-skills agents --global --agent claude-code --model squad-qa=opus
 
 Claude Code reads an agent from .claude/agents/<name>.md. Codex reads one from
-.codex/agents/<name>.toml and loads it only once config.toml names it, so this
-CLI registers it there and backs the file up first. Codex agents are written at
-global scope only, with model and model_reasoning_effort in each agent file.
-Those fields override [agents] defaults; inherit omits the field so Codex
-resolves it from the spawn request, [agents] defaults or parent session.
+.codex/agents/<name>.toml. At global scope Codex loads it only once config.toml
+names it, so this CLI registers it there and backs the file up first; in a
+trusted project Codex finds .codex/agents/ on its own, so nothing is registered.
+model and model_reasoning_effort override [agents] defaults; inherit omits the
+field so Codex resolves it from the spawn request, [agents] defaults or parent
+session.
 
-Each role's Claude Code agent carries a default model:
+A project install writes files meant to be committed: each agent names its
+skill by a path from the project root, skills-lock.json records the GitHub
+source at this version's release tag, and agent files carry a model or effort
+only when --model or --effort names one.
+
+At global scope, each role's Claude Code agent carries a default model:
 ${formatDefaults(defaultClaudePreferencesByRole, 'model')}
 and a default effort:
 ${formatDefaults(defaultClaudePreferencesByRole, 'effort')}

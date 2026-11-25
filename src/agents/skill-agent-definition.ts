@@ -12,6 +12,8 @@
  * pins it against a real YAML parse of every shipped skill.
  */
 
+import path from 'node:path';
+
 import { resolveRoleEffort, resolveRoleModel } from './role-defaults.ts';
 
 export interface SkillAgentDefinition {
@@ -132,9 +134,25 @@ export function renderPluginAgentFile(definition: SkillAgentDefinition): string 
   });
 }
 
+/**
+ * A global install names the skill by its absolute path in the user's home. A
+ * project install names it relative to the project root instead, so the file
+ * can be committed and still resolve on every teammate's machine; the agent is
+ * told how to anchor that path, because its file tools take absolute paths and
+ * a session may start in a subdirectory. The anchor is the folder holding the
+ * install, not the git top level: an install inside a monorepo package lives
+ * in that package.
+ */
 function installedSkillContext(installedSkillPath: string): AgentBodyContext {
+  const read = `Read \`${installedSkillPath}\` and follow it for this task.`;
+  const anchor = installedSkillPath.split('/')[0] as string;
+
   return {
-    instruction: `Read \`${installedSkillPath}\` and follow it for this task.`,
+    instruction: path.isAbsolute(installedSkillPath)
+      ? read
+      : `${read}
+The path is relative to the project root: the nearest directory, from the
+working directory upward, that contains \`${anchor}/\`.`,
     origin: 'Reinstalling regenerates it.',
   };
 }

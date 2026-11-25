@@ -294,11 +294,4 @@ describe('installAgentDefinitions', () => {
     expect(team).toContain('\nmodel = "gpt-6.1-sol"\n');
     expect(team).toContain('\nmodel_reasoning_effort = "max"\n');
   });
-
-  it('declines Codex at project scope rather than guessing its config location', async () => {
-    const result = await request({ agents: ['codex'], scope: 'project' });
-
-    expect(result.written).toEqual([]);
-    expect(result.messages.join('\n')).toContain('--global');
-  });
 });

@@ -6,10 +6,12 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 import { installAgentDefinitions } from '../agents/agent-installation.ts';
+import { recordPackageSourceInProjectLock } from './project-skills-lock.ts';
 import type { AgentPlan } from './squad-skills-command.ts';
 import { createCliAction } from './squad-skills-command.ts';
 
 interface PackageMetadata {
+  repository: { url: string };
   version: string;
 }
 
@@ -30,6 +32,17 @@ if (action.kind === 'print') {
 } else {
   const exitCode = await runSkillsCli(skillsCliPath, action.arguments);
   process.exitCode = exitCode;
+
+  if (exitCode === 0 && action.rewritesProjectLock) {
+    const messages = await recordPackageSourceInProjectLock({
+      packageRoot,
+      projectRoot: process.cwd(),
+      repositoryUrl: packageMetadata.repository.url,
+      version: packageMetadata.version,
+    });
+
+    for (const message of messages) console.log(message);
+  }
 
   // Agent definitions point at the skills the delegated install just wrote, so
   // a failed install leaves them alone rather than pointing at nothing.

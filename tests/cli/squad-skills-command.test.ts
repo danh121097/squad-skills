@@ -60,6 +60,7 @@ describe('createCliAction', () => {
         skills: ['squads-team'],
       },
       arguments: ['add', packageRoot, '--skill', 'squads-team', '--agent', 'codex', '--copy'],
+      rewritesProjectLock: true,
     });
   });
 
@@ -77,6 +78,7 @@ describe('createCliAction', () => {
         skills: [],
       },
       arguments: ['add', packageRoot, '--copy', '--yes'],
+      rewritesProjectLock: true,
     });
   });
 
@@ -85,6 +87,7 @@ describe('createCliAction', () => {
       kind: 'delegate',
       agentPlan: null,
       arguments: ['add', packageRoot, '--list'],
+      rewritesProjectLock: false,
     });
   });
 
@@ -94,6 +97,7 @@ describe('createCliAction', () => {
     expect(action).toMatchObject({
       agentPlan: { scope: 'global', skills: ['squad-qa', 'squad-fix'] },
       arguments: ['add', packageRoot, '-g', '-s', 'squad-qa', '-s', 'squad-fix', '--copy'],
+      rewritesProjectLock: false,
     });
   });
 
@@ -147,6 +151,7 @@ describe('createCliAction', () => {
       kind: 'delegate',
       agentPlan: null,
       arguments: ['add', packageRoot, '--yes', '--copy'],
+      rewritesProjectLock: true,
     });
   });
 
@@ -183,6 +188,7 @@ describe('createCliAction', () => {
       },
       // The Skills CLI has never heard of these flags and would reject them.
       arguments: ['add', packageRoot, '--yes', '--copy'],
+      rewritesProjectLock: true,
     });
   });
 
@@ -223,13 +229,14 @@ describe('createCliAction', () => {
   );
 
   // The Skills CLI only lists or prints help for these, so writing agent
-  // definitions after it exits would change a home directory on a read-only call.
+  // definitions or a lock entry after it exits would change files on a read-only call.
   it.each([['--list'], ['-l'], ['--help'], ['-h'], ['--skill', 'squad-qa', '--list']])(
-    'plans no agent definitions for add %s',
+    'plans no agent definitions or lock rewrite for add %s',
     (...flags) => {
       expect(createCliAction(['add', ...flags], packageRoot, '0.1.0')).toMatchObject({
         kind: 'delegate',
         agentPlan: null,
+        rewritesProjectLock: false,
       });
     }
   );
@@ -318,6 +325,7 @@ describe('createCliAction', () => {
         skills: ['opus'],
       },
       arguments: ['add', packageRoot, '--skill', 'opus', '--copy'],
+      rewritesProjectLock: true,
     });
   });
 
